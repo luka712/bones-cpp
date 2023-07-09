@@ -1,9 +1,12 @@
 #include "renderer/MetalRenderer.hpp"
 #include <simd/simd.h>
+#include "renderer/common/MetalRenderPipelineUtil.hpp"
+#include "Framework.hpp"
 
 namespace bns
 {
-    MetalRenderer::MetalRenderer()
+    MetalRenderer::MetalRenderer(Framework &framework)
+        : m_framework(framework)
     {
         ClearColor = Color::LightPink();
     }
@@ -17,11 +20,13 @@ namespace bns
         m_device = m_metalLayer->device();
 
         Resize();
+
+        m_framework.Context.MetalDevice = m_device;
     }
 
     void MetalRenderer::Resize()
     {
-        // DEPTH TEXTURE TODO 
+        // DEPTH TEXTURE TODO
         // MTL::TextureDescriptor *depthTextureDescriptor = MTL::TextureDescriptor::alloc();
         // depthTextureDescriptor->setDepth
         // depthTextureDescriptor->setTextureType(MTL::TextureType::TextureType2D);
@@ -45,95 +50,92 @@ namespace bns
         // m_renderPassDescriptor->colorAttachments()[0]->setClearColor(MTL::ClearColor(0.0, 0.0, 0.0, 1.0));
         // m_renderPassDescriptor->colorAttachments()[0]->setStoreAction(MTL::StoreAction::Store);
 
-        const size_t NumVertices = 3;
+    //     const size_t NumVertices = 3;
 
-        simd::float3 positions[NumVertices] =
-            {
-                {-0.8f, 0.8f, 0.0f},
-                {0.0f, -0.8f, 0.0f},
-                {+0.8f, 0.8f, 0.0f}};
+    //     simd::float3 positions[NumVertices] =
+    //         {
+    //             {-0.8f, 0.8f, 0.0f},
+    //             {0.0f, -0.8f, 0.0f},
+    //             {+0.8f, 0.8f, 0.0f}};
 
-        simd::float3 colors[NumVertices] =
-            {
-                {1.0, 0.3f, 0.2f},
-                {0.8f, 1.0, 0.0f},
-                {0.8f, 0.0f, 1.0}};
+    //     simd::float3 colors[NumVertices] =
+    //         {
+    //             {1.0, 0.3f, 0.2f},
+    //             {0.8f, 1.0, 0.0f},
+    //             {0.8f, 0.0f, 1.0}};
 
-        const size_t positionsDataSize = NumVertices * sizeof(simd::float3);
-        const size_t colorDataSize = NumVertices * sizeof(simd::float3);
+    //     const size_t positionsDataSize = NumVertices * sizeof(simd::float3);
+    //     const size_t colorDataSize = NumVertices * sizeof(simd::float3);
 
-        MTL::Buffer *pVertexPositionsBuffer = m_device->newBuffer(positionsDataSize, MTL::ResourceStorageModeManaged);
-        MTL::Buffer *pVertexColorsBuffer = m_device->newBuffer(colorDataSize, MTL::ResourceStorageModeManaged);
+    //     MTL::Buffer *pVertexPositionsBuffer = m_device->newBuffer(positionsDataSize, MTL::ResourceStorageModeManaged);
+    //     MTL::Buffer *pVertexColorsBuffer = m_device->newBuffer(colorDataSize, MTL::ResourceStorageModeManaged);
 
-        m_positionBuffer = pVertexPositionsBuffer;
-        m_colorsBuffer = pVertexColorsBuffer;
+    //     m_positionBuffer = pVertexPositionsBuffer;
+    //     m_colorsBuffer = pVertexColorsBuffer;
 
-        memcpy(m_positionBuffer->contents(), positions, positionsDataSize);
-        memcpy(m_colorsBuffer->contents(), colors, colorDataSize);
+    //     memcpy(m_positionBuffer->contents(), positions, positionsDataSize);
+    //     memcpy(m_colorsBuffer->contents(), colors, colorDataSize);
 
-        m_positionBuffer->didModifyRange(NS::Range::Make(0, m_positionBuffer->length()));
-        m_colorsBuffer->didModifyRange(NS::Range::Make(0, m_colorsBuffer->length()));
+    //     m_positionBuffer->didModifyRange(NS::Range::Make(0, m_positionBuffer->length()));
+    //     m_colorsBuffer->didModifyRange(NS::Range::Make(0, m_colorsBuffer->length()));
 
-        float vertices[9] = {
-            -0.5f, -0.5f, 0.0f, // Vertex 1
-            0.5f, -0.5f, 0.0f,  // Vertex 2
-            0.0f, 0.5f, 0.0f    // Vertex 3
-        };
-        m_device->newBuffer(&vertices, 3 * 3 * sizeof(float), MTL::CPUCacheModeDefaultCache);
+    //     float vertices[9] = {
+    //         -0.5f, -0.5f, 0.0f, // Vertex 1
+    //         0.5f, -0.5f, 0.0f,  // Vertex 2
+    //         0.0f, 0.5f, 0.0f    // Vertex 3
+    //     };
+    //     m_device->newBuffer(&vertices, 3 * 3 * sizeof(float), MTL::CPUCacheModeDefaultCache);
 
-        const char *shaderSrc = R"(
-        #include <metal_stdlib>
-        using namespace metal;
+    //     const char *shaderSrc = R"(
+    //     #include <metal_stdlib>
+    //     using namespace metal;
 
-        struct v2f
-        {
-            float4 position [[position]];
-            half3 color;
-        };
+    //     struct v2f
+    //     {
+    //         float4 position [[position]];
+    //         half3 color;
+    //     };
 
-        v2f vertex vertexMain( uint vertexId [[vertex_id]],
-                               device const float3* positions [[buffer(0)]],
-                               device const float3* colors [[buffer(1)]] )
-        {
-            v2f o;
-            o.position = float4( positions[ vertexId ], 1.0 );
-            o.color = half3 ( colors[ vertexId ] );
-            return o;
-        }
+    //     v2f vertex vertexMain( uint vertexId [[vertex_id]],
+    //                            device const float3* positions [[buffer(0)]],
+    //                            device const float3* colors [[buffer(1)]] )
+    //     {
+    //         v2f o;
+    //         o.position = float4( positions[ vertexId ], 1.0 );
+    //         o.color = half3 ( colors[ vertexId ] );
+    //         return o;
+    //     }
 
-        half4 fragment fragmentMain( v2f in [[stage_in]] )
-        {
-            return half4( in.color, 1.0 );
-        }
-    )";
+    //     half4 fragment fragmentMain( v2f in [[stage_in]] )
+    //     {
+    //         return half4( in.color, 1.0 );
+    //     }
+    // )";
 
-        NS::Error *pError = nullptr;
-        MTL::Library *pLibrary = m_device->newLibrary(NS::String::string(shaderSrc, NS::StringEncoding::UTF8StringEncoding), nullptr, &pError);
-        if (!pLibrary)
-        {
-            __builtin_printf("%s", pError->localizedDescription()->utf8String());
-            assert(false);
-        }
+    //     NS::Error *pError = nullptr;
+    //     MTL::Library *pLibrary = m_device->newLibrary(NS::String::string(shaderSrc, NS::StringEncoding::UTF8StringEncoding), nullptr, &pError);
+    //     if (!pLibrary)
+    //     {
+    //         __builtin_printf("%s", pError->localizedDescription()->utf8String());
+    //         assert(false);
+    //     }
 
-        MTL::Function *pVertexFn = pLibrary->newFunction(NS::String::string("vertexMain", NS::StringEncoding::UTF8StringEncoding));
-        MTL::Function *pFragFn = pLibrary->newFunction(NS::String::string("fragmentMain", NS::StringEncoding::UTF8StringEncoding));
+    //     MTL::Function *pVertexFn = pLibrary->newFunction(NS::String::string("vertexMain", NS::StringEncoding::UTF8StringEncoding));
+    //     MTL::Function *pFragFn = pLibrary->newFunction(NS::String::string("fragmentMain", NS::StringEncoding::UTF8StringEncoding));
 
-        MTL::RenderPipelineDescriptor *pDesc = MTL::RenderPipelineDescriptor::alloc()->init();
-        pDesc->setVertexFunction(pVertexFn);
-        pDesc->setFragmentFunction(pFragFn);
-        pDesc->colorAttachments()->object(0)->setPixelFormat(MTL::PixelFormat::PixelFormatBGRA8Unorm_sRGB);
+    //     MTL::RenderPipelineDescriptor *pDesc = MetalRenderPipelineUtil::CreatePipelineDescriptor(pVertexFn, pFragFn);
 
-        m_renderPipelineState = m_device->newRenderPipelineState(pDesc, &pError);
-        if (!m_renderPipelineState)
-        {
-            __builtin_printf("%s", pError->localizedDescription()->utf8String());
-            assert(false);
-        }
+    //     m_renderPipelineState = m_device->newRenderPipelineState(pDesc, &pError);
+    //     if (!m_renderPipelineState)
+    //     {
+    //         __builtin_printf("%s", pError->localizedDescription()->utf8String());
+    //         assert(false);
+    //     }
 
-        pVertexFn->release();
-        pFragFn->release();
-        pDesc->release();
-        pLibrary->release();
+    //     pVertexFn->release();
+    //     pFragFn->release();
+    //     pDesc->release();
+    //     pLibrary->release();
     }
 
     void MetalRenderer::BeginDraw()
@@ -166,6 +168,7 @@ namespace bns
         MTL::CommandQueue *queue = m_device->newCommandQueue();
         m_commandBuffer = queue->commandBuffer();
         m_renderCommandEncoder = m_commandBuffer->renderCommandEncoder(pass);
+        m_framework.Context.CurrentMetalRenderCommandEncoder = m_renderCommandEncoder;
         // MTL::ResourceStateCommandEncoder *updateEncoder = m_commandBuffer->resourceStateCommandEncoder();
 
         // viewport
@@ -182,10 +185,10 @@ namespace bns
         scissorRect.height = (NS::Integer)m_bufferSize.Y;
         m_renderCommandEncoder->setScissorRect(scissorRect);
 
-        m_renderCommandEncoder->setRenderPipelineState(m_renderPipelineState);
-        m_renderCommandEncoder->setVertexBuffer(m_positionBuffer, 0, 0);
-        m_renderCommandEncoder->setVertexBuffer(m_colorsBuffer, 0, 1);
-        m_renderCommandEncoder->drawPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle, NS::UInteger(0), NS::UInteger(3));
+        // m_renderCommandEncoder->setRenderPipelineState(m_renderPipelineState);
+        // m_renderCommandEncoder->setVertexBuffer(m_positionBuffer, 0, 0);
+        // m_renderCommandEncoder->setVertexBuffer(m_colorsBuffer, 0, 1);
+        // m_renderCommandEncoder->drawPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle, NS::UInteger(0), NS::UInteger(3));
     }
 
     void MetalRenderer::EndDraw()

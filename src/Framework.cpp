@@ -8,7 +8,8 @@
 #include "mesh/wgpu/WebGPUMeshFactory.hpp"
 #include "renderer/common/WebGPURenderPipelineUtil.hpp"
 #include "camera/FreeCamera.hpp"
-#include "material/basic/wgpu/WebGPUNoMeshTestMaterial.hpp"
+#include "material/test/wgpu/WebGPUNoMeshTestMaterial.hpp"
+#include "material/test/metal/MetalNoMeshTestMaterial.hpp"
 
 namespace bns
 {
@@ -29,8 +30,8 @@ namespace bns
 
     void Framework::Initialize(WindowParameters windowParameters)
     {
-        // InitializeForMetal(windowParameters);
-        InitializeForWGPU(windowParameters);
+        InitializeForMetal(windowParameters);
+        // InitializeForWGPU(windowParameters);
     }
 
     void Framework::InitializeForWGPU(WindowParameters windowParameters)
@@ -51,7 +52,7 @@ namespace bns
         FreeCamera camera;
 
         // TEST DATA
-        WebGPUTestNoMeshMaterial *testMaterial = new WebGPUTestNoMeshMaterial(*this);
+        WebGPUNoMeshTestMaterial *testMaterial = new WebGPUNoMeshTestMaterial(*this);
         testMaterial->Initialize();
 
         while (!glfwWindowShouldClose(((GLFWWindowManager *)m_windowManager)->m_window))
@@ -76,11 +77,16 @@ namespace bns
         CA::MetalLayer *swapchain = m_windowManager->InitializeForMetal(windowParameters);
 
         // TEMPORARY CODE
-        MetalRenderer renderer;
+        MetalRenderer renderer(*this);
         renderer.Initialize(swapchain);
+
+        MetalNoMeshTestMaterial *testMaterial = new MetalNoMeshTestMaterial(*this);
+        testMaterial->Initialize();
 
         bool quit = false;
         SDL_Event event;
+
+        FreeCamera camera;
 
         while (!quit)
         {
@@ -94,7 +100,7 @@ namespace bns
 
                 renderer.BeginDraw();
 
-                // TODO: stuff here
+                testMaterial->Draw(camera, nullptr);
 
                 renderer.EndDraw();
 

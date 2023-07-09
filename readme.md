@@ -31,3 +31,6 @@ then: navigate to product -> build
 ### Run
 do: Simply run project in xcode
 
+# Dependencies
+TODO: 
+- SDL, Metal

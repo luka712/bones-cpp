@@ -1,19 +1,19 @@
-#include "material/basic/wgpu/WebGPUNoMeshTestMaterial.hpp"
+#include "material/test/wgpu/WebGPUNoMeshTestMaterial.hpp"
 #include "renderer/common/WebGPURenderPipelineUtil.hpp"
 #include "Framework.hpp"
 
 namespace bns
 {
-    WebGPUTestNoMeshMaterial::WebGPUTestNoMeshMaterial(Framework &framework)
+    WebGPUNoMeshTestMaterial::WebGPUNoMeshTestMaterial(Framework &framework)
         : m_framework(framework)
     {
     }
 
-    WebGPUTestNoMeshMaterial::~WebGPUTestNoMeshMaterial()
+    WebGPUNoMeshTestMaterial::~WebGPUNoMeshTestMaterial()
     {
     }
 
-    void WebGPUTestNoMeshMaterial::Initialize()
+    void WebGPUNoMeshTestMaterial::Initialize()
     {
         std::string shaderSource = m_framework.FileLoader.OpenFile("shaders/webgpu/no_mesh_test_shader.wgsl");
         WGPUShaderModule shaderModule = WebGPURenderPipelineUtil::CreateShaderModule(m_framework.Context.WebGPUDevice, shaderSource);
@@ -68,7 +68,7 @@ namespace bns
      * @param mesh The mesh to render.
      * @return void
      */
-    void WebGPUTestNoMeshMaterial::Draw(const Camera &camera, Mesh *mesh)
+    void WebGPUNoMeshTestMaterial::Draw(const Camera &camera, Mesh *mesh)
     {
         wgpuRenderPassEncoderSetPipeline(m_framework.Context.CurrentWebGPURenderPassEncoder, m_pipeline);
         wgpuRenderPassEncoderDraw(m_framework.Context.CurrentWebGPURenderPassEncoder, 3, 1, 0, 0);
@@ -82,7 +82,7 @@ namespace bns
      * @param transforms The transforms to render the mesh with.
      * @return void
      */
-    void WebGPUTestNoMeshMaterial::Draw(const Camera &camera, const Mesh &mesh, std::vector<Mat4x4f> transforms)
+    void WebGPUNoMeshTestMaterial::Draw(const Camera &camera, const Mesh &mesh, std::vector<Mat4x4f> transforms)
     {
         wgpuRenderPassEncoderSetPipeline(m_framework.Context.CurrentWebGPURenderPassEncoder, m_pipeline);
         wgpuRenderPassEncoderDraw(m_framework.Context.CurrentWebGPURenderPassEncoder, 3, 1, 0, 0);
@@ -97,7 +97,7 @@ namespace bns
      * @param nOfInstances The number of instances to render.
      * @return void
      */
-    void WebGPUTestNoMeshMaterial::DrawInstancedPrefilled(const Camera &camera, const Mesh &mesh, f32 *flatTransformsArray, i32 nOfInstances)
+    void WebGPUNoMeshTestMaterial::DrawInstancedPrefilled(const Camera &camera, const Mesh &mesh, f32 *flatTransformsArray, i32 nOfInstances)
     {
         wgpuRenderPassEncoderSetPipeline(m_framework.Context.CurrentWebGPURenderPassEncoder, m_pipeline);
         wgpuRenderPassEncoderDraw(m_framework.Context.CurrentWebGPURenderPassEncoder, 3, 1, 0, 0);
@@ -106,6 +106,6 @@ namespace bns
     /**
      * @brief Create a new copy of material
      */
-    Material *WebGPUTestNoMeshMaterial::Copy() { return new WebGPUTestNoMeshMaterial(m_framework); }
+    Material *WebGPUNoMeshTestMaterial::Copy() { return new WebGPUNoMeshTestMaterial(m_framework); }
 
 }

@@ -8,6 +8,7 @@
 #include "geometry/GeometryBuilder.hpp"
 #include "mesh/MeshFactory.hpp"
 #include <webgpu/webgpu.h>
+#include <Metal/Metal.hpp>
 
 namespace bns
 {
@@ -23,6 +24,16 @@ namespace bns
          * @brief The current render pass encoder.
         */
         WGPURenderPassEncoder CurrentWebGPURenderPassEncoder;
+
+        /**
+         * @brief The metal device.
+        */
+        MTL::Device *MetalDevice;
+
+        /**
+         * @brief The current render command encoder.
+        */
+        MTL::RenderCommandEncoder *CurrentMetalRenderCommandEncoder;
     };
 
     /**

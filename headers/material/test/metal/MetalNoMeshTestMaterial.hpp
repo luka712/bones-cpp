@@ -1,9 +1,9 @@
-#ifndef WEBGPU_NO_MESH_TEST_MATERIAL_HPP
+#ifndef METAL_NO_MESH_TEST_MATERIAL_HPP
 
-#define WEBGPU_NO_MESH_TEST_MATERIAL_HPP
+#define METAL_NO_MESH_TEST_MATERIAL_HPP
 
 #include "material/Material.hpp"
-#include <webgpu/webgpu.h>
+#include <Metal/Metal.hpp>
 
 namespace bns
 {
@@ -15,7 +15,7 @@ namespace bns
      * This is not a real material.
      * This is not a material that should be used in production.
      */
-    class WebGPUTestNoMeshMaterial final : public Material
+    class MetalNoMeshTestMaterial final : public Material
     {
     private:
         Framework &m_framework;
@@ -24,11 +24,11 @@ namespace bns
          * @brief The pipeline for the material.
          * This is used to draw the material.
          */
-        WGPURenderPipeline m_pipeline;
+        MTL::RenderPipelineState *m_pipeline;
 
     public:
-        WebGPUTestNoMeshMaterial(Framework &framework);
-        ~WebGPUTestNoMeshMaterial();
+        MetalNoMeshTestMaterial(Framework &framework);
+        ~MetalNoMeshTestMaterial();
 
         /**
          * @brief Initialize the material.
@@ -71,4 +71,4 @@ namespace bns
     };
 }
 
-#endif // !WEBGPU_NO_MESH_TEST_MATERIAL_HPP
+#endif // !METAL_NO_MESH_TEST_MATERIAL_HPP

@@ -10,9 +10,13 @@
 
 namespace bns
 {
-    class MetalRenderer
+    class Framework;
+
+    class MetalRenderer final 
     {
     private:
+        Framework &m_framework;
+
         /**
          * @brief MetalLayer is a class in Apple's Metal
          * framework that enables seamless integration of Metal rendering capabilities into a Core Animation layer hierarchy.
@@ -39,9 +43,9 @@ namespace bns
 
         MTL::RenderCommandEncoder *m_renderCommandEncoder;
         MTL::CommandBuffer *m_commandBuffer;
-        MTL::RenderPipelineState *m_renderPipelineState;
-        MTL::Buffer *m_positionBuffer;
-        MTL::Buffer *m_colorsBuffer;
+        // MTL::RenderPipelineState *m_renderPipelineState;
+        // MTL::Buffer *m_positionBuffer;
+        // MTL::Buffer *m_colorsBuffer;
 
         Vec2f m_bufferSize;
 
@@ -50,7 +54,7 @@ namespace bns
     public:
         Color ClearColor;
 
-        MetalRenderer();
+        MetalRenderer(Framework &framework);
         void Initialize(CA::MetalLayer *metalLayer);
         void BeginDraw();
         void EndDraw();
