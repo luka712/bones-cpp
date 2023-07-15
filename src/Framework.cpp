@@ -6,21 +6,23 @@
 #include "window/glfw_window.hpp"
 #include "material/WebGPUMaterialFactory.hpp"
 #include "mesh/wgpu/WebGPUMeshFactory.hpp"
+#include "mesh/metal/MetalMeshFactory.hpp"
 #include "renderer/common/WebGPURenderPipelineUtil.hpp"
 #include "camera/FreeCamera.hpp"
 #include "material/test/wgpu/WebGPUNoMeshTestMaterial.hpp"
+#include "material/test/wgpu/WebGPUBasicMeshTestMaterial.hpp"
 #include "material/test/metal/MetalNoMeshTestMaterial.hpp"
+#include "material/test/metal/MetalBasicMeshTestMaterial.hpp"
 
 namespace bns
 {
-
     Framework::Framework()
     {
         m_windowManager = new GLFWWindowManager();
         m_geometryBuilder = new GeometryBuilder();
 
         // WebGPU initialize
-        MaterialFactory = new WebGPUMaterialFactory(*this);
+        m_materialFactory = new WebGPUMaterialFactory(*this);
         m_meshFactory = new WebGPUMeshFactory(*this);
     }
 
@@ -30,8 +32,8 @@ namespace bns
 
     void Framework::Initialize(WindowParameters windowParameters)
     {
-        InitializeForMetal(windowParameters);
-        // InitializeForWGPU(windowParameters);
+         // InitializeForMetal(windowParameters);
+         InitializeForWGPU(windowParameters);
     }
 
     void Framework::InitializeForWGPU(WindowParameters windowParameters)
@@ -52,17 +54,23 @@ namespace bns
         FreeCamera camera;
 
         // TEST DATA
-        WebGPUNoMeshTestMaterial *testMaterial = new WebGPUNoMeshTestMaterial(*this);
+        WebGPUBasicMeshTestMaterial *testMaterial = new WebGPUBasicMeshTestMaterial(*this);
         testMaterial->Initialize();
+
+        Mesh *testMesh = m_meshFactory->CreateTriangleMesh();
 
         while (!glfwWindowShouldClose(((GLFWWindowManager *)m_windowManager)->m_window))
         {
+            // Do nothing, this checks for ongoing asynchronous operations and call their callbacks
+            // NOTE: this is specific to DAWN and is not part of WebGPU standard.
+            wgpuDeviceTick(Context.WebGPUDevice);
+
             glfwPollEvents();
             camera.Update(0.0f);
 
             renderer.BeginDraw();
 
-            testMaterial->Draw(camera, nullptr);
+            testMaterial->Draw(camera, testMesh);
 
             renderer.EndDraw();
         }
@@ -80,7 +88,9 @@ namespace bns
         MetalRenderer renderer(*this);
         renderer.Initialize(swapchain);
 
-        MetalNoMeshTestMaterial *testMaterial = new MetalNoMeshTestMaterial(*this);
+        Mesh* mesh = m_meshFactory->CreateTriangleMesh();
+
+        MetalBasicMeshTestMaterial *testMaterial = new MetalBasicMeshTestMaterial(*this);
         testMaterial->Initialize();
 
         bool quit = false;
@@ -100,7 +110,7 @@ namespace bns
 
                 renderer.BeginDraw();
 
-                testMaterial->Draw(camera, nullptr);
+                testMaterial->Draw(camera, mesh);
 
                 renderer.EndDraw();
 

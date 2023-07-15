@@ -1,24 +1,49 @@
-#include "material/test/wgpu/WebGPUNoMeshTestMaterial.hpp"
+#include "material/test/wgpu/WebGPUBasicMeshTestMaterial.hpp"
 #include "renderer/common/WebGPURenderPipelineUtil.hpp"
+#include "mesh/wgpu/WebGPUMesh.hpp"
 #include "Framework.hpp"
 
 namespace bns
 {
-    WebGPUNoMeshTestMaterial::WebGPUNoMeshTestMaterial(Framework &framework)
+    WebGPUBasicMeshTestMaterial::WebGPUBasicMeshTestMaterial(Framework &framework)
         : m_framework(framework)
     {
     }
 
-    WebGPUNoMeshTestMaterial::~WebGPUNoMeshTestMaterial()
+    WebGPUBasicMeshTestMaterial::~WebGPUBasicMeshTestMaterial()
     {
     }
 
-    void WebGPUNoMeshTestMaterial::Initialize()
+    void WebGPUBasicMeshTestMaterial::Initialize()
     {
-        std::string shaderSource = m_framework.FileLoader.OpenFile("shaders/webgpu/no_mesh_test_shader.wgsl");
+        std::string shaderSource = m_framework.FileLoader.OpenFile("shaders/webgpu/basic_mesh_test_shader.wgsl");
         WGPUShaderModule shaderModule = WebGPURenderPipelineUtil::CreateShaderModule(m_framework.Context.WebGPUDevice, shaderSource);
 
         WGPURenderPipelineDescriptor descriptor = {};
+
+        // Vertex state
+        WGPUVertexBufferLayout buffersLayout[2];
+        buffersLayout[0].arrayStride = 3 * sizeof(float);
+        buffersLayout[0].stepMode = WGPUVertexStepMode::WGPUVertexStepMode_Vertex;
+        buffersLayout[0].attributeCount = 1;
+        WGPUVertexAttribute positionAttribute;
+        positionAttribute.format = WGPUVertexFormat_Float32x3;
+        positionAttribute.offset = 0;
+        positionAttribute.shaderLocation = 0;
+        buffersLayout[0].attributes = &positionAttribute;
+
+        buffersLayout[1].arrayStride = 4 * sizeof(float);
+        buffersLayout[1].stepMode =  WGPUVertexStepMode::WGPUVertexStepMode_Vertex;
+        buffersLayout[1].attributeCount = 1;
+        WGPUVertexAttribute colorAttribute;
+        colorAttribute.format = WGPUVertexFormat_Float32x4;
+        colorAttribute.offset = 0;
+        colorAttribute.shaderLocation = 1;
+        buffersLayout[1].attributes = &colorAttribute;
+        descriptor.vertex.module = shaderModule;
+        descriptor.vertex.entryPoint = "vs_main";
+        descriptor.vertex.bufferCount = 2;
+        descriptor.vertex.buffers = &buffersLayout[0];
 
         // Fragment state
         WGPUBlendState blend = {};
@@ -41,16 +66,12 @@ namespace bns
         fragment.entryPoint = "fs_main";
         fragment.targetCount = 1;
         fragment.targets = &colorTarget;
-        descriptor.fragment = &fragment;      
+        descriptor.fragment = &fragment;
+
 
         // Other state
         descriptor.layout = nullptr;
         descriptor.depthStencil = nullptr;
-
-        descriptor.vertex.module = shaderModule;
-        descriptor.vertex.entryPoint = "vs_main";
-        descriptor.vertex.bufferCount = 0;
-        descriptor.vertex.buffers = nullptr;
 
         descriptor.multisample.count = 1;
         descriptor.multisample.mask = 0xFFFFFFFF;
@@ -70,9 +91,14 @@ namespace bns
      * @param mesh The mesh to render.
      * @return void
      */
-    void WebGPUNoMeshTestMaterial::Draw(const Camera &camera, Mesh *mesh)
+    void WebGPUBasicMeshTestMaterial::Draw(const Camera &camera, Mesh *mesh)
     {
-        wgpuRenderPassEncoderSetPipeline(m_framework.Context.CurrentWebGPURenderPassEncoder, m_pipeline);
+        WebGPUMesh webGPUMesh = *static_cast<WebGPUMesh *>(mesh);
+        WGPURenderPassEncoder passEncoder = m_framework.Context.CurrentWebGPURenderPassEncoder;
+
+        wgpuRenderPassEncoderSetVertexBuffer(passEncoder, 0, webGPUMesh.VertexPositionsBuffer, 0, webGPUMesh.VertexPositionsBufferSize);
+        wgpuRenderPassEncoderSetVertexBuffer(passEncoder, 1, webGPUMesh.VertexColorsBuffer, 0, webGPUMesh.VertexColorsBufferSize);
+        wgpuRenderPassEncoderSetPipeline(passEncoder, m_pipeline);
         wgpuRenderPassEncoderDraw(m_framework.Context.CurrentWebGPURenderPassEncoder, 3, 1, 0, 0);
     }
 
@@ -84,7 +110,7 @@ namespace bns
      * @param transforms The transforms to render the mesh with.
      * @return void
      */
-    void WebGPUNoMeshTestMaterial::Draw(const Camera &camera, const Mesh &mesh, std::vector<Mat4x4f> transforms)
+    void WebGPUBasicMeshTestMaterial::Draw(const Camera &camera, const Mesh &mesh, std::vector<Mat4x4f> transforms)
     {
         wgpuRenderPassEncoderSetPipeline(m_framework.Context.CurrentWebGPURenderPassEncoder, m_pipeline);
         wgpuRenderPassEncoderDraw(m_framework.Context.CurrentWebGPURenderPassEncoder, 3, 1, 0, 0);
@@ -99,7 +125,7 @@ namespace bns
      * @param nOfInstances The number of instances to render.
      * @return void
      */
-    void WebGPUNoMeshTestMaterial::DrawInstancedPrefilled(const Camera &camera, const Mesh &mesh, f32 *flatTransformsArray, i32 nOfInstances)
+    void WebGPUBasicMeshTestMaterial::DrawInstancedPrefilled(const Camera &camera, const Mesh &mesh, f32 *flatTransformsArray, i32 nOfInstances)
     {
         wgpuRenderPassEncoderSetPipeline(m_framework.Context.CurrentWebGPURenderPassEncoder, m_pipeline);
         wgpuRenderPassEncoderDraw(m_framework.Context.CurrentWebGPURenderPassEncoder, 3, 1, 0, 0);
@@ -108,6 +134,6 @@ namespace bns
     /**
      * @brief Create a new copy of material
      */
-    Material *WebGPUNoMeshTestMaterial::Copy() { return new WebGPUNoMeshTestMaterial(m_framework); }
+    Material *WebGPUBasicMeshTestMaterial::Copy() { return new WebGPUBasicMeshTestMaterial(m_framework); }
 
 }

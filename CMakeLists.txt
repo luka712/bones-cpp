@@ -51,6 +51,8 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/metal-cpp
 )
 
+
+
 # Add the executable
 add_executable(App main.cpp ${SOURCES})
 
@@ -63,6 +65,18 @@ endif()
 
 # Set the executable's properties for Xcode
 if(XCODE)
+    # COPY SHADERS
+    set(SHADER_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shaders)
+    set(SHADER_DEST_DIR ${CMAKE_CURRENT_BINARY_DIR}/shaders)
+
+
+    # copy shaders to build dir
+    add_custom_command(TARGET App POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${SHADER_SOURCE_DIR} ${SHADER_DEST_DIR}
+    COMMENT "Copying shaders to build dir"
+    )
+
     set_target_properties(App PROPERTIES
         XCODE_GENERATE_SCHEME ON
         XCODE_SCHEME_ENABLE_GPU_FRAME_CAPTURE_MODE "Metal")

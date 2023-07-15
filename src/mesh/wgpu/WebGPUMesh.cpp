@@ -30,7 +30,15 @@ namespace bns
 
     WGPUBuffer WebGPUMesh::InitializeIndicesBuffer()
     {
-        size_t byteSize = m_geometry.Indices.size() * sizeof(u32);
+        // byteSize is the size of the buffer in bytes, which is the number of indices * the size of an type of element. 
+        // to get type use the type of the first element in the vector
+        size_t elementSize = 4;
+        if (!m_geometry.Indices.empty())
+        {
+            elementSize = sizeof(m_geometry.Indices[0]);
+        }
+
+        size_t byteSize = m_geometry.Indices.size() * elementSize;
 
         WGPUBufferDescriptor bufferDescriptor = {};
         bufferDescriptor.label = "index_buffer";
@@ -41,6 +49,9 @@ namespace bns
         WGPUBuffer buffer = wgpuDeviceCreateBuffer(m_device, &bufferDescriptor);
 
         IndexFormat = WGPUIndexFormat_Uint32;
+        if(elementSize == 2) {
+            IndexFormat = WGPUIndexFormat_Uint16;
+        }
 
         /*
                 void *mappedRange = wgpuBufferGetMappedRange(buffer, 0, byteSize);
@@ -74,7 +85,7 @@ namespace bns
         WGPUBufferDescriptor bufferDescriptor = {};
         bufferDescriptor.label = "vertex_positions_buffer";
         bufferDescriptor.size = byteSize;
-        bufferDescriptor.usage = WGPUBufferUsage_Vertex;
+        bufferDescriptor.usage = WGPUBufferUsage_Vertex | WGPUBufferUsage_CopyDst;
         bufferDescriptor.mappedAtCreation = true;
         bufferDescriptor.nextInChain = nullptr;
         WGPUBuffer buffer = wgpuDeviceCreateBuffer(m_device, &bufferDescriptor);
@@ -109,7 +120,7 @@ namespace bns
         WGPUBufferDescriptor bufferDescriptor = {};
         bufferDescriptor.label = "vertex_colors_buffer";
         bufferDescriptor.size = byteSize;
-        bufferDescriptor.usage = WGPUBufferUsage_Vertex;
+        bufferDescriptor.usage = WGPUBufferUsage_Vertex | WGPUBufferUsage_CopyDst;
         bufferDescriptor.mappedAtCreation = true;
         bufferDescriptor.nextInChain = nullptr;
         WGPUBuffer buffer = wgpuDeviceCreateBuffer(m_device, &bufferDescriptor);

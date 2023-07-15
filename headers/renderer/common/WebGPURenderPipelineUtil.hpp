@@ -11,15 +11,6 @@ namespace bns
     {
     public:
         /**
-         * @brief Create a new fragment state.
-         * The fragment state is used to describe the fragment shader.
-         *
-         * @param shaderModule The shader module to use.
-         * @return WGPUFragmentState The new fragment state.
-         */
-        static WGPUFragmentState CreateFragmentState(WGPUShaderModule shaderModule);
-
-        /**
          * @brief Create a render pipeline descriptor.
          * The render pipeline descriptor is used to describe the render pipeline.
          * @param pipelineLayout The pipeline layout to use.

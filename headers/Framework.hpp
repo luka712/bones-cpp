@@ -36,6 +36,7 @@ namespace bns
         MTL::RenderCommandEncoder *CurrentMetalRenderCommandEncoder;
     };
 
+
     /**
      * @brief The Framework class
      */
@@ -45,6 +46,7 @@ namespace bns
         WindowManager *m_windowManager;
         GeometryBuilder *m_geometryBuilder;
         MeshFactory *m_meshFactory;
+        MaterialFactory *m_materialFactory;
 
         void InitializeForMetal(bns::WindowParameters windowParameters);
         void InitializeForWGPU(bns::WindowParameters windowParameters);
@@ -76,8 +78,15 @@ namespace bns
             return *m_meshFactory;
         }
 
+        /**
+         * @brief Get the material factory.
+         */
+        inline MaterialFactory &GetMaterialFactory() const
+        {
+            return *m_materialFactory;
+        }
+
         FileLoader FileLoader;
-        MaterialFactory *MaterialFactory;
 
         Framework();
         ~Framework();

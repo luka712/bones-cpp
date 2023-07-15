@@ -2,32 +2,6 @@
 
 namespace bns
 {
-    WGPUFragmentState WebGPURenderPipelineUtil::CreateFragmentState(WGPUShaderModule shaderModule)
-    {
-        // Fragment state
-        WGPUBlendState blend = {};
-        blend.color.operation = WGPUBlendOperation_Add;
-        blend.color.srcFactor = WGPUBlendFactor_One;
-        blend.color.dstFactor = WGPUBlendFactor_One;
-        blend.alpha.operation = WGPUBlendOperation_Add;
-        blend.alpha.srcFactor = WGPUBlendFactor_One;
-        blend.alpha.dstFactor = WGPUBlendFactor_One;
-
-        WGPUColorTargetState colorTargetState;
-        colorTargetState.nextInChain = nullptr;
-        colorTargetState.format = WGPUTextureFormat::WGPUTextureFormat_BGRA8Unorm;
-        colorTargetState.blend = &blend;
-        colorTargetState.writeMask = WGPUColorWriteMask::WGPUColorWriteMask_All;
-
-        WGPUFragmentState fragmentState;
-        fragmentState.nextInChain = nullptr;
-        fragmentState.module = shaderModule;
-        fragmentState.entryPoint = "fs_main";
-        fragmentState.targetCount = 1;
-        fragmentState.targets = &colorTargetState;
-        return fragmentState;
-    }
-
     WGPURenderPipelineDescriptor WebGPURenderPipelineUtil::CreatePipelineDescriptor(
         WGPUPipelineLayout pipelineLayout,
         WGPUVertexState vertexState,
@@ -40,6 +14,26 @@ namespace bns
         depthStencilState.depthWriteEnabled = true;
         depthStencilState.depthCompare = WGPUCompareFunction::WGPUCompareFunction_LessEqual;
         depthStencilState.format = WGPUTextureFormat::WGPUTextureFormat_Depth24PlusStencil8;
+
+        WGPURenderPipelineDescriptor descriptor = {};
+
+        // Other state
+        descriptor.layout = nullptr;
+        descriptor.depthStencil = nullptr;
+
+        descriptor.vertex.module = vertexState.module;
+        descriptor.vertex.entryPoint = "vs_main";
+        descriptor.vertex.bufferCount = 0;
+        descriptor.vertex.buffers = nullptr;
+
+        descriptor.multisample.count = 1;
+        descriptor.multisample.mask = 0xFFFFFFFF;
+        descriptor.multisample.alphaToCoverageEnabled = false;
+
+        descriptor.primitive.frontFace = WGPUFrontFace_CCW;
+        descriptor.primitive.cullMode = WGPUCullMode_None;
+        descriptor.primitive.topology = WGPUPrimitiveTopology_TriangleList;
+        descriptor.primitive.stripIndexFormat = WGPUIndexFormat_Undefined;
 
         WGPURenderPipelineDescriptor pipelineDesc;
         pipelineDesc.nextInChain = nullptr;

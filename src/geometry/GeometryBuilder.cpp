@@ -8,8 +8,9 @@ namespace bns
         geometry.VertexPositions = {
             -0.5f, -0.5f, 0.0f, // bottom left
             0.5f, -0.5f, 0.0f, // bottom right
-            0.0f, 0.5f, 0.0f // top
+            0.0f, 0.5f, 0.0f,// top
         };
+        geometry.VertexPositionsStride = 12;
         geometry.Indices = {
             0, 1, 2
         };
@@ -18,6 +19,7 @@ namespace bns
             0.0f, 1.0f, 0.0f, 1.0f, // bottom right
             0.0f, 0.0f, 1.0f, 1.0f // top
         };
+        geometry.VertexColorsStride = 16;
         return geometry;
     }
 }

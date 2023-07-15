@@ -15,6 +15,9 @@ namespace bns
          */
         std::vector<f32> VertexPositions;
 
+     
+        size_t VertexPositionsStride;
+        
         /**
          * @brief The indices of a mesh.
          */
@@ -24,6 +27,8 @@ namespace bns
          * @brief The vertex colors of the mesh.
          */
         std::vector<f32> VertexColors;
+        
+        size_t VertexColorsStride;
     };
 }
 

@@ -93,7 +93,27 @@ namespace bns
         vertexState.bufferCount = 2;
         vertexState.buffers = vertexBufferLayout;
 
-        WGPUFragmentState fragmentState = WebGPURenderPipelineUtil::CreateFragmentState(shaderModule);
+        // Fragment state
+        WGPUBlendState blend = {};
+        blend.color.operation = WGPUBlendOperation_Add;
+        blend.color.srcFactor = WGPUBlendFactor_One;
+        blend.color.dstFactor = WGPUBlendFactor_OneMinusSrcAlpha;
+        blend.alpha.operation = WGPUBlendOperation_Add;
+        blend.alpha.srcFactor = WGPUBlendFactor_One;
+        blend.alpha.dstFactor = WGPUBlendFactor_OneMinusSrcAlpha;
+
+        WGPUColorTargetState colorTarget = {};
+        colorTarget.nextInChain = nullptr;
+        colorTarget.format = WGPUTextureFormat_BGRA8Unorm;
+        colorTarget.blend = &blend;
+        colorTarget.writeMask = WGPUColorWriteMask_All;
+
+        WGPUFragmentState fragmentState = {};
+        fragmentState.nextInChain = nullptr;
+        fragmentState.module = shaderModule;
+        fragmentState.entryPoint = "fs_main";
+        fragmentState.targetCount = 1;
+        fragmentState.targets = &colorTarget;
 
         return {vertexState, fragmentState};
     }
@@ -136,10 +156,11 @@ namespace bns
 
         // instance uniform buffer
         WGPUBufferDescriptor uniformInstanceBufferDesc;
-        uniformGlobalBufferDesc.label = "basic_material_instance_uniform_buffer";
+        uniformInstanceBufferDesc.label = "basic_material_instance_uniform_buffer";
         uniformInstanceBufferDesc.nextInChain = nullptr;
         uniformInstanceBufferDesc.size = sizeof(Mat4x4f) * m_maxInstances;
         uniformInstanceBufferDesc.usage = WGPUBufferUsage::WGPUBufferUsage_Storage | WGPUBufferUsage::WGPUBufferUsage_CopyDst;
+        uniformGlobalBufferDesc.mappedAtCreation = false;
         WGPUBuffer uniformInstancesBuffer = wgpuDeviceCreateBuffer(device, &uniformInstanceBufferDesc);
         m_uniformInstancesBuffer = uniformInstancesBuffer;
 
@@ -174,26 +195,24 @@ namespace bns
 
         WebGPUMesh webGPUMesh = *static_cast<WebGPUMesh *>(mesh);
 
-        // write to uniform buffer
-        // wgpuQueueWriteBuffer(queue, m_uniformGlobalBuffer, 0, &camera.ProjectionViewMatrix, sizeof(Mat4x4f));
-        //  wgpuQueueWriteBuffer(queue, m_uniformGlobalBuffer, sizeof(Mat4x4f), &DiffuseColor, sizeof(Color));
-
-        // update instance uniform buffer
-        // wgpuQueueWriteBuffer(queue, m_uniformInstancesBuffer, 0, &webGPUMesh.Transform, sizeof(Mat4x4f));
-
-        // wgpuRenderPassEncoderSetBindGroup(pass, 0, m_uniformsBindGroup, 0, nullptr);
-
-        // draw
-        // wgpuRenderPassEncoderSetVertexBuffer(pass, 0, webGPUMesh.VertexPositionsBuffer, 0, webGPUMesh.VertexPositionsBufferSize);
-        //  wgpuRenderPassEncoderSetVertexBuffer(pass, 1, webGPUMesh.VertexColorsBuffer, 0, webGPUMesh.VertexColorsBufferSize);
-        //  wgpuRenderPassEncoderSetIndexBuffer(pass, webGPUMesh.IndicesBuffer, webGPUMesh.IndexFormat, 0, webGPUMesh.IndicesCount * sizeof(u32));
-
-        // wgpuRenderPassEncoderDrawIndexed(pass, (uint32_t)webGPUMesh.IndicesCount, 1, 0, 0, 0);
-
-        // TODO: remove, test values
         wgpuRenderPassEncoderSetPipeline(pass, m_pipeline);
 
-        wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+        // write to uniform buffer
+        wgpuQueueWriteBuffer(queue, m_uniformGlobalBuffer, 0, &camera.ProjectionViewMatrix, sizeof(Mat4x4f));
+        wgpuQueueWriteBuffer(queue, m_uniformGlobalBuffer, sizeof(Mat4x4f), &DiffuseColor, sizeof(Color));
+
+        // update instance uniform buffer
+        wgpuQueueWriteBuffer(queue, m_uniformInstancesBuffer, 0, &webGPUMesh.Transform, sizeof(Mat4x4f));
+
+        wgpuRenderPassEncoderSetBindGroup(pass, 0, m_uniformsBindGroup, 0, nullptr);
+
+        // draw
+        wgpuRenderPassEncoderSetVertexBuffer(pass, 0, webGPUMesh.VertexPositionsBuffer, 0, webGPUMesh.VertexPositionsBufferSize);
+        wgpuRenderPassEncoderSetVertexBuffer(pass, 1, webGPUMesh.VertexColorsBuffer, 0, webGPUMesh.VertexColorsBufferSize);
+        wgpuRenderPassEncoderSetIndexBuffer(pass, webGPUMesh.IndicesBuffer, webGPUMesh.IndexFormat, 0, webGPUMesh.IndicesCount * sizeof(u32));
+
+        wgpuRenderPassEncoderDrawIndexed(pass, (uint32_t)webGPUMesh.IndicesCount, 1, 0, 0, 0);
+
     }
 
     /**

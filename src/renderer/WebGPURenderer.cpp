@@ -135,7 +135,25 @@ namespace bns
         m_device = CreateDevice();
         m_queue = wgpuDeviceGetQueue(m_device);
 
+        auto onQueueDone = [](WGPUQueueWorkDoneStatus status, void *userData)
+        {
+            std::cout << "Queued work finished with status: " << status << std::endl;
+        };
+        wgpuQueueOnSubmittedWorkDone(m_queue, 0, onQueueDone, nullptr);
+
         m_framework.Context.WebGPUDevice = m_device;
+
+        auto handleWebGPUError = [](WGPUErrorType type, const char *message, void *userData)
+        {
+            // Handle the error here, such as logging or displaying an error message
+            // You can access the error type and message to determine the cause of the error
+
+            // Example: Printing the error message
+            printf("WebGPU Error: %s\n", message);
+        };
+
+        // Set the error callback
+        wgpuDeviceSetUncapturedErrorCallback(m_device, handleWebGPUError, nullptr);
 
         Resize(); // creates swap chain
     }
