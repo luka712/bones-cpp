@@ -37,6 +37,10 @@ file(GLOB SOURCES
 src/*.cpp src/**/*.cpp src/**/**/*.cpp src/**/**/**/*.cpp 
 headers/*.hpp headers/**/*.hpp headers/*.hpp headers/**/**/*.hpp headers/**/**/**/*.hpp)
 
+# copy assets to build/assets
+file(COPY assets DESTINATION ${CMAKE_BINARY_DIR}/assets)
+
+
 # include it only once
 include_guard(GLOBAL)
 

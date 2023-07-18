@@ -18,6 +18,7 @@ namespace bns
         IndicesBuffer = InitializeIndicesBuffer();
         VertexPositionsBuffer = InitializeVertexPositionsBuffer();
         VertexColorsBuffer = InitializeVertexColorsBuffer();
+        TextureCoordinatesBuffer = InitializeTextureCoordinatesBuffer();
     }
 
     void WebGPUMesh::Delete()
@@ -95,6 +96,27 @@ namespace bns
 
         VertexPositionsBuffer = buffer;
         VertexPositionsBufferSize = byteSize;
+
+        return buffer;
+    }
+
+    WGPUBuffer WebGPUMesh::InitializeTextureCoordinatesBuffer() 
+    {
+        size_t byteSize = m_geometry.TextureCoordinates.size() * sizeof(f32);
+
+        WGPUBufferDescriptor bufferDescriptor = {};
+        bufferDescriptor.label = "texture_coordinates_buffer";
+        bufferDescriptor.size = byteSize;
+        bufferDescriptor.usage = WGPUBufferUsage_Vertex | WGPUBufferUsage_CopyDst;
+        bufferDescriptor.mappedAtCreation = true;
+        bufferDescriptor.nextInChain = nullptr;
+        WGPUBuffer buffer = wgpuDeviceCreateBuffer(m_device, &bufferDescriptor);
+
+        memcpy(wgpuBufferGetMappedRange(buffer, 0, byteSize), m_geometry.TextureCoordinates.data(), byteSize);
+        wgpuBufferUnmap(buffer);
+
+        TextureCoordinatesBuffer = buffer;
+        TextureCoordinatesBufferSize = byteSize;
 
         return buffer;
     }

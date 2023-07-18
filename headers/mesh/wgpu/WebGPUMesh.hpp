@@ -44,6 +44,11 @@ namespace bns
          */
         WGPUBuffer InitializeVertexColorsBuffer();
 
+        /**
+         * @brief Initialize the texture coordinates buffer.
+        */
+        WGPUBuffer InitializeTextureCoordinatesBuffer();
+
     public:
         WebGPUMesh(const Framework &framework, const Geometry &geometry);
 
@@ -55,6 +60,9 @@ namespace bns
 
         WGPUBuffer VertexColorsBuffer;
         size_t VertexColorsBufferSize;
+
+        WGPUBuffer TextureCoordinatesBuffer;
+        size_t TextureCoordinatesBufferSize;
 
         /**
          * @brief Initialize the mesh

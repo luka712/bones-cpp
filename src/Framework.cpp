@@ -10,16 +10,19 @@
 #include "renderer/common/WebGPURenderPipelineUtil.hpp"
 #include "camera/FreeCamera.hpp"
 #include "material/test/wgpu/WebGPUNoMeshTestMaterial.hpp"
-#include "material/test/wgpu/WebGPUBasicMeshTestMaterial.hpp"
+#include "material/test/wgpu/WebGPUBasicMeshTexturedTestMaterial.hpp"
 #include "material/test/metal/MetalNoMeshTestMaterial.hpp"
 #include "material/test/metal/MetalBasicMeshTestMaterial.hpp"
+#include "textures/wgpu/WebGPUTexture2D.hpp"
 
 namespace bns
 {
     Framework::Framework()
     {
+        m_directory = new Directory();
         m_windowManager = new GLFWWindowManager();
         m_geometryBuilder = new GeometryBuilder();
+        m_imageLoader = new ImageLoader(*m_directory);
 
         // WebGPU initialize
         m_materialFactory = new WebGPUMaterialFactory(*this);
@@ -32,8 +35,8 @@ namespace bns
 
     void Framework::Initialize(WindowParameters windowParameters)
     {
-         // InitializeForMetal(windowParameters);
-         InitializeForWGPU(windowParameters);
+        // InitializeForMetal(windowParameters);
+        InitializeForWGPU(windowParameters);
     }
 
     void Framework::InitializeForWGPU(WindowParameters windowParameters)
@@ -54,7 +57,10 @@ namespace bns
         FreeCamera camera;
 
         // TEST DATA
-        WebGPUBasicMeshTestMaterial *testMaterial = new WebGPUBasicMeshTestMaterial(*this);
+        WebGPUTexture2D *testTexture = new WebGPUTexture2D(*this, m_imageLoader->LoadImage("assets/uv_test.png"));
+        testTexture->Initialize();
+
+        WebGPUBasicMeshTexturedTestMaterial *testMaterial = new WebGPUBasicMeshTexturedTestMaterial(*this, testTexture);
         testMaterial->Initialize();
 
         Mesh *testMesh = m_meshFactory->CreateTriangleMesh();
@@ -88,7 +94,7 @@ namespace bns
         MetalRenderer renderer(*this);
         renderer.Initialize(swapchain);
 
-        Mesh* mesh = m_meshFactory->CreateTriangleMesh();
+        Mesh *mesh = m_meshFactory->CreateTriangleMesh();
 
         MetalBasicMeshTestMaterial *testMaterial = new MetalBasicMeshTestMaterial(*this);
         testMaterial->Initialize();

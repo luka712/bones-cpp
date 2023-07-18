@@ -4,6 +4,7 @@
 
 #include "window/Window.hpp"
 #include "loaders/FileLoader.hpp"
+#include "loaders/ImageLoader.hpp"
 #include "material/MaterialFactory.hpp"
 #include "geometry/GeometryBuilder.hpp"
 #include "mesh/MeshFactory.hpp"
@@ -47,6 +48,8 @@ namespace bns
         GeometryBuilder *m_geometryBuilder;
         MeshFactory *m_meshFactory;
         MaterialFactory *m_materialFactory;
+        ImageLoader *m_imageLoader;
+        Directory *m_directory;
 
         void InitializeForMetal(bns::WindowParameters windowParameters);
         void InitializeForWGPU(bns::WindowParameters windowParameters);
@@ -85,6 +88,23 @@ namespace bns
         {
             return *m_materialFactory;
         }
+
+        /**
+         * @brief Get the image loader.
+         */
+        inline ImageLoader &GetImageLoader() const
+        {
+            return *m_imageLoader;
+        }
+
+        /**
+         * @brief Get the directory.
+         */
+        inline Directory &GetDirectory() const
+        {
+            return *m_directory;
+        }
+        
 
         FileLoader FileLoader;
 
