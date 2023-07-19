@@ -63,7 +63,7 @@ namespace bns
         WebGPUBasicMeshTexturedTestMaterial *testMaterial = new WebGPUBasicMeshTexturedTestMaterial(*this, testTexture);
         testMaterial->Initialize();
 
-        Mesh *testMesh = m_meshFactory->CreateTriangleMesh();
+        Mesh *testMesh = m_meshFactory->CreateQuadMesh();
 
         while (!glfwWindowShouldClose(((GLFWWindowManager *)m_windowManager)->m_window))
         {

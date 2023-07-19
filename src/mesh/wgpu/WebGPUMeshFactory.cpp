@@ -20,4 +20,13 @@ namespace bns
         mesh->Initialize();
         return mesh;
     }
+
+    Mesh *WebGPUMeshFactory::CreateQuadMesh()
+    {
+        Geometry geometry = m_framework.GetGeometryBuilder().CreateQuadGeometry(false);
+        Mesh *mesh = new WebGPUMesh(m_framework, geometry);
+        mesh->Initialize();
+        return mesh;
+    }
+    
 }

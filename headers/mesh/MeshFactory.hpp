@@ -6,7 +6,7 @@
 
 #include "mesh/Mesh.hpp"
 
-namespace bns 
+namespace bns
 {
     class Framework;
 
@@ -20,8 +20,13 @@ namespace bns
 
         /**
          * @brief Create a triangle mesh.
-        */
+         */
         virtual Mesh *CreateTriangleMesh() = 0;
+
+        /**
+         * @brief Create a quad mesh.
+         */
+        virtual Mesh *CreateQuadMesh() = 0;
     };
 }
 

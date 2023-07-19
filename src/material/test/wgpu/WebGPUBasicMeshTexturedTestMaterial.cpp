@@ -183,7 +183,7 @@ namespace bns
         wgpuRenderPassEncoderSetVertexBuffer(passEncoder, 1, webGPUMesh.VertexColorsBuffer, 0, webGPUMesh.VertexColorsBufferSize);
         wgpuRenderPassEncoderSetVertexBuffer(passEncoder, 2, webGPUMesh.TextureCoordinatesBuffer, 0, webGPUMesh.TextureCoordinatesBufferSize);
         wgpuRenderPassEncoderSetBindGroup(passEncoder, 0, m_textureBindGroup, 0, 0);
-        wgpuRenderPassEncoderDraw(m_framework.Context.CurrentWebGPURenderPassEncoder, 3, 1, 0, 0);
+        wgpuRenderPassEncoderDraw(m_framework.Context.CurrentWebGPURenderPassEncoder, 6, 1, 0, 0);
     }
 
     /**

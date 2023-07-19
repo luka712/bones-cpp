@@ -20,4 +20,12 @@ namespace bns
         mesh->Initialize();
         return mesh;
     }
+
+    Mesh *MetalMeshFactory::CreateQuadMesh()
+    {
+        Geometry geometry = m_framework.GetGeometryBuilder().CreateQuadGeometry();
+        Mesh *mesh = new MetalMesh(m_framework, geometry);
+        mesh->Initialize();
+        return mesh;
+    }
 }

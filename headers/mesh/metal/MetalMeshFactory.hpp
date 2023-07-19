@@ -19,6 +19,11 @@ namespace bns
          * @brief Create a triangle mesh.
          */
         Mesh *CreateTriangleMesh() override;
+
+        /**
+         * @brief Create a quad mesh.
+         */
+        Mesh *CreateQuadMesh() override;
     };
 }
 

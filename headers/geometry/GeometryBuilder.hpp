@@ -18,7 +18,7 @@ namespace bns
         /**
          * @brief Create a quad geometry.
         */
-        // Geometry CreateQuadGeometry();
+        Geometry CreateQuadGeometry(bool indices = true);
     };
 }
 
