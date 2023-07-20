@@ -73,9 +73,9 @@ namespace bns
                 0.0f, 1.0f, // bottom left
             };
             geometry.TextureCoordinatesStride = 8;
-                    }
+        }
 
-                                return geometry;
+        return geometry;
 
     }
 }

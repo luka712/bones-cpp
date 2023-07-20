@@ -13,7 +13,9 @@
 #include "material/test/wgpu/WebGPUBasicMeshTexturedTestMaterial.hpp"
 #include "material/test/metal/MetalNoMeshTestMaterial.hpp"
 #include "material/test/metal/MetalBasicMeshTestMaterial.hpp"
+#include "material/test/metal/MetalBasicMeshTexturedTestMaterial.hpp"
 #include "textures/wgpu/WebGPUTexture2D.hpp"
+#include "textures/metal/MetalTexture2D.hpp"
 
 namespace bns
 {
@@ -25,8 +27,15 @@ namespace bns
         m_imageLoader = new ImageLoader(*m_directory);
 
         // WebGPU initialize
-        m_materialFactory = new WebGPUMaterialFactory(*this);
-        m_meshFactory = new WebGPUMeshFactory(*this);
+        bool wgpu = false;
+        if(wgpu) {
+            m_materialFactory = new WebGPUMaterialFactory(*this);
+            m_meshFactory = new WebGPUMeshFactory(*this);
+        }
+        else {
+            // m_materialFactory = new MetalMaterialFactory(*this);
+            m_meshFactory = new MetalMeshFactory(*this);
+        }
     }
 
     Framework::~Framework()
@@ -35,8 +44,8 @@ namespace bns
 
     void Framework::Initialize(WindowParameters windowParameters)
     {
-        // InitializeForMetal(windowParameters);
-        InitializeForWGPU(windowParameters);
+        InitializeForMetal(windowParameters);
+        // InitializeForWGPU(windowParameters);
     }
 
     void Framework::InitializeForWGPU(WindowParameters windowParameters)
@@ -94,9 +103,13 @@ namespace bns
         MetalRenderer renderer(*this);
         renderer.Initialize(swapchain);
 
-        Mesh *mesh = m_meshFactory->CreateTriangleMesh();
+        Mesh *mesh = m_meshFactory->CreateQuadMesh();
 
-        MetalBasicMeshTestMaterial *testMaterial = new MetalBasicMeshTestMaterial(*this);
+          // TEST DATA
+        MetalTexture2D *testTexture = new MetalTexture2D(*this, m_imageLoader->LoadImage("assets/uv_test.png"));
+        testTexture->Initialize();
+
+        MetalBasicMeshTexturedTestMaterial *testMaterial = new MetalBasicMeshTexturedTestMaterial(*this, testTexture);
         testMaterial->Initialize();
 
         bool quit = false;

@@ -32,6 +32,11 @@ namespace bns
          * @brief Initialize the vertex colors buffer.
          */
         MTL::Buffer *InitializeVertexColorsBuffer();
+        
+        /**
+         * @brief Initialize the texture coordinates buffer.
+        */
+        MTL::Buffer* InitializeTextureCoordinatesBuffer();
 
     public:
         MetalMesh(const Framework &framework, const Geometry &geometry);
@@ -44,6 +49,9 @@ namespace bns
 
         MTL::Buffer *VertexColorsBuffer;
         size_t VertexColorsBufferSize;
+        
+        MTL::Buffer *TextureCoordsBuffer;
+        size_t TextureCoordsBufferSize;
 
         /**
          * @brief Initialize the mesh

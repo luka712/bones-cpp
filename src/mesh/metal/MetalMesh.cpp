@@ -19,6 +19,7 @@ namespace bns
         // IndicesBuffer = InitializeIndicesBuffer();
         VertexPositionsBuffer = InitializeVertexPositionsBuffer();
         VertexColorsBuffer = InitializeVertexColorsBuffer();
+        TextureCoordsBuffer = InitializeTextureCoordinatesBuffer();
     }
 
     void MetalMesh::Delete()
@@ -26,6 +27,7 @@ namespace bns
         Mesh::Delete();
         VertexPositionsBuffer->release();
         VertexColorsBuffer->release();
+        TextureCoordsBuffer->release();
     }
 
     MTL::Buffer *MetalMesh::InitializeVertexPositionsBuffer()
@@ -87,6 +89,17 @@ namespace bns
                                                 byteSize,
                                                 MTL::ResourceOptionCPUCacheModeDefault);
 
+        return buffer;
+    }
+
+    MTL::Buffer* MetalMesh::InitializeTextureCoordinatesBuffer()
+    {
+        std::vector<f32> texCoords = m_geometry.TextureCoordinates;
+        MTL::Device *device = m_framework.Context.MetalDevice;
+        MTL::Buffer* buffer = device->newBuffer(texCoords.data(),
+                                                sizeof(f32) * texCoords.size(),
+                                                MTL::ResourceOptionCPUCacheModeDefault);
+        
         return buffer;
     }
 

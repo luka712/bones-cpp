@@ -10,8 +10,8 @@ struct VSOutput
 
 vertex 
 VSOutput vs_main(
-    const device float3* positions [[buffer(0)]] [[attribute(0)]],
-    const device float4* colors [[buffer(1)]] [[attribute(0)]],
+    const device float3* positions [[buffer(0)]],
+    const device float4* colors [[buffer(1)]],
     uint vid [[vertex_id]])
 {
     VSOutput out;

@@ -23,7 +23,7 @@ namespace bns
 
     Mesh *MetalMeshFactory::CreateQuadMesh()
     {
-        Geometry geometry = m_framework.GetGeometryBuilder().CreateQuadGeometry();
+        Geometry geometry = m_framework.GetGeometryBuilder().CreateQuadGeometry(false);
         Mesh *mesh = new MetalMesh(m_framework, geometry);
         mesh->Initialize();
         return mesh;
