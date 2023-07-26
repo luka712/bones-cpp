@@ -1,6 +1,7 @@
 #include "mesh/metal/MetalMesh.hpp"
 #include "Framework.hpp"
 #include "data/Types.hpp"
+#include "util/metal/MetalBufferUtil.hpp"
 
 namespace bns
 {
@@ -33,36 +34,9 @@ namespace bns
     MTL::Buffer *MetalMesh::InitializeVertexPositionsBuffer()
     {
         MTL::Device *device = m_framework.Context.MetalDevice;
-        size_t byteSize = 16 * m_numOfVertices;
-
-        float *data = new float[m_numOfVertices * 4];
-        if (m_geometry.VertexPositionsStride == 12)
-        {
-            for (size_t i = 0; i < m_numOfVertices; i++)
-            {
-                data[i * 4 + 0] = m_geometry.VertexPositions[i * 3 + 0];
-                data[i * 4 + 1] = m_geometry.VertexPositions[i * 3 + 1];
-                data[i * 4 + 2] = m_geometry.VertexPositions[i * 3 + 2];
-                data[i * 4 + 3] = 1.0f;
-            }
-        }
-        else
-        {
-            for (size_t i = 0; i < m_numOfVertices; i++)
-            {
-                data[i * 4 + 0] = m_geometry.VertexPositions[i * 4 + 0];
-                data[i * 4 + 1] = m_geometry.VertexPositions[i * 4 + 1];
-                data[i * 4 + 2] = m_geometry.VertexPositions[i * 4 + 2];
-                data[i * 4 + 3] = m_geometry.VertexPositions[i * 4 + 3];
-            }
-        }
-
-        MTL::Buffer *buffer = device->newBuffer(data,
-                                                byteSize,
-                                                MTL::ResourceOptionCPUCacheModeDefault);
-
-        delete[] data;
-
+        MTL::Buffer *buffer = MetalBufferUtil::CreateVertexBuffer(device,
+                                                                  m_geometry.VertexPositions,
+                                                                  "VertexPositionsBuffer");
         return buffer;
     }
 
@@ -83,11 +57,10 @@ namespace bns
         }
 
         MTL::Device *device = m_framework.Context.MetalDevice;
-        size_t byteSize = colors.size() * sizeof(f32);
 
-        MTL::Buffer *buffer = device->newBuffer(colors.data(),
-                                                byteSize,
-                                                MTL::ResourceOptionCPUCacheModeDefault);
+        MTL::Buffer *buffer = MetalBufferUtil::CreateVertexBuffer(device,
+                                                                  colors,
+                                                                  "VertexColorsBuffer");
 
         return buffer;
     }
@@ -96,9 +69,9 @@ namespace bns
     {
         std::vector<f32> texCoords = m_geometry.TextureCoordinates;
         MTL::Device *device = m_framework.Context.MetalDevice;
-        MTL::Buffer* buffer = device->newBuffer(texCoords.data(),
-                                                sizeof(f32) * texCoords.size(),
-                                                MTL::ResourceOptionCPUCacheModeDefault);
+        MTL::Buffer* buffer = MetalBufferUtil::CreateVertexBuffer(device,
+                                                                  texCoords,
+                                                                  "TextureCoordinatesBuffer");
         
         return buffer;
     }

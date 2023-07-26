@@ -11,7 +11,7 @@ struct VSOutput
 
 vertex 
 VSOutput vs_main(
-    const device packed_float4* positions [[buffer(0)]],
+    const device packed_float3* positions [[buffer(0)]],
     const device packed_float4* colors [[buffer(1)]],
     const device packed_float2* texCoords [[buffer(2)]],
     uint vid [[vertex_id]])

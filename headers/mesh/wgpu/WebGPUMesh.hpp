@@ -32,22 +32,22 @@ namespace bns
         /**
          * @brief Initialize the indices buffer.
          */
-        WGPUBuffer InitializeIndicesBuffer();
+        void InitializeIndicesBuffer();
 
         /**
          * @brief Initialize the vertex positions buffer.
          */
-        WGPUBuffer InitializeVertexPositionsBuffer();
+        void InitializeVertexPositionsBuffer();
 
         /**
          * @brief Initialize the vertex colors buffer.
          */
-        WGPUBuffer InitializeVertexColorsBuffer();
+        void InitializeVertexColorsBuffer();
 
         /**
          * @brief Initialize the texture coordinates buffer.
         */
-        WGPUBuffer InitializeTextureCoordinatesBuffer();
+        void InitializeTextureCoordinatesBuffer();
 
     public:
         WebGPUMesh(const Framework &framework, const Geometry &geometry);

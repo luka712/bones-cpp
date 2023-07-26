@@ -34,20 +34,22 @@ namespace bns
         MTL::Function *pFragFn = pLibrary->newFunction(NS::String::string("fs_main", NS::StringEncoding::UTF8StringEncoding));
 
         MTL::RenderPipelineDescriptor *pDesc = MetalRenderPipelineUtil::CreatePipelineDescriptor(pVertexFn, pFragFn);
+        
+        // Setup blending
 
         // vertex
         MTL::VertexDescriptor *pVertexDesc = pDesc->vertexDescriptor();
 
         // position layout
         MTL::VertexBufferLayoutDescriptor *pPositionLayoutDesc = MTL::VertexBufferLayoutDescriptor::alloc();
-        pPositionLayoutDesc->setStride(NS::UInteger(4 * sizeof(float)));
+        pPositionLayoutDesc->setStride(NS::UInteger(3 * sizeof(float)));
         pPositionLayoutDesc->setStepFunction(MTL::VertexStepFunction::VertexStepFunctionPerVertex);
         pPositionLayoutDesc->setStepRate(NS::UInteger(1));
         pVertexDesc->layouts()->setObject(pPositionLayoutDesc, 0);
 
         // position attribute
         MTL::VertexAttributeDescriptor *pPositionAttrDescriptor = MTL::VertexAttributeDescriptor::alloc();
-        pPositionAttrDescriptor->setFormat(MTL::VertexFormatFloat4);
+        pPositionAttrDescriptor->setFormat(MTL::VertexFormatFloat3);
         pPositionAttrDescriptor->setOffset(NS::UInteger(0));
         pPositionAttrDescriptor->setBufferIndex(NS::UInteger(0));
         pVertexDesc->attributes()->setObject(pPositionAttrDescriptor, 0);
@@ -81,7 +83,18 @@ namespace bns
         pVertexDesc->attributes()->setObject(pTextureAttrDescriptor, 2);
 
         // set pixel format
-        pDesc->colorAttachments()->object(NS::UInteger(0))->setPixelFormat(MTL::PixelFormat::PixelFormatBGRA8Unorm);
+        MTL::RenderPipelineColorAttachmentDescriptor *colorAttachment = pDesc->colorAttachments()->object(NS::UInteger(0));
+        colorAttachment->setPixelFormat(MTL::PixelFormat::PixelFormatBGRA8Unorm);
+
+        colorAttachment->setBlendingEnabled(true);
+        
+        colorAttachment->setRgbBlendOperation(MTL::BlendOperationAdd);
+        colorAttachment->setSourceRGBBlendFactor(MTL::BlendFactorSourceAlpha);
+        colorAttachment->setDestinationRGBBlendFactor(MTL::BlendFactorOneMinusSourceAlpha);
+        
+        colorAttachment->setAlphaBlendOperation(MTL::BlendOperationAdd);
+        colorAttachment->setSourceAlphaBlendFactor(MTL::BlendFactorSourceAlpha);
+        colorAttachment->setDestinationAlphaBlendFactor(MTL::BlendFactorOneMinusSourceAlpha);
 
         m_pipeline = device->newRenderPipelineState(pDesc, &pError);
         if (!m_pipeline)

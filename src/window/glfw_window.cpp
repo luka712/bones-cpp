@@ -46,7 +46,7 @@ namespace bns
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-        m_window = glfwCreateWindow(m_windowSize.X, m_windowSize.Y, "Learn WebGPU", NULL, NULL);
+        m_window = glfwCreateWindow(m_windowSize.X, m_windowSize.Y, windowParameters.Title.c_str(), NULL, NULL);
         if (m_window == nullptr)
         {
             std::cerr << "Could not open window!" << std::endl;
