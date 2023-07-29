@@ -15,15 +15,8 @@ namespace bns
         MetalMeshFactory(const Framework &framework);
         ~MetalMeshFactory();
 
-        /**
-         * @brief Create a triangle mesh.
-         */
         Mesh *CreateTriangleMesh() override;
-
-        /**
-         * @brief Create a quad mesh.
-         */
-        Mesh *CreateQuadMesh() override;
+        Mesh *CreateQuadMesh(bool interleaved = true) override;
     };
 }
 

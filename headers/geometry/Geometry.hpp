@@ -7,8 +7,43 @@
 
 namespace bns
 {
+    struct GeometryAttributes
+    {
+        /**
+         * @brief The offset compared to previous attribute.
+         */
+        size_t Offset;
+
+        /**
+         * @brief The size of the attribute.
+         * Usually 1 for float, 2 for vec2, 3 for vec3, 4 for vec4 ... etc.
+         */
+        size_t Size;
+    };
+
     struct Geometry
     {
+        /**
+         * The number of vertices.
+        */
+        size_t NumOfVertices;
+
+        /**
+         * @brief The data of the mesh in case if interleaved.
+         */
+        std::vector<f32> Data;
+
+        /**
+         * @brief The stride of the mesh in case if interleaved is used.
+        */
+        size_t Stride;
+
+        /**
+         * @brief The attributes of the geometry.
+         */
+        std::vector<GeometryAttributes> Attributes;
+
+        bool IsInterleaved;
 
         /**
          * @brief The vertex positions of the mesh.

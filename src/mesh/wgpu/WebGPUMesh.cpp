@@ -7,8 +7,15 @@ namespace bns
     WebGPUMesh::WebGPUMesh(const Framework &framework, const Geometry &geometry)
         : Mesh(framework), m_geometry(geometry)
     {
-        m_numOfVertices = geometry.VertexPositions.size() / 3UL;
+
+        m_numOfVertices = geometry.NumOfVertices;
         IndicesCount = geometry.Indices.size();
+
+        VertexBuffer = nullptr;
+        IndexBuffer = nullptr;
+        VertexPositionsBuffer = nullptr;
+        VertexColorsBuffer = nullptr;
+        TextureCoordinatesBuffer = nullptr;
     }
 
     void WebGPUMesh::Initialize()
@@ -16,6 +23,7 @@ namespace bns
         m_device = m_framework.Context.WebGPUDevice;
 
         InitializeIndicesBuffer();
+        InitializeVertexBuffer();
         InitializeVertexPositionsBuffer();
         InitializeVertexColorsBuffer();
         InitializeTextureCoordinatesBuffer();
@@ -24,9 +32,26 @@ namespace bns
     void WebGPUMesh::Delete()
     {
         Mesh::Delete();
-        wgpuBufferDestroy(IndicesBuffer);
-        wgpuBufferDestroy(VertexPositionsBuffer);
-        wgpuBufferDestroy(VertexColorsBuffer);
+        if (IndexBuffer != nullptr)
+        {
+            wgpuBufferDestroy(IndexBuffer);
+        }
+        if (VertexBuffer != nullptr)
+        {
+            wgpuBufferDestroy(VertexBuffer);
+        }
+        if (VertexPositionsBuffer != nullptr)
+        {
+            wgpuBufferDestroy(VertexPositionsBuffer);
+        }
+        if (VertexColorsBuffer != nullptr)
+        {
+            wgpuBufferDestroy(VertexColorsBuffer);
+        }
+        if (TextureCoordinatesBuffer != nullptr)
+        {
+            wgpuBufferDestroy(TextureCoordinatesBuffer);
+        }
     }
 
     void WebGPUMesh::InitializeIndicesBuffer()
@@ -38,7 +63,7 @@ namespace bns
         {
             elementSize = sizeof(m_geometry.Indices[0]);
 
-            IndicesBuffer = WebGPUBufferUtil::CreateIndexBuffer(m_device, m_geometry.Indices, "index_buffer");
+            IndexBuffer = WebGPUBufferUtil::CreateIndexBuffer(m_device, m_geometry.Indices, "index_buffer");
 
             IndexFormat = WGPUIndexFormat_Uint32;
             if (elementSize == 2)
@@ -48,9 +73,20 @@ namespace bns
         }
     }
 
+    void WebGPUMesh::InitializeVertexBuffer()
+    {
+        if (!m_geometry.IsInterleaved)
+            return;
+
+        size_t byteSize = m_geometry.Data.size() * sizeof(f32);
+
+        VertexBuffer = WebGPUBufferUtil::CreateVertexBuffer(m_device, m_geometry.Data, "vertex_buffer");
+        VertexBufferSize = byteSize;
+    }
+
     void WebGPUMesh::InitializeVertexPositionsBuffer()
     {
-        if (m_geometry.VertexPositions.empty())
+        if (m_geometry.IsInterleaved || m_geometry.VertexPositions.empty())
         {
             return;
         }
@@ -62,7 +98,7 @@ namespace bns
 
     void WebGPUMesh::InitializeTextureCoordinatesBuffer()
     {
-        if (m_geometry.TextureCoordinates.empty())
+        if (m_geometry.IsInterleaved || m_geometry.TextureCoordinates.empty())
         {
             return;
         }
@@ -74,6 +110,8 @@ namespace bns
 
     void WebGPUMesh::InitializeVertexColorsBuffer()
     {
+        if(m_geometry.IsInterleaved) return;
+
         std::vector<f32> colors = m_geometry.VertexColors;
 
         // if empty initialize all to white

@@ -21,12 +21,14 @@ namespace bns
         return mesh;
     }
 
-    Mesh *WebGPUMeshFactory::CreateQuadMesh()
+    Mesh *WebGPUMeshFactory::CreateQuadMesh(bool interleaved)
     {
-        Geometry geometry = m_framework.GetGeometryBuilder().CreateQuadGeometry(false);
+        auto geometryBuilder = m_framework.GetGeometryBuilder();
+        Geometry geometry = interleaved ? geometryBuilder.CreateInterleavedQuadGeometry()
+                                        : geometryBuilder.CreateQuadGeometry();
         Mesh *mesh = new WebGPUMesh(m_framework, geometry);
         mesh->Initialize();
         return mesh;
     }
-    
+
 }

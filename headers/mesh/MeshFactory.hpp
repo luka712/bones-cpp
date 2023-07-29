@@ -25,8 +25,9 @@ namespace bns
 
         /**
          * @brief Create a quad mesh.
+         * @param interleaved Whether the mesh is interleaved or not. By default it is interleaved.
          */
-        virtual Mesh *CreateQuadMesh() = 0;
+        virtual Mesh *CreateQuadMesh(bool interleaved = true) = 0;
     };
 }
 

@@ -3,6 +3,7 @@
 #include "mesh/wgpu/WebGPUMesh.hpp"
 #include "Framework.hpp"
 #include "textures/wgpu/WebGPUTexture2D.hpp"
+#include "buffer-layout/WebGPUVertexBufferLayoutUtil.hpp"
 
 namespace bns
 {
@@ -22,43 +23,22 @@ namespace bns
 
         WGPURenderPipelineDescriptor descriptor = {};
 
-        // Vertex state
-        WGPUVertexBufferLayout buffersLayout[3];
+        // Create vertex layouts description
+        std::vector<BufferLayoutDescriptor> vertexLayoutDescriptors;
+        BufferLayoutDescriptor bufferLayoutDesc;
+        bufferLayoutDesc.Stride = 9 * sizeof(float);
+        bufferLayoutDesc.Attributes.push_back({VertexFormat::Float32x3, 0, 0}); // format, shader location, offset
+        bufferLayoutDesc.Attributes.push_back({VertexFormat::Float32x2, 1, 3 * sizeof(float)});
+        bufferLayoutDesc.Attributes.push_back({VertexFormat::Float32x4, 2, 5 * sizeof(float)});
+        vertexLayoutDescriptors.push_back(bufferLayoutDesc);
 
-        // Position
-        buffersLayout[0].arrayStride = 3 * sizeof(float);
-        buffersLayout[0].stepMode = WGPUVertexStepMode::WGPUVertexStepMode_Vertex;
-        buffersLayout[0].attributeCount = 1;
-        WGPUVertexAttribute positionAttribute;
-        positionAttribute.format = WGPUVertexFormat_Float32x3;
-        positionAttribute.offset = 0;
-        positionAttribute.shaderLocation = 0;
-        buffersLayout[0].attributes = &positionAttribute;
-
-        // Color
-        buffersLayout[1].arrayStride = 4 * sizeof(float);
-        buffersLayout[1].stepMode = WGPUVertexStepMode::WGPUVertexStepMode_Vertex;
-        buffersLayout[1].attributeCount = 1;
-        WGPUVertexAttribute colorAttribute;
-        colorAttribute.format = WGPUVertexFormat_Float32x4;
-        colorAttribute.offset = 0;
-        colorAttribute.shaderLocation = 1;
-        buffersLayout[1].attributes = &colorAttribute;
-
-        // tex coords
-        buffersLayout[2].arrayStride = 2 * sizeof(float);
-        buffersLayout[2].stepMode = WGPUVertexStepMode::WGPUVertexStepMode_Vertex;
-        buffersLayout[2].attributeCount = 1;
-        WGPUVertexAttribute texCoordsAttribute;
-        texCoordsAttribute.format = WGPUVertexFormat_Float32x2;
-        texCoordsAttribute.offset = 0;
-        texCoordsAttribute.shaderLocation = 2;
-        buffersLayout[2].attributes = &texCoordsAttribute;
+        // Create vertex buffer layout
+        WGPUVertexBufferLayout *wgpuVertexBufferLayouts = WebGPUVertexBufferLayoutUtil::CreateBufferLayouts(vertexLayoutDescriptors);
 
         descriptor.vertex.module = shaderModule;
         descriptor.vertex.entryPoint = "vs_main";
-        descriptor.vertex.bufferCount = 3;
-        descriptor.vertex.buffers = &buffersLayout[0];
+        descriptor.vertex.bufferCount = 1;
+        descriptor.vertex.buffers = &wgpuVertexBufferLayouts[0];
 
         // Fragment state
         WGPUBlendState blend = {};
@@ -152,19 +132,22 @@ namespace bns
         bindGroupEntries[1].sampler = nullptr;
         WGPUTextureViewDescriptor textureViewDesc;
         textureViewDesc.nextInChain = nullptr;
+        textureViewDesc.label = "texture_view";
         textureViewDesc.aspect = WGPUTextureAspect_All;
         textureViewDesc.baseArrayLayer = 0;
         textureViewDesc.arrayLayerCount = 1;
         textureViewDesc.baseMipLevel = 0;
         textureViewDesc.mipLevelCount = 1;
         textureViewDesc.dimension = WGPUTextureViewDimension_2D;
-        textureViewDesc.format  = WGPUTextureFormat_RGBA8Unorm;
+        textureViewDesc.format = WGPUTextureFormat_RGBA8Unorm;
         WGPUTextureView textureView = wgpuTextureCreateView(texture->Texture, &textureViewDesc);
         bindGroupEntries[1].textureView = textureView;
         bindGroupDescriptor.entries = &bindGroupEntries[0];
 
         m_textureBindGroup = wgpuDeviceCreateBindGroup(
             m_framework.Context.WebGPUDevice, &bindGroupDescriptor);
+
+        WebGPUVertexBufferLayoutUtil::DeleteBufferLayouts(wgpuVertexBufferLayouts, 1);
     }
 
     /**
@@ -179,11 +162,10 @@ namespace bns
         WGPURenderPassEncoder passEncoder = m_framework.Context.CurrentWebGPURenderPassEncoder;
 
         wgpuRenderPassEncoderSetPipeline(passEncoder, m_pipeline);
-        wgpuRenderPassEncoderSetVertexBuffer(passEncoder, 0, webGPUMesh.VertexPositionsBuffer, 0, webGPUMesh.VertexPositionsBufferSize);
-        wgpuRenderPassEncoderSetVertexBuffer(passEncoder, 1, webGPUMesh.VertexColorsBuffer, 0, webGPUMesh.VertexColorsBufferSize);
-        wgpuRenderPassEncoderSetVertexBuffer(passEncoder, 2, webGPUMesh.TextureCoordinatesBuffer, 0, webGPUMesh.TextureCoordinatesBufferSize);
+        wgpuRenderPassEncoderSetIndexBuffer(passEncoder, webGPUMesh.IndexBuffer, webGPUMesh.IndexFormat, 0, 6 * sizeof(u32));
+        wgpuRenderPassEncoderSetVertexBuffer(passEncoder, 0, webGPUMesh.VertexBuffer, 0, webGPUMesh.VertexBufferSize);
         wgpuRenderPassEncoderSetBindGroup(passEncoder, 0, m_textureBindGroup, 0, 0);
-        wgpuRenderPassEncoderDraw(m_framework.Context.CurrentWebGPURenderPassEncoder, 6, 1, 0, 0);
+        wgpuRenderPassEncoderDrawIndexed(m_framework.Context.CurrentWebGPURenderPassEncoder, 6, 1, 0, 0, 0);
     }
 
     /**

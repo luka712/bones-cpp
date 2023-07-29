@@ -35,6 +35,12 @@ namespace bns
         void InitializeIndicesBuffer();
 
         /**
+         * @brief Initialize the vertex buffer.
+         * Vertex buffer is used when buffer is interleaved.
+        */
+        void InitializeVertexBuffer();
+
+        /**
          * @brief Initialize the vertex positions buffer.
          */
         void InitializeVertexPositionsBuffer();
@@ -52,8 +58,11 @@ namespace bns
     public:
         WebGPUMesh(const Framework &framework, const Geometry &geometry);
 
-        WGPUBuffer IndicesBuffer;
+        WGPUBuffer IndexBuffer;
         WGPUIndexFormat IndexFormat;
+
+        WGPUBuffer VertexBuffer;
+        size_t VertexBufferSize;
 
         WGPUBuffer VertexPositionsBuffer;
         size_t VertexPositionsBufferSize;

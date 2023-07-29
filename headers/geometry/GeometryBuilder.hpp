@@ -7,7 +7,7 @@
 
 namespace bns
 {
-    class GeometryBuilder
+    class GeometryBuilder final
     {
     public:
         /**
@@ -18,7 +18,12 @@ namespace bns
         /**
          * @brief Create a quad geometry.
         */
-        Geometry CreateQuadGeometry(bool indices = true);
+        Geometry CreateQuadGeometry();
+
+        /**
+         * @brief Create an interleaved geometry.
+        */
+        Geometry CreateInterleavedQuadGeometry();
     };
 }
 

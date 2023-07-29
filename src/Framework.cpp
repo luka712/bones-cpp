@@ -27,7 +27,7 @@ namespace bns
         m_imageLoader = new ImageLoader(*m_directory);
 
         // WebGPU initialize
-        bool wgpu = false;
+        bool wgpu = true;
         if(wgpu) {
             m_materialFactory = new WebGPUMaterialFactory(*this);
             m_meshFactory = new WebGPUMeshFactory(*this);
@@ -44,8 +44,8 @@ namespace bns
 
     void Framework::Initialize(WindowParameters windowParameters)
     {
-        InitializeForMetal(windowParameters);
-        // InitializeForWGPU(windowParameters);
+        // InitializeForMetal(windowParameters);
+        InitializeForWGPU(windowParameters);
     }
 
     void Framework::InitializeForWGPU(WindowParameters windowParameters)
@@ -72,7 +72,7 @@ namespace bns
         WebGPUBasicMeshTexturedTestMaterial *testMaterial = new WebGPUBasicMeshTexturedTestMaterial(*this, testTexture);
         testMaterial->Initialize();
 
-        Mesh *testMesh = m_meshFactory->CreateQuadMesh();
+        Mesh *testMesh = m_meshFactory->CreateQuadMesh(true);
 
         while (!glfwWindowShouldClose(((GLFWWindowManager *)m_windowManager)->m_window))
         {

@@ -209,7 +209,7 @@ namespace bns
         // draw
         wgpuRenderPassEncoderSetVertexBuffer(pass, 0, webGPUMesh.VertexPositionsBuffer, 0, webGPUMesh.VertexPositionsBufferSize);
         wgpuRenderPassEncoderSetVertexBuffer(pass, 1, webGPUMesh.VertexColorsBuffer, 0, webGPUMesh.VertexColorsBufferSize);
-        wgpuRenderPassEncoderSetIndexBuffer(pass, webGPUMesh.IndicesBuffer, webGPUMesh.IndexFormat, 0, webGPUMesh.IndicesCount * sizeof(u32));
+        wgpuRenderPassEncoderSetIndexBuffer(pass, webGPUMesh.IndexBuffer, webGPUMesh.IndexFormat, 0, webGPUMesh.IndicesCount * sizeof(u32));
 
         wgpuRenderPassEncoderDrawIndexed(pass, (uint32_t)webGPUMesh.IndicesCount, 1, 0, 0, 0);
 
