@@ -2,7 +2,7 @@
 
 namespace bns
 {
-    WGPUVertexBufferLayout *WebGPUVertexBufferLayoutUtil::CreateBufferLayouts(std::vector<BufferLayoutDescriptor> &descriptors)
+    WGPUVertexBufferLayout *WebGPUVertexBufferLayoutUtil::CreateVertexBufferLayouts(std::vector<BufferLayoutDescriptor> &descriptors)
     {
         // Vertex state
         WGPUVertexBufferLayout *bufferLayouts = new WGPUVertexBufferLayout[descriptors.size()];
@@ -26,7 +26,7 @@ namespace bns
                 WGPUVertexAttribute attribute;
                 attribute.format = WebGPUVertexBufferLayoutUtil::m_vertexFormatMap[attr.Format];
                 attribute.offset = attr.Offset;
-                attribute.shaderLocation = attr.ShaderLocation;
+                attribute.shaderLocation = (uint32_t)attr.ShaderLocation;
                 attributes[j] = attribute;
                 j++;
             }
@@ -40,7 +40,7 @@ namespace bns
         return bufferLayouts;
     }
 
-    void WebGPUVertexBufferLayoutUtil::DeleteBufferLayouts(WGPUVertexBufferLayout *bufferLayouts, size_t count)
+    void WebGPUVertexBufferLayoutUtil::DeleteVertexBufferLayouts(WGPUVertexBufferLayout *bufferLayouts, size_t count)
     {
         for (size_t i = 0; i < count; i++)
         {

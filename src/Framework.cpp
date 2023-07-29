@@ -27,7 +27,7 @@ namespace bns
         m_imageLoader = new ImageLoader(*m_directory);
 
         // WebGPU initialize
-        bool wgpu = true;
+        bool wgpu = false;
         if(wgpu) {
             m_materialFactory = new WebGPUMaterialFactory(*this);
             m_meshFactory = new WebGPUMeshFactory(*this);
@@ -44,8 +44,8 @@ namespace bns
 
     void Framework::Initialize(WindowParameters windowParameters)
     {
-        // InitializeForMetal(windowParameters);
-        InitializeForWGPU(windowParameters);
+        InitializeForMetal(windowParameters);
+        // InitializeForWGPU(windowParameters);
     }
 
     void Framework::InitializeForWGPU(WindowParameters windowParameters)

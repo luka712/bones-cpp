@@ -19,37 +19,35 @@ namespace bns
         const Geometry &m_geometry;
 
         /**
-         * @brief Initialize the indices buffer.
-         */
-        MTL::Buffer *InitializeIndicesBuffer();
-
-        /**
          * @brief Initialize the vertex positions buffer.
          */
-        MTL::Buffer *InitializeVertexPositionsBuffer();
+        void InitializeVertexPositionsBuffer();
 
         /**
          * @brief Initialize the vertex colors buffer.
          */
-        MTL::Buffer *InitializeVertexColorsBuffer();
-        
+        void InitializeVertexColorsBuffer();
+
         /**
          * @brief Initialize the texture coordinates buffer.
-        */
-        MTL::Buffer* InitializeTextureCoordinatesBuffer();
+         */
+        void InitializeTextureCoordinatesBuffer();
 
     public:
         MetalMesh(const Framework &framework, const Geometry &geometry);
 
-        // WGPUBuffer IndicesBuffer;
-        // WGPUIndexFormat IndexFormat;
+        MTL::Buffer *IndexBuffer;
+        MTL::IndexType IndexFormat;
+
+        MTL::Buffer *VertexBuffer;
+        size_t VertexBufferSize;
 
         MTL::Buffer *VertexPositionsBuffer;
         size_t VertexPositionsBufferSize;
 
         MTL::Buffer *VertexColorsBuffer;
         size_t VertexColorsBufferSize;
-        
+
         MTL::Buffer *TextureCoordsBuffer;
         size_t TextureCoordsBufferSize;
 

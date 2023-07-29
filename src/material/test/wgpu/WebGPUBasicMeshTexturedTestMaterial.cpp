@@ -33,7 +33,7 @@ namespace bns
         vertexLayoutDescriptors.push_back(bufferLayoutDesc);
 
         // Create vertex buffer layout
-        WGPUVertexBufferLayout *wgpuVertexBufferLayouts = WebGPUVertexBufferLayoutUtil::CreateBufferLayouts(vertexLayoutDescriptors);
+        WGPUVertexBufferLayout *wgpuVertexBufferLayouts = WebGPUVertexBufferLayoutUtil::CreateVertexBufferLayouts(vertexLayoutDescriptors);
 
         descriptor.vertex.module = shaderModule;
         descriptor.vertex.entryPoint = "vs_main";
@@ -147,7 +147,7 @@ namespace bns
         m_textureBindGroup = wgpuDeviceCreateBindGroup(
             m_framework.Context.WebGPUDevice, &bindGroupDescriptor);
 
-        WebGPUVertexBufferLayoutUtil::DeleteBufferLayouts(wgpuVertexBufferLayouts, 1);
+        WebGPUVertexBufferLayoutUtil::DeleteVertexBufferLayouts(wgpuVertexBufferLayouts, 1);
     }
 
     /**

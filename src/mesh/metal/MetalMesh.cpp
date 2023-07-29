@@ -9,18 +9,41 @@ namespace bns
     MetalMesh::MetalMesh(const Framework &framework, const Geometry &geometry)
         : Mesh(framework), m_geometry(geometry)
     {
-        m_numOfVertices = geometry.VertexPositions.size() / 3UL;
+        m_numOfVertices = geometry.NumOfVertices;
         IndicesCount = geometry.Indices.size();
+        IndexBuffer = nullptr;
+        VertexBuffer = nullptr;
+        VertexPositionsBuffer = nullptr;
+        VertexColorsBuffer = nullptr;
+        TextureCoordsBuffer = nullptr;
     }
 
     void MetalMesh::Initialize()
     {
         m_device = m_framework.Context.MetalDevice;
 
-        // IndicesBuffer = InitializeIndicesBuffer();
-        VertexPositionsBuffer = InitializeVertexPositionsBuffer();
-        VertexColorsBuffer = InitializeVertexColorsBuffer();
-        TextureCoordsBuffer = InitializeTextureCoordinatesBuffer();
+        if (m_geometry.Indices.size() > 0)
+        {
+            IndexBuffer = MetalBufferUtil::CreateBuffer(m_device, m_geometry.Indices, "IndexBuffer");
+            
+            IndexFormat = MTL::IndexTypeUInt32;
+            if(sizeof(m_geometry.Indices[0]) == 2)
+            {
+                IndexFormat = MTL::IndexTypeUInt16;
+            }
+        }
+
+        if (m_geometry.IsInterleaved)
+        {
+            VertexBuffer = MetalBufferUtil::CreateBuffer(m_device, m_geometry.Data, "VertexBuffer");
+        }
+        else
+        {
+
+            InitializeVertexPositionsBuffer();
+            InitializeVertexColorsBuffer();
+            InitializeTextureCoordinatesBuffer();
+        }
     }
 
     void MetalMesh::Delete()
@@ -31,16 +54,15 @@ namespace bns
         TextureCoordsBuffer->release();
     }
 
-    MTL::Buffer *MetalMesh::InitializeVertexPositionsBuffer()
+    void MetalMesh::InitializeVertexPositionsBuffer()
     {
         MTL::Device *device = m_framework.Context.MetalDevice;
-        MTL::Buffer *buffer = MetalBufferUtil::CreateVertexBuffer(device,
-                                                                  m_geometry.VertexPositions,
-                                                                  "VertexPositionsBuffer");
-        return buffer;
+        IndexBuffer = MetalBufferUtil::CreateBuffer(device,
+                                                    m_geometry.VertexPositions,
+                                                    "VertexPositionsBuffer");
     }
 
-    MTL::Buffer *MetalMesh::InitializeVertexColorsBuffer()
+    void MetalMesh::InitializeVertexColorsBuffer()
     {
         std::vector<f32> colors = m_geometry.VertexColors;
 
@@ -58,22 +80,19 @@ namespace bns
 
         MTL::Device *device = m_framework.Context.MetalDevice;
 
-        MTL::Buffer *buffer = MetalBufferUtil::CreateVertexBuffer(device,
-                                                                  colors,
-                                                                  "VertexColorsBuffer");
-
-        return buffer;
+        VertexColorsBuffer = MetalBufferUtil::CreateBuffer(device,
+                                                           colors,
+                                                           "VertexColorsBuffer");
     }
 
-    MTL::Buffer* MetalMesh::InitializeTextureCoordinatesBuffer()
+    void MetalMesh::InitializeTextureCoordinatesBuffer()
     {
         std::vector<f32> texCoords = m_geometry.TextureCoordinates;
         MTL::Device *device = m_framework.Context.MetalDevice;
-        MTL::Buffer* buffer = MetalBufferUtil::CreateVertexBuffer(device,
-                                                                  texCoords,
-                                                                  "TextureCoordinatesBuffer");
-        
-        return buffer;
+        MTL::Buffer *buffer = MetalBufferUtil::CreateBuffer(device,
+                                                            texCoords,
+                                                            "TextureCoordinatesBuffer");
+        TextureCoordsBuffer = buffer;
     }
 
 }

@@ -13,16 +13,22 @@ namespace bns
     {
     public:
         /**
-         * Create a vertex buffer
-         * @param device The metal device
-         * @param data The data to be copied to the buffer
-         * @param label The label of the buffer
-         * @return The vertex buffer
-         * @note The data is copied to the buffer
+         * Create a buffer with u32 data.
          */
-        static MTL::Buffer *CreateVertexBuffer(MTL::Device *device,
-                                               std::vector<f32> data,
-                                               std::string label);
+        template <typename T>
+        static MTL::Buffer *CreateBuffer(MTL::Device *device,
+                                         std::vector<T> data,
+                                         std::string label)
+        {
+            size_t byteSize = data.size() * sizeof(T);
+
+            MTL::Buffer *buffer = device->newBuffer(data.data(), byteSize, MTL::ResourceOptionCPUCacheModeDefault);
+            NS::String *nsLabel = NS::String::string(label.c_str(), NS::StringEncoding::UTF8StringEncoding);
+            buffer->setLabel(nsLabel);
+            nsLabel->release();
+
+            return buffer;
+        }
     };
 }
 

@@ -25,14 +25,14 @@ namespace bns
          * @brief Create a vertex buffer layout.
          * @return The vertex buffer layout.
          */
-        static WGPUVertexBufferLayout* CreateBufferLayouts(std::vector<BufferLayoutDescriptor> &descriptors);
+        static WGPUVertexBufferLayout* CreateVertexBufferLayouts(std::vector<BufferLayoutDescriptor> &descriptors);
 
         /**
          * @brief Delete the vertex buffer layouts and their attributes.
          * @param bufferLayouts The vertex buffer layouts.
          * @param count The number of vertex buffer layouts.
          */
-        static void DeleteBufferLayouts(WGPUVertexBufferLayout *bufferLayouts, size_t count);
+        static void DeleteVertexBufferLayouts(WGPUVertexBufferLayout *bufferLayouts, size_t count);
     };
 }
 
