@@ -8,6 +8,7 @@
 #include "material/MaterialFactory.hpp"
 #include "geometry/GeometryBuilder.hpp"
 #include "mesh/MeshFactory.hpp"
+#include "sprite/SpriteRenderer.hpp"
 #include <webgpu/webgpu.h>
 #include <Metal/Metal.hpp>
 
@@ -23,20 +24,19 @@ namespace bns
 
         /**
          * @brief The current render pass encoder.
-        */
+         */
         WGPURenderPassEncoder CurrentWebGPURenderPassEncoder;
 
         /**
          * @brief The metal device.
-        */
+         */
         MTL::Device *MetalDevice;
 
         /**
          * @brief The current render command encoder.
-        */
+         */
         MTL::RenderCommandEncoder *CurrentMetalRenderCommandEncoder;
     };
-
 
     /**
      * @brief The Framework class
@@ -50,6 +50,7 @@ namespace bns
         MaterialFactory *m_materialFactory;
         ImageLoader *m_imageLoader;
         Directory *m_directory;
+        SpriteRenderer *m_spriteRenderer;
 
         void InitializeForMetal(bns::WindowParameters windowParameters);
         void InitializeForWGPU(bns::WindowParameters windowParameters);
@@ -104,7 +105,14 @@ namespace bns
         {
             return *m_directory;
         }
-        
+
+        /**
+         * @brief Get the sprite renderer.
+         */
+        inline SpriteRenderer &GetSpriteRenderer() const
+        {
+            return *m_spriteRenderer;
+        }
 
         FileLoader FileLoader;
 

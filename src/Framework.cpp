@@ -16,6 +16,7 @@
 #include "material/test/metal/MetalBasicMeshTexturedTestMaterial.hpp"
 #include "textures/wgpu/WebGPUTexture2D.hpp"
 #include "textures/metal/MetalTexture2D.hpp"
+#include "sprite/wgpu/WebGPUSpriteRenderer.hpp"
 
 namespace bns
 {
@@ -27,12 +28,15 @@ namespace bns
         m_imageLoader = new ImageLoader(*m_directory);
 
         // WebGPU initialize
-        bool wgpu = false;
-        if(wgpu) {
+        bool wgpu = true;
+        if (wgpu)
+        {
             m_materialFactory = new WebGPUMaterialFactory(*this);
             m_meshFactory = new WebGPUMeshFactory(*this);
+            m_spriteRenderer = new WebGPUSpriteRenderer(*this);
         }
-        else {
+        else
+        {
             // m_materialFactory = new MetalMaterialFactory(*this);
             m_meshFactory = new MetalMeshFactory(*this);
         }
@@ -44,8 +48,8 @@ namespace bns
 
     void Framework::Initialize(WindowParameters windowParameters)
     {
-        InitializeForMetal(windowParameters);
-        // InitializeForWGPU(windowParameters);
+        //   InitializeForMetal(windowParameters);
+        InitializeForWGPU(windowParameters);
     }
 
     void Framework::InitializeForWGPU(WindowParameters windowParameters)
@@ -58,6 +62,8 @@ namespace bns
 
         WebGPURenderer renderer(*this);
         renderer.Initialize(instance, surface);
+
+        m_spriteRenderer->Initialize();
 
         // Mesh *mesh = m_meshFactory->CreateTriangleMesh();
         // Material *material = MaterialFactory->CreateBasicMaterial();
@@ -84,9 +90,18 @@ namespace bns
             camera.Update(0.0f);
 
             renderer.BeginDraw();
+            m_spriteRenderer->BeginFrame();
 
-            testMaterial->Draw(camera, testMesh);
+            Rect rect;
+            rect.X = 0;
+            rect.Y = 0;
+            rect.Width = 100;
+            rect.Height = 100;
+            m_spriteRenderer->Draw(*testTexture, rect);
 
+         //    testMaterial->Draw(camera, testMesh);
+
+            m_spriteRenderer->EndFrame();
             renderer.EndDraw();
         }
 
@@ -105,7 +120,7 @@ namespace bns
 
         Mesh *mesh = m_meshFactory->CreateQuadMesh();
 
-          // TEST DATA
+        // TEST DATA
         MetalTexture2D *testTexture = new MetalTexture2D(*this, m_imageLoader->LoadImage("assets/uv_test.png"));
         testTexture->Initialize();
 

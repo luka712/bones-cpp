@@ -25,4 +25,13 @@
 #define USER_COMMON_DIRECTORY "."
 #endif
 
+
+#pragma region SpriteRenderer
+
+#ifndef SPRITE_RENDERER_MAX_SPRITES_PER_DRAW
+#define SPRITE_RENDERER_MAX_SPRITES_PER_DRAW 1000
+#endif
+
+#pragma endregion
+
 #endif // !BNS_CONSTANTS_H

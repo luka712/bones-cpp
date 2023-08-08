@@ -4,6 +4,7 @@
 #include "Framework.hpp"
 #include "textures/wgpu/WebGPUTexture2D.hpp"
 #include "buffer-layout/WebGPUVertexBufferLayoutUtil.hpp"
+#include "util/WebGPUUtil.hpp"
 
 namespace bns
 {
@@ -41,6 +42,7 @@ namespace bns
         descriptor.vertex.buffers = &wgpuVertexBufferLayouts[0];
 
         // Fragment state
+             // Fragment state
         WGPUBlendState blend = {};
         blend.color.operation = WGPUBlendOperation_Add;
         blend.color.srcFactor = WGPUBlendFactor_One;
@@ -49,18 +51,13 @@ namespace bns
         blend.alpha.srcFactor = WGPUBlendFactor_One;
         blend.alpha.dstFactor = WGPUBlendFactor_OneMinusSrcAlpha;
 
+        // default color target state
         WGPUColorTargetState colorTarget = {};
         colorTarget.nextInChain = nullptr;
         colorTarget.format = WGPUTextureFormat_BGRA8Unorm;
         colorTarget.blend = &blend;
         colorTarget.writeMask = WGPUColorWriteMask_All;
-
-        WGPUFragmentState fragment = {};
-        fragment.nextInChain = nullptr;
-        fragment.module = shaderModule;
-        fragment.entryPoint = "fs_main";
-        fragment.targetCount = 1;
-        fragment.targets = &colorTarget;
+        WGPUFragmentState fragment = WebGPUUtil::FragmentState.Create(shaderModule, colorTarget, "fs_main");
         descriptor.fragment = &fragment;
 
         // Other state

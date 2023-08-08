@@ -4,8 +4,9 @@
 namespace bns
 {
     WebGPUTexture2D::WebGPUTexture2D(Framework &framework, ImageData *imageData)
-        : m_framework(framework), m_imageData(imageData)
+        : Texture2D(), m_framework(framework), m_imageData(imageData)
     {
+    
     }
 
     void WebGPUTexture2D::Initialize()

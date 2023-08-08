@@ -1,7 +1,7 @@
 #include "mesh/metal/MetalMesh.hpp"
 #include "Framework.hpp"
 #include "data/Types.hpp"
-#include "util/metal/MetalBufferUtil.hpp"
+#include "buffer/metal/MetalBufferUtil.hpp"
 
 namespace bns
 {
