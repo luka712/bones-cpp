@@ -1,9 +1,8 @@
 #include "Framework.hpp"
 #include "mesh/metal/MetalMesh.hpp"
 #include "material/test/metal/MetalBasicMeshTexturedTestMaterial.hpp"
-#include "renderer/common/MetalRenderPipelineUtil.hpp"
+#include "util/MetalUtil.hpp"
 #include "textures/metal/MetalTexture2D.hpp"
-#include "buffer-layout/MetalVertexBufferLayoutUtil.hpp"
 
 namespace bns
 {
@@ -34,7 +33,7 @@ namespace bns
         MTL::Function *pVertexFn = pLibrary->newFunction(NS::String::string("vs_main", NS::StringEncoding::UTF8StringEncoding));
         MTL::Function *pFragFn = pLibrary->newFunction(NS::String::string("fs_main", NS::StringEncoding::UTF8StringEncoding));
 
-        MTL::RenderPipelineDescriptor *pDesc = MetalRenderPipelineUtil::CreatePipelineDescriptor(pVertexFn, pFragFn);
+        MTL::RenderPipelineDescriptor *pDesc = MetalUtil::RenderPipelineDescriptor.CreatePipelineDescriptor(pVertexFn, pFragFn);
 
         // Setup blending
 
@@ -52,7 +51,7 @@ namespace bns
         vertexLayoutDescriptors.push_back(layoutDesc);
 
         // Create vertex buffer layouts
-        MetalVertexBufferLayoutAttributesDto dto = MetalVertexBufferLayoutUtil::CreateVertexBufferLayouts(vertexLayoutDescriptors);
+        MetalVertexBufferLayoutAttributesDto dto = MetalUtil::VertexBufferLayout.Create(vertexLayoutDescriptors);
 
         NS::UInteger i = 0;
         for (auto layout : dto.BufferLayouts)
@@ -64,47 +63,6 @@ namespace bns
         {
             pVertexDesc->attributes()->setObject(attr, i);
         }
-
-        /*
-            // position layout
-            MTL::VertexBufferLayoutDescriptor *pPositionLayoutDesc = MTL::VertexBufferLayoutDescriptor::alloc();
-            pPositionLayoutDesc->setStride(NS::UInteger(3 * sizeof(float)));
-            pPositionLayoutDesc->setStepFunction(MTL::VertexStepFunction::VertexStepFunctionPerVertex);
-            pPositionLayoutDesc->setStepRate(NS::UInteger(1));
-            pVertexDesc->layouts()->setObject(pPositionLayoutDesc, 0);
-
-            // position attribute
-            MTL::VertexAttributeDescriptor *pPositionAttrDescriptor = MTL::VertexAttributeDescriptor::alloc();
-            pPositionAttrDescriptor->setFormat(MTL::VertexFormatFloat3);
-            pPositionAttrDescriptor->setOffset(NS::UInteger(0));
-            pPositionAttrDescriptor->setBufferIndex(NS::UInteger(0));
-            pVertexDesc->attributes()->setObject(pPositionAttrDescriptor, 0);
-
-            // color layout
-            MTL::VertexBufferLayoutDescriptor *pColorLayoutDesc = MTL::VertexBufferLayoutDescriptor::alloc();
-            pColorLayoutDesc->setStride(NS::UInteger(4 * sizeof(float)));
-            pColorLayoutDesc->setStepFunction(MTL::VertexStepFunction::VertexStepFunctionPerVertex);
-            pColorLayoutDesc->setStepRate(NS::UInteger(1));
-            pVertexDesc->layouts()->setObject(pColorLayoutDesc, 1);
-
-
-
-
-        // texture layout
-        MTL::VertexBufferLayoutDescriptor *pTextureLayoutDesc = MTL::VertexBufferLayoutDescriptor::alloc();
-        pTextureLayoutDesc->setStride(NS::UInteger(2 * sizeof(float)));
-        pTextureLayoutDesc->setStepFunction(MTL::VertexStepFunction::VertexStepFunctionPerVertex);
-        pTextureLayoutDesc->setStepRate(NS::UInteger(1));
-        pVertexDesc->layouts()->setObject(pTextureLayoutDesc, 2);
-
-        // texture attribute
-        MTL::VertexAttributeDescriptor *pTextureAttrDescriptor = MTL::VertexAttributeDescriptor::alloc();
-        pTextureAttrDescriptor->setFormat(MTL::VertexFormatFloat2);
-        pTextureAttrDescriptor->setOffset(NS::UInteger(0));
-        pTextureAttrDescriptor->setBufferIndex(NS::UInteger(2));
-        pVertexDesc->attributes()->setObject(pTextureAttrDescriptor, 2);
-         
-         */
 
         // set pixel format
         MTL::RenderPipelineColorAttachmentDescriptor *colorAttachment = pDesc->colorAttachments()->object(NS::UInteger(0));

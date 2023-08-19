@@ -19,7 +19,11 @@ namespace bns
         Rect() : X(0), Y(0), Width(0), Height(0)
         {
         }
-       
+
+        Rect(i32 x, i32 y, i32 width, i32 height) 
+            : X(x), Y(y), Width(width), Height(height)
+        {
+        }
     };
 }
 

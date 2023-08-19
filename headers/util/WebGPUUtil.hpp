@@ -11,6 +11,7 @@
 #include "util/wgpu/WebGPUBindGroupDescriptorUtil.hpp"
 #include "util/wgpu/WebGPUTextureViewDescriptorUtil.hpp"
 
+
 namespace bns
 {
     struct WebGPUUtil final

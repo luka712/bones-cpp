@@ -1,6 +1,6 @@
 #include "renderer/MetalRenderer.hpp"
 #include <simd/simd.h>
-#include "renderer/common/MetalRenderPipelineUtil.hpp"
+#include "util/MetalUtil.hpp"
 #include "Framework.hpp"
 
 namespace bns

@@ -1,7 +1,7 @@
 #include "mesh/metal/MetalMesh.hpp"
 #include "Framework.hpp"
 #include "data/Types.hpp"
-#include "buffer/metal/MetalBufferUtil.hpp"
+#include "util/MetalUtil.hpp"
 
 namespace bns
 {
@@ -24,7 +24,7 @@ namespace bns
 
         if (m_geometry.Indices.size() > 0)
         {
-            IndexBuffer = MetalBufferUtil::CreateBuffer(m_device, m_geometry.Indices, "IndexBuffer");
+            IndexBuffer = MetalUtil::Buffer.CreateBuffer(m_device, m_geometry.Indices, "IndexBuffer");
             
             IndexFormat = MTL::IndexTypeUInt32;
             if(sizeof(m_geometry.Indices[0]) == 2)
@@ -35,7 +35,7 @@ namespace bns
 
         if (m_geometry.IsInterleaved)
         {
-            VertexBuffer = MetalBufferUtil::CreateBuffer(m_device, m_geometry.Data, "VertexBuffer");
+            VertexBuffer = MetalUtil::Buffer.CreateBuffer(m_device, m_geometry.Data, "VertexBuffer");
         }
         else
         {

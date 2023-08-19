@@ -6,7 +6,7 @@
 
 namespace bns
 {
-    class MetalRenderPipelineUtil final
+    class MetalRenderPipelineDescriptorUtil final
     {
     public:
         /**

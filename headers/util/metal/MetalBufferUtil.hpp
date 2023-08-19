@@ -29,6 +29,22 @@ namespace bns
 
             return buffer;
         }
+
+        /**
+         * Create a buffer with u32 data.
+         */
+        template <typename T>
+        static MTL::Buffer *CreateBuffer(MTL::Device *device,
+                                         size_t byteSize,
+                                         std::string label)
+        {
+            MTL::Buffer *buffer = device->newBuffer(byteSize, MTL::ResourceOptionCPUCacheModeDefault);
+            NS::String *nsLabel = NS::String::string(label.c_str(), NS::StringEncoding::UTF8StringEncoding);
+            buffer->setLabel(nsLabel);
+            nsLabel->release();
+
+            return buffer;
+        }
     };
 }
 

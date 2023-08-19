@@ -3,6 +3,7 @@
 #define BNS_SPRITE_RENDERER_HPP
 
 #include "textures/Texture2D.hpp"
+#include "data/Color.hpp"
 #include "data/Rect.hpp"
 #include "camera/SpriteRendererCamera.hpp"
 
@@ -32,7 +33,24 @@ namespace bns
          * @param texture The texture to draw.
          * @param rect The rect that indicates the position and size.
          */
-        virtual void Draw(const Texture2D &texture, const Rect &sourceRect) = 0;
+        void Draw(Texture2D *texture, const Rect &drawRect);
+
+        /**
+         * Draw a texture at a position indicated by the rect. The source rect indicates the part of the texture to draw.
+         * @param texture The texture to draw.
+         * @param drawRect The rect that indicates the position and size.
+         * @param sourceRect The rect that indicates the part of the texture to draw.
+         */
+        void Draw(Texture2D *texture, const Rect &drawRect, const Rect &sourceRect);
+
+        /**
+         * Draw a texture at a position indicated by the rect. The source rect indicates the part of the texture to draw.
+         * @param texture The texture to draw.
+         * @param drawRect The rect that indicates the position and size.
+         * @param sourceRect The rect that indicates the part of the texture to draw.
+         * @param tintColor The tint color.
+         */
+        virtual void Draw(Texture2D *texture, const Rect &drawRect, const Rect &sourceRect, const Color &tintColor) = 0;
 
         /**
          * To be called when the frame ends.

@@ -13,7 +13,8 @@ namespace bns
 
     #pragma endregion
 
-    Texture2D::Texture2D()
+    Texture2D::Texture2D(i32 width, i32 height)
+        : m_width(width), m_height(height)
     {
         m_id = GenerateID();
     }

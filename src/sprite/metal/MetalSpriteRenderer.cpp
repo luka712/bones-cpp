@@ -1,16 +1,17 @@
-#include "sprite/wgpu/WebGPUSpriteRenderer.hpp"
-#include "util/wgpu/WebGPUBufferUtil.hpp"
+#include "sprite/metal/MetalSpriteRenderer.hpp"
+#include "util/MetalUtil.hpp"
 #include "Constants.hpp"
 #include "Framework.hpp"
 
 namespace bns
 {
-    WebGPUSpriteRenderer::WebGPUSpriteRenderer(const Framework &framework)
+
+    MetalSpriteRenderer::MetalSpriteRenderer(const Framework &framework)
         : m_framework(framework)
     {
     }
 
-    void WebGPUSpriteRenderer::SetupIndexBuffer()
+    void MetalSpriteRenderer::SetupIndexBuffer()
     {
         std::vector<u16> data(6 * SPRITE_RENDERER_MAX_SPRITES_PER_DRAW);
 
@@ -27,10 +28,10 @@ namespace bns
             data[i * 6 + 5] = i * 4 + 0;
         }
 
-        m_indexBuffer = WebGPUBufferUtil::CreateIndexBuffer(m_device, data, "SpriteRendererIndexBuffer");
+        m_indexBuffer = MetalUtil::Buffer.CreateBuffer(m_device, data, "SpriteRendererIndexBuffer");
     }
 
-    WebGPUSpritePipeline &WebGPUSpriteRenderer::GetPipeline(WebGPUTexture2D *texture)
+    MetalSpritePipeline &MetalSpriteRenderer::GetPipeline(MetalTexture2D *texture)
     {
         u32 textureId = texture->GetID();
 
@@ -40,14 +41,14 @@ namespace bns
             // first check if there is one in allocated pipelines. If so get it from there
             if (!m_allocatedPipelines[textureId].empty())
             {
-                WebGPUSpritePipeline *pipeline = m_allocatedPipelines[textureId].top();
+                MetalSpritePipeline *pipeline = m_allocatedPipelines[textureId].top();
                 m_allocatedPipelines[textureId].pop();
                 m_currentDrawPipelines[textureId].push(pipeline);
                 return *pipeline;
             }
 
             // if not found, we are sure that there is no pipeline, create one and push it to current draw pipelines.
-            WebGPUSpritePipeline *pipeline = WebGPUSpritePipeline::Create(m_device, texture, m_projectionViewMatrixBuffer);
+            MetalSpritePipeline *pipeline = MetalSpritePipeline::Create(m_device, texture, m_projectionViewMatrixBuffer);
             m_currentDrawPipelines[textureId].push(pipeline);
             m_allocatedPipelines[textureId].push(pipeline);
             return *pipeline;
@@ -62,13 +63,13 @@ namespace bns
             // return then new pipeline.
             if (m_allocatedPipelines[textureId].empty())
             {
-                WebGPUSpritePipeline *pipeline = WebGPUSpritePipeline::Create(m_device, texture, m_projectionViewMatrixBuffer);
+                MetalSpritePipeline *pipeline = MetalSpritePipeline::Create(m_device, texture, m_projectionViewMatrixBuffer);
                 m_currentDrawPipelines[textureId].push(pipeline);
                 m_allocatedPipelines[textureId].push(pipeline);
                 return *pipeline;
             }
 
-            WebGPUSpritePipeline *pipeline = m_allocatedPipelines[textureId].top();
+            MetalSpritePipeline *pipeline = m_allocatedPipelines[textureId].top();
             m_allocatedPipelines[textureId].pop();
             m_currentDrawPipelines[textureId].push(pipeline);
             return *pipeline;
@@ -77,11 +78,11 @@ namespace bns
         return *topPipelineRef;
     }
 
-    void WebGPUSpriteRenderer::Initialize()
+    void MetalSpriteRenderer::Initialize()
     {
         // setup camera buffer
-        m_device = m_framework.Context.WebGPUDevice;
-        m_projectionViewMatrixBuffer = WebGPUBufferUtil::CreateUniformBuffer(m_device, sizeof(Mat4x4f), "SpriteRendererCameraBuffer");
+        m_device = m_framework.Context.MetalDevice;
+        m_projectionViewMatrixBuffer = MetalUtil::Buffer.CreateBuffer<f32>(m_device, sizeof(Mat4x4f), "SpriteRendererCameraBuffer");
 
         // setup camera
         auto size = m_framework.GetWindowManager().GetWindowSize();
@@ -90,19 +91,17 @@ namespace bns
         SetupIndexBuffer();
     }
 
-    void WebGPUSpriteRenderer::BeginFrame()
+    void MetalSpriteRenderer::BeginFrame()
     {
         m_camera.Update(0.0f);
 
-        WGPUQueue queue = wgpuDeviceGetQueue(m_device);
-
         // write camera buffer to gpu
-        wgpuQueueWriteBuffer(queue, m_projectionViewMatrixBuffer, 0, &m_camera.ProjectionViewMatrix, sizeof(Mat4x4f));
+        memcpy(m_projectionViewMatrixBuffer->contents(), &m_camera.ProjectionViewMatrix, sizeof(Mat4x4f));
 
         // empty current draw pipelines
         for (auto keyValuePair : m_currentDrawPipelines)
         {
-            std::stack<WebGPUSpritePipeline *> &pipelineStack = keyValuePair.second;
+            std::stack<MetalSpritePipeline *> &pipelineStack = keyValuePair.second;
             while (!pipelineStack.empty())
             {
                 pipelineStack.pop();
@@ -110,10 +109,10 @@ namespace bns
         }
     }
 
-    void WebGPUSpriteRenderer::Draw(Texture2D *texture, const Rect &drawRect, const Rect& sourceRect, const Color& tintColor)
+    void MetalSpriteRenderer::Draw(Texture2D *texture, const Rect &drawRect, const Rect &sourceRect, const Color &tintColor)
     {
-        WebGPUTexture2D *wgpuTexture = static_cast<WebGPUTexture2D *>(texture);
-        WebGPUSpritePipeline &pipeline = GetPipeline(wgpuTexture);
+        MetalTexture2D *metalTexture = static_cast<MetalTexture2D *>(texture);
+        MetalSpritePipeline &pipeline = GetPipeline(metalTexture);
 
         u32 i = pipeline.InstanceIndex * FLOATS_PER_INSTANCE;
 
@@ -171,37 +170,36 @@ namespace bns
         pipeline.InstanceIndex++;
     }
 
-    void WebGPUSpriteRenderer::EndFrame()
+    void MetalSpriteRenderer::EndFrame()
     {
-        WGPURenderPassEncoder renderPass = m_framework.Context.CurrentWebGPURenderPassEncoder;
-        WGPUQueue queue = wgpuDeviceGetQueue(m_device);
+        MTL::RenderCommandEncoder *renderPass = m_framework.Context.CurrentMetalRenderCommandEncoder;
+        //  WGPUQueue queue = wgpuDeviceGetQueue(m_device);
 
-        std::stack<WGPUBuffer> tempVertexBufferStack;
+        std::stack<MTL::Buffer *> tempVertexBufferStack;
 
         // go through each key
         for (auto keyValuePair : m_currentDrawPipelines)
         {
             // go through each pipeline
             u32 textureId = keyValuePair.first;
-            std::stack<WebGPUSpritePipeline *> &pipelineStack = keyValuePair.second;
+            std::stack<MetalSpritePipeline *> &pipelineStack = keyValuePair.second;
 
             while (!pipelineStack.empty())
             {
                 // get the pipeline, pop it from stack and push it to allocated stack
-                WebGPUSpritePipeline *spritePipeline = pipelineStack.top();
+                MetalSpritePipeline *spritePipeline = pipelineStack.top();
                 pipelineStack.pop();
                 m_allocatedPipelines[textureId].push(spritePipeline);
 
                 auto pipeline = spritePipeline->GetPipeline();
-                auto projectionViewBindGroup = spritePipeline->GetProjectionViewBindGroup();
-                auto textureBindGroup = spritePipeline->GetTextureBindGroup();
+                auto texture = spritePipeline->GetTexture();
 
                 // allocate or get vertex buffer.
-                WGPUBuffer vertexBuffer;
+                MTL::Buffer *vertexBuffer;
                 if (m_vertexBufferStack.empty())
                 {
                     size_t byteSize = SPRITE_RENDERER_MAX_SPRITES_PER_DRAW * FLOATS_PER_INSTANCE * sizeof(float);
-                    vertexBuffer = WebGPUBufferUtil::CreateVertexBuffer(m_device, byteSize, "SpriteVertexBuffer");
+                    vertexBuffer = MetalUtil::Buffer.CreateBuffer<f32>(m_device, byteSize, "SpriteVertexBuffer");
                 }
                 else
                 {
@@ -213,22 +211,24 @@ namespace bns
                 tempVertexBufferStack.push(vertexBuffer);
 
                 size_t byteSize = SPRITE_RENDERER_MAX_SPRITES_PER_DRAW * FLOATS_PER_INSTANCE * sizeof(f32);
-                wgpuQueueWriteBuffer(queue, vertexBuffer, 0, spritePipeline->DataArray, byteSize);
+                memcpy(vertexBuffer->contents(), spritePipeline->DataArray, byteSize);
 
                 // set pipeline
-                wgpuRenderPassEncoderSetPipeline(renderPass, pipeline);
+                renderPass->setRenderPipelineState(pipeline);
 
                 // set bind groups
-                wgpuRenderPassEncoderSetBindGroup(renderPass, 0, projectionViewBindGroup, 0, 0);
-                wgpuRenderPassEncoderSetBindGroup(renderPass, 1, textureBindGroup, 0, 0);
-
-                // set vertex index buffer
-                wgpuRenderPassEncoderSetVertexBuffer(renderPass, 0, vertexBuffer, 0, 0);
-                wgpuRenderPassEncoderSetIndexBuffer(renderPass, m_indexBuffer, WGPUIndexFormat_Uint16, 0,
-                                                    6 * SPRITE_RENDERER_MAX_SPRITES_PER_DRAW * sizeof(u16));
+                renderPass->setVertexBuffer(vertexBuffer, 0, 0);
+                renderPass->setVertexBuffer(m_projectionViewMatrixBuffer, 0, 1);
+                renderPass->setFragmentTexture(texture->Texture, NS::UInteger(0));
+                renderPass->setFragmentSamplerState(texture->Sampler, NS::UInteger(0));
 
                 // draw
-                wgpuRenderPassEncoderDrawIndexed(renderPass, spritePipeline->InstanceIndex * 6, 1, 0, 0, 0);
+                renderPass->drawIndexedPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle,
+                                                  spritePipeline->InstanceIndex * 6,
+                                                  MTL::IndexType::IndexTypeUInt16,
+                                                  m_indexBuffer,
+                                                  NS::UInteger(0),
+                                                  NS::UInteger(1));
 
                 spritePipeline->InstanceIndex = 0;
             }

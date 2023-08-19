@@ -1,7 +1,7 @@
 #include "Framework.hpp"
 #include "mesh/metal/MetalMesh.hpp"
 #include "material/test/metal/MetalBasicMeshTestMaterial.hpp"
-#include "renderer/common/MetalRenderPipelineUtil.hpp"
+#include "util/MetalUtil.hpp"
 
 namespace bns
 {
@@ -32,7 +32,7 @@ namespace bns
         MTL::Function *pVertexFn = pLibrary->newFunction(NS::String::string("vs_main", NS::StringEncoding::UTF8StringEncoding));
         MTL::Function *pFragFn = pLibrary->newFunction(NS::String::string("fs_main", NS::StringEncoding::UTF8StringEncoding));
 
-        MTL::RenderPipelineDescriptor *pDesc = MetalRenderPipelineUtil::CreatePipelineDescriptor(pVertexFn, pFragFn);
+        MTL::RenderPipelineDescriptor *pDesc = MetalUtil::RenderPipelineDescriptor.CreatePipelineDescriptor(pVertexFn, pFragFn);
 
         // vertex
         MTL::VertexDescriptor *pVertexDesc = pDesc->vertexDescriptor();

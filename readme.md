@@ -14,12 +14,19 @@ Projects files are build with CMake, one can use it to generate following soluti
 cmake . -B build
 
 ### Build
+
+#### MAKE - the makefile build
 cmake --build build
+
+#### XCODE - the build for xcode
+cmake -G Xcode -H. -Bbuild_xcode
 
 ## Run
 build/App
 
-## XCODE
+
+
+
 
 ### Generate Build Files
 run: cmake -G Xcode -H. -Bbuild_xcode

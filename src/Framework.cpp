@@ -17,6 +17,7 @@
 #include "textures/wgpu/WebGPUTexture2D.hpp"
 #include "textures/metal/MetalTexture2D.hpp"
 #include "sprite/wgpu/WebGPUSpriteRenderer.hpp"
+#include "sprite/metal/MetalSpriteRenderer.hpp"
 
 namespace bns
 {
@@ -39,6 +40,7 @@ namespace bns
         {
             // m_materialFactory = new MetalMaterialFactory(*this);
             m_meshFactory = new MetalMeshFactory(*this);
+            m_spriteRenderer = new MetalSpriteRenderer(*this);
         }
     }
 
@@ -48,7 +50,7 @@ namespace bns
 
     void Framework::Initialize(WindowParameters windowParameters)
     {
-        //   InitializeForMetal(windowParameters);
+       //  InitializeForMetal(windowParameters);
         InitializeForWGPU(windowParameters);
     }
 
@@ -92,14 +94,25 @@ namespace bns
             renderer.BeginDraw();
             m_spriteRenderer->BeginFrame();
 
-            Rect rect;
-            rect.X = 0;
-            rect.Y = 0;
-            rect.Width = 100;
-            rect.Height = 100;
-            m_spriteRenderer->Draw(*testTexture, rect);
+            i32 hw = testTexture->GetWidth() / 2;
+            i32 hh = testTexture->GetHeight() / 2;
 
-         //    testMaterial->Draw(camera, testMesh);
+            // whole texture
+            m_spriteRenderer->Draw(testTexture, Rect(0, 0, 100, 100));
+
+            // top left quadrant
+            m_spriteRenderer->Draw(testTexture, Rect(100, 0, 100, 100), Rect(0, 0, hw, hh));
+
+            // top right quadrant
+            m_spriteRenderer->Draw(testTexture, Rect(200, 0, 100, 100), Rect(hw, 0, hw, hh));
+
+            // bottom left quadrant
+            m_spriteRenderer->Draw(testTexture, Rect(100, 100, 100, 100), Rect(0, hh, hw, hh));
+
+            // bottom right quadrant
+            m_spriteRenderer->Draw(testTexture, Rect(200, 100, 100, 100), Rect(hw, hh, hw, hh));
+
+            //    testMaterial->Draw(camera, testMesh);
 
             m_spriteRenderer->EndFrame();
             renderer.EndDraw();
@@ -117,6 +130,8 @@ namespace bns
         // TEMPORARY CODE
         MetalRenderer renderer(*this);
         renderer.Initialize(swapchain);
+
+        m_spriteRenderer->Initialize();
 
         Mesh *mesh = m_meshFactory->CreateQuadMesh();
 
@@ -144,7 +159,29 @@ namespace bns
 
                 renderer.BeginDraw();
 
-                testMaterial->Draw(camera, mesh);
+                // testMaterial->Draw(camera, mesh);
+
+                m_spriteRenderer->BeginFrame();
+
+                i32 hw = testTexture->GetWidth() / 2;
+                i32 hh = testTexture->GetHeight() / 2;
+
+                // whole texture
+                m_spriteRenderer->Draw(testTexture, Rect(0, 0, 100, 100));
+
+                // top left quadrant
+                m_spriteRenderer->Draw(testTexture, Rect(100, 0, 100, 100), Rect(0, 0, hw, hh));
+
+                // top right quadrant
+                m_spriteRenderer->Draw(testTexture, Rect(200, 0, 100, 100), Rect(hw, 0, hw, hh));
+
+                // bottom left quadrant
+                m_spriteRenderer->Draw(testTexture, Rect(100, 100, 100, 100), Rect(0, hh, hw, hh));
+
+                // bottom right quadrant
+                m_spriteRenderer->Draw(testTexture, Rect(200, 100, 100, 100), Rect(hw, hh, hw, hh));
+
+                m_spriteRenderer->EndFrame();
 
                 renderer.EndDraw();
 

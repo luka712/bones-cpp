@@ -1,8 +1,8 @@
-#include "buffer-layout/MetalVertexBufferLayoutUtil.hpp"
+#include "util/metal/MetalVertexBufferLayoutUtil.hpp"
 
 namespace bns
 {
-    MetalVertexBufferLayoutAttributesDto MetalVertexBufferLayoutUtil::CreateVertexBufferLayouts(std::vector<BufferLayoutDescriptor> &descriptors)
+    MetalVertexBufferLayoutAttributesDto MetalVertexBufferLayoutUtil::Create(std::vector<BufferLayoutDescriptor> &descriptors)
     {
         MetalVertexBufferLayoutAttributesDto dto;
 

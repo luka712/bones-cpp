@@ -37,7 +37,7 @@ namespace bns
          * @param texture The texture to be used
          * @return The sprite pipeline
          */
-        static WebGPUSpritePipeline *Create(WGPUDevice device, const WebGPUTexture2D& texture, WGPUBuffer projectionViewBuffer);
+        static WebGPUSpritePipeline *Create(WGPUDevice device,  WebGPUTexture2D* texture, WGPUBuffer projectionViewBuffer);
 
         /**
          * @brief Gets the pipeline

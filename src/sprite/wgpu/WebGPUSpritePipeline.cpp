@@ -11,7 +11,7 @@ namespace bns
         : m_pipeline(pipeline), m_projectionViewBindGroup(projectionViewBindGroup), m_textureBindGroup(textureBindGroup) {}
 
     // NOTE: STATIC FUNCTION
-    WebGPUSpritePipeline *WebGPUSpritePipeline::Create(WGPUDevice device, const WebGPUTexture2D &texture, WGPUBuffer projectionViewBuffer)
+    WebGPUSpritePipeline *WebGPUSpritePipeline::Create(WGPUDevice device,  WebGPUTexture2D *texture, WGPUBuffer projectionViewBuffer)
     {
         FileLoader fileLoader;
         std::string shaderSource = fileLoader.OpenFile("shaders/webgpu/sprite/sprite_shader.wgsl");
@@ -117,16 +117,21 @@ namespace bns
 
         // Sampler/Texture bind group
         WGPUTextureViewDescriptor textureViewDescriptor = WebGPUUtil::TextureViewDescriptor.CreateDefault();
-        WGPUTextureView textureView = wgpuTextureCreateView(texture.Texture, &textureViewDescriptor);
+        WGPUTextureView textureView = wgpuTextureCreateView(texture->Texture, &textureViewDescriptor);
 
         WGPUBindGroupEntry textureBindGroupEntries[2];
-        textureBindGroupEntries[0] = WebGPUUtil::BindGroupEntry.Create(0, texture.Sampler);
+        textureBindGroupEntries[0] = WebGPUUtil::BindGroupEntry.Create(0, texture->Sampler);
         textureBindGroupEntries[1] = WebGPUUtil::BindGroupEntry.Create(1, textureView);
         WGPUBindGroupDescriptor textureBindGroupDescriptor = WebGPUUtil::BindGroupDescriptor.Create(textureBindGroupLayout, textureBindGroupEntries, 2);
         WGPUBindGroup textureBindGroup = wgpuDeviceCreateBindGroup(device, &textureBindGroupDescriptor);
 
-        // TODO: delete stuff
-        // WebGPUVertexBufferLayoutUtil::DeleteVertexBufferLayouts(wgpuVertexBufferLayouts, 1);
+        // release resources that are no longer needed
+        wgpuShaderModuleRelease(shaderModule);
+        wgpuBindGroupLayoutRelease(projectionViewBufferBindGroupLayout);
+        wgpuBindGroupLayoutRelease(textureBindGroupLayout);
+        wgpuPipelineLayoutRelease(renderPipelineDescriptor.layout);
+        wgpuTextureViewRelease(textureView);
+
 
         return new WebGPUSpritePipeline(pipeline, projectionViewBindGroup, textureBindGroup);
     }

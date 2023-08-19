@@ -33,7 +33,7 @@ namespace bns
          * @brief Create a vertex buffer layout.
          * @return The vertex buffer layout.
          */
-        static MetalVertexBufferLayoutAttributesDto CreateVertexBufferLayouts(std::vector<BufferLayoutDescriptor> &descriptors);
+        static MetalVertexBufferLayoutAttributesDto Create(std::vector<BufferLayoutDescriptor> &descriptors);
 
         /**
          * @brief Delete the vertex buffer layouts and their attributes.

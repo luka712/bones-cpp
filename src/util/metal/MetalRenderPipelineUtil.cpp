@@ -1,8 +1,8 @@
-#include "renderer/common/MetalRenderPipelineUtil.hpp"
+#include "util/metal/MetalRenderPipelineDescriptorUtil.hpp"
 
 namespace bns
 {
-     MTL::RenderPipelineDescriptor *MetalRenderPipelineUtil::CreatePipelineDescriptor(
+     MTL::RenderPipelineDescriptor *MetalRenderPipelineDescriptorUtil::CreatePipelineDescriptor(
         MTL::Function *pVertexFn,
         MTL::Function *pFragFn,
         MTL::PixelFormat pixelFormat)

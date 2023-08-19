@@ -60,6 +60,9 @@ namespace bns
             return nullptr;
         }
 
+        // query the window size
+        SDL_GetWindowSize(m_window, &m_windowSize.X, &m_windowSize.Y);
+
         return (CA::MetalLayer *)SDL_RenderGetMetalLayer(m_renderer);
     }
 
