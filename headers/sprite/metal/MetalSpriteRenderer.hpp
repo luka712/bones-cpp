@@ -76,8 +76,12 @@ namespace bns
         void Initialize() override;
 
         void BeginFrame() override;
-        
-        void Draw(Texture2D *texture, const Rect &drawRect, const Rect &sourceRect, const Color &color) override;
+
+        void Draw(Texture2D *texture,
+                  const Rect &drawRect,
+                  const Rect &sourceRect,
+                  const Color &color,
+                  f32 rotationInRadians, const Vec2f &rotationOrigin) override;
 
         void EndFrame() override;
     };

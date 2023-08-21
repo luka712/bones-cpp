@@ -3,6 +3,7 @@
 #define BNS_MATH_VEC2_H
 
 #include "data/Types.hpp"
+#include <math.h>
 
 namespace bns
 {
@@ -43,6 +44,31 @@ namespace bns
             T l = Magnitude();
             X /= l;
             Y /= l;
+        }
+
+        /**
+         * @brief Rotate self around the the point.
+         * @param point - the point to rotate around.
+         * @param theta - the angle in radians.
+         * @return void
+         */
+        void RotateAroundPoint(Vec2<T> point, f32 theta)
+        {
+            // cos and sin of theta
+            f32 c = cos(theta);
+            f32 s = sin(theta);
+
+            // origin x and y of the point
+            f32 ox = point.X;
+            f32 oy = point.Y;
+
+            // rotate point
+            f32 rx = c * (X - ox) - s * (Y - oy) + ox;
+            f32 ry = s * (X - ox) + c * (Y - oy) + oy;
+
+            // set self to rotated point
+            X = rx;
+            Y = ry;
         }
 
         /**

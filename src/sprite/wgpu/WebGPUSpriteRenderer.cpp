@@ -110,7 +110,8 @@ namespace bns
         }
     }
 
-    void WebGPUSpriteRenderer::Draw(Texture2D *texture, const Rect &drawRect, const Rect& sourceRect, const Color& tintColor)
+    void WebGPUSpriteRenderer::Draw(Texture2D *texture, const Rect &drawRect, const Rect &sourceRect,
+                                    const Color &tintColor, f32 rotationInRadians, const Vec2f &rotationOrigin)
     {
         WebGPUTexture2D *wgpuTexture = static_cast<WebGPUTexture2D *>(texture);
         WebGPUSpritePipeline &pipeline = GetPipeline(wgpuTexture);
@@ -119,50 +120,69 @@ namespace bns
 
         auto d = pipeline.DataArray;
 
+        Vec2f topLeft = Vec2f(drawRect.X, drawRect.Y);
+        Vec2f topRight = Vec2f(drawRect.X + drawRect.Width, drawRect.Y);
+        Vec2f bottomRight = Vec2f(drawRect.X + drawRect.Width, drawRect.Y + drawRect.Height);
+        Vec2f bottomLeft = Vec2f(drawRect.X, drawRect.Y + drawRect.Height);
+
+        // perform rotation
+        if (rotationInRadians != 0)
+        {
+            Vec2f rotationOriginOffset = Vec2f(
+                topLeft.X + drawRect.Width * rotationOrigin.X,
+                topLeft.Y + drawRect.Height * rotationOrigin.Y);
+
+            topLeft.RotateAroundPoint(rotationOriginOffset, rotationInRadians);
+            topRight.RotateAroundPoint(rotationOriginOffset, rotationInRadians);
+            bottomRight.RotateAroundPoint(rotationOriginOffset, rotationInRadians);
+            bottomLeft.RotateAroundPoint(rotationOriginOffset, rotationInRadians);
+        }
+
+        // find texture coords
         f32 u0 = static_cast<float>(sourceRect.X) / static_cast<float>(texture->GetWidth());
         f32 v0 = static_cast<float>(sourceRect.Y) / static_cast<float>(texture->GetHeight());
         f32 u1 = static_cast<float>(sourceRect.X + sourceRect.Width) / static_cast<float>(texture->GetWidth());
         f32 v1 = static_cast<float>(sourceRect.Y + sourceRect.Height) / static_cast<float>(texture->GetHeight());
 
         // t1
-        d[i + 0] = drawRect.X;
-        d[i + 1] = drawRect.Y;
-        d[i + 2] = 0.0f;    // z
-        d[i + 3] = u0;      // u
-        d[i + 4] = v0;      // v
+        d[i + 0] = topLeft.X;
+        d[i + 1] = topLeft.Y;
+        d[i + 2] = 0.0f;        // z
+        d[i + 3] = u0;          // u
+        d[i + 4] = v0;          // v
         d[i + 5] = tintColor.R; // r
         d[i + 6] = tintColor.G; // g
         d[i + 7] = tintColor.B; // b
         d[i + 8] = tintColor.A; // a
 
         // t2
-        d[i + 9] = drawRect.X + drawRect.Width;
-        d[i + 10] = drawRect.Y;
-        d[i + 11] = 0.0f;    // z
-        d[i + 12] = u1;      // u
-        d[i + 13] = v0;      // v
+        d[i + 9] = topRight.X;
+        d[i + 10] = topRight.Y;
+        d[i + 11] = 0.0f;        // z
+        d[i + 12] = u1;          // u
+        d[i + 13] = v0;          // v
         d[i + 14] = tintColor.R; // r
         d[i + 15] = tintColor.G; // g
         d[i + 16] = tintColor.B; // b
         d[i + 17] = tintColor.A; // a
 
         // t3
-        d[i + 18] = drawRect.X + drawRect.Width;
-        d[i + 19] = drawRect.Y + drawRect.Height;
-        d[i + 20] = 0.0f;    // z
-        d[i + 21] = u1;      // u
-        d[i + 22] = v1;      // v
+        d[i + 18] = bottomRight.X;
+        d[i + 19] = bottomRight.Y;
+        d[i + 20] = 0.0f;        // z
+        d[i + 21] = u1;          // u
+        d[i + 22] = v1;          // v
         d[i + 23] = tintColor.R; // r
         d[i + 24] = tintColor.G; // g
         d[i + 25] = tintColor.B; // b
         d[i + 26] = tintColor.A; // a
 
         // t4
-        d[i + 27] = drawRect.X;
-        d[i + 28] = drawRect.Y + drawRect.Height;
-        d[i + 29] = 0.0f;    // z
-        d[i + 30] = u0;      // u
-        d[i + 31] = v1;      // v
+        d[i + 27] = bottomLeft.X;
+        d[i + 28] = bottomLeft.Y;
+        d[i + 29] = 0.0f;        // z
+        d[i + 30] = u0;          // u
+        d[i + 31] = v1;          // v
         d[i + 32] = tintColor.R; // r
         d[i + 33] = tintColor.G; // g
         d[i + 34] = tintColor.B; // b

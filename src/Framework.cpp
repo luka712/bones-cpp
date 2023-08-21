@@ -29,7 +29,7 @@ namespace bns
         m_imageLoader = new ImageLoader(*m_directory);
 
         // WebGPU initialize
-        bool wgpu = true;
+        bool wgpu = false;
         if (wgpu)
         {
             m_materialFactory = new WebGPUMaterialFactory(*this);
@@ -50,8 +50,8 @@ namespace bns
 
     void Framework::Initialize(WindowParameters windowParameters)
     {
-       //  InitializeForMetal(windowParameters);
-        InitializeForWGPU(windowParameters);
+        InitializeForMetal(windowParameters);
+        // InitializeForWGPU(windowParameters);
     }
 
     void Framework::InitializeForWGPU(WindowParameters windowParameters)
@@ -82,6 +82,8 @@ namespace bns
 
         Mesh *testMesh = m_meshFactory->CreateQuadMesh(true);
 
+        static f32 rotation = 0.0f;
+
         while (!glfwWindowShouldClose(((GLFWWindowManager *)m_windowManager)->m_window))
         {
             // Do nothing, this checks for ongoing asynchronous operations and call their callbacks
@@ -97,20 +99,23 @@ namespace bns
             i32 hw = testTexture->GetWidth() / 2;
             i32 hh = testTexture->GetHeight() / 2;
 
+            rotation += 0.1;
+            Vec2f rotationOrigin = Vec2f(0.5f, 0.5f);
+
             // whole texture
             m_spriteRenderer->Draw(testTexture, Rect(0, 0, 100, 100));
 
             // top left quadrant
-            m_spriteRenderer->Draw(testTexture, Rect(100, 0, 100, 100), Rect(0, 0, hw, hh));
+            m_spriteRenderer->Draw(testTexture, Rect(100, 0, 100, 100), Rect(0, 0, hw, hh), Color::White(), rotation, rotationOrigin);
 
             // top right quadrant
-            m_spriteRenderer->Draw(testTexture, Rect(200, 0, 100, 100), Rect(hw, 0, hw, hh));
+            m_spriteRenderer->Draw(testTexture, Rect(200, 0, 100, 100), Rect(hw, 0, hw, hh), Color::White(), rotation, rotationOrigin);
 
             // bottom left quadrant
-            m_spriteRenderer->Draw(testTexture, Rect(100, 100, 100, 100), Rect(0, hh, hw, hh));
+            m_spriteRenderer->Draw(testTexture, Rect(100, 100, 100, 100), Rect(0, hh, hw, hh), Color::White(), rotation, rotationOrigin);
 
             // bottom right quadrant
-            m_spriteRenderer->Draw(testTexture, Rect(200, 100, 100, 100), Rect(hw, hh, hw, hh));
+            m_spriteRenderer->Draw(testTexture, Rect(200, 100, 100, 100), Rect(hw, hh, hw, hh), Color::White(), rotation, rotationOrigin);
 
             //    testMaterial->Draw(camera, testMesh);
 
@@ -147,6 +152,8 @@ namespace bns
 
         FreeCamera camera;
 
+        static f32 rotation = 0.0f;
+
         while (!quit)
         {
             // Process events
@@ -166,20 +173,23 @@ namespace bns
                 i32 hw = testTexture->GetWidth() / 2;
                 i32 hh = testTexture->GetHeight() / 2;
 
+                rotation += 0.1;
+                Vec2f rotationOrigin = Vec2f(0.5f, 0.5f);
+
                 // whole texture
                 m_spriteRenderer->Draw(testTexture, Rect(0, 0, 100, 100));
 
                 // top left quadrant
-                m_spriteRenderer->Draw(testTexture, Rect(100, 0, 100, 100), Rect(0, 0, hw, hh));
+                m_spriteRenderer->Draw(testTexture, Rect(100, 0, 100, 100), Rect(0, 0, hw, hh), Color::White(), rotation, rotationOrigin);
 
                 // top right quadrant
-                m_spriteRenderer->Draw(testTexture, Rect(200, 0, 100, 100), Rect(hw, 0, hw, hh));
+                m_spriteRenderer->Draw(testTexture, Rect(200, 0, 100, 100), Rect(hw, 0, hw, hh), Color::White(), rotation, rotationOrigin);
 
                 // bottom left quadrant
-                m_spriteRenderer->Draw(testTexture, Rect(100, 100, 100, 100), Rect(0, hh, hw, hh));
+                m_spriteRenderer->Draw(testTexture, Rect(100, 100, 100, 100), Rect(0, hh, hw, hh), Color::White(), rotation, rotationOrigin);
 
                 // bottom right quadrant
-                m_spriteRenderer->Draw(testTexture, Rect(200, 100, 100, 100), Rect(hw, hh, hw, hh));
+                m_spriteRenderer->Draw(testTexture, Rect(200, 100, 100, 100), Rect(hw, hh, hw, hh), Color::White(), rotation, rotationOrigin);
 
                 m_spriteRenderer->EndFrame();
 
@@ -188,71 +198,6 @@ namespace bns
                 SDL_Delay(16);
             }
 
-            // // Define the vertices for the triangle
-            // std::vector<float> vertices = {
-            //     -0.5f, -0.5f, 0.0f, // Vertex 1
-            //     0.5f, -0.5f, 0.0f,  // Vertex 2
-            //     0.0f, 0.5f, 0.0f    // Vertex 3
-            // };
-
-            // MTL::Device *device = swapchain->device();
-
-            // // Create a vertex buffer
-            // MTL::ResourceOptions options = 0;
-            // MTL::Buffer *vertexBuffer = device->newBuffer(vertices.data(), vertices.size() * sizeof(float), options);
-
-            // // NS::String *name = device->name();
-            // // std::cerr << "device name: " << name->utf8String() << std::endl;
-
-            // // Event loop
-            // bool quit = false;
-            // SDL_Event event;
-            // while (!quit)
-            // {
-            //     // Process events
-            //     while (SDL_PollEvent(&event))
-            //     {
-            //         if (event.type == SDL_QUIT)
-            //         {
-            //             quit = true;
-            //         }
-            //     }
-
-            //     // Render or update your game/application here
-            //     auto drawable = swapchain->nextDrawable();
-
-            //     Color color = Color::LightPink();
-            //     MTL::ClearColor clear_color(color.R, color.G, color.B, 1.0);
-            //     MTL::RenderPassDescriptor *pass = MTL::RenderPassDescriptor::renderPassDescriptor();
-
-            //     auto color_attachment = pass->colorAttachments()->object(0);
-            //     color_attachment->setClearColor(clear_color);
-            //     color_attachment->setLoadAction(MTL::LoadAction::LoadActionClear);
-            //     color_attachment->setStoreAction(MTL::StoreAction::StoreActionStore);
-            //     color_attachment->setTexture(drawable->texture());
-
-            //     MTL::CommandQueue *queue = device->newCommandQueue();
-
-            //     MTL::CommandBuffer *buffer = queue->commandBuffer();
-
-            //     MTL::RenderCommandEncoder *encoder = buffer->renderCommandEncoder(pass);
-
-            //     encoder->setVertexBuffer(vertexBuffer, 0, 0);
-            //     NS::UInteger vertexCount = 1;
-            //     NS::UInteger vertexStart = 0;
-            //     encoder->drawPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle, vertexStart, vertexCount);
-            //     encoder->setViewport(MTL::Viewport{
-            //         0.0f, 0.0f,
-            //         (double)windowParameters.Width, (double)windowParameters.Height,
-            //         0.0f, 1.0f});
-            //     encoder->endEncoding();
-            //     buffer->presentDrawable(drawable);
-            //     buffer->commit();
-
-            //     drawable->release();
-
-            //     // Delay to manage frame rate (optional)
-            //     SDL_Delay(16);
         }
     }
 } // namespace BNS

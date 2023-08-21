@@ -65,7 +65,7 @@ namespace bns
          * @brief Gets or creates a pipeline for the texture.
          * Creation is handled internally, so just get reference.
          */
-        WebGPUSpritePipeline &GetPipeline( WebGPUTexture2D *texture);
+        WebGPUSpritePipeline &GetPipeline(WebGPUTexture2D *texture);
 
     public:
         /**
@@ -77,7 +77,11 @@ namespace bns
 
         void BeginFrame() override;
 
-        void Draw(Texture2D *texture, const Rect &drawRect, const Rect& sourceRect, const Color& tintColor) override;
+        void Draw(Texture2D *texture,
+                  const Rect &drawRect,
+                  const Rect &sourceRect,
+                  const Color &tintColor,
+                  f32 rotationInRadians, const Vec2f &rotationOrigin) override;
 
         void EndFrame() override;
     };

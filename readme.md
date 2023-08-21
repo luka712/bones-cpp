@@ -1,6 +1,10 @@
 # About 
 
-Project is imagined as multiplatform project with 4 main renderers (WebGPU as main cross platform solution, Metal as Mac solution, Vulkan as Linux solution and DirectX 12 as Windows solution). In future we will also consider mobile devices.
+Project is imagined as multiplatform project with 4 main renderers for learning purposes
+- WebGPU, Vulkan as main cross platform solutions
+- Metal as Mac solution 
+- DirectX 12 as Windows solution
+Note: In future it will also consider mobile devices.
 
 Projects files are build with CMake, one can use it to generate following solutions:
 - makefile project build
