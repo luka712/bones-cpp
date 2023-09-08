@@ -1,6 +1,7 @@
 #include "Framework.hpp"
 #include "renderer/WebGPURenderer.hpp"
 #include <iostream>
+#include <webgpu/webgpu.hpp>
 
 namespace bns
 {
@@ -56,7 +57,7 @@ namespace bns
         // code). In practice, we know that when the wgpuInstanceRequestAdapter()
         // function returns its callback has been called.
         assert(outData.isSuccess);
-
+        
         m_adapter = outData.adapter;
         return m_adapter;
     }
@@ -175,7 +176,9 @@ namespace bns
 
         m_drawCommandEncoder = wgpuDeviceCreateCommandEncoder(m_device, nullptr);
         m_currentPassEncoder = wgpuCommandEncoderBeginRenderPass(m_drawCommandEncoder, &renderpassInfo);
+        wgpuRenderPassEncoderPushDebugGroup(m_currentPassEncoder, "debug");
 
+        
         // m_currentTextureView = wgpuSwapChainGetCurrentTextureView(m_swapChain);
         // WGPURenderPassDescriptor renderpassInfo = {};
         // WGPURenderPassColorAttachment colorAttachment = {};
@@ -200,7 +203,10 @@ namespace bns
 
     void WebGPURenderer::EndDraw()
     {
+        wgpuRenderPassEncoderPopDebugGroup(m_currentPassEncoder);
         wgpuRenderPassEncoderEnd(m_currentPassEncoder);
+        
+        
         wgpuRenderPassEncoderRelease(m_currentPassEncoder);
 
         WGPUCommandBuffer commands = wgpuCommandEncoderFinish(m_drawCommandEncoder, nullptr);

@@ -5,6 +5,7 @@
 #include "data/Types.hpp"
 #include "sprite/metal/MetalSpritePipeline.hpp"
 #include "sprite/SpriteRenderer.hpp"
+#include "font/SpriteFont.hpp"
 #include <Metal/Metal.hpp>
 #include <map>
 #include <stack>
@@ -82,6 +83,12 @@ namespace bns
                   const Rect &sourceRect,
                   const Color &color,
                   f32 rotationInRadians, const Vec2f &rotationOrigin) override;
+
+        void DrawString(SpriteFont *font,
+                        const std::string &text,
+                        const Vec2f &position,
+                        const Color &color,
+                        const f32 scale) override;
 
         void EndFrame() override;
     };

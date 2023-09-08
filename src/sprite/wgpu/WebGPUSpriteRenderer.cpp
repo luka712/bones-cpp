@@ -191,11 +191,17 @@ namespace bns
         pipeline.InstanceIndex++;
     }
 
+    void WebGPUSpriteRenderer::DrawString(SpriteFont *font, const std::string &text, const Vec2f &position,
+                                          const Color &color, const f32 scale)
+    {
+        
+    }
+
     void WebGPUSpriteRenderer::EndFrame()
     {
         WGPURenderPassEncoder renderPass = m_framework.Context.CurrentWebGPURenderPassEncoder;
         WGPUQueue queue = wgpuDeviceGetQueue(m_device);
-
+        
         std::stack<WGPUBuffer> tempVertexBufferStack;
 
         // go through each key
@@ -248,7 +254,10 @@ namespace bns
                                                     6 * SPRITE_RENDERER_MAX_SPRITES_PER_DRAW * sizeof(u16));
 
                 // draw
+                wgpuRenderPassEncoderPushDebugGroup(renderPass, "Draw Indexed");
                 wgpuRenderPassEncoderDrawIndexed(renderPass, spritePipeline->InstanceIndex * 6, 1, 0, 0, 0);
+                wgpuRenderPassEncoderPopDebugGroup(renderPass);
+
 
                 spritePipeline->InstanceIndex = 0;
             }

@@ -13,7 +13,7 @@ namespace bns
     class MetalTexture2D final : public Texture2D
     {
     private:
-        Framework &m_framework;
+        const Framework &m_framework;
 
         /**
          * Temporary image data. To be released by user after texture is initialized.
@@ -35,7 +35,7 @@ namespace bns
         /**
          * @brief The constructor.
          */
-        MetalTexture2D(Framework &framework, ImageData *imageData);
+        MetalTexture2D(const Framework &framework, ImageData *imageData);
 
         /**
          * @brief Initialize the texture.

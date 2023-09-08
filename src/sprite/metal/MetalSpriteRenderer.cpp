@@ -189,10 +189,91 @@ namespace bns
         pipeline.InstanceIndex++;
     }
 
+    void MetalSpriteRenderer::DrawString(SpriteFont *font,
+                                         const std::string &text,
+                                         const Vec2f &position,
+                                         const Color &tintColor,
+                                         const f32 scale)
+    {
+        MetalTexture2D *metalTexture = static_cast<MetalTexture2D *>(font->GetTexture());
+
+        i32 advanceX = 0;
+        for (char textChar : text)
+        {
+            MetalSpritePipeline &pipeline = GetPipeline(metalTexture);
+            u32 i = pipeline.InstanceIndex * FLOATS_PER_INSTANCE;
+
+            auto data = pipeline.DataArray;
+
+            SpriteFontChar fontChar = font->GetChar(textChar);
+
+            i32 x = position.X + (advanceX + fontChar.Offset.X) * scale;
+            i32 y = position.Y + fontChar.Offset.Y * scale;
+            i32 w = fontChar.Size.X * scale;
+            i32 h = fontChar.Size.Y * scale;
+
+            Vec2f topLeft = Vec2f(x, y);
+            Vec2f topRight = Vec2f(x + w, y);
+            Vec2f bottomRight = Vec2f(x + w, y + h);
+            Vec2f bottomLeft = Vec2f(x, y + h);
+
+            Vec2f a = fontChar.TextureCoords.TopLeft;
+            Vec2f b = fontChar.TextureCoords.TopRight;
+            Vec2f c = fontChar.TextureCoords.BottomRight;
+            Vec2f d = fontChar.TextureCoords.BottomLeft;
+
+            // t1
+            data[i + 0] = topLeft.X;
+            data[i + 1] = topLeft.Y;
+            data[i + 2] = 0.0f;        // z
+            data[i + 3] = a.X;         // u
+            data[i + 4] = a.Y;         // v
+            data[i + 5] = tintColor.R; // r
+            data[i + 6] = tintColor.G; // g
+            data[i + 7] = tintColor.B; // b
+            data[i + 8] = tintColor.A; // a
+
+            // t2
+            data[i + 9] = topRight.X;
+            data[i + 10] = topRight.Y;
+            data[i + 11] = 0.0f;        // z
+            data[i + 12] = b.X;         // u
+            data[i + 13] = b.Y;         // v
+            data[i + 14] = tintColor.R; // r
+            data[i + 15] = tintColor.G; // g
+            data[i + 16] = tintColor.B; // b
+            data[i + 17] = tintColor.A; // a
+
+            // t3
+            data[i + 18] = bottomRight.X;
+            data[i + 19] = bottomRight.Y;
+            data[i + 20] = 0.0f;        // z
+            data[i + 21] = c.X;         // u
+            data[i + 22] = c.Y;         // v
+            data[i + 23] = tintColor.R; // r
+            data[i + 24] = tintColor.G; // g
+            data[i + 25] = tintColor.B; // b
+            data[i + 26] = tintColor.A; // a
+
+            // t4
+            data[i + 27] = bottomLeft.X;
+            data[i + 28] = bottomLeft.Y;
+            data[i + 29] = 0.0f;        // z
+            data[i + 30] = d.X;         // u
+            data[i + 31] = d.Y;         // v
+            data[i + 32] = tintColor.R; // r
+            data[i + 33] = tintColor.G; // g
+            data[i + 34] = tintColor.B; // b
+            data[i + 35] = tintColor.A; // a
+
+            advanceX += fontChar.Advance;
+            pipeline.InstanceIndex++;
+        }
+    }
+
     void MetalSpriteRenderer::EndFrame()
     {
         MTL::RenderCommandEncoder *renderPass = m_framework.Context.CurrentMetalRenderCommandEncoder;
-        //  WGPUQueue queue = wgpuDeviceGetQueue(m_device);
 
         std::stack<MTL::Buffer *> tempVertexBufferStack;
 

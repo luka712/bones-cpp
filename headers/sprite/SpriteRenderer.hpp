@@ -2,11 +2,13 @@
 
 #define BNS_SPRITE_RENDERER_HPP
 
+#include <string>
 #include "textures/Texture2D.hpp"
 #include "data/Color.hpp"
 #include "data/Rect.hpp"
 #include "data/Vec2.hpp"
 #include "camera/SpriteRendererCamera.hpp"
+#include "font/SpriteFont.hpp"
 
 namespace bns
 {
@@ -51,7 +53,26 @@ namespace bns
          * @param sourceRect The rect that indicates the part of the texture to draw.
          * @param tintColor The tint color.
          */
-        virtual void Draw(Texture2D *texture, const Rect &drawRect, const Rect &sourceRect, const Color &tintColor, f32 rotationInRadians, const Vec2f& rotationOrigin) = 0;
+        virtual void Draw(Texture2D *texture,
+                          const Rect &drawRect,
+                          const Rect &sourceRect,
+                          const Color &tintColor,
+                          f32 rotationInRadians,
+                          const Vec2f &rotationOrigin) = 0;
+
+        /**
+         * @brief Draw a string.
+         * @param font The font to use.
+         * @param text The text to draw.
+         * @param position The position to draw at.
+         * @param color The color to draw with.
+         * @param scale The scale to draw with.
+         */
+        virtual void DrawString(SpriteFont *font,
+                                const std::string &text,
+                                const Vec2f &position,
+                                const Color &color,
+                                const f32 scale) = 0;
 
         /**
          * To be called when the frame ends.

@@ -3,7 +3,7 @@
 
 namespace bns
 {
-    MetalTexture2D::MetalTexture2D(Framework &framework, ImageData *imageData)
+    MetalTexture2D::MetalTexture2D(const Framework &framework, ImageData *imageData)
         : Texture2D(imageData->Width, imageData->Height), m_framework(framework), m_imageData(imageData)
     {
     }

@@ -47,6 +47,7 @@ bns::ImageLoader::ImageLoader(Directory& directory)
 
 bns::ImageData *bns::ImageLoader::LoadImage(std::string path)
 {
+    // TODO: get rid of root
     std::string root = m_directory.Root();
 
     // Load image at specified path

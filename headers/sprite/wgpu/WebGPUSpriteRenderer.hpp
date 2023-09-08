@@ -83,6 +83,12 @@ namespace bns
                   const Color &tintColor,
                   f32 rotationInRadians, const Vec2f &rotationOrigin) override;
 
+        void DrawString(SpriteFont *font,
+                        const std::string &text,
+                        const Vec2f &position,
+                        const Color &color,
+                        f32 scale) override;
+
         void EndFrame() override;
     };
 }

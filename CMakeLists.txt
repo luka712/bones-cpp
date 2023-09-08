@@ -35,7 +35,9 @@ set(CMAKE_BUILD_TYPE Debug)
 
 file(GLOB SOURCES 
 src/*.cpp src/**/*.cpp src/**/**/*.cpp src/**/**/**/*.cpp 
-headers/*.hpp headers/**/*.hpp headers/*.hpp headers/**/**/*.hpp headers/**/**/**/*.hpp)
+headers/*.hpp headers/**/*.hpp headers/*.hpp headers/**/**/*.hpp headers/**/**/**/*.hpp
+vendor/tinyxml2/tinyxml2.cpp
+)
 
 # copy assets to build/assets
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR}/assets)

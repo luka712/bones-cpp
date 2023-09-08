@@ -27,6 +27,7 @@ namespace bns
         m_windowManager = new GLFWWindowManager();
         m_geometryBuilder = new GeometryBuilder();
         m_imageLoader = new ImageLoader(*m_directory);
+        m_bitmapSpriteFontLoader = new BitmapSpriteFontLoader(*this);
 
         // WebGPU initialize
         bool wgpu = false;
@@ -136,6 +137,8 @@ namespace bns
         MetalRenderer renderer(*this);
         renderer.Initialize(swapchain);
 
+        SpriteFont *font = GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
+
         m_spriteRenderer->Initialize();
 
         Mesh *mesh = m_meshFactory->CreateQuadMesh();
@@ -163,18 +166,20 @@ namespace bns
                 {
                     quit = true;
                 }
+            }
 
                 renderer.BeginDraw();
 
                 // testMaterial->Draw(camera, mesh);
-
-                m_spriteRenderer->BeginFrame();
+                  m_spriteRenderer->BeginFrame();
 
                 i32 hw = testTexture->GetWidth() / 2;
                 i32 hh = testTexture->GetHeight() / 2;
 
                 rotation += 0.1;
                 Vec2f rotationOrigin = Vec2f(0.5f, 0.5f);
+
+                m_spriteRenderer->DrawString(font, "Hello World!", Vec2f(300, 300), Color::White(), 1.0f);
 
                 // whole texture
                 m_spriteRenderer->Draw(testTexture, Rect(0, 0, 100, 100));
@@ -196,8 +201,6 @@ namespace bns
                 renderer.EndDraw();
 
                 SDL_Delay(16);
-            }
-
         }
     }
 } // namespace BNS

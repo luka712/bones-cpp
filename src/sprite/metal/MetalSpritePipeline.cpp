@@ -7,7 +7,9 @@ namespace bns
 
     MetalSpritePipeline::MetalSpritePipeline(MTL::RenderPipelineState *pipeline,
                                              MetalTexture2D *texture)
-        : m_pipeline(pipeline), m_texture(texture) {}
+        : m_pipeline(pipeline), m_texture(texture) {
+            InstanceIndex = 0;
+        }
 
     // NOTE: STATIC FUNCTION
     MetalSpritePipeline *MetalSpritePipeline::Create(MTL::Device *device, MetalTexture2D *texture, MTL::Buffer *projectionViewBuffer)

@@ -12,7 +12,7 @@ namespace bns
 {
     class Framework;
 
-    class MetalRenderer final 
+    class MetalRenderer final
     {
     private:
         Framework &m_framework;
@@ -30,6 +30,12 @@ namespace bns
          * It is similar to an adapter in DirectX.
         */
         MTL::Device *m_device;
+        
+        /**
+          * @brief CommandQueue is a class in Apple's Metal framework that manages the scheduling and execution of command buffers.
+          * It is similar to a command queue in WebGPU.
+         */
+        MTL::CommandQueue *m_queue;
 
         /**
          * @brief MetalDrawable is a protocol in the Metal framework that represents a drawable texture,

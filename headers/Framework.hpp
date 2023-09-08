@@ -2,9 +2,12 @@
 
 #define BNS_ENGINE_H
 
+#define USE_METAL
+
 #include "window/Window.hpp"
 #include "loaders/FileLoader.hpp"
 #include "loaders/ImageLoader.hpp"
+#include "loaders/BitmapSpriteFontLoader.hpp"
 #include "material/MaterialFactory.hpp"
 #include "geometry/GeometryBuilder.hpp"
 #include "mesh/MeshFactory.hpp"
@@ -51,6 +54,7 @@ namespace bns
         ImageLoader *m_imageLoader;
         Directory *m_directory;
         SpriteRenderer *m_spriteRenderer;
+        BitmapSpriteFontLoader* m_bitmapSpriteFontLoader;
 
         void InitializeForMetal(bns::WindowParameters windowParameters);
         void InitializeForWGPU(bns::WindowParameters windowParameters);
@@ -112,6 +116,14 @@ namespace bns
         inline SpriteRenderer &GetSpriteRenderer() const
         {
             return *m_spriteRenderer;
+        }
+
+        /**
+         * @brief Get the bitmap sprite font loader.
+         */
+        inline BitmapSpriteFontLoader& GetBitmapSpriteFontLoader() const
+        {
+            return *m_bitmapSpriteFontLoader;
         }
 
         FileLoader FileLoader;
