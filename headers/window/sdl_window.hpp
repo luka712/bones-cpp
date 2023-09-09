@@ -5,23 +5,24 @@
 #include "window/Window.hpp"
 #include <SDL2/SDL.h>
 
-
-namespace bns 
+namespace bns
 {
-      /**
+    /**
      * @brief SDL implementation of WindowManager.
      */
-    class SDLWindowManager : public WindowManager
+    class SDLWindowManager final : public WindowManager
     {
     private:
         SDL_Window *m_window;
         SDL_Renderer *m_renderer;
 
+        void CreateWindowAndRenderer(WindowParameters windowParameters);
+
     public:
         SDLWindowManager();
         ~SDLWindowManager();
+        bool InitializeForWGPU(WindowParameters windowParameters, WGPUInstance *outInstance, WGPUSurface *outSurface) override;
         CA::MetalLayer *InitializeForMetal(WindowParameters windowParameters) override;
-        bool InitializeForWGPU(WindowParameters windowParameters, WGPUInstance* outInstance, WGPUSurface* outSurface) override;
     };
 }
 

@@ -90,7 +90,10 @@
         "random": "cpp",
         "algorithm": "cpp",
         "filesystem": "cpp",
-        "*.inc": "cpp"
+        "*.inc": "cpp",
+        "webgpu.h": "c",
+        "sdl_syswm.h": "c",
+        "glfw3native.h": "c"
     },
     "cmake.configureOnOpen": true
 }

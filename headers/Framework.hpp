@@ -58,6 +58,7 @@ namespace bns
 
         void InitializeForMetal(bns::WindowParameters windowParameters);
         void InitializeForWGPU(bns::WindowParameters windowParameters);
+        void InitializeForWGPU2(bns::WindowParameters windowParameters);
 
     public:
         FrameworkContext Context;

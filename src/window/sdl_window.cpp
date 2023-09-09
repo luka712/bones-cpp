@@ -1,5 +1,6 @@
 #include "window/sdl_window.hpp"
 #include <iostream>
+#include "SDL2Extension/SDL2_Extension.h"
 
 namespace bns
 {
@@ -18,7 +19,7 @@ namespace bns
         SDL_Quit();
     }
 
-    CA::MetalLayer *SDLWindowManager::InitializeForMetal(WindowParameters windowParameters)
+    void SDLWindowManager::CreateWindowAndRenderer(WindowParameters windowParameters)
     {
         // Last parameters is for SDL flags, such as window size etc...
         int x_pos = windowParameters.PosX;
@@ -48,7 +49,7 @@ namespace bns
         {
             SDL_Log("Failed to create SDL window: %s", SDL_GetError());
             SDL_Quit();
-            return nullptr;
+            throw std::runtime_error("Failed to create SDL window");
         }
 
         // create renderer
@@ -57,18 +58,33 @@ namespace bns
         {
             SDL_Log("Failed to create SDL renderer: %s", SDL_GetError());
             SDL_Quit();
-            return nullptr;
+            throw std::runtime_error("Failed to create SDL renderer");
         }
 
         // query the window size
         SDL_GetWindowSize(m_window, &m_windowSize.X, &m_windowSize.Y);
+    }
 
+    CA::MetalLayer *SDLWindowManager::InitializeForMetal(WindowParameters windowParameters)
+    {
+        CreateWindowAndRenderer(windowParameters);
         return (CA::MetalLayer *)SDL_RenderGetMetalLayer(m_renderer);
     }
 
-    bool SDLWindowManager::InitializeForWGPU(WindowParameters windowParameters, WGPUInstance *outInstance, WGPUSurface *outSurface) 
+    bool SDLWindowManager::InitializeForWGPU(WindowParameters windowParameters, WGPUInstance *outInstance, WGPUSurface *outSurface)
     {
-        std::cout << "InitializeForWGPU not implemented for SDL" << std::endl;
-        return false;
+        CreateWindowAndRenderer(windowParameters);
+
+        WGPUInstanceDescriptor desc = {};
+        desc.nextInChain = nullptr;
+        *outInstance = wgpuCreateInstance(&desc);
+        if (!outInstance)
+        {
+            std::cerr << "Could not initialize WebGPU!" << std::endl;
+            return false;
+        }
+        *outSurface = GetWGPUSurface(*outInstance, m_window);
+        
+        return true;
     }
 } // namespace BNS

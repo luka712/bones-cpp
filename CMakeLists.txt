@@ -10,6 +10,7 @@ include(utils.cmake)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/webgpu)
 add_subdirectory(vendor/glfw3webgpu)
+add_subdirectory(vendor/SDL2Extension)
 
 # Set the target architecture to arm64
 if(APPLE)
@@ -62,10 +63,15 @@ include_directories(
 # Add the executable
 add_executable(App main.cpp ${SOURCES})
 
+
+target_compile_options(glfw3webgpu PRIVATE -x objective-c)
+target_compile_options(SDL2Extension PRIVATE -x objective-c)
+
+
 if(APPLE)
-target_link_libraries(App ${SDL2_LIBRARIES} ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} glfw webgpu glfw3webgpu)
+target_link_libraries(App ${SDL2_LIBRARIES} ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} glfw webgpu glfw3webgpu SDL2Extension)
 else()
-target_link_libraries(App ${SDL2_LIBRARIES} glfw webgpu glfw3webgpu)
+target_link_libraries(App ${SDL2_LIBRARIES} glfw webgpu glfw3webgpu SDL2Extension)
 
 endif()
 

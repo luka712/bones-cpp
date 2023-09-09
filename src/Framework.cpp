@@ -30,7 +30,7 @@ namespace bns
         m_bitmapSpriteFontLoader = new BitmapSpriteFontLoader(*this);
 
         // WebGPU initialize
-        bool wgpu = false;
+        bool wgpu = true;
         if (wgpu)
         {
             m_materialFactory = new WebGPUMaterialFactory(*this);
@@ -51,8 +51,8 @@ namespace bns
 
     void Framework::Initialize(WindowParameters windowParameters)
     {
-        InitializeForMetal(windowParameters);
-        // InitializeForWGPU(windowParameters);
+        // InitializeForMetal(windowParameters);
+        InitializeForWGPU2(windowParameters);
     }
 
     void Framework::InitializeForWGPU(WindowParameters windowParameters)
@@ -127,6 +127,84 @@ namespace bns
         renderer.Destroy();
     }
 
+    void Framework::InitializeForWGPU2(WindowParameters windowParameters)
+    {
+        m_windowManager = new SDLWindowManager();
+
+        WGPUInstance instance;
+        WGPUSurface surface;
+        m_windowManager->InitializeForWGPU(windowParameters, &instance, &surface);
+
+        WebGPURenderer renderer(*this);
+        renderer.Initialize(instance, surface);
+
+        SpriteFont *font = GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
+
+        m_spriteRenderer->Initialize();
+
+        Mesh *mesh = m_meshFactory->CreateQuadMesh();
+
+        // TEST DATA
+        WebGPUTexture2D *testTexture = new WebGPUTexture2D(*this, m_imageLoader->LoadImage("assets/uv_test.png"));
+        testTexture->Initialize();
+
+        WebGPUBasicMeshTexturedTestMaterial *testMaterial = new WebGPUBasicMeshTexturedTestMaterial(*this, testTexture);
+        testMaterial->Initialize();
+
+        bool quit = false;
+        SDL_Event event;
+
+        FreeCamera camera;
+
+        static f32 rotation = 0.0f;
+
+        while (!quit)
+        {
+            // Process events
+            while (SDL_PollEvent(&event))
+            {
+                if (event.type == SDL_QUIT)
+                {
+                    quit = true;
+                }
+            }
+
+            renderer.BeginDraw();
+
+            // testMaterial->Draw(camera, mesh);
+            m_spriteRenderer->BeginFrame();
+
+            i32 hw = testTexture->GetWidth() / 2;
+            i32 hh = testTexture->GetHeight() / 2;
+
+            rotation += 0.1;
+            Vec2f rotationOrigin = Vec2f(0.5f, 0.5f);
+
+            m_spriteRenderer->DrawString(font, "Hello World!", Vec2f(300, 300), Color::White(), 1.0f);
+
+            // whole texture
+            m_spriteRenderer->Draw(testTexture, Rect(0, 0, 100, 100));
+
+            // top left quadrant
+            m_spriteRenderer->Draw(testTexture, Rect(100, 0, 100, 100), Rect(0, 0, hw, hh), Color::White(), rotation, rotationOrigin);
+
+            // top right quadrant
+            m_spriteRenderer->Draw(testTexture, Rect(200, 0, 100, 100), Rect(hw, 0, hw, hh), Color::White(), rotation, rotationOrigin);
+
+            // bottom left quadrant
+            m_spriteRenderer->Draw(testTexture, Rect(100, 100, 100, 100), Rect(0, hh, hw, hh), Color::White(), rotation, rotationOrigin);
+
+            // bottom right quadrant
+            m_spriteRenderer->Draw(testTexture, Rect(200, 100, 100, 100), Rect(hw, hh, hw, hh), Color::White(), rotation, rotationOrigin);
+
+            m_spriteRenderer->EndFrame();
+
+            renderer.EndDraw();
+
+            SDL_Delay(16);
+        }
+    }
+
     void Framework::InitializeForMetal(WindowParameters windowParameters)
     {
         m_windowManager = new SDLWindowManager();
@@ -168,39 +246,39 @@ namespace bns
                 }
             }
 
-                renderer.BeginDraw();
+            renderer.BeginDraw();
 
-                // testMaterial->Draw(camera, mesh);
-                  m_spriteRenderer->BeginFrame();
+            // testMaterial->Draw(camera, mesh);
+            m_spriteRenderer->BeginFrame();
 
-                i32 hw = testTexture->GetWidth() / 2;
-                i32 hh = testTexture->GetHeight() / 2;
+            i32 hw = testTexture->GetWidth() / 2;
+            i32 hh = testTexture->GetHeight() / 2;
 
-                rotation += 0.1;
-                Vec2f rotationOrigin = Vec2f(0.5f, 0.5f);
+            rotation += 0.1;
+            Vec2f rotationOrigin = Vec2f(0.5f, 0.5f);
 
-                m_spriteRenderer->DrawString(font, "Hello World!", Vec2f(300, 300), Color::White(), 1.0f);
+            m_spriteRenderer->DrawString(font, "Hello World!", Vec2f(300, 300), Color::White(), 1.0f);
 
-                // whole texture
-                m_spriteRenderer->Draw(testTexture, Rect(0, 0, 100, 100));
+            // whole texture
+            m_spriteRenderer->Draw(testTexture, Rect(0, 0, 100, 100));
 
-                // top left quadrant
-                m_spriteRenderer->Draw(testTexture, Rect(100, 0, 100, 100), Rect(0, 0, hw, hh), Color::White(), rotation, rotationOrigin);
+            // top left quadrant
+            m_spriteRenderer->Draw(testTexture, Rect(100, 0, 100, 100), Rect(0, 0, hw, hh), Color::White(), rotation, rotationOrigin);
 
-                // top right quadrant
-                m_spriteRenderer->Draw(testTexture, Rect(200, 0, 100, 100), Rect(hw, 0, hw, hh), Color::White(), rotation, rotationOrigin);
+            // top right quadrant
+            m_spriteRenderer->Draw(testTexture, Rect(200, 0, 100, 100), Rect(hw, 0, hw, hh), Color::White(), rotation, rotationOrigin);
 
-                // bottom left quadrant
-                m_spriteRenderer->Draw(testTexture, Rect(100, 100, 100, 100), Rect(0, hh, hw, hh), Color::White(), rotation, rotationOrigin);
+            // bottom left quadrant
+            m_spriteRenderer->Draw(testTexture, Rect(100, 100, 100, 100), Rect(0, hh, hw, hh), Color::White(), rotation, rotationOrigin);
 
-                // bottom right quadrant
-                m_spriteRenderer->Draw(testTexture, Rect(200, 100, 100, 100), Rect(hw, hh, hw, hh), Color::White(), rotation, rotationOrigin);
+            // bottom right quadrant
+            m_spriteRenderer->Draw(testTexture, Rect(200, 100, 100, 100), Rect(hw, hh, hw, hh), Color::White(), rotation, rotationOrigin);
 
-                m_spriteRenderer->EndFrame();
+            m_spriteRenderer->EndFrame();
 
-                renderer.EndDraw();
+            renderer.EndDraw();
 
-                SDL_Delay(16);
+            SDL_Delay(16);
         }
     }
 } // namespace BNS
