@@ -30,19 +30,15 @@ namespace bns
         m_bitmapSpriteFontLoader = new BitmapSpriteFontLoader(*this);
 
         // WebGPU initialize
-        bool wgpu = true;
-        if (wgpu)
-        {
-            m_materialFactory = new WebGPUMaterialFactory(*this);
-            m_meshFactory = new WebGPUMeshFactory(*this);
-            m_spriteRenderer = new WebGPUSpriteRenderer(*this);
-        }
-        else
-        {
-            // m_materialFactory = new MetalMaterialFactory(*this);
-            m_meshFactory = new MetalMeshFactory(*this);
-            m_spriteRenderer = new MetalSpriteRenderer(*this);
-        }
+#if __APPLE__ && USE_METAL
+        // m_materialFactory = new MetalMaterialFactory(*this);
+        m_meshFactory = new MetalMeshFactory(*this);
+        m_spriteRenderer = new MetalSpriteRenderer(*this);
+#else
+        m_materialFactory = new WebGPUMaterialFactory(*this);
+        m_meshFactory = new WebGPUMeshFactory(*this);
+        m_spriteRenderer = new WebGPUSpriteRenderer(*this);
+#endif
     }
 
     Framework::~Framework()
@@ -51,11 +47,14 @@ namespace bns
 
     void Framework::Initialize(WindowParameters windowParameters)
     {
-        // InitializeForMetal(windowParameters);
-        InitializeForWGPU2(windowParameters);
+#if __APPLE__ && USE_METAL
+        InitializeForMetal(windowParameters);
+#else
+        InitializeForWGPU(windowParameters);
+#endif
     }
 
-    void Framework::InitializeForWGPU(WindowParameters windowParameters)
+    void Framework::InitializeForWGPUGLFW(WindowParameters windowParameters)
     {
 
         // Initialize the window manager and get the WGPU instance and surface
@@ -127,7 +126,7 @@ namespace bns
         renderer.Destroy();
     }
 
-    void Framework::InitializeForWGPU2(WindowParameters windowParameters)
+    void Framework::InitializeForWGPU(WindowParameters windowParameters)
     {
         m_windowManager = new SDLWindowManager();
 

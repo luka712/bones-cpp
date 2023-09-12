@@ -58,17 +58,17 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/metal-cpp
 )
 
-
-
 # Add the executable
 add_executable(App main.cpp ${SOURCES})
-
 
 target_compile_options(glfw3webgpu PRIVATE -x objective-c)
 target_compile_options(SDL2Extension PRIVATE -x objective-c)
 
+# If we are on Apple, we can use Metal or WebGPU (Metal is the default)
+target_compile_options(App PRIVATE -DUSE_METAL=1)
 
 if(APPLE)
+# Link the libraries to the executable (SDL2, Metal, QuartzCore, Foundation) 
 target_link_libraries(App ${SDL2_LIBRARIES} ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} glfw webgpu glfw3webgpu SDL2Extension)
 else()
 target_link_libraries(App ${SDL2_LIBRARIES} glfw webgpu glfw3webgpu SDL2Extension)
@@ -96,6 +96,8 @@ else()
 # Set the executable's properties for Cmake
 set_target_properties(App PROPERTIES CXX_STANDARD 17)
 endif()
+
+# set 
 set_target_properties(webgpu PROPERTIES IMPORTED_LOCATION webgpu)
 set_target_properties(App PROPERTIES VS_DEBUGGER_ENVIRONMENT "DAWN_DEBUG_BREAK_ON_ERROR=1")
 

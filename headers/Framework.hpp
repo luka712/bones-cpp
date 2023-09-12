@@ -2,8 +2,6 @@
 
 #define BNS_ENGINE_H
 
-#define USE_METAL
-
 #include "window/Window.hpp"
 #include "loaders/FileLoader.hpp"
 #include "loaders/ImageLoader.hpp"
@@ -56,9 +54,18 @@ namespace bns
         SpriteRenderer *m_spriteRenderer;
         BitmapSpriteFontLoader* m_bitmapSpriteFontLoader;
 
+        /**
+         * @brief Initialize the framework with Metal as the backend.
+        */
         void InitializeForMetal(bns::WindowParameters windowParameters);
+
+        /**
+         * @brief Initialize the framework with WebGPU as the backend.
+        */
         void InitializeForWGPU(bns::WindowParameters windowParameters);
-        void InitializeForWGPU2(bns::WindowParameters windowParameters);
+
+        // Test until SDL works on all platforms
+        void InitializeForWGPUGLFW(bns::WindowParameters windowParameters);
 
     public:
         FrameworkContext Context;
