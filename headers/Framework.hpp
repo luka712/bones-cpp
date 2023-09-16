@@ -10,6 +10,7 @@
 #include "geometry/GeometryBuilder.hpp"
 #include "mesh/MeshFactory.hpp"
 #include "sprite/SpriteRenderer.hpp"
+#include "textures/TextureFactory.hpp"
 #include <webgpu/webgpu.h>
 #include <Metal/Metal.hpp>
 
@@ -53,6 +54,7 @@ namespace bns
         Directory *m_directory;
         SpriteRenderer *m_spriteRenderer;
         BitmapSpriteFontLoader* m_bitmapSpriteFontLoader;
+        TextureFactory *m_textureFactory;
 
         /**
          * @brief Initialize the framework with Metal as the backend.
@@ -132,6 +134,14 @@ namespace bns
         inline BitmapSpriteFontLoader& GetBitmapSpriteFontLoader() const
         {
             return *m_bitmapSpriteFontLoader;
+        }
+
+        /**
+         * @brief Get the texture factory.
+         */
+        inline TextureFactory& GetTextureFactory() const
+        {
+            return *m_textureFactory;
         }
 
         FileLoader FileLoader;

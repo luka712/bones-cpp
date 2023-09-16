@@ -2,7 +2,6 @@
 #include "loaders/ImageLoader.hpp"
 #include "tinyxml2/tinyxml2.h"
 #include "Framework.hpp"
-#include "textures/metal/MetalTexture2D.hpp"
 
 namespace bns
 {
@@ -13,16 +12,11 @@ namespace bns
 
     SpriteFont *BitmapSpriteFontLoader::LoadSnowBImpl(const std::string &fntPath, const std::string &imagePath)
     {
+        // load image and create texture
         ImageData *imageData = m_framework.GetImageLoader().LoadImage(imagePath);
+        Texture2D *texture = m_framework.GetTextureFactory().CreateTexture(imageData);
 
-#ifdef USE_METAL
-        // TODO: texture factory
-        Texture2D *texture = new MetalTexture2D(m_framework, imageData);
-        texture->Initialize();
-#else
-        // TODO: webpgu
-        Texture2D *texture = nullptr;
-#endif
+        // load font xml file
         std::string root = m_framework.GetDirectory().Root();
         tinyxml2::XMLDocument doc;
         doc.LoadFile(fntPath.c_str());
@@ -68,6 +62,8 @@ namespace bns
 
             charElement = charElement->NextSiblingElement("char");
         }
+
+        delete imageData;
 
         return font;
     }

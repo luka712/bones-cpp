@@ -1,49 +1,11 @@
 #include "loaders/ImageLoader.hpp"
 
-#define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.hpp>
-
-
-#pragma region ImageData 
-
-bns::ImageData::ImageData(void *data, bns::i32 width, bns::i32 height, bns::i32 channels)
-{
-    Data = data;
-    Width = width;
-    Height = height;
-    Channels = channels;
-}
-
-bns::ImageData::ImageData()
-{
-    Data = nullptr;
-}
-
-bns::ImageData::~ImageData()
-{
-    Destroy();
-}
-
-void bns::ImageData::Destroy()
-{
-    if (Data != nullptr)
-    {
-        free(Data);
-    }
-    Data = nullptr;
-    Width = 0;
-    Height = 0;
-    Channels = 0;
-}
-
-#pragma endregion
-
-
-#pragma region ImageLoader
 
 bns::ImageLoader::ImageLoader(Directory& directory)
 : m_directory(directory)
 {}
+
 
 bns::ImageData *bns::ImageLoader::LoadImage(std::string path)
 {
@@ -69,6 +31,3 @@ bns::ImageData *bns::ImageLoader::LoadImage(std::string path, bns::PixelFormat f
     return LoadImage(path);
 }
 
-
-
-#pragma endregion

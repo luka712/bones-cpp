@@ -7,6 +7,8 @@ project(
 
 include(utils.cmake)
 
+find_package(SDL2 REQUIRED) # Find the SDL2 library, assumes it's installed system-wide
+
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/webgpu)
 add_subdirectory(vendor/glfw3webgpu)
@@ -47,7 +49,7 @@ file(COPY assets DESTINATION ${CMAKE_BINARY_DIR}/assets)
 # include it only once
 include_guard(GLOBAL)
 
-find_package(SDL2 REQUIRED)
+
 include_directories(${SDL2_INCLUDE_DIRS})
 
 include_directories(
@@ -65,7 +67,7 @@ target_compile_options(glfw3webgpu PRIVATE -x objective-c)
 target_compile_options(SDL2Extension PRIVATE -x objective-c)
 
 # If we are on Apple, we can use Metal or WebGPU (Metal is the default)
-target_compile_options(App PRIVATE -DUSE_METAL=1)
+target_compile_options(App PRIVATE -DUSE_METAL=0)
 
 if(APPLE)
 # Link the libraries to the executable (SDL2, Metal, QuartzCore, Foundation) 

@@ -3,7 +3,7 @@
 #define BNS_METAL_TEXTURE_2D_HPP
 
 #include "textures/Texture2D.hpp"
-#include "loaders/ImageLoader.hpp"
+#include "data/ImageData.hpp"
 #include <Metal/Metal.hpp>
 
 namespace bns

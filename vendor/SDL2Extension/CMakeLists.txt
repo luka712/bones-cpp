@@ -4,7 +4,7 @@
 
 # The SDL2WebGPU target
 add_library(SDL2Extension STATIC SDL2_Extension.c)
-find_package(SDL2 REQUIRED)
+find_package(SDL2 REQUIRED) 
 include_directories(${SDL2_INCLUDE_DIRS})
 
 target_include_directories(SDL2Extension PUBLIC .)

@@ -4,6 +4,7 @@
 
 #include "data/Types.hpp"
 #include "file/Directory.hpp"
+#include "data/ImageData.hpp"
 #include <string>
 
 namespace bns
@@ -24,44 +25,6 @@ namespace bns
         RGBA
     };
 
-    /**
-     * @brief Interface for image data.
-     */
-    struct ImageData final
-    {
-
-    public:
-        void *Data;
-        i32 Width;
-        i32 Height;
-        i32 Channels;
-
-        /**
-         * @brief Construct a new Image Data object
-         */
-        ImageData();
-
-        /**
-         * @brief Construct a new SDLImageData object
-         *
-         * @param data
-         * @param width
-         * @param height
-         * @param channels
-         */
-        ImageData(void *data, i32 width, i32 height, i32 channels);
-
-        /**
-         * @brief Destroy the Image Data object
-         */
-        virtual ~ImageData();
-
-        /**
-         * @brief Destroy the image data.
-         */
-        virtual void Destroy();
-    };
-
     class ImageLoader
     {
     private:
@@ -78,6 +41,7 @@ namespace bns
          *
          * @param path - file path
          * @return the image data.
+         * @note The image data is allocated on the heap. It is the responsibility of the user to delete it.
          */
         ImageData *LoadImage(std::string path);
 
@@ -87,6 +51,7 @@ namespace bns
          * @param path - file path
          * @param expand_to_format - if actual returned format is less then 'exapand_to_format', format is expanded. For example RGB to RGBA.
          * @return ImageData*
+         * @note The image data is allocated on the heap. It is the responsibility of the user to delete it.
          */
         ImageData *LoadImage(std::string path, PixelFormat expand_to_format);
     };

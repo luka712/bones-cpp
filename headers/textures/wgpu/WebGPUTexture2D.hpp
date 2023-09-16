@@ -3,7 +3,7 @@
 #define BNS_WEBGPU_TEXTURE_2D_HPP
 
 #include "textures/Texture2D.hpp"
-#include "loaders/ImageLoader.hpp"
+#include "data/ImageData.hpp"
 #include <webgpu/webgpu.h>
 
 namespace bns
@@ -13,7 +13,7 @@ namespace bns
     class WebGPUTexture2D final : public Texture2D
     {
     private:
-        Framework &m_framework;
+        const Framework &m_framework;
 
         /**
          * Temporary image data. To be released by user after texture is initialized.
@@ -34,7 +34,7 @@ namespace bns
         /**
          * @brief The constructor.
          */
-        WebGPUTexture2D(Framework &framework, ImageData *imageData);
+        WebGPUTexture2D(const Framework &framework, ImageData *imageData);
 
         /**
          * @brief Initialize the texture.
