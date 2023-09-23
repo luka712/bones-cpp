@@ -16,7 +16,7 @@ namespace bns
          * @return WGPUPipelineLayoutDescriptor - The pipeline layout descriptor
          * @note The bind group layout array must be valid until the pipeline layout is created.
         */
-        static WGPUPipelineLayoutDescriptor CreatePipelineLayoutDescriptor(WGPUBindGroupLayout *bindGroupLayout, u32 bindGroupLayoutCount);
+        static WGPUPipelineLayoutDescriptor Create(WGPUBindGroupLayout *bindGroupLayout, u32 bindGroupLayoutCount);
     };
 }
 

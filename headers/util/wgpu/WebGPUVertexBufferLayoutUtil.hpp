@@ -6,6 +6,7 @@
 #include <vector>
 #include <map>
 #include "buffer-layout/BufferLayoutData.hpp"
+
 namespace bns
 {
     
@@ -25,14 +26,14 @@ namespace bns
          * @brief Create a vertex buffer layout.
          * @return The vertex buffer layout.
          */
-        static WGPUVertexBufferLayout* CreateVertexBufferLayouts(std::vector<BufferLayoutDescriptor> &descriptors);
+        static WGPUVertexBufferLayout* Create(std::vector<BufferLayoutDescriptor> &descriptors);
 
         /**
          * @brief Delete the vertex buffer layouts and their attributes.
          * @param bufferLayouts The vertex buffer layouts.
          * @param count The number of vertex buffer layouts.
          */
-        static void DeleteVertexBufferLayouts(WGPUVertexBufferLayout *bufferLayouts, size_t count);
+        static void Delete(WGPUVertexBufferLayout *bufferLayouts, size_t count);
     };
 }
 

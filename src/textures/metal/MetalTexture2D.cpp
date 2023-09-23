@@ -4,7 +4,7 @@
 namespace bns
 {
     MetalTexture2D::MetalTexture2D(const Framework &framework, ImageData *imageData)
-        : Texture2D(imageData->Width, imageData->Height), m_framework(framework), m_imageData(imageData)
+        : Texture2D(imageData->Width, imageData->Height, 0, TextureFormat::RGBA_8_Unorm), m_framework(framework), m_imageData(imageData)
     {
     }
 

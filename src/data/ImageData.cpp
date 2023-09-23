@@ -16,20 +16,3 @@ bns::ImageData::ImageData()
 {
     Data = nullptr;
 }
-
-bns::ImageData::~ImageData()
-{
-    Destroy();
-}
-
-void bns::ImageData::Destroy()
-{
-    if (Data != nullptr)
-    {
-        free(Data);
-    }
-    Data = nullptr;
-    Width = 0;
-    Height = 0;
-    Channels = 0;
-}

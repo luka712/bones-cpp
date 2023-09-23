@@ -1,15 +1,21 @@
 #include "Framework.hpp"
-#include "renderer/WebGPURenderer.hpp"
+#include "renderer/wgpu/WebGPURenderer.hpp"
 #include <iostream>
 #include <webgpu/webgpu.hpp>
+#include "textures/wgpu/WebGPUTexture2D.hpp"
+#include "util/wgpu/WebGPUTextureViewDescriptorUtil.hpp"
 
 namespace bns
 {
 
     WebGPURenderer::WebGPURenderer(Framework &framework)
-        : m_framework(framework)
+        : Renderer(framework)
     {
-        ClearColor = Color::LightPink();
+    }
+
+    void *WebGPURenderer::GetSwapChainTextureView()
+    {
+        return wgpuSwapChainGetCurrentTextureView(m_swapChain);
     }
 
     WGPUAdapter WebGPURenderer::CreateAdapter()
@@ -57,7 +63,7 @@ namespace bns
         // code). In practice, we know that when the wgpuInstanceRequestAdapter()
         // function returns its callback has been called.
         assert(outData.isSuccess);
-        
+
         m_adapter = outData.adapter;
         return m_adapter;
     }
@@ -143,6 +149,7 @@ namespace bns
         wgpuQueueOnSubmittedWorkDone(m_queue, 0, onQueueDone, nullptr);
 
         m_framework.Context.WebGPUDevice = m_device;
+        m_framework.Context.WebGPUQueue = m_queue;
 
         auto handleWebGPUError = [](WGPUErrorType type, const char *message, void *userData)
         {
@@ -161,8 +168,21 @@ namespace bns
 
     void WebGPURenderer::BeginDraw()
     {
-        m_currentTextureView = wgpuSwapChainGetCurrentTextureView(m_swapChain);
-        WGPURenderPassDescriptor renderpassInfo = {};
+        m_drawCommandEncoder = wgpuDeviceCreateCommandEncoder(m_device, nullptr);
+        
+        // if there is no render texture, we render to the swap chain
+        if (m_renderTexture == nullptr)
+        {
+            m_currentTextureView = wgpuSwapChainGetCurrentTextureView(m_swapChain);
+        }
+        else
+        {
+            // if render texture is set, we render to it
+            WGPUTexture wgpuTexture = static_cast<WebGPUTexture2D *>(m_renderTexture)->Texture;
+            m_currentTextureView = wgpuTextureCreateView(wgpuTexture, nullptr);
+        }
+
+        WGPURenderPassDescriptor renderPassDesc = {};
         WGPURenderPassColorAttachment colorAttachment = {};
 
         colorAttachment.view = m_currentTextureView;
@@ -170,15 +190,14 @@ namespace bns
         colorAttachment.clearValue = {ClearColor.R, ClearColor.G, ClearColor.B, ClearColor.A};
         colorAttachment.loadOp = WGPULoadOp_Clear;
         colorAttachment.storeOp = WGPUStoreOp_Store;
-        renderpassInfo.colorAttachmentCount = 1;
-        renderpassInfo.colorAttachments = &colorAttachment;
-        renderpassInfo.depthStencilAttachment = nullptr;
+        renderPassDesc.colorAttachmentCount = 1;
+        renderPassDesc.colorAttachments = &colorAttachment;
+        renderPassDesc.depthStencilAttachment = nullptr;
 
-        m_drawCommandEncoder = wgpuDeviceCreateCommandEncoder(m_device, nullptr);
-        m_currentPassEncoder = wgpuCommandEncoderBeginRenderPass(m_drawCommandEncoder, &renderpassInfo);
+
+        m_currentPassEncoder = wgpuCommandEncoderBeginRenderPass(m_drawCommandEncoder, &renderPassDesc);
         wgpuRenderPassEncoderPushDebugGroup(m_currentPassEncoder, "debug");
 
-        
         // m_currentTextureView = wgpuSwapChainGetCurrentTextureView(m_swapChain);
         // WGPURenderPassDescriptor renderpassInfo = {};
         // WGPURenderPassColorAttachment colorAttachment = {};
@@ -205,8 +224,7 @@ namespace bns
     {
         wgpuRenderPassEncoderPopDebugGroup(m_currentPassEncoder);
         wgpuRenderPassEncoderEnd(m_currentPassEncoder);
-        
-        
+
         wgpuRenderPassEncoderRelease(m_currentPassEncoder);
 
         WGPUCommandBuffer commands = wgpuCommandEncoderFinish(m_drawCommandEncoder, nullptr);
@@ -214,7 +232,11 @@ namespace bns
 
         wgpuQueueSubmit(m_queue, 1, &commands);
         wgpuCommandBufferRelease(commands);
+
+        // present to swap chain
         wgpuSwapChainPresent(m_swapChain);
+
+
         wgpuTextureViewRelease(m_currentTextureView);
     }
 

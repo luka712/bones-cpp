@@ -1,6 +1,7 @@
 
 #include "Framework.hpp"
 #include "material/basic/wgpu/WebGPUBasicMaterial.hpp"
+#include "util/wgpu/WebGPUShaderModuleUtil.hpp"
 #include "renderer/common/WebGPURenderPipelineUtil.hpp"
 #include "mesh/wgpu/WebGPUMesh.hpp"
 #include <iostream>
@@ -58,7 +59,7 @@ namespace bns
 
         std::cout << shaderSource << std::endl;
 
-        WGPUShaderModule shaderModule = WebGPURenderPipelineUtil::CreateShaderModule(device, shaderSource);
+        WGPUShaderModule shaderModule = WebGPUShaderModuleUtil::Create(device, shaderSource);
 
         // 2 buffers
         WGPUVertexBufferLayout vertexBufferLayout[2];

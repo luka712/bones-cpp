@@ -1,5 +1,7 @@
 #include "material/test/wgpu/WebGPUNoMeshTestMaterial.hpp"
 #include "renderer/common/WebGPURenderPipelineUtil.hpp"
+#include "util/wgpu/WebGPUShaderModuleUtil.hpp"
+
 #include "Framework.hpp"
 
 namespace bns
@@ -16,7 +18,7 @@ namespace bns
     void WebGPUNoMeshTestMaterial::Initialize()
     {
         std::string shaderSource = m_framework.FileLoader.OpenFile("shaders/webgpu/no_mesh_test_shader.wgsl");
-        WGPUShaderModule shaderModule = WebGPURenderPipelineUtil::CreateShaderModule(m_framework.Context.WebGPUDevice, shaderSource);
+        WGPUShaderModule shaderModule = WebGPUShaderModuleUtil::Create(m_framework.Context.WebGPUDevice, shaderSource);
 
         WGPURenderPipelineDescriptor descriptor = {};
 

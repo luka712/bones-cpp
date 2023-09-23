@@ -62,7 +62,10 @@ namespace bns
         }
 
         // query the window size
-        SDL_GetWindowSize(m_window, &m_windowSize.X, &m_windowSize.Y);
+        int width;
+        int height;
+        SDL_GetWindowSize(m_window, &width, &height);
+        m_windowSize = Vec2u(width, height);
     }
 
     CA::MetalLayer *SDLWindowManager::InitializeForMetal(WindowParameters windowParameters)

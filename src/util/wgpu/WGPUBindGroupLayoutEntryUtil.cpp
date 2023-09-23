@@ -1,8 +1,8 @@
-#include "util/wgpu/WGPUBindGroupLayoutEntryUtil.hpp"
+#include "util/wgpu/WebGPUBindGroupLayoutEntryUtil.hpp"
 
 namespace bns
 {
-    WGPUBindGroupLayoutEntry WGPUBindGroupLayoutEntryUtil::CreateBindGroupLayoutEntry(u32 binding, WGPUShaderStageFlags shaderStage)
+    WGPUBindGroupLayoutEntry WebGPUBindGroupLayoutEntryUtil::CreateBindGroupLayoutEntry(u32 binding, WGPUShaderStageFlags shaderStage)
     {
         WGPUBindGroupLayoutEntry bindGroupLayoutEntry = {};
         bindGroupLayoutEntry.nextInChain = nullptr;
@@ -17,7 +17,7 @@ namespace bns
         return bindGroupLayoutEntry;
     }
 
-    WGPUBindGroupLayoutEntry WGPUBindGroupLayoutEntryUtil::CreateBindGroupLayoutEntry(
+    WGPUBindGroupLayoutEntry WebGPUBindGroupLayoutEntryUtil::CreateBindGroupLayoutEntry(
         u32 binding,
         WGPUShaderStageFlags shaderStage,
         WGPUSamplerBindingLayout samplerBindingLayout)
@@ -28,7 +28,7 @@ namespace bns
         return entry;
     }
 
-    WGPUBindGroupLayoutEntry WGPUBindGroupLayoutEntryUtil::CreateBindGroupLayoutEntry(
+    WGPUBindGroupLayoutEntry WebGPUBindGroupLayoutEntryUtil::CreateBindGroupLayoutEntry(
         u32 binding,
         WGPUShaderStageFlags shaderStage,
         WGPUTextureBindingLayout textureBindingLayout)
@@ -39,7 +39,7 @@ namespace bns
         return entry;
     }
 
-    WGPUBindGroupLayoutEntry WGPUBindGroupLayoutEntryUtil::CreateBindGroupLayoutEntry(
+    WGPUBindGroupLayoutEntry WebGPUBindGroupLayoutEntryUtil::CreateBindGroupLayoutEntry(
         u32 binding,
         WGPUShaderStageFlags shaderStage,
         WGPUBufferBindingLayout bufferBindingLayout)
@@ -50,7 +50,7 @@ namespace bns
         return entry;
     }
 
-    WGPUBindGroupLayoutEntry WGPUBindGroupLayoutEntryUtil::CreateBindGroupLayoutEntryForUniformBuffer(
+    WGPUBindGroupLayoutEntry WebGPUBindGroupLayoutEntryUtil::CreateBindGroupLayoutEntryForUniformBuffer(
         u32 binding,
         WGPUShaderStageFlags shaderStage)
     {
@@ -61,5 +61,26 @@ namespace bns
         entry.buffer.minBindingSize = 0;
 
         return entry;
+    }
+
+    WGPUBindGroupLayoutEntry WebGPUBindGroupLayoutEntryUtil::CreateSamplerLayoutEntry(u32 binding, WGPUShaderStageFlags shaderStage)
+    {
+        WGPUSamplerBindingLayout samplerBindingLayout = {};
+        samplerBindingLayout.type = WGPUSamplerBindingType_Filtering;
+
+        WGPUBindGroupLayoutEntry bindGroupLayoutEntry = CreateBindGroupLayoutEntry(binding, shaderStage, samplerBindingLayout);
+
+        return bindGroupLayoutEntry;
+    }
+
+    WGPUBindGroupLayoutEntry WebGPUBindGroupLayoutEntryUtil::CreateTextureLayoutEntry(u32 binding, WGPUShaderStageFlags shaderStage)
+    {
+        WGPUTextureBindingLayout textureBindingLayout = {};
+        textureBindingLayout.sampleType = WGPUTextureSampleType_Float;
+        textureBindingLayout.viewDimension = WGPUTextureViewDimension_2D;
+
+        WGPUBindGroupLayoutEntry bindGroupLayoutEntry = CreateBindGroupLayoutEntry(binding, shaderStage, textureBindingLayout);
+
+        return bindGroupLayoutEntry;
     }
 }

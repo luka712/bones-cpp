@@ -3,10 +3,52 @@
 
 namespace bns
 {
-    WebGPUTexture2D::WebGPUTexture2D(const Framework &framework, ImageData *imageData)
-        : Texture2D(imageData->Width, imageData->Height), m_framework(framework), m_imageData(imageData)
+    WebGPUTexture2D::WebGPUTexture2D(const Framework &framework, ImageData *imageData, i32 textureUsageFlags, TextureFormat format)
+        : Texture2D(imageData->Width, imageData->Height, textureUsageFlags, format),
+          m_framework(framework),
+          m_imageData(imageData)
     {
-    
+    }
+
+    WGPUTextureUsage WebGPUTexture2D::Convert(i32 textureUsageFlags) const
+    {
+        i32 usage = WGPUTextureUsage_None;
+
+        if (textureUsageFlags & TextureUsage::COPY_DST)
+        {
+            usage |= WGPUTextureUsage_CopyDst;
+        }
+        if (textureUsageFlags & TextureUsage::COPY_SRC)
+        {
+            usage |= WGPUTextureUsage_CopySrc;
+        }
+        if (textureUsageFlags & TextureUsage::TEXTURE_BINDING)
+        {
+            usage |= WGPUTextureUsage_TextureBinding;
+        }
+        if (textureUsageFlags & TextureUsage::TEXTURE_STORAGE)
+        {
+            usage |= WGPUTextureUsage_StorageBinding;
+        }
+        if (textureUsageFlags & TextureUsage::RENDER_ATTACHMENT)
+        {
+            usage |= WGPUTextureUsage_RenderAttachment;
+        }
+
+        return static_cast<WGPUTextureUsage>(usage);
+    }
+
+    WGPUTextureFormat WebGPUTexture2D::Convert(TextureFormat format) const
+    {
+        switch (format)
+        {
+        case TextureFormat::RGBA_8_Unorm:
+            return WGPUTextureFormat_RGBA8Unorm;
+        case TextureFormat::BGRA_8_Unorm:
+            return WGPUTextureFormat_BGRA8Unorm;
+        default:
+            throw std::runtime_error("Unknown texture format");
+        }
     }
 
     void WebGPUTexture2D::Initialize()
@@ -19,8 +61,10 @@ namespace bns
         textureDescriptor.mipLevelCount = 1;
         textureDescriptor.dimension = WGPUTextureDimension_2D;
         textureDescriptor.size = {(u32)m_imageData->Width, (u32)m_imageData->Height, 1};
-        textureDescriptor.format = WGPUTextureFormat_RGBA8Unorm; // TODO: maybe passed from image data
-        textureDescriptor.usage = WGPUTextureUsage_CopyDst | WGPUTextureUsage_TextureBinding;
+
+        // convert convers our custom format to the WebGPU format
+        textureDescriptor.format = Convert(m_format);
+        textureDescriptor.usage = Convert(m_textureUsageFlags);
 
         WGPUTexture texture = wgpuDeviceCreateTexture(device, &textureDescriptor);
 

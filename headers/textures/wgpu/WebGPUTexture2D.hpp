@@ -5,6 +5,7 @@
 #include "textures/Texture2D.hpp"
 #include "data/ImageData.hpp"
 #include <webgpu/webgpu.h>
+#include "util/wgpu/WebGPUTextureViewDescriptorUtil.hpp"
 
 namespace bns
 {
@@ -20,6 +21,16 @@ namespace bns
          */
         ImageData *m_imageData;
 
+        /**
+         * @brief Convert the texture usage flags to WebGPU texture usage flags.
+         */
+        WGPUTextureUsage Convert(i32 textureUsageFlags) const;
+
+        /**
+         * @brief Convert the texture format to WebGPU texture format.
+        */
+        WGPUTextureFormat Convert(TextureFormat format) const;
+
     public:
         /**
          * @brief The sampler. Exposed so that it can be used by shader, when creating texture bind group.
@@ -34,7 +45,19 @@ namespace bns
         /**
          * @brief The constructor.
          */
-        WebGPUTexture2D(const Framework &framework, ImageData *imageData);
+        WebGPUTexture2D(const Framework &framework, ImageData *imageData, i32 textureUsageFlags, TextureFormat format);
+
+        /**
+         * Creates the texture view.
+         */
+        inline WGPUTextureView CreateView() const
+        {
+            WGPUTextureViewDescriptor textureViewDesc
+                = WebGPUTextureViewDescriptorUtil::Create("Texture view: " + std::to_string(m_id));
+            textureViewDesc.format = Convert(m_format);
+            WGPUTextureView textureView = wgpuTextureCreateView(Texture, &textureViewDesc);
+            return textureView;
+        }
 
         /**
          * @brief Initialize the texture.

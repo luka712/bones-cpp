@@ -2,10 +2,11 @@
 
 namespace bns
 {
-    WGPUTextureViewDescriptor WebGPUTextureViewDescriptorUtil::CreateDefault()
+    WGPUTextureViewDescriptor WebGPUTextureViewDescriptorUtil::Create(std::string label)
     {
         WGPUTextureViewDescriptor descriptor = {};
         descriptor.nextInChain = nullptr;
+        descriptor.label = label.c_str();
         descriptor.dimension = WGPUTextureViewDimension::WGPUTextureViewDimension_2D;
         descriptor.format = WGPUTextureFormat::WGPUTextureFormat_RGBA8Unorm;
         descriptor.baseMipLevel = 0;

@@ -1,8 +1,8 @@
-#include "buffer-layout/WebGPUVertexBufferLayoutUtil.hpp"
+#include "util/wgpu/WebGPUVertexBufferLayoutUtil.hpp"
 
 namespace bns
 {
-    WGPUVertexBufferLayout *WebGPUVertexBufferLayoutUtil::CreateVertexBufferLayouts(std::vector<BufferLayoutDescriptor> &descriptors)
+    WGPUVertexBufferLayout *WebGPUVertexBufferLayoutUtil::Create(std::vector<BufferLayoutDescriptor> &descriptors)
     {
         // Vertex state
         WGPUVertexBufferLayout *bufferLayouts = new WGPUVertexBufferLayout[descriptors.size()];
@@ -40,7 +40,7 @@ namespace bns
         return bufferLayouts;
     }
 
-    void WebGPUVertexBufferLayoutUtil::DeleteVertexBufferLayouts(WGPUVertexBufferLayout *bufferLayouts, size_t count)
+    void WebGPUVertexBufferLayoutUtil::Delete(WGPUVertexBufferLayout *bufferLayouts, size_t count)
     {
         for (size_t i = 0; i < count; i++)
         {

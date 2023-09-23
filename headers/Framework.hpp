@@ -13,6 +13,8 @@
 #include "textures/TextureFactory.hpp"
 #include <webgpu/webgpu.h>
 #include <Metal/Metal.hpp>
+#include "data/Vec2.hpp"
+#include "renderer/Renderer.hpp"
 
 namespace bns
 {
@@ -23,6 +25,11 @@ namespace bns
          * This is global interface of the device.
          */
         WGPUDevice WebGPUDevice;
+
+        /**
+         * @brief The webgpu queue.
+        */
+        WGPUQueue WebGPUQueue;
 
         /**
          * @brief The current render pass encoder.
@@ -47,6 +54,7 @@ namespace bns
     {
     private:
         WindowManager *m_windowManager;
+        Renderer* m_renderer;
         GeometryBuilder *m_geometryBuilder;
         MeshFactory *m_meshFactory;
         MaterialFactory *m_materialFactory;
@@ -78,6 +86,14 @@ namespace bns
         inline WindowManager &GetWindowManager() const
         {
             return *m_windowManager;
+        }
+
+        /**
+         * @brief Get the renderer.
+         */
+        inline Renderer& GetRenderer() const
+        {
+            return *m_renderer;
         }
 
         /**

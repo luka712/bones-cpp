@@ -1,7 +1,7 @@
 #include "Framework.hpp"
 #include <vector>
 #include "renderer/MetalRenderer.hpp"
-#include "renderer/WebGPURenderer.hpp"
+#include "renderer/wgpu/WebGPURenderer.hpp"
 #include "window/sdl_window.hpp"
 #include "window/glfw_window.hpp"
 #include "material/WebGPUMaterialFactory.hpp"
@@ -18,6 +18,7 @@
 #include "textures/metal/MetalTexture2D.hpp"
 #include "sprite/wgpu/WebGPUSpriteRenderer.hpp"
 #include "sprite/metal/MetalSpriteRenderer.hpp"
+#include "post-process/wgpu/WebGPUPostProcessGrayscaleEffect.hpp"
 
 namespace bns
 {
@@ -36,6 +37,7 @@ namespace bns
         m_meshFactory = new MetalMeshFactory(*this);
         m_spriteRenderer = new MetalSpriteRenderer(*this);
 #else
+        m_renderer = new WebGPURenderer(*this);
         m_materialFactory = new WebGPUMaterialFactory(*this);
         m_meshFactory = new WebGPUMeshFactory(*this);
         m_spriteRenderer = new WebGPUSpriteRenderer(*this);
@@ -75,7 +77,7 @@ namespace bns
         FreeCamera camera;
 
         // TEST DATA
-        WebGPUTexture2D *testTexture = new WebGPUTexture2D(*this, m_imageLoader->LoadImage("assets/uv_test.png"));
+        WebGPUTexture2D *testTexture = new WebGPUTexture2D(*this, m_imageLoader->LoadImage("assets/uv_test.png"), TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST, TextureFormat::RGBA_8_Unorm);
         testTexture->Initialize();
 
         WebGPUBasicMeshTexturedTestMaterial *testMaterial = new WebGPUBasicMeshTexturedTestMaterial(*this, testTexture);
@@ -85,6 +87,9 @@ namespace bns
 
         static f32 rotation = 0.0f;
 
+        WebGPUPostProcessGrayscaleEffect effect(*this);
+        effect.Initialize();
+
         while (!glfwWindowShouldClose(((GLFWWindowManager *)m_windowManager)->m_window))
         {
             // Do nothing, this checks for ongoing asynchronous operations and call their callbacks
@@ -93,6 +98,8 @@ namespace bns
 
             glfwPollEvents();
             camera.Update(0.0f);
+
+            renderer.SetRenderTexture(effect.GetTexture());
 
             renderer.BeginDraw();
             m_spriteRenderer->BeginFrame();
@@ -121,6 +128,9 @@ namespace bns
             //    testMaterial->Draw(camera, testMesh);
 
             m_spriteRenderer->EndFrame();
+
+            effect.Draw(renderer.GetSwapChainTextureView());
+
             renderer.EndDraw();
         }
 
@@ -135,8 +145,7 @@ namespace bns
         WGPUSurface surface;
         m_windowManager->InitializeForWGPU(windowParameters, &instance, &surface);
 
-        WebGPURenderer renderer(*this);
-        renderer.Initialize(instance, surface);
+        static_cast<WebGPURenderer *>(m_renderer)->Initialize(instance, surface);
 
         SpriteFont *font = GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
 
@@ -145,7 +154,7 @@ namespace bns
         Mesh *mesh = m_meshFactory->CreateQuadMesh();
 
         // TEST DATA
-        WebGPUTexture2D *testTexture = new WebGPUTexture2D(*this, m_imageLoader->LoadImage("assets/uv_test.png"));
+        WebGPUTexture2D *testTexture = new WebGPUTexture2D(*this, m_imageLoader->LoadImage("assets/uv_test.png"), TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST, TextureFormat::RGBA_8_Unorm);
         testTexture->Initialize();
 
         WebGPUBasicMeshTexturedTestMaterial *testMaterial = new WebGPUBasicMeshTexturedTestMaterial(*this, testTexture);
@@ -158,6 +167,9 @@ namespace bns
 
         static f32 rotation = 0.0f;
 
+        WebGPUPostProcessGrayscaleEffect effect(*this);
+        effect.Initialize();
+
         while (!quit)
         {
             // Process events
@@ -168,8 +180,14 @@ namespace bns
                     quit = true;
                 }
             }
-
-            renderer.BeginDraw();
+            
+            // Do nothing, this checks for ongoing asynchronous operations and call their callbacks
+            // NOTE: this is specific to DAWN and is not part of WebGPU standard.
+            wgpuDeviceTick(Context.WebGPUDevice);
+            
+            m_renderer->BeginDraw();
+            
+            m_renderer->SetRenderTexture(effect.GetTexture());
 
             // testMaterial->Draw(camera, mesh);
             m_spriteRenderer->BeginFrame();
@@ -199,7 +217,9 @@ namespace bns
 
             m_spriteRenderer->EndFrame();
 
-            renderer.EndDraw();
+            effect.Draw(m_renderer->GetSwapChainTextureView());
+
+            m_renderer->EndDraw();
 
             SDL_Delay(16);
         }

@@ -1,9 +1,11 @@
 #include "sprite/wgpu/WebGPUSpritePipeline.hpp"
 #include "util/wgpu/WebGPUBufferUtil.hpp"
 #include "renderer/common/WebGPURenderPipelineUtil.hpp"
-#include "buffer-layout/WebGPUVertexBufferLayoutUtil.hpp"
 #include "util/WebGPUUtil.hpp"
+#include "util/wgpu/WebGPUVertexBufferLayoutUtil.hpp"
 #include "loaders/FileLoader.hpp"
+#include "util/wgpu/WebGPUShaderModuleUtil.hpp"
+
 
 namespace bns
 {
@@ -11,11 +13,11 @@ namespace bns
         : m_pipeline(pipeline), m_projectionViewBindGroup(projectionViewBindGroup), m_textureBindGroup(textureBindGroup) {}
 
     // NOTE: STATIC FUNCTION
-    WebGPUSpritePipeline *WebGPUSpritePipeline::Create(WGPUDevice device,  WebGPUTexture2D *texture, WGPUBuffer projectionViewBuffer)
+    WebGPUSpritePipeline *WebGPUSpritePipeline::Create(WGPUDevice device, WebGPUTexture2D *texture, WGPUBuffer projectionViewBuffer)
     {
         FileLoader fileLoader;
         std::string shaderSource = fileLoader.OpenFile("shaders/webgpu/sprite/sprite_shader.wgsl");
-        WGPUShaderModule shaderModule = WebGPURenderPipelineUtil::CreateShaderModule(device, shaderSource, "Sprite Shader Module");
+        WGPUShaderModule shaderModule = WebGPUShaderModuleUtil::Create(device, shaderSource, "Sprite Shader Module");
 
         WGPURenderPipelineDescriptor renderPipelineDescriptor;
         renderPipelineDescriptor.label = "Sprite Render Pipeline Descriptor";
@@ -31,7 +33,7 @@ namespace bns
         std::vector<BufferLayoutDescriptor> vertexBufferLayouts;
         vertexBufferLayouts.push_back(bufferLayoutDescriptor);
 
-        WGPUVertexBufferLayout *layout = WebGPUVertexBufferLayoutUtil::CreateVertexBufferLayouts(vertexBufferLayouts);
+        WGPUVertexBufferLayout *layout = WebGPUVertexBufferLayoutUtil::Create(vertexBufferLayouts);
 
         // TODO: move to util
         WGPUVertexState vertexState;
@@ -91,7 +93,7 @@ namespace bns
             textureBindGroupLayout};
 
         // TODO: move to util
-        WGPUPipelineLayoutDescriptor pipelineLayoutDescriptor = WebGPUUtil::PipelineLayoutDescriptor.CreatePipelineLayoutDescriptor(&bindGroupLayouts[0], 2);
+        WGPUPipelineLayoutDescriptor pipelineLayoutDescriptor = WebGPUUtil::PipelineLayoutDescriptor.Create(&bindGroupLayouts[0], 2);
         renderPipelineDescriptor.layout = wgpuDeviceCreatePipelineLayout(device, &pipelineLayoutDescriptor);
 
         renderPipelineDescriptor.depthStencil = nullptr;
@@ -116,7 +118,7 @@ namespace bns
         WGPUBindGroup projectionViewBindGroup = wgpuDeviceCreateBindGroup(device, &projectionViewBindGroupDescriptor);
 
         // Sampler/Texture bind group
-        WGPUTextureViewDescriptor textureViewDescriptor = WebGPUUtil::TextureViewDescriptor.CreateDefault();
+        WGPUTextureViewDescriptor textureViewDescriptor = WebGPUUtil::TextureViewDescriptor.Create();
         WGPUTextureView textureView = wgpuTextureCreateView(texture->Texture, &textureViewDescriptor);
 
         WGPUBindGroupEntry textureBindGroupEntries[2];
@@ -131,7 +133,7 @@ namespace bns
         wgpuBindGroupLayoutRelease(textureBindGroupLayout);
         wgpuPipelineLayoutRelease(renderPipelineDescriptor.layout);
         wgpuTextureViewRelease(textureView);
-
+        WebGPUVertexBufferLayoutUtil::Delete(layout, 1);
 
         return new WebGPUSpritePipeline(pipeline, projectionViewBindGroup, textureBindGroup);
     }

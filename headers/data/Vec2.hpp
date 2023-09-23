@@ -118,6 +118,7 @@ namespace bns
 
     typedef Vec2<f32> Vec2f;
     typedef Vec2<i32> Vec2i;
+    typedef Vec2<u32> Vec2u;
 
 };
 

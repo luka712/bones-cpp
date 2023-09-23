@@ -1,21 +1,21 @@
-#ifndef BNS_WEBGPU_RENDER_PIPELINE_UTIL_HPP
+#ifndef BNS_WEBGPU_RENDER_PIPELINE_DESCRIPTOR_UTIL_HPP
 
-#define BNS_WEBGPU_RENDER_PIPELINE_UTIL_HPP
+#define BNS_WEBGPU_RENDER_PIPELINE_DESCRIPTOR_UTIL_HPP
 
-#include <webgpu/webgpu.h>
 #include <string>
+#include <webgpu/webgpu.h>
 
 namespace bns
 {
-    class WebGPURenderPipelineUtil
+    struct WebGPURenderPipelineDescriptorUtil final
     {
-    public:
         /**
          * @brief Create a render pipeline descriptor.
          * The render pipeline descriptor is used to describe the render pipeline.
          * @param pipelineLayout The pipeline layout to use.
          * @param vertexState The vertex state to use.
          * @param fragmentState The fragment state to use.
+         * @param depthStencilState The depth stencil state to use. By default nullptr and not set.
          * @param primitiveTopology The primitive topology to use.
          * @param cullMode The cull mode to use.
          * @param label The label to use. Default is "render_pipeline".
@@ -29,14 +29,15 @@ namespace bns
          * @note The cull mode is used to describe the cull mode.
          * @note The pipeline layout is used to describe the pipeline layout.
          */
-        static WGPURenderPipelineDescriptor CreatePipelineDescriptor(
+        static WGPURenderPipelineDescriptor Create(
             WGPUPipelineLayout pipelineLayout,
             WGPUVertexState vertexState,
             WGPUFragmentState fragmentState,
+            WGPUDepthStencilState* depthStencilState = nullptr,
             WGPUPrimitiveTopology primitiveTopology = WGPUPrimitiveTopology::WGPUPrimitiveTopology_TriangleList,
             WGPUCullMode cullMode = WGPUCullMode::WGPUCullMode_None,
             std::string label = "render_pipeline");
     };
-}
+} // namespace bns
 
 #endif

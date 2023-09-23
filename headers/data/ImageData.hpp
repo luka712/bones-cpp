@@ -32,16 +32,6 @@ namespace bns
          * @param channels
          */
         ImageData(void *data, i32 width, i32 height, i32 channels);
-
-        /**
-         * @brief Destroy the Image Data object
-         */
-        virtual ~ImageData();
-
-        /**
-         * @brief Destroy the image data.
-         */
-        virtual void Destroy();
     };
 }
 

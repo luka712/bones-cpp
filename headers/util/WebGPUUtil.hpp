@@ -5,7 +5,7 @@
 #include "util/wgpu/WebGPUBufferUtil.hpp"
 #include "util/wgpu/WebGPUFragmentStateUtil.hpp"
 #include "util/wgpu/WebGPUBindGroupLayoutDescriptorUtil.hpp"
-#include "util/wgpu/WGPUBindGroupLayoutEntryUtil.hpp"
+#include "util/wgpu/WebGPUBindGroupLayoutEntryUtil.hpp"
 #include "util/wgpu/WebGPUBindGroupEntryUtil.hpp"
 #include "util/wgpu/WebGPUPipelineLayoutDescriptorUtil.hpp"
 #include "util/wgpu/WebGPUBindGroupDescriptorUtil.hpp"
@@ -19,7 +19,7 @@ namespace bns
         static WebGPUBufferUtil Buffer;
         static WebGPUFragmentStateUtil FragmentState;
         static WebGPUBindGroupLayoutDescriptorUtil BindGroupLayoutDescriptor;
-        static WGPUBindGroupLayoutEntryUtil BindGroupLayoutEntry;
+        static WebGPUBindGroupLayoutEntryUtil BindGroupLayoutEntry;
         static WebGPUBindGroupEntryUtil BindGroupEntry;
         static WebGPUPipelineLayoutDescriptorUtil PipelineLayoutDescriptor;
         static WebGPUBindGroupDescriptorUtil BindGroupDescriptor;

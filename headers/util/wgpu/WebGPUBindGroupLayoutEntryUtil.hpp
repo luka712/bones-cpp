@@ -7,7 +7,7 @@
 
 namespace bns
 {
-    struct WGPUBindGroupLayoutEntryUtil final
+    struct WebGPUBindGroupLayoutEntryUtil final
     {
         /**
          * @brief Create a bind group layout entry
@@ -74,6 +74,34 @@ namespace bns
         */
         static WGPUBindGroupLayoutEntry CreateBindGroupLayoutEntryForUniformBuffer(u32 binding,
                                                                    WGPUShaderStageFlags shaderStage);
+
+        /**
+         * @brief Create a sampler layout entry.
+         * @param binding The binding index.
+         * @param shaderStage The shader stage. One of the WGPUShaderStageFlags.
+         * Values: WGPUShaderStage_Vertex, WGPUShaderStage_Fragment, WGPUShaderStage_Compute
+         * @return The bind group layout entry
+         * @note By default the texture and storage texture are not used.
+         * @note The sampler is used.
+         * @note The buffer is a uniform buffer.
+         * @note The sampler is a filtering sampler.
+        */
+        static WGPUBindGroupLayoutEntry CreateSamplerLayoutEntry(u32 binding, WGPUShaderStageFlags shaderStage);
+
+
+        /**
+         * @brief Create a texture layout entry.
+         * @param binding The binding index.
+         * @param shaderStage The shader stage. One of the WGPUShaderStageFlags.
+         * Values: WGPUShaderStage_Vertex, WGPUShaderStage_Fragment, WGPUShaderStage_Compute
+         * @return The bind group layout entry
+         * @note By default the sampler and storage are not used.
+         * @note The texture is used.
+         * @note The buffer is a uniform buffer.
+         * @note The texture is a float texture.
+         * @note The texture is a 2D texture.
+        */
+        static WGPUBindGroupLayoutEntry CreateTextureLayoutEntry(u32 binding, WGPUShaderStageFlags shaderStage);
     };
 }
 

@@ -37,13 +37,13 @@ namespace bns
     class WindowManager
     {
     protected:
-        Vec2i m_windowSize;
+        Vec2u m_windowSize;
 
     public:
         /**
          * @brief Get the window size.
          */
-        inline Vec2i GetWindowSize() const
+        inline Vec2u GetWindowSize() const
         {
             return m_windowSize;
         }

@@ -3,7 +3,9 @@
 #include "mesh/wgpu/WebGPUMesh.hpp"
 #include "Framework.hpp"
 #include "textures/wgpu/WebGPUTexture2D.hpp"
-#include "buffer-layout/WebGPUVertexBufferLayoutUtil.hpp"
+#include "util/wgpu/WebGPUShaderModuleUtil.hpp"
+
+#include "util/wgpu/WebGPUVertexBufferLayoutUtil.hpp"
 #include "util/WebGPUUtil.hpp"
 
 namespace bns
@@ -20,7 +22,7 @@ namespace bns
     void WebGPUBasicMeshTexturedTestMaterial::Initialize()
     {
         std::string shaderSource = m_framework.FileLoader.OpenFile("shaders/webgpu/basic_mesh_textured_test_shader.wgsl");
-        WGPUShaderModule shaderModule = WebGPURenderPipelineUtil::CreateShaderModule(m_framework.Context.WebGPUDevice, shaderSource);
+        WGPUShaderModule shaderModule = WebGPUShaderModuleUtil::Create(m_framework.Context.WebGPUDevice, shaderSource);
 
         WGPURenderPipelineDescriptor descriptor = {};
 
@@ -34,7 +36,7 @@ namespace bns
         vertexLayoutDescriptors.push_back(bufferLayoutDesc);
 
         // Create vertex buffer layout
-        WGPUVertexBufferLayout *wgpuVertexBufferLayouts = WebGPUVertexBufferLayoutUtil::CreateVertexBufferLayouts(vertexLayoutDescriptors);
+        WGPUVertexBufferLayout *wgpuVertexBufferLayouts = WebGPUVertexBufferLayoutUtil::Create(vertexLayoutDescriptors);
 
         descriptor.vertex.module = shaderModule;
         descriptor.vertex.entryPoint = "vs_main";
@@ -144,7 +146,7 @@ namespace bns
         m_textureBindGroup = wgpuDeviceCreateBindGroup(
             m_framework.Context.WebGPUDevice, &bindGroupDescriptor);
 
-        WebGPUVertexBufferLayoutUtil::DeleteVertexBufferLayouts(wgpuVertexBufferLayouts, 1);
+        WebGPUVertexBufferLayoutUtil::Delete(wgpuVertexBufferLayouts, 1);
     }
 
     /**

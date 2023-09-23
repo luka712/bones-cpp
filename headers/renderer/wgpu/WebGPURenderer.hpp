@@ -4,20 +4,19 @@
 
 #include <webgpu/webgpu.h>
 #include "data/bns_math.hpp"
+#include "renderer/Renderer.hpp"
 
 namespace bns
 {
     class Framework;
 
-    class WebGPURenderer
+    class WebGPURenderer final : public Renderer
     {
     private:
-         Framework& m_framework;
-
         /**
          * @brief The instance is a class in WebGPU. It is responsible for creating a surface.
          * Instance in this context is a collection of adapters.
-        */
+         */
         WGPUInstance m_instance;
 
         /**
@@ -44,6 +43,11 @@ namespace bns
         WGPUDevice m_device;
 
         /**
+         * @brief WGPUQueue is a class in WebGPU. TODO: describe better, I don't know what it is and copilitot is not helping.
+         */
+        WGPUQueue m_queue;
+
+        /**
          * @brief WGPUSwapChain is a class in WebGPU. It is responsible for creating a swap chain.
          * Swap chain in this context is a collection of buffers that can be drawn on.
          * It is similar to a back buffer in DirectX.
@@ -52,11 +56,6 @@ namespace bns
          * It is similar to a frame buffer in Vulkan.
          */
         WGPUSwapChain m_swapChain;
-
-        /**
-         * @brief WGPUQueue is a class in WebGPU. TODO: describe better, I don't know what it is and copilitot is not helping.
-        */
-        WGPUQueue m_queue;
 
         /**
          * @brief WGPUCommandEncoder is a class in WebGPU. It is responsible for creating a command encoder.
@@ -83,13 +82,8 @@ namespace bns
          * It is similar to a frame buffer in OpenGL.
          * It is similar to a frame buffer in Vulkan.
          * It is similar to a back buffer in DirectX.
-        */
-        WGPUTextureView m_currentTextureView;
-
-        /**
-         * @brief The size of the swap chain.
          */
-        Vec2i m_bufferSize;
+        WGPUTextureView m_currentTextureView;
 
         /**
          * Creates the webgpu adapter.
@@ -107,19 +101,22 @@ namespace bns
         void Resize();
 
     public:
-        Color ClearColor;
-
-        WebGPURenderer( Framework& framework);
+        WebGPURenderer(Framework &framework);
 
         WGPUSwapChain GetSwapChain() const { return m_swapChain; }
         WGPUDevice GetDevice() const { return m_device; }
         WGPUCommandEncoder GetDrawCommandEncoder() const { return m_drawCommandEncoder; }
         WGPURenderPassEncoder GetCurrentPassEncoder() const { return m_currentPassEncoder; }
 
+        /**
+         * @brief Gets the view into swap chain texture.
+         */
+        void *GetSwapChainTextureView() override;
+
         void Initialize(WGPUInstance instance, WGPUSurface surface);
-        void BeginDraw();
-        void EndDraw();
-        void Destroy();
+        void BeginDraw() override;
+        void EndDraw() override;
+        void Destroy() override;
     };
 } // namespace BNS
 

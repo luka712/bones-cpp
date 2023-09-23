@@ -2,7 +2,7 @@
 
 namespace bns
 {
-    WGPUPipelineLayoutDescriptor WebGPUPipelineLayoutDescriptorUtil::CreatePipelineLayoutDescriptor(WGPUBindGroupLayout *bindGroupLayout, u32 bindGroupLayoutCount)
+    WGPUPipelineLayoutDescriptor WebGPUPipelineLayoutDescriptorUtil::Create(WGPUBindGroupLayout *bindGroupLayout, u32 bindGroupLayoutCount)
     {
         WGPUPipelineLayoutDescriptor pipelineLayoutDescriptor;
         pipelineLayoutDescriptor.bindGroupLayouts = bindGroupLayout;
