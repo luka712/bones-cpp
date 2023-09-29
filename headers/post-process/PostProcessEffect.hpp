@@ -26,11 +26,11 @@ namespace bns
 
         /**
          * @brief Draw the effect to the destination texture.
-         * @param destinationTextureView The destination texture view.
+         * @param destinationTexture The destination texture.
          * This is a texture to which we want to render, usually the screen texture.
          * But can be any other texture if there are multiple post process effects.
          */
-        virtual void Draw(void *destinationTextureView) = 0;
+        virtual void Draw(void *destinationTexture) = 0;
     };
 } // namespace bns
 

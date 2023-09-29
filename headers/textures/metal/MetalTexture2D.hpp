@@ -20,6 +20,16 @@ namespace bns
          */
         ImageData *m_imageData;
 
+        /**
+         * @brief Convert the texture format to Metal texture format.
+         */
+        MTL::PixelFormat Convert(TextureFormat format) const;
+
+        /**
+         * @brief Convert the texture usage flags to Metal texture usage flags.
+        */
+        MTL::TextureUsage Convert(i32 textureUsageFlags) const;
+
     public:
    
         /**
@@ -35,7 +45,7 @@ namespace bns
         /**
          * @brief The constructor.
          */
-        MetalTexture2D(const Framework &framework, ImageData *imageData);
+        MetalTexture2D(const Framework &framework, ImageData *imageData,  i32 textureUsageFlags, TextureFormat format);
 
         /**
          * @brief Initialize the texture.

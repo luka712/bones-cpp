@@ -43,7 +43,7 @@ namespace bns
         /**
          * @brief Gets the view into swap chain texture.
          */
-        virtual void* GetSwapChainTextureView() = 0;
+        virtual void* GetSwapChainTexture() = 0;
 
         /**
          * @brief Set the render texture.

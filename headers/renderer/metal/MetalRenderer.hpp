@@ -4,6 +4,7 @@
 
 #define BNS_RENDERER_METAL_HPP
 
+#include "renderer/Renderer.hpp"
 #include "Metal/Metal.hpp"
 #include "data/Vec2.hpp"
 #include "data/Color.hpp"
@@ -12,11 +13,9 @@ namespace bns
 {
     class Framework;
 
-    class MetalRenderer final
+    class MetalRenderer final : public Renderer
     {
     private:
-        Framework &m_framework;
-
         /**
          * @brief MetalLayer is a class in Apple's Metal
          * framework that enables seamless integration of Metal rendering capabilities into a Core Animation layer hierarchy.
@@ -53,17 +52,20 @@ namespace bns
         // MTL::Buffer *m_positionBuffer;
         // MTL::Buffer *m_colorsBuffer;
 
-        Vec2f m_bufferSize;
-
         void Resize();
 
     public:
-        Color ClearColor;
-
         MetalRenderer(Framework &framework);
         void Initialize(CA::MetalLayer *metalLayer);
-        void BeginDraw();
-        void EndDraw();
+        void BeginDraw() override;
+        void EndDraw() override;
+        void Destroy() override;
+
+
+        /**
+         * @brief Gets the view into swap chain texture.
+         */
+        void* GetSwapChainTexture() override;
     };
 } // namespace BNS
 

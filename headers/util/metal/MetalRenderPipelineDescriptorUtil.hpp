@@ -17,7 +17,7 @@ namespace bns
          * @param pixelFormat The pixel format to use. Default is MTL::PixelFormat::PixelFormatBGRA8Unorm_sRGB.
          * @return MTL::RenderPipelineDescriptor * The new render pipeline descriptor.
          */
-        static MTL::RenderPipelineDescriptor *CreatePipelineDescriptor(
+        static MTL::RenderPipelineDescriptor *Create(
             MTL::Function *pVertexFn,
             MTL::Function *pFragFn,
             MTL::PixelFormat pixelFormat = MTL::PixelFormat::PixelFormatBGRA8Unorm_sRGB);

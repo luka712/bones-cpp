@@ -2,7 +2,7 @@
 
 namespace bns
 {
-     MTL::RenderPipelineDescriptor *MetalRenderPipelineDescriptorUtil::CreatePipelineDescriptor(
+     MTL::RenderPipelineDescriptor *MetalRenderPipelineDescriptorUtil::Create(
         MTL::Function *pVertexFn,
         MTL::Function *pFragFn,
         MTL::PixelFormat pixelFormat)

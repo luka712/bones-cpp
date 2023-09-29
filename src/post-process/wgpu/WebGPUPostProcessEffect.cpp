@@ -173,7 +173,7 @@ namespace bns
         m_pipeline = CreateRenderPipeline();
     }
 
-    void WebGPUPostProcessEffect::Draw(void* textureView)
+    void WebGPUPostProcessEffect::Draw(void* texture)
     {
         WGPUDevice device = m_framework.Context.WebGPUDevice;
 
@@ -184,7 +184,8 @@ namespace bns
         WGPUCommandEncoder encoder = wgpuDeviceCreateCommandEncoder(device, &desc);
 
         // Create a render pass for the encoder.
-        WGPUTextureView wgpuTextureView = static_cast<WGPUTextureView>(textureView);
+        WGPUTexture wgpuTexture = static_cast<WGPUTexture>(texture);
+        WGPUTextureView wgpuTextureView = wgpuTextureCreateView(wgpuTexture, nullptr);
         
         WGPURenderPassColorAttachment colorAttachment = WebGPURenderPassColorAttachmentUtil::Create(wgpuTextureView);
         WGPURenderPassDescriptor renderPassDesc = WebGPURenderPassDescriptorUtil::Create(colorAttachment);

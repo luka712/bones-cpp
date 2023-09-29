@@ -29,7 +29,7 @@ namespace bns
          * @note The cull mode is used to describe the cull mode.
          * @note The pipeline layout is used to describe the pipeline layout.
          */
-        static WGPURenderPipelineDescriptor CreatePipelineDescriptor(
+        static WGPURenderPipelineDescriptor Create(
             WGPUPipelineLayout pipelineLayout,
             WGPUVertexState vertexState,
             WGPUFragmentState fragmentState,

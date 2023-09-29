@@ -1,6 +1,6 @@
 #include "Framework.hpp"
 #include <vector>
-#include "renderer/MetalRenderer.hpp"
+#include "renderer/metal/MetalRenderer.hpp"
 #include "renderer/wgpu/WebGPURenderer.hpp"
 #include "window/sdl_window.hpp"
 #include "window/glfw_window.hpp"
@@ -19,6 +19,7 @@
 #include "sprite/wgpu/WebGPUSpriteRenderer.hpp"
 #include "sprite/metal/MetalSpriteRenderer.hpp"
 #include "post-process/wgpu/WebGPUPostProcessGrayscaleEffect.hpp"
+#include "post-process/metal/MetalPostProcessGrayscaleEffect.hpp"
 
 namespace bns
 {
@@ -33,6 +34,7 @@ namespace bns
 
         // WebGPU initialize
 #if __APPLE__ && USE_METAL
+        m_renderer = new MetalRenderer(*this);
         // m_materialFactory = new MetalMaterialFactory(*this);
         m_meshFactory = new MetalMeshFactory(*this);
         m_spriteRenderer = new MetalSpriteRenderer(*this);
@@ -129,7 +131,7 @@ namespace bns
 
             m_spriteRenderer->EndFrame();
 
-            effect.Draw(renderer.GetSwapChainTextureView());
+            effect.Draw(renderer.GetSwapChainTexture());
 
             renderer.EndDraw();
         }
@@ -217,7 +219,7 @@ namespace bns
 
             m_spriteRenderer->EndFrame();
 
-            effect.Draw(m_renderer->GetSwapChainTextureView());
+            effect.Draw(m_renderer->GetSwapChainTexture());
 
             m_renderer->EndDraw();
 
@@ -232,8 +234,7 @@ namespace bns
         CA::MetalLayer *swapchain = m_windowManager->InitializeForMetal(windowParameters);
 
         // TEMPORARY CODE
-        MetalRenderer renderer(*this);
-        renderer.Initialize(swapchain);
+        static_cast<MetalRenderer*>(m_renderer)->Initialize(swapchain);
 
         SpriteFont *font = GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
 
@@ -242,7 +243,8 @@ namespace bns
         Mesh *mesh = m_meshFactory->CreateQuadMesh();
 
         // TEST DATA
-        MetalTexture2D *testTexture = new MetalTexture2D(*this, m_imageLoader->LoadImage("assets/uv_test.png"));
+        MetalTexture2D *testTexture = new MetalTexture2D(*this, m_imageLoader->LoadImage("assets/uv_test.png"),
+             TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST, TextureFormat::RGBA_8_Unorm);
         testTexture->Initialize();
 
         MetalBasicMeshTexturedTestMaterial *testMaterial = new MetalBasicMeshTexturedTestMaterial(*this, testTexture);
@@ -255,6 +257,9 @@ namespace bns
 
         static f32 rotation = 0.0f;
 
+        MetalPostProcessGrayscaleEffect effect(*this);
+        effect.Initialize();
+
         while (!quit)
         {
             // Process events
@@ -266,7 +271,10 @@ namespace bns
                 }
             }
 
-            renderer.BeginDraw();
+            m_renderer->SetRenderTexture(effect.GetTexture());
+
+            m_renderer->BeginDraw();
+
 
             // testMaterial->Draw(camera, mesh);
             m_spriteRenderer->BeginFrame();
@@ -296,7 +304,9 @@ namespace bns
 
             m_spriteRenderer->EndFrame();
 
-            renderer.EndDraw();
+            effect.Draw(m_renderer->GetSwapChainTexture());
+
+            m_renderer->EndDraw();
 
             SDL_Delay(16);
         }

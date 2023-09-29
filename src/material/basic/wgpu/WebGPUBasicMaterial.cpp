@@ -38,7 +38,7 @@ namespace bns
 
         WGPUPipelineLayout pipelineLayout = wgpuDeviceCreatePipelineLayout(device, &pipelineLayoutDesc);
 
-        WGPURenderPipelineDescriptor pipelineDesc = WebGPURenderPipelineUtil::CreatePipelineDescriptor(
+        WGPURenderPipelineDescriptor pipelineDesc = WebGPURenderPipelineUtil::Create(
             pipelineLayout,
             states.VertexState,
             states.FragmentState);

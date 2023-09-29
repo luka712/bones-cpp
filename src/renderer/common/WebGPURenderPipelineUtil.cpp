@@ -2,7 +2,7 @@
 
 namespace bns
 {
-    WGPURenderPipelineDescriptor WebGPURenderPipelineUtil::CreatePipelineDescriptor(
+    WGPURenderPipelineDescriptor WebGPURenderPipelineUtil::Create(
         WGPUPipelineLayout pipelineLayout,
         WGPUVertexState vertexState,
         WGPUFragmentState fragmentState,

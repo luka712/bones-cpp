@@ -75,11 +75,11 @@ namespace bns
 
          /**
          * @brief Draw the effect to the destination texture.
-         * @param destinationTextureView The destination texture view. In this case it is of type WGPUTextureView.
+         * @param destinationTexture The destination texture. In this case it is of type WGPUTextureView.
          * This is a texture to which we want to render, usually the screen texture.
          * But can be any other texture if there are multiple post process effects.
          */
-        void Draw(void *destinationTextureView) override;
+        void Draw(void *destinationTexture) override;
     };
 } // namespace bns
 

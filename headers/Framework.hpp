@@ -42,6 +42,11 @@ namespace bns
         MTL::Device *MetalDevice;
 
         /**
+         * @brief The metal command queue.
+        */
+        MTL::CommandQueue *MetalCommandQueue;
+
+        /**
          * @brief The current render command encoder.
          */
         MTL::RenderCommandEncoder *CurrentMetalRenderCommandEncoder;

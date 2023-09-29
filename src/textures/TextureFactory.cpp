@@ -17,7 +17,7 @@ namespace bns
     {
         Texture2D *texture = nullptr;
 #if __APPLE__ && USE_METAL
-        texture = MetalTexture2D(m_framework, imageData);
+        texture = new MetalTexture2D(m_framework, imageData, textureUsageFlags, format);
 #else
         texture = new WebGPUTexture2D(m_framework, imageData, textureUsageFlags, format);
 #endif

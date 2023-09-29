@@ -111,7 +111,7 @@ namespace bns
         /**
          * @brief Gets the view into swap chain texture.
          */
-        void *GetSwapChainTextureView() override;
+        void *GetSwapChainTexture() override;
 
         void Initialize(WGPUInstance instance, WGPUSurface surface);
         void BeginDraw() override;

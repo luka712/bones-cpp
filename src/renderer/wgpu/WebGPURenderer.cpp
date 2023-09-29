@@ -13,9 +13,9 @@ namespace bns
     {
     }
 
-    void *WebGPURenderer::GetSwapChainTextureView()
+    void *WebGPURenderer::GetSwapChainTexture()
     {
-        return wgpuSwapChainGetCurrentTextureView(m_swapChain);
+        return wgpuSwapChainGetCurrentTexture(m_swapChain);
     }
 
     WGPUAdapter WebGPURenderer::CreateAdapter()
@@ -235,7 +235,6 @@ namespace bns
 
         // present to swap chain
         wgpuSwapChainPresent(m_swapChain);
-
 
         wgpuTextureViewRelease(m_currentTextureView);
     }
