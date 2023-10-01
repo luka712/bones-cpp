@@ -20,6 +20,7 @@
 #include "sprite/metal/MetalSpriteRenderer.hpp"
 #include "post-process/wgpu/WebGPUPostProcessGrayscaleEffect.hpp"
 #include "post-process/metal/MetalPostProcessGrayscaleEffect.hpp"
+#include "post-process/wgpu/WebGPUPostProcessTextureCombineEffect.hpp"
 
 namespace bns
 {
@@ -101,7 +102,7 @@ namespace bns
             glfwPollEvents();
             camera.Update(0.0f);
 
-            renderer.SetRenderTexture(effect.GetTexture());
+            renderer.SetRenderTexture(effect.GetSourceTexture());
 
             renderer.BeginDraw();
             m_spriteRenderer->BeginFrame();
@@ -169,8 +170,9 @@ namespace bns
 
         static f32 rotation = 0.0f;
 
-        WebGPUPostProcessGrayscaleEffect effect(*this);
+        WebGPUPostProcessTextureCombineEffect effect(*this);
         effect.Initialize();
+        effect.SetCombineTexture(testTexture);
 
         while (!quit)
         {
@@ -189,7 +191,7 @@ namespace bns
             
             m_renderer->BeginDraw();
             
-            m_renderer->SetRenderTexture(effect.GetTexture());
+            m_renderer->SetRenderTexture(effect.GetSourceTexture());
 
             // testMaterial->Draw(camera, mesh);
             m_spriteRenderer->BeginFrame();
@@ -271,7 +273,7 @@ namespace bns
                 }
             }
 
-            m_renderer->SetRenderTexture(effect.GetTexture());
+            m_renderer->SetRenderTexture(effect.GetSourceTexture());
 
             m_renderer->BeginDraw();
 

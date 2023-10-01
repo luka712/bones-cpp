@@ -10,6 +10,9 @@
 #include "util/wgpu/WebGPUPipelineLayoutDescriptorUtil.hpp"
 #include "util/wgpu/WebGPUBindGroupDescriptorUtil.hpp"
 #include "util/wgpu/WebGPUTextureViewDescriptorUtil.hpp"
+#include "util/wgpu/WebGPUBlendStateUtil.hpp"
+#include "util/wgpu/WebGPURenderPassColorAttachmentUtil.hpp"
+#include "util/wgpu/WebGPURenderPassDescriptorUtil.hpp"
 
 
 namespace bns
@@ -24,6 +27,9 @@ namespace bns
         static WebGPUPipelineLayoutDescriptorUtil PipelineLayoutDescriptor;
         static WebGPUBindGroupDescriptorUtil BindGroupDescriptor;
         static WebGPUTextureViewDescriptorUtil TextureViewDescriptor;
+        static WebGPUBlendStateUtil BlendState;
+        static WebGPURenderPassColorAttachmentUtil RenderPassColorAttachment;
+        static WebGPURenderPassDescriptorUtil RenderPassDescriptor;
     };
 }
 

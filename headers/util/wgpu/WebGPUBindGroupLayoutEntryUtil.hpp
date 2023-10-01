@@ -72,7 +72,7 @@ namespace bns
          * @note The buffer is used.
          * @note The buffer is a uniform buffer.
         */
-        static WGPUBindGroupLayoutEntry CreateBindGroupLayoutEntryForUniformBuffer(u32 binding,
+        static WGPUBindGroupLayoutEntry CreateUniformBufferLayoutEntry(u32 binding,
                                                                    WGPUShaderStageFlags shaderStage);
 
         /**

@@ -31,13 +31,13 @@ namespace bns
          * @brief The bind group layout for the material.
          * Is the bind group for a texture.
         */
-        WGPUBindGroupLayout m_textureBindGroupLayout;
+        WGPUBindGroupLayout m_sourceTextureBindGroupLayout;
 
         /**
          * @brief The bind group for the material.
          * Is the bind group for a texture.
         */
-        WGPUBindGroup m_textureBindGroup;
+        WGPUBindGroup m_sourceTextureBindGroup;
 
         /**
          * @brief The texture for the material.

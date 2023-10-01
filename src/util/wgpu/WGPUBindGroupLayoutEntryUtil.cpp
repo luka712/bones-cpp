@@ -50,7 +50,7 @@ namespace bns
         return entry;
     }
 
-    WGPUBindGroupLayoutEntry WebGPUBindGroupLayoutEntryUtil::CreateBindGroupLayoutEntryForUniformBuffer(
+    WGPUBindGroupLayoutEntry WebGPUBindGroupLayoutEntryUtil::CreateUniformBufferLayoutEntry(
         u32 binding,
         WGPUShaderStageFlags shaderStage)
     {

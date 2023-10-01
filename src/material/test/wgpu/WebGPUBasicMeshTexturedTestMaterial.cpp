@@ -91,13 +91,13 @@ namespace bns
 
         bindGroupLayoutDescriptor.entries = &bindGroupLayoutEntry[0];
 
-        m_textureBindGroupLayout =
+        m_sourceTextureBindGroupLayout =
             wgpuDeviceCreateBindGroupLayout(m_framework.Context.WebGPUDevice, &bindGroupLayoutDescriptor);
 
         WGPUPipelineLayoutDescriptor pipelineLayoutDescriptor = {};
         pipelineLayoutDescriptor.nextInChain = nullptr;
         pipelineLayoutDescriptor.bindGroupLayoutCount = 1;
-        pipelineLayoutDescriptor.bindGroupLayouts = &m_textureBindGroupLayout;
+        pipelineLayoutDescriptor.bindGroupLayouts = &m_sourceTextureBindGroupLayout;
         descriptor.layout = wgpuDeviceCreatePipelineLayout(m_framework.Context.WebGPUDevice, &pipelineLayoutDescriptor);
 
         descriptor.depthStencil = nullptr;
@@ -117,7 +117,7 @@ namespace bns
 
         WGPUBindGroupDescriptor bindGroupDescriptor = {};
         bindGroupDescriptor.nextInChain = nullptr;
-        bindGroupDescriptor.layout = m_textureBindGroupLayout;
+        bindGroupDescriptor.layout = m_sourceTextureBindGroupLayout;
         bindGroupDescriptor.entryCount = 2;
         WGPUBindGroupEntry bindGroupEntries[2];
         bindGroupEntries[0].nextInChain = nullptr;
@@ -143,7 +143,7 @@ namespace bns
         bindGroupEntries[1].textureView = textureView;
         bindGroupDescriptor.entries = &bindGroupEntries[0];
 
-        m_textureBindGroup = wgpuDeviceCreateBindGroup(
+        m_sourceTextureBindGroup = wgpuDeviceCreateBindGroup(
             m_framework.Context.WebGPUDevice, &bindGroupDescriptor);
 
         WebGPUVertexBufferLayoutUtil::Delete(wgpuVertexBufferLayouts, 1);
@@ -163,7 +163,7 @@ namespace bns
         wgpuRenderPassEncoderSetPipeline(passEncoder, m_pipeline);
         wgpuRenderPassEncoderSetIndexBuffer(passEncoder, webGPUMesh.IndexBuffer, webGPUMesh.IndexFormat, 0, 6 * sizeof(u32));
         wgpuRenderPassEncoderSetVertexBuffer(passEncoder, 0, webGPUMesh.VertexBuffer, 0, webGPUMesh.VertexBufferSize);
-        wgpuRenderPassEncoderSetBindGroup(passEncoder, 0, m_textureBindGroup, 0, 0);
+        wgpuRenderPassEncoderSetBindGroup(passEncoder, 0, m_sourceTextureBindGroup, 0, 0);
         wgpuRenderPassEncoderDrawIndexed(m_framework.Context.CurrentWebGPURenderPassEncoder, 6, 1, 0, 0, 0);
     }
 

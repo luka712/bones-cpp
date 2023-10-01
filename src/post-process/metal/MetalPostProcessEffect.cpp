@@ -109,7 +109,7 @@ namespace bns
                                  .CreateEmpty(bufferSize.X, bufferSize.Y,
                                               TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
                                               TextureFormat::BGRA_8_Unorm);
-        m_texture = static_cast<MetalTexture2D *>(texture);
+        m_sourceTexture = static_cast<MetalTexture2D *>(texture);
         m_samplerState = static_cast<MetalTexture2D*>(texture)->Sampler;
 
         m_vertexBuffer = CreateVertexBuffer();
@@ -122,7 +122,7 @@ namespace bns
         MTL::CommandQueue *queue = m_framework.Context.MetalCommandQueue;
 
         // Convert to Metal types
-        MetalTexture2D* mtlTextureWrapper = static_cast<MetalTexture2D*>(m_texture);
+        MetalTexture2D* mtlTextureWrapper = static_cast<MetalTexture2D*>(m_sourceTexture);
         MTL::Texture* mtlDestTexture = static_cast<MTL::Texture*>(texture);
 
         MTL::CommandBuffer* commandBuffer = queue->commandBuffer();

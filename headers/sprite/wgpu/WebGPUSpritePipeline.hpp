@@ -16,7 +16,7 @@ namespace bns
     private:
         WGPURenderPipeline m_pipeline;
         WGPUBindGroup m_projectionViewBindGroup;
-        WGPUBindGroup m_textureBindGroup;
+        WGPUBindGroup m_sourceTextureBindGroup;
 
     public:
        WebGPUSpritePipeline(WGPURenderPipeline pipeline, WGPUBindGroup projectionViewBindGroup, WGPUBindGroup textureBindGroup);
@@ -52,7 +52,7 @@ namespace bns
         /**
          * @brief Gets the texture bind group
          */
-        inline const WGPUBindGroup &GetTextureBindGroup() const { return m_textureBindGroup; }
+        inline const WGPUBindGroup &GetTextureBindGroup() const { return m_sourceTextureBindGroup; }
     };
 }
 

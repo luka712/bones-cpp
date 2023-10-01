@@ -1,8 +1,7 @@
 #include "post-process/wgpu/WebGPUPostProcessEffect.hpp"
 #include "textures/wgpu/WebGPUTexture2D.hpp"
 #include "Framework.hpp"
-#include "util/wgpu/WebGPURenderPassColorAttachmentUtil.hpp"
-#include "util/wgpu/WebGPURenderPassDescriptorUtil.hpp"
+#include "util/WebGPUUtil.hpp"
 #include "util/wgpu/WebGPUBufferUtil.hpp"
 #include "util/wgpu/WebGPUBindGroupLayoutEntryUtil.hpp"
 #include "util/wgpu/WebGPUBindGroupLayoutDescriptorUtil.hpp"
@@ -27,7 +26,7 @@ namespace bns
     {
         std::vector<float> data = {
             // position, tex coords
-            -1.0f, 1.0f, 0.0f,  0.0f, 0.0f,  // top left
+            -1.0f, 1.0f, 0.0f, 0.0f, 0.0f,  // top left
             -1.0f, -1.0f, 0.0f, 0.0f, 1.0f, // bottom left
             1.0f, -1.0f, 0.0f, 1.0f, 1.0f,  // bottom right
 
@@ -40,8 +39,12 @@ namespace bns
         return vertexBuffer;
     }
 
-    WGPUBindGroupLayout WebGPUPostProcessEffect::CreateTextureBindGroupLayout()
+    std::vector<WGPUBindGroupLayout> WebGPUPostProcessEffect::CreateBindGroupLayouts()
     {
+        // result
+        std::vector<WGPUBindGroupLayout> result;
+
+        // create the bind group layout entries
         WGPUBindGroupLayoutEntry bindGroupLayoutEntries[2];
 
         // Bind group layout for texture
@@ -54,45 +57,60 @@ namespace bns
         WGPUBindGroupLayoutDescriptor bindGroupLayoutDesc = WebGPUBindGroupLayoutDescriptorUtil::Create(bindGroupLayoutEntries, 2);
         WGPUBindGroupLayout bindGroupLayout = wgpuDeviceCreateBindGroupLayout(m_device, &bindGroupLayoutDesc);
 
-        return bindGroupLayout;
+        // pust bind group layout to result
+        result.push_back(bindGroupLayout);
+
+        // assing to member variable
+        m_sourceTextureBindGroupLayout = bindGroupLayout;
+
+        return result;
     }
 
-    WGPUBindGroup WebGPUPostProcessEffect::CreateTextureBindGroup()
+    std::vector<WGPUBindGroup> WebGPUPostProcessEffect::CreateBindGroups(std::vector<WGPUBindGroupLayout> layouts)
     {
-        if (m_textureBindGroupLayout == nullptr)
+        std::vector<WGPUBindGroup> result;
+
+        if (m_sourceTextureBindGroupLayout == nullptr)
         {
             throw std::runtime_error("Texture bind group layout is null.");
         }
 
-        if (m_texture == nullptr)
+        if (m_sourceTexture == nullptr)
         {
-            throw std::runtime_error("Destination texture is null.");
+            throw std::runtime_error("Source texture is null.");
         }
 
         WGPUBindGroupEntry bindGroupEntries[2];
 
         // sampler entry
-        WebGPUTexture2D *webGPUTexture2D = static_cast<WebGPUTexture2D*>(m_texture);
+        WebGPUTexture2D *webGPUTexture2D = static_cast<WebGPUTexture2D *>(m_sourceTexture);
         bindGroupEntries[0] = WebGPUBindGroupEntryUtil::Create(0, webGPUTexture2D->Sampler);
         // texture entry
         WGPUTextureView view = webGPUTexture2D->CreateView();
         bindGroupEntries[1] = WebGPUBindGroupEntryUtil::Create(1, view);
 
         // Create bind group
-        WGPUBindGroupDescriptor bindGroupDesc = WebGPUBindGroupDescriptorUtil::Create(m_textureBindGroupLayout, bindGroupEntries, 2);
+        WGPUBindGroupDescriptor bindGroupDesc = WebGPUBindGroupDescriptorUtil::Create(m_sourceTextureBindGroupLayout, bindGroupEntries, 2);
         WGPUBindGroup bindGroup = wgpuDeviceCreateBindGroup(m_device, &bindGroupDesc);
 
-        return bindGroup;
+        // push bind group to result
+        result.push_back(bindGroup);
+
+        // assign to member variable
+        m_sourceTextureBindGroup = bindGroup;
+
+        return result;
     }
 
-    WGPURenderPipeline WebGPUPostProcessEffect::CreateRenderPipeline()
+    WGPURenderPipeline WebGPUPostProcessEffect::CreateRenderPipeline(std::vector<WGPUBindGroupLayout> layouts)
     {
 
         FileLoader fileLoader;
         std::string shaderSource = fileLoader.OpenFile(GetShaderPath());
         WGPUShaderModule shaderModule = WebGPUShaderModuleUtil::Create(m_device, shaderSource);
 
-        WGPUPipelineLayoutDescriptor desc = WebGPUPipelineLayoutDescriptorUtil::Create(&m_textureBindGroupLayout, 1);
+        // Create pipeline layout. Here the global bind group layout is assigned.
+        WGPUPipelineLayoutDescriptor desc = WebGPUPipelineLayoutDescriptorUtil::Create(layouts.data(), layouts.size());
         WGPUPipelineLayout layout = wgpuDeviceCreatePipelineLayout(m_device, &desc);
 
         // 1 layout with 2 attributes
@@ -117,14 +135,7 @@ namespace bns
         vertexState.constantCount = 0;
 
         // Fragment state
-        // TODO: move to util
-        WGPUBlendState blend = {};
-        blend.color.operation = WGPUBlendOperation_Add;
-        blend.color.srcFactor = WGPUBlendFactor_One;
-        blend.color.dstFactor = WGPUBlendFactor_OneMinusSrcAlpha;
-        blend.alpha.operation = WGPUBlendOperation_Add;
-        blend.alpha.srcFactor = WGPUBlendFactor_One;
-        blend.alpha.dstFactor = WGPUBlendFactor_OneMinusSrcAlpha;
+        WGPUBlendState blend = WebGPUUtil::BlendState.Create();
 
         // default color target state
         // TODO: move to util
@@ -160,20 +171,21 @@ namespace bns
         m_device = m_framework.Context.WebGPUDevice;
 
         Vec2u bufferSize = m_framework.GetRenderer().GetBufferSize();
-        Texture2D* texture = m_framework.GetTextureFactory()
-            .CreateEmpty(bufferSize.X, bufferSize.Y,
-                        TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
-                        TextureFormat::BGRA_8_Unorm);
-        m_texture = static_cast<WebGPUTexture2D *>(texture);
+        Texture2D *texture = m_framework.GetTextureFactory()
+                                 .CreateEmpty(bufferSize.X, bufferSize.Y,
+                                              TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
+                                              TextureFormat::BGRA_8_Unorm);
+        m_sourceTexture = static_cast<WebGPUTexture2D *>(texture);
 
         m_vertexBuffer = CreateVertexBuffer();
-        m_textureBindGroupLayout = CreateTextureBindGroupLayout();
-        m_textureBindGroup = CreateTextureBindGroup();
 
-        m_pipeline = CreateRenderPipeline();
+        std::vector<WGPUBindGroupLayout> layouts = CreateBindGroupLayouts();
+        std::vector<WGPUBindGroup> bindGroups = CreateBindGroups(layouts);
+
+        m_pipeline = CreateRenderPipeline(layouts);
     }
 
-    void WebGPUPostProcessEffect::Draw(void* texture)
+    void WebGPUPostProcessEffect::Draw(void *texture)
     {
         WGPUDevice device = m_framework.Context.WebGPUDevice;
 
@@ -186,14 +198,14 @@ namespace bns
         // Create a render pass for the encoder.
         WGPUTexture wgpuTexture = static_cast<WGPUTexture>(texture);
         WGPUTextureView wgpuTextureView = wgpuTextureCreateView(wgpuTexture, nullptr);
-        
-        WGPURenderPassColorAttachment colorAttachment = WebGPURenderPassColorAttachmentUtil::Create(wgpuTextureView);
-        WGPURenderPassDescriptor renderPassDesc = WebGPURenderPassDescriptorUtil::Create(colorAttachment);
+
+        WGPURenderPassColorAttachment colorAttachment = WebGPUUtil::RenderPassColorAttachment.Create(wgpuTextureView);
+        WGPURenderPassDescriptor renderPassDesc = WebGPUUtil::RenderPassDescriptor.Create(colorAttachment);
         WGPURenderPassEncoder renderPass = wgpuCommandEncoderBeginRenderPass(encoder, &renderPassDesc);
 
         // Set the pipeline that will be used for this render pass.
         wgpuRenderPassEncoderSetPipeline(renderPass, m_pipeline);
-        wgpuRenderPassEncoderSetBindGroup(renderPass, 0, m_textureBindGroup, 0, nullptr);
+        wgpuRenderPassEncoderSetBindGroup(renderPass, 0, m_sourceTextureBindGroup, 0, nullptr);
         size_t byteSize = sizeof(float) * 5 * 6; // 5 per vertex, 6 vertices
         wgpuRenderPassEncoderSetVertexBuffer(renderPass, 0, m_vertexBuffer, 0, byteSize);
         wgpuRenderPassEncoderDraw(renderPass, 6, 1, 0, 0);
@@ -204,5 +216,9 @@ namespace bns
         WGPUCommandBuffer commandBuffer = wgpuCommandEncoderFinish(encoder, &commandBufferDesc);
 
         wgpuQueueSubmit(m_framework.Context.WebGPUQueue, 1, &commandBuffer);
+
+        // release created resources
+        wgpuTextureViewRelease(wgpuTextureView);
+        wgpuCommandEncoderRelease(encoder);
     }
 }

@@ -29,8 +29,8 @@ namespace bns
 
         // for source texture, assumes defaults.
         // Source texture is usually the texture that represents what was to be drawn so far to screen.
-        WGPUBindGroupLayout m_textureBindGroupLayout; // for the source texture which comes into draw
-        WGPUBindGroup m_textureBindGroup;             // for the source texture which comes into draw
+        WGPUBindGroupLayout m_sourceTextureBindGroupLayout; // for the source texture which comes into draw
+        WGPUBindGroup m_sourceTextureBindGroup;             // for the source texture which comes into draw
 
         /**
          * @brief Create a vertex buffer for a full screen quad.
@@ -40,27 +40,46 @@ namespace bns
         virtual WGPUBuffer CreateVertexBuffer();
 
         /**
-         * @brief Create a bind group for the source texture.
-         * The source texture is the texture which comes into draw.
-         * Holds slot 0 for the source texture.
-         * Holds slot 1 for the source texture sampler.
-         * @return The bind group for the source texture.
-         */
-        virtual WGPUBindGroup CreateTextureBindGroup();
-
-        /**
-         * @brief Create a bind group layout for the source texture.
+         * @brief Create a bind group layouts for the post process effect.
+         * By default creates the layout for the source texture.
          * The source texture is the texture which comes into draw.
          * Holds slot 0 for the source texture sampler.
          * Holds slot 1 for the source texture.
+         * 
+         * note 
+         * m_sourceTextureBindGroupLayout is assigned by default in parent. 
+         * Override to create additional layouts.
+         * Best to override by calling parent method and adding to the result.
+         * 
+         * @return The bind group layout for the post process effect.
          */
-        virtual WGPUBindGroupLayout CreateTextureBindGroupLayout();
+        virtual std::vector<WGPUBindGroupLayout> CreateBindGroupLayouts();
+
+        /**
+         * @brief Create a bind groups.
+         * By default it is created for the source texture.
+         * The source texture is the texture which comes into draw.
+         * Holds slot 0 for the source texture.
+         * Holds slot 1 for the source texture sampler.
+         * 
+         * @param bindGroupLayouts The bind group layouts created by CreateBindGroupLayouts.
+         * 
+         * note
+         * m_sourceTextureBindGroup is assigned by default in parent.
+         * Override to create additional bind groups.
+         * Best to override by calling parent method and adding to the result.
+         * 
+         * @return The bind groups.
+         */
+        virtual std::vector<WGPUBindGroup> CreateBindGroups(std::vector<WGPUBindGroupLayout> bindGroupLayouts);
 
         /**
          * @brief Create a render pipeline for the post process effect.
          * By default simple pipeline is provided which assumes that it takes a texture and draws it to screen.
+         * 
+         * @param bindGroupLayouts The bind group layouts created by CreateBindGroupLayouts.
          */
-        virtual WGPURenderPipeline CreateRenderPipeline();
+        virtual WGPURenderPipeline CreateRenderPipeline(std::vector<WGPUBindGroupLayout> bindGroupLayouts);
 
         /**
          * @brief Get the shader path for the post process effect.

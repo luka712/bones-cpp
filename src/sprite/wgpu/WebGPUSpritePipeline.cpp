@@ -10,7 +10,7 @@
 namespace bns
 {
     WebGPUSpritePipeline::WebGPUSpritePipeline(WGPURenderPipeline pipeline, WGPUBindGroup projectionViewBindGroup, WGPUBindGroup textureBindGroup)
-        : m_pipeline(pipeline), m_projectionViewBindGroup(projectionViewBindGroup), m_textureBindGroup(textureBindGroup) {}
+        : m_pipeline(pipeline), m_projectionViewBindGroup(projectionViewBindGroup), m_sourceTextureBindGroup(textureBindGroup) {}
 
     // NOTE: STATIC FUNCTION
     WebGPUSpritePipeline *WebGPUSpritePipeline::Create(WGPUDevice device, WebGPUTexture2D *texture, WGPUBuffer projectionViewBuffer)
@@ -64,7 +64,7 @@ namespace bns
         renderPipelineDescriptor.fragment = &fragmentState;
 
         // Bind group layout for projection view matrix
-        WGPUBindGroupLayoutEntry projectionViewBufferLayoutEntry = WebGPUUtil::BindGroupLayoutEntry.CreateBindGroupLayoutEntryForUniformBuffer(0, WGPUShaderStage_Vertex);
+        WGPUBindGroupLayoutEntry projectionViewBufferLayoutEntry = WebGPUUtil::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(0, WGPUShaderStage_Vertex);
         WGPUBindGroupLayoutDescriptor projectionViewBufferLayoutDescriptor = WebGPUUtil::BindGroupLayoutDescriptor.Create(&projectionViewBufferLayoutEntry, 1);
         WGPUBindGroupLayout projectionViewBufferBindGroupLayout = wgpuDeviceCreateBindGroupLayout(device, &projectionViewBufferLayoutDescriptor);
 

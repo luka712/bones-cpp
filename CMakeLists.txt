@@ -67,7 +67,7 @@ target_compile_options(glfw3webgpu PRIVATE -x objective-c)
 target_compile_options(SDL2Extension PRIVATE -x objective-c)
 
 # If we are on Apple, we can use Metal or WebGPU (Metal is the default)
-target_compile_options(App PRIVATE -DUSE_METAL=1)
+target_compile_options(App PRIVATE -DUSE_METAL=0)
 
 if(APPLE)
 # Link the libraries to the executable (SDL2, Metal, QuartzCore, Foundation) 
