@@ -24,7 +24,7 @@ namespace bns
 
         if (m_geometry.Indices.size() > 0)
         {
-            IndexBuffer = MetalUtil::Buffer.CreateBuffer(m_device, m_geometry.Indices, "IndexBuffer");
+            IndexBuffer = MetalUtil::Buffer.Create(m_device, m_geometry.Indices, "IndexBuffer");
             
             IndexFormat = MTL::IndexTypeUInt32;
             if(sizeof(m_geometry.Indices[0]) == 2)
@@ -35,7 +35,7 @@ namespace bns
 
         if (m_geometry.IsInterleaved)
         {
-            VertexBuffer = MetalUtil::Buffer.CreateBuffer(m_device, m_geometry.Data, "VertexBuffer");
+            VertexBuffer = MetalUtil::Buffer.Create(m_device, m_geometry.Data, "VertexBuffer");
         }
         else
         {
@@ -57,7 +57,7 @@ namespace bns
     void MetalMesh::InitializeVertexPositionsBuffer()
     {
         MTL::Device *device = m_framework.Context.MetalDevice;
-        IndexBuffer = MetalBufferUtil::CreateBuffer(device,
+        IndexBuffer = MetalBufferUtil::Create(device,
                                                     m_geometry.VertexPositions,
                                                     "VertexPositionsBuffer");
     }
@@ -80,7 +80,7 @@ namespace bns
 
         MTL::Device *device = m_framework.Context.MetalDevice;
 
-        VertexColorsBuffer = MetalBufferUtil::CreateBuffer(device,
+        VertexColorsBuffer = MetalBufferUtil::Create(device,
                                                            colors,
                                                            "VertexColorsBuffer");
     }
@@ -89,7 +89,7 @@ namespace bns
     {
         std::vector<f32> texCoords = m_geometry.TextureCoordinates;
         MTL::Device *device = m_framework.Context.MetalDevice;
-        MTL::Buffer *buffer = MetalBufferUtil::CreateBuffer(device,
+        MTL::Buffer *buffer = MetalBufferUtil::Create(device,
                                                             texCoords,
                                                             "TextureCoordinatesBuffer");
         TextureCoordsBuffer = buffer;

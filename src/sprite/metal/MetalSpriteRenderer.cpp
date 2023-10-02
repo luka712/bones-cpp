@@ -28,7 +28,7 @@ namespace bns
             data[i * 6 + 5] = i * 4 + 0;
         }
 
-        m_indexBuffer = MetalUtil::Buffer.CreateBuffer(m_device, data, "SpriteRendererIndexBuffer");
+        m_indexBuffer = MetalUtil::Buffer.Create(m_device, data, "SpriteRendererIndexBuffer");
     }
 
     MetalSpritePipeline &MetalSpriteRenderer::GetPipeline(MetalTexture2D *texture)
@@ -82,7 +82,7 @@ namespace bns
     {
         // setup camera buffer
         m_device = m_framework.Context.MetalDevice;
-        m_projectionViewMatrixBuffer = MetalUtil::Buffer.CreateBuffer<f32>(m_device, sizeof(Mat4x4f), "SpriteRendererCameraBuffer");
+        m_projectionViewMatrixBuffer = MetalUtil::Buffer.Create<f32>(m_device, sizeof(Mat4x4f), "SpriteRendererCameraBuffer");
 
         // setup camera
         auto size = m_framework.GetWindowManager().GetWindowSize();
@@ -299,7 +299,7 @@ namespace bns
                 if (m_vertexBufferStack.empty())
                 {
                     size_t byteSize = SPRITE_RENDERER_MAX_SPRITES_PER_DRAW * FLOATS_PER_INSTANCE * sizeof(float);
-                    vertexBuffer = MetalUtil::Buffer.CreateBuffer<f32>(m_device, byteSize, "SpriteVertexBuffer");
+                    vertexBuffer = MetalUtil::Buffer.Create<f32>(m_device, byteSize, "SpriteVertexBuffer");
                 }
                 else
                 {

@@ -24,7 +24,7 @@ namespace bns
             1.0f, 1.0f, 0.0f, 1.0f, 0.0f   // top right
         };
 
-        MTL::Buffer *vertexBuffer = MetalUtil::Buffer.CreateBuffer(m_device, data, "PostProcessEffectVertexBuffer");
+        MTL::Buffer *vertexBuffer = MetalUtil::Buffer.Create(m_device, data, "PostProcessEffectVertexBuffer");
 
         return vertexBuffer;
     }
@@ -116,14 +116,14 @@ namespace bns
         m_pipeline = CreateRenderPipeline();
     }
 
-    void MetalPostProcessEffect::Draw(void *texture)
+    void MetalPostProcessEffect::Draw(void *destinationTexture)
     {
         MTL::Device *device = m_framework.Context.MetalDevice;
         MTL::CommandQueue *queue = m_framework.Context.MetalCommandQueue;
 
         // Convert to Metal types
         MetalTexture2D* mtlTextureWrapper = static_cast<MetalTexture2D*>(m_sourceTexture);
-        MTL::Texture* mtlDestTexture = static_cast<MTL::Texture*>(texture);
+        MTL::Texture* mtlDestTexture = static_cast<MTL::Texture*>(destinationTexture);
 
         MTL::CommandBuffer* commandBuffer = queue->commandBuffer();
         
@@ -146,6 +146,6 @@ namespace bns
         pEncoder->drawPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle, 0,6,1);
 
         pEncoder->endEncoding();
-        commandBuffer->commit();;
+        commandBuffer->commit();
     }
 }

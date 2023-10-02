@@ -21,6 +21,7 @@
 #include "post-process/wgpu/WebGPUPostProcessGrayscaleEffect.hpp"
 #include "post-process/metal/MetalPostProcessGrayscaleEffect.hpp"
 #include "post-process/wgpu/WebGPUPostProcessTextureCombineEffect.hpp"
+#include "post-process/metal/MetalPostProcessTextureCombineEffect.hpp"
 
 namespace bns
 {
@@ -259,8 +260,10 @@ namespace bns
 
         static f32 rotation = 0.0f;
 
-        MetalPostProcessGrayscaleEffect effect(*this);
+        MetalPostProcessTextureCombineEffect effect(*this);
         effect.Initialize();
+        effect.SetCombineTexture(testTexture);
+        effect.SetMixValue(0.5);
 
         while (!quit)
         {

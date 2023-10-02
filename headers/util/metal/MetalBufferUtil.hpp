@@ -16,7 +16,7 @@ namespace bns
          * Create a buffer with u32 data.
          */
         template <typename T>
-        static MTL::Buffer *CreateBuffer(MTL::Device *device,
+        static MTL::Buffer *Create(MTL::Device *device,
                                          std::vector<T> data,
                                          std::string label)
         {
@@ -34,7 +34,7 @@ namespace bns
          * Create a buffer with u32 data.
          */
         template <typename T>
-        static MTL::Buffer *CreateBuffer(MTL::Device *device,
+        static MTL::Buffer *Create(MTL::Device *device,
                                          size_t byteSize,
                                          std::string label)
         {
