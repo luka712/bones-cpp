@@ -44,6 +44,6 @@ do: Simply run project in xcode
 
 # Dependencies
 TODO: 
-- Implement Metal post processing
 - All utils to utils folder
 - Figure out WebGPU Metal debugger.
+- get rid of glfw

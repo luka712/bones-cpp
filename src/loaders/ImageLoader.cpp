@@ -19,7 +19,6 @@ bns::ImageData *bns::ImageLoader::LoadImage(std::string path)
     // If there's an error, display it.
     if (data == nullptr)
     {
-
         throw std::invalid_argument("ImageLoader::LoadImage: Could not find texture under path: " + path);
     }
 

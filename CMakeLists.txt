@@ -5,9 +5,22 @@ project(
 	VERSION 0.0.1 # The version of the project
 )
 
+include(FetchContent)
 include(utils.cmake)
 
-find_package(SDL2 REQUIRED) # Find the SDL2 library, assumes it's installed system-wide
+# Set the build type to Debug
+set(CMAKE_BUILD_TYPE Debug)
+
+# Leave this for now
+# find_package(SDL2 REQUIRED) # Find the SDL2 library, assumes it's installed system-wide
+
+# SDL2 - get it from github and build it
+FetchContent_Declare(
+    SDL2 
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+    GIT_TAG release-2.28.3)
+FetchContent_MakeAvailable(SDL2)
+
 
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/webgpu)
@@ -69,28 +82,46 @@ target_compile_options(SDL2Extension PRIVATE -x objective-c)
 # If we are on Apple, we can use Metal or WebGPU (Metal is the default)
 target_compile_options(App PRIVATE -DUSE_METAL=1)
 
+if(WIN32)
+    # SDL2::SDL2main may or may not be available. It is e.g. required by Windows GUI applications
+    if(TARGET SDL2::SDL2main)
+        # It has an implicit dependency on SDL2 functions, so it MUST be added before SDL2::SDL2 (or SDL2::SDL2-static)
+        target_link_libraries(App PRIVATE SDL2::SDL2main)
+    endif()
+endif()
+
+
 if(APPLE)
 # Link the libraries to the executable (SDL2, Metal, QuartzCore, Foundation) 
-target_link_libraries(App ${SDL2_LIBRARIES} ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} glfw webgpu glfw3webgpu SDL2Extension)
+target_link_libraries(App PRIVATE SDL2::SDL2 ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} glfw webgpu glfw3webgpu SDL2Extension)
 else()
-target_link_libraries(App ${SDL2_LIBRARIES} glfw webgpu glfw3webgpu SDL2Extension)
-
+target_link_libraries(App PRIVATE SDL2::SDL glfw webgpu glfw3webgpu SDL2Extension)
 endif()
+
+
+    # copy SDL2.dll, SDL2_image.dll to the output directory
+add_custom_command(TARGET App POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:SDL2::SDL2> $<TARGET_FILE_DIR:App>
+)
+
+
 
 # Set the executable's properties for Xcode
 if(XCODE)
-    # COPY SHADERS
-    set(SHADER_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/shaders)
-    set(SHADER_DEST_DIR ${CMAKE_CURRENT_BINARY_DIR}/shaders)
 
-
-    # copy shaders to build dir
+    # Copy non source files to build dir such as shaders, assets, etc
     add_custom_command(TARGET App POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${SHADER_SOURCE_DIR} ${SHADER_DEST_DIR}
-    COMMENT "Copying shaders to build dir"
+        ${CMAKE_CURRENT_SOURCE_DIR}/shaders 
+        ${CMAKE_CURRENT_BINARY_DIR}/Debug/shaders
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets 
+        ${CMAKE_CURRENT_BINARY_DIR}/Debug/assets
+    COMMENT "Copying non-build folders(shaders,assets) to build dir"
     )
 
+    # enable metal frame capture
     set_target_properties(App PROPERTIES
         XCODE_GENERATE_SCHEME ON
         XCODE_SCHEME_ENABLE_GPU_FRAME_CAPTURE_MODE "Metal")
