@@ -13,12 +13,6 @@ namespace bns
     protected:
         const Framework &m_framework;
 
-        /**
-         * @brief The source texture.
-         * This is the texture that we want to apply the effect to.
-         */
-        Texture2D *m_sourceTexture = nullptr;
-
     public:
         PostProcessEffect(const Framework &framework);
 
@@ -27,11 +21,7 @@ namespace bns
          * @return The source texture.
          * This is the texture that we want to apply the effect to.
          */
-        inline Texture2D *GetSourceTexture() const
-        {
-            return m_sourceTexture;
-        }
-
+        virtual Texture2D *GetSourceTexture() = 0;
         /**
          * @brief Initialize the effect.
         */
@@ -44,6 +34,8 @@ namespace bns
          * But can be any other texture if there are multiple post process effects.
          */
         virtual void Draw(void *destinationTexture) = 0;
+
+        // TODO: destroy
     };
 } // namespace bns
 

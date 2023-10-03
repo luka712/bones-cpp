@@ -22,9 +22,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(SDL2)
 
 
-add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/webgpu)
-add_subdirectory(vendor/glfw3webgpu)
 add_subdirectory(vendor/SDL2Extension)
 
 # Set the target architecture to arm64
@@ -76,11 +74,11 @@ include_directories(
 # Add the executable
 add_executable(App main.cpp ${SOURCES})
 
-target_compile_options(glfw3webgpu PRIVATE -x objective-c)
+# Custom extension for WebGPU and SDL2
 target_compile_options(SDL2Extension PRIVATE -x objective-c)
 
 # If we are on Apple, we can use Metal or WebGPU (Metal is the default)
-target_compile_options(App PRIVATE -DUSE_METAL=1)
+target_compile_options(App PRIVATE -DUSE_METAL=0)
 
 if(WIN32)
     # SDL2::SDL2main may or may not be available. It is e.g. required by Windows GUI applications
@@ -93,9 +91,9 @@ endif()
 
 if(APPLE)
 # Link the libraries to the executable (SDL2, Metal, QuartzCore, Foundation) 
-target_link_libraries(App PRIVATE SDL2::SDL2 ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} glfw webgpu glfw3webgpu SDL2Extension)
+target_link_libraries(App PRIVATE SDL2::SDL2 ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} glfw webgpu SDL2Extension)
 else()
-target_link_libraries(App PRIVATE SDL2::SDL glfw webgpu glfw3webgpu SDL2Extension)
+target_link_libraries(App PRIVATE SDL2::SDL webgpu SDL2Extension)
 endif()
 
 

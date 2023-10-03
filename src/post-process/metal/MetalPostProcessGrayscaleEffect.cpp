@@ -2,7 +2,7 @@
 
 namespace bns
 {
-    MetalPostProcessGrayscaleEffect::MetalPostProcessGrayscaleEffect(const Framework &framework)
+    MetalPostProcessGrayscaleEffectImpl::MetalPostProcessGrayscaleEffectImpl(const Framework &framework)
         : MetalPostProcessEffect(framework)
     {
     }

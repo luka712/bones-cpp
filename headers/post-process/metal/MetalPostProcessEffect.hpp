@@ -25,21 +25,27 @@ namespace bns
         MTL::Device *m_device;
 
         MTL::RenderPipelineState *m_pipeline; // post process shaders pipeline
-        MTL::Buffer *m_vertexBuffer;     // for screen geometry
-        MTL::SamplerState *m_samplerState; // for source texture
+        MTL::Buffer *m_vertexBuffer;          // for screen geometry
+        MTL::SamplerState *m_samplerState;    // for source texture
+
+        /**
+         * @brief The source texture.
+         * This is the texture that we want to apply the effect to.
+         */
+        Texture2D *m_sourceTexture = nullptr;
 
         /**
          * @brief Create a vertex buffer for a full screen quad.
          * Buffer is created as an array buffer (no indices).
          * Holds 6 vertices (2 triangles) with 2 floats for position and 2 floats for texture coordinates.
          */
-        virtual MTL::Buffer* CreateVertexBuffer();
+        virtual MTL::Buffer *CreateVertexBuffer();
 
         /**
          * @brief Create a render pipeline for the post process effect.
          * By default simple pipeline is provided which assumes that it takes a texture and draws it to screen.
          */
-        virtual MTL::RenderPipelineState* CreateRenderPipeline();
+        virtual MTL::RenderPipelineState *CreateRenderPipeline();
 
         /**
          * @brief Get the shader path for the post process effect.
@@ -51,8 +57,17 @@ namespace bns
 
         void Initialize() override;
 
+        /**
+         * @brief Get the source texture.
+         * @return The source texture.
+         * This is the texture that we want to apply the effect to.
+         */
+        inline Texture2D *GetSourceTexture() override
+        {
+            return m_sourceTexture;
+        }
 
-         /**
+        /**
          * @brief Draw the effect to the destination texture.
          * @param destinationTexture The destination texture. In this case it is of type MetalTexture.
          * This is a texture to which we want to render, usually the screen texture.

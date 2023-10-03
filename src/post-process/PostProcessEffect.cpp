@@ -4,7 +4,7 @@
 namespace bns
 {
     PostProcessEffect::PostProcessEffect(const Framework &framework)
-        : m_framework(framework), m_sourceTexture(nullptr)
+        : m_framework(framework)
     {
     }
 } // namespace bns

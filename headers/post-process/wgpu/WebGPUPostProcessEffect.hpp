@@ -33,6 +33,12 @@ namespace bns
         WGPUBindGroup m_sourceTextureBindGroup;             // for the source texture which comes into draw
 
         /**
+         * @brief The source texture.
+         * This is the texture that we want to apply the effect to.
+         */
+        Texture2D *m_sourceTexture = nullptr;
+
+        /**
          * @brief Create a vertex buffer for a full screen quad.
          * Buffer is created as an array buffer (no indices).
          * Holds 6 vertices (2 triangles) with 2 floats for position and 2 floats for texture coordinates.
@@ -89,8 +95,16 @@ namespace bns
     public:
         WebGPUPostProcessEffect(const Framework &framework);
 
-        void Initialize() override;
+        /**
+         * @brief Get the source texture.
+         * @return The source texture.
+        */
+        inline Texture2D *GetSourceTexture() override
+        {
+            return m_sourceTexture;
+        }
 
+        void Initialize() override;
 
          /**
          * @brief Draw the effect to the destination texture.

@@ -2,7 +2,7 @@
 
 namespace bns
 {
-    WebGPUPostProcessGrayscaleEffect::WebGPUPostProcessGrayscaleEffect(const Framework &framework)
+    WebGPUPostProcessGrayscaleEffectImpl::WebGPUPostProcessGrayscaleEffectImpl(const Framework &framework)
         : WebGPUPostProcessEffect(framework)
     {
     }

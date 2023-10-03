@@ -3,7 +3,6 @@
 #include "renderer/metal/MetalRenderer.hpp"
 #include "renderer/wgpu/WebGPURenderer.hpp"
 #include "window/sdl_window.hpp"
-#include "window/glfw_window.hpp"
 #include "material/WebGPUMaterialFactory.hpp"
 #include "mesh/wgpu/WebGPUMeshFactory.hpp"
 #include "mesh/metal/MetalMeshFactory.hpp"
@@ -28,13 +27,12 @@ namespace bns
     Framework::Framework()
     {
         m_directory = new Directory();
-        m_windowManager = new GLFWWindowManager();
         m_geometryBuilder = new GeometryBuilder();
         m_imageLoader = new ImageLoader(*m_directory);
         m_bitmapSpriteFontLoader = new BitmapSpriteFontLoader(*this);
         m_textureFactory = new TextureFactory(*this);
+        m_postProcessEffectFactory = new PostProcessEffectFactory(*this);
 
-        // WebGPU initialize
 #if __APPLE__ && USE_METAL
         m_renderer = new MetalRenderer(*this);
         // m_materialFactory = new MetalMaterialFactory(*this);
@@ -59,86 +57,6 @@ namespace bns
 #else
         InitializeForWGPU(windowParameters);
 #endif
-    }
-
-    void Framework::InitializeForWGPUGLFW(WindowParameters windowParameters)
-    {
-
-        // Initialize the window manager and get the WGPU instance and surface
-        WGPUInstance instance;
-        WGPUSurface surface;
-        m_windowManager->InitializeForWGPU(windowParameters, &instance, &surface);
-
-        WebGPURenderer renderer(*this);
-        renderer.Initialize(instance, surface);
-
-        m_spriteRenderer->Initialize();
-
-        // Mesh *mesh = m_meshFactory->CreateTriangleMesh();
-        // Material *material = MaterialFactory->CreateBasicMaterial();
-        // mesh->AddMaterial(material);
-
-        FreeCamera camera;
-
-        // TEST DATA
-        WebGPUTexture2D *testTexture = new WebGPUTexture2D(*this, m_imageLoader->LoadImage("assets/uv_test.png"), TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST, TextureFormat::RGBA_8_Unorm);
-        testTexture->Initialize();
-
-        WebGPUBasicMeshTexturedTestMaterial *testMaterial = new WebGPUBasicMeshTexturedTestMaterial(*this, testTexture);
-        testMaterial->Initialize();
-
-        Mesh *testMesh = m_meshFactory->CreateQuadMesh(true);
-
-        static f32 rotation = 0.0f;
-
-        WebGPUPostProcessGrayscaleEffect effect(*this);
-        effect.Initialize();
-
-        while (!glfwWindowShouldClose(((GLFWWindowManager *)m_windowManager)->m_window))
-        {
-            // Do nothing, this checks for ongoing asynchronous operations and call their callbacks
-            // NOTE: this is specific to DAWN and is not part of WebGPU standard.
-            wgpuDeviceTick(Context.WebGPUDevice);
-
-            glfwPollEvents();
-            camera.Update(0.0f);
-
-            renderer.SetRenderTexture(effect.GetSourceTexture());
-
-            renderer.BeginDraw();
-            m_spriteRenderer->BeginFrame();
-
-            i32 hw = testTexture->GetWidth() / 2;
-            i32 hh = testTexture->GetHeight() / 2;
-
-            rotation += 0.1;
-            Vec2f rotationOrigin = Vec2f(0.5f, 0.5f);
-
-            // whole texture
-            m_spriteRenderer->Draw(testTexture, Rect(0, 0, 100, 100));
-
-            // top left quadrant
-            m_spriteRenderer->Draw(testTexture, Rect(100, 0, 100, 100), Rect(0, 0, hw, hh), Color::White(), rotation, rotationOrigin);
-
-            // top right quadrant
-            m_spriteRenderer->Draw(testTexture, Rect(200, 0, 100, 100), Rect(hw, 0, hw, hh), Color::White(), rotation, rotationOrigin);
-
-            // bottom left quadrant
-            m_spriteRenderer->Draw(testTexture, Rect(100, 100, 100, 100), Rect(0, hh, hw, hh), Color::White(), rotation, rotationOrigin);
-
-            // bottom right quadrant
-            m_spriteRenderer->Draw(testTexture, Rect(200, 100, 100, 100), Rect(hw, hh, hw, hh), Color::White(), rotation, rotationOrigin);
-
-            //    testMaterial->Draw(camera, testMesh);
-
-            m_spriteRenderer->EndFrame();
-
-            effect.Draw(renderer.GetSwapChainTexture());
-
-            renderer.EndDraw();
-        }
-
-        renderer.Destroy();
     }
 
     void Framework::InitializeForWGPU(WindowParameters windowParameters)
@@ -171,10 +89,13 @@ namespace bns
 
         static f32 rotation = 0.0f;
 
+        PostProcessGrayscaleEffect *grayscaleEffect = m_postProcessEffectFactory->CreateGrayscaleEffect();
+
+/*
         WebGPUPostProcessTextureCombineEffect effect(*this);
         effect.Initialize();
         effect.SetCombineTexture(testTexture);
-
+*/
         while (!quit)
         {
             // Process events
@@ -192,7 +113,7 @@ namespace bns
             
             m_renderer->BeginDraw();
             
-            m_renderer->SetRenderTexture(effect.GetSourceTexture());
+            m_renderer->SetRenderTexture(grayscaleEffect->GetSourceTexture());
 
             // testMaterial->Draw(camera, mesh);
             m_spriteRenderer->BeginFrame();
@@ -222,7 +143,7 @@ namespace bns
 
             m_spriteRenderer->EndFrame();
 
-            effect.Draw(m_renderer->GetSwapChainTexture());
+            grayscaleEffect->Draw(m_renderer->GetSwapChainTexture());
 
             m_renderer->EndDraw();
 
@@ -260,11 +181,14 @@ namespace bns
 
         static f32 rotation = 0.0f;
 
+        PostProcessGrayscaleEffect *grayscaleEffect = m_postProcessEffectFactory->CreateGrayscaleEffect();
+
+        /*
         MetalPostProcessTextureCombineEffect effect(*this);
         effect.Initialize();
         effect.SetCombineTexture(testTexture);
         effect.SetMixValue(0.5);
-
+         */
         while (!quit)
         {
             // Process events
@@ -276,10 +200,9 @@ namespace bns
                 }
             }
 
-            m_renderer->SetRenderTexture(effect.GetSourceTexture());
+            m_renderer->SetRenderTexture(grayscaleEffect->GetSourceTexture());
 
             m_renderer->BeginDraw();
-
 
             // testMaterial->Draw(camera, mesh);
             m_spriteRenderer->BeginFrame();
@@ -309,7 +232,8 @@ namespace bns
 
             m_spriteRenderer->EndFrame();
 
-            effect.Draw(m_renderer->GetSwapChainTexture());
+            grayscaleEffect->Draw(m_renderer->GetSwapChainTexture());
+            // effect.Draw(m_renderer->GetSwapChainTexture());
 
             m_renderer->EndDraw();
 

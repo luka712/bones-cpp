@@ -15,6 +15,7 @@
 #include <Metal/Metal.hpp>
 #include "data/Vec2.hpp"
 #include "renderer/Renderer.hpp"
+#include "post-process/PostProcessEffectFactory.hpp"
 
 namespace bns
 {
@@ -68,6 +69,7 @@ namespace bns
         SpriteRenderer *m_spriteRenderer;
         BitmapSpriteFontLoader* m_bitmapSpriteFontLoader;
         TextureFactory *m_textureFactory;
+        PostProcessEffectFactory *m_postProcessEffectFactory;
 
         /**
          * @brief Initialize the framework with Metal as the backend.
@@ -78,9 +80,6 @@ namespace bns
          * @brief Initialize the framework with WebGPU as the backend.
         */
         void InitializeForWGPU(bns::WindowParameters windowParameters);
-
-        // Test until SDL works on all platforms
-        void InitializeForWGPUGLFW(bns::WindowParameters windowParameters);
 
     public:
         FrameworkContext Context;
@@ -163,6 +162,14 @@ namespace bns
         inline TextureFactory& GetTextureFactory() const
         {
             return *m_textureFactory;
+        }
+
+        /**
+         * @brief Get the post process effect factory.
+         */
+        inline PostProcessEffectFactory& GetPostProcessEffectFactory() const
+        {
+            return *m_postProcessEffectFactory;
         }
 
         FileLoader FileLoader;

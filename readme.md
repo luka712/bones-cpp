@@ -28,10 +28,6 @@ cmake -G Xcode -H. -Bbuild_xcode
 ## Run
 build/App
 
-
-
-
-
 ### Generate Build Files
 run: cmake -G Xcode -H. -Bbuild_xcode
 
@@ -46,4 +42,4 @@ do: Simply run project in xcode
 TODO: 
 - All utils to utils folder
 - Figure out WebGPU Metal debugger.
-- get rid of glfw
+- move texture combine effect similar to grayscale effect
