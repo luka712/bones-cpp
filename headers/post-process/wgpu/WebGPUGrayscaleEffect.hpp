@@ -2,19 +2,19 @@
 
 #define BNS_WEBGPU_POST_PROCESS_GRAYSCALE_EFFECT_HPP
 
-#include "post-process/wgpu/WebGPUPostProcessEffect.hpp"
-#include "post-process/PostProcessGrayscaleEffect.hpp"
+#include "post-process/wgpu/WebGPUEffectImpl.hpp"
+#include "post-process/GrayscaleEffect.hpp"
 
 namespace bns
 {
     /**
      * @brief A WebGPU implementation of a post process effect which converts the source texture to grayscale.
      * This is an implementation.
-     * @see PostProcessGrayscaleEffect
-     * @see WebGPUPostProcessGrayscaleEffect
-     * @see WebGPUPostProcessEffect
+     * @see GrayscaleEffect
+     * @see WebGPUGrayscaleEffect
+     * @see WebGPUEffect
      */
-    class WebGPUPostProcessGrayscaleEffectImpl final : public WebGPUPostProcessEffect
+    class WebGPUGrayscaleEffectImpl final : public WebGPUEffectImpl
     {
     protected:
         inline std::string GetShaderPath() override
@@ -23,26 +23,26 @@ namespace bns
         }
 
     public:
-        WebGPUPostProcessGrayscaleEffectImpl(const Framework &framework);
+        WebGPUGrayscaleEffectImpl(const Framework &framework);
     };
 
     /**
      * @brief A WebGPU implementation of a post process effect which converts the source texture to grayscale.
      * This is an interface.
-     * @see PostProcessGrayscaleEffect
-     * @see WebGPUPostProcessGrayscaleEffectImpl
-     * @see WebGPUPostProcessEffect
+     * @see GrayscaleEffect
+     * @see WebGPUGrayscaleEffectImpl
+     * @see WebGPUEffect
      */
-    class WebGPUPostProcessGrayscaleEffect final : public PostProcessGrayscaleEffect
+    class WebGPUGrayscaleEffect final : public GrayscaleEffect
     {
     private:
-        WebGPUPostProcessGrayscaleEffectImpl *m_impl;
+        WebGPUGrayscaleEffectImpl *m_impl;
 
     public:
-        WebGPUPostProcessGrayscaleEffect(const Framework &framework)
-            : PostProcessGrayscaleEffect(framework)
+        WebGPUGrayscaleEffect(const Framework &framework)
+            : GrayscaleEffect(framework)
         {
-            m_impl = new WebGPUPostProcessGrayscaleEffectImpl(framework);
+            m_impl = new WebGPUGrayscaleEffectImpl(framework);
         }
 
         Texture2D *GetSourceTexture() override

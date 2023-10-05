@@ -2,7 +2,7 @@
 
 #define BNS_METAL_POST_PROCESS_EFFECT_HPP
 
-#include "post-process/PostProcessEffect.hpp"
+#include "post-process/Effect.hpp"
 #include "textures/metal/MetalTexture2D.hpp"
 #include <string>
 
@@ -16,7 +16,7 @@ namespace bns
 {
     class Framework;
 
-    class MetalPostProcessEffect : public PostProcessEffect
+    class MetalEffect : public Effect
     {
     protected:
         /**
@@ -53,7 +53,7 @@ namespace bns
         virtual std::string GetShaderPath() = 0;
 
     public:
-        MetalPostProcessEffect(const Framework &framework);
+        MetalEffect(const Framework &framework);
 
         void Initialize() override;
 

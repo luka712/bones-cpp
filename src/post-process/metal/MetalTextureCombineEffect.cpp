@@ -1,24 +1,28 @@
-#include "post-process/metal/MetalPostProcessTextureCombineEffect.hpp"
+#include "post-process/metal/MetalTextureCombineEffect.hpp"
 #include "Framework.hpp"
 #include "util/MetalUtil.hpp"
 
 namespace bns
 {
-    MetalPostProcessTextureCombineEffect::MetalPostProcessTextureCombineEffect(const Framework &framework)
-        : MetalPostProcessEffect(framework)
+
+    #pragma region Implementation
+
+    MetalTextureCombineEffectImpl::MetalTextureCombineEffectImpl(const Framework &framework)
+        : MetalEffect(framework)
     {
+        m_mixValue = 0.5;
     }
 
-    void MetalPostProcessTextureCombineEffect::Initialize()
+    void MetalTextureCombineEffectImpl::Initialize()
     {
         MTL::Device* device = m_framework.Context.MetalDevice;
         
-        MetalPostProcessEffect::Initialize();
+        MetalEffect::Initialize();
         
         m_mixValueBuffer = MetalUtil::Buffer.Create<f32>(m_device, sizeof(f32), "texture_combine_mix_value_buffer");
     }
 
-    void MetalPostProcessTextureCombineEffect::Draw(void *destinationTexture)
+    void MetalTextureCombineEffectImpl::Draw(void *destinationTexture)
     {
         MTL::Device *device = m_framework.Context.MetalDevice;
         MTL::CommandQueue *queue = m_framework.Context.MetalCommandQueue;
@@ -64,6 +68,6 @@ namespace bns
         commandBuffer->commit();
     }
 
-
+#pragma endregion
 
 } // namespace bns

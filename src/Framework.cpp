@@ -17,10 +17,6 @@
 #include "textures/metal/MetalTexture2D.hpp"
 #include "sprite/wgpu/WebGPUSpriteRenderer.hpp"
 #include "sprite/metal/MetalSpriteRenderer.hpp"
-#include "post-process/wgpu/WebGPUPostProcessGrayscaleEffect.hpp"
-#include "post-process/metal/MetalPostProcessGrayscaleEffect.hpp"
-#include "post-process/wgpu/WebGPUPostProcessTextureCombineEffect.hpp"
-#include "post-process/metal/MetalPostProcessTextureCombineEffect.hpp"
 
 namespace bns
 {
@@ -31,7 +27,7 @@ namespace bns
         m_imageLoader = new ImageLoader(*m_directory);
         m_bitmapSpriteFontLoader = new BitmapSpriteFontLoader(*this);
         m_textureFactory = new TextureFactory(*this);
-        m_postProcessEffectFactory = new PostProcessEffectFactory(*this);
+        m_effectFactory = new EffectFactory(*this);
 
 #if __APPLE__ && USE_METAL
         m_renderer = new MetalRenderer(*this);
@@ -89,10 +85,11 @@ namespace bns
 
         static f32 rotation = 0.0f;
 
-        PostProcessGrayscaleEffect *grayscaleEffect = m_postProcessEffectFactory->CreateGrayscaleEffect();
+        auto *effect = m_effectFactory->CreateBlurEffect();
+        // effect->SetCombineTexture(testTexture);
 
 /*
-        WebGPUPostProcessTextureCombineEffect effect(*this);
+        WebGPUTextureCombineEffect effect(*this);
         effect.Initialize();
         effect.SetCombineTexture(testTexture);
 */
@@ -113,7 +110,7 @@ namespace bns
             
             m_renderer->BeginDraw();
             
-            m_renderer->SetRenderTexture(grayscaleEffect->GetSourceTexture());
+            m_renderer->SetRenderTexture(effect->GetSourceTexture());
 
             // testMaterial->Draw(camera, mesh);
             m_spriteRenderer->BeginFrame();
@@ -143,7 +140,7 @@ namespace bns
 
             m_spriteRenderer->EndFrame();
 
-            grayscaleEffect->Draw(m_renderer->GetSwapChainTexture());
+            effect->Draw(m_renderer->GetSwapChainTexture());
 
             m_renderer->EndDraw();
 
@@ -181,10 +178,12 @@ namespace bns
 
         static f32 rotation = 0.0f;
 
-        PostProcessGrayscaleEffect *grayscaleEffect = m_postProcessEffectFactory->CreateGrayscaleEffect();
+        auto *effect = m_effectFactory->CreateTextureCombineEffect();
+        effect->SetCombineTexture(testTexture);
+
 
         /*
-        MetalPostProcessTextureCombineEffect effect(*this);
+        MetalTextureCombineEffect effect(*this);
         effect.Initialize();
         effect.SetCombineTexture(testTexture);
         effect.SetMixValue(0.5);
@@ -200,7 +199,7 @@ namespace bns
                 }
             }
 
-            m_renderer->SetRenderTexture(grayscaleEffect->GetSourceTexture());
+            m_renderer->SetRenderTexture(effect->GetSourceTexture());
 
             m_renderer->BeginDraw();
 
@@ -232,7 +231,7 @@ namespace bns
 
             m_spriteRenderer->EndFrame();
 
-            grayscaleEffect->Draw(m_renderer->GetSwapChainTexture());
+            effect->Draw(m_renderer->GetSwapChainTexture());
             // effect.Draw(m_renderer->GetSwapChainTexture());
 
             m_renderer->EndDraw();

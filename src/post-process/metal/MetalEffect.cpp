@@ -1,4 +1,4 @@
-#include "post-process/metal/MetalPostProcessEffect.hpp"
+#include "post-process/metal/MetalEffect.hpp"
 #include "textures/metal/MetalTexture2D.hpp"
 #include "util/MetalUtil.hpp"
 #include "Framework.hpp"
@@ -6,12 +6,12 @@
 
 namespace bns
 {
-    MetalPostProcessEffect::MetalPostProcessEffect(const Framework &framework)
-        : PostProcessEffect(framework)
+    MetalEffect::MetalEffect(const Framework &framework)
+        : Effect(framework)
     {
     }
 
-    MTL::Buffer *MetalPostProcessEffect::CreateVertexBuffer()
+    MTL::Buffer *MetalEffect::CreateVertexBuffer()
     {
         std::vector<float> data = {
             // position, tex coords
@@ -24,12 +24,12 @@ namespace bns
             1.0f, 1.0f, 0.0f, 1.0f, 0.0f   // top right
         };
 
-        MTL::Buffer *vertexBuffer = MetalUtil::Buffer.Create(m_device, data, "PostProcessEffectVertexBuffer");
+        MTL::Buffer *vertexBuffer = MetalUtil::Buffer.Create(m_device, data, "EffectVertexBuffer");
 
         return vertexBuffer;
     }
 
-    MTL::RenderPipelineState* MetalPostProcessEffect::CreateRenderPipeline()
+    MTL::RenderPipelineState* MetalEffect::CreateRenderPipeline()
     {
 
         FileLoader fileLoader;
@@ -100,7 +100,7 @@ namespace bns
         return m_pipeline;
     };
 
-    void MetalPostProcessEffect::Initialize()
+    void MetalEffect::Initialize()
     {
         m_device = m_framework.Context.MetalDevice;
 
@@ -116,7 +116,7 @@ namespace bns
         m_pipeline = CreateRenderPipeline();
     }
 
-    void MetalPostProcessEffect::Draw(void *destinationTexture)
+    void MetalEffect::Draw(void *destinationTexture)
     {
         MTL::Device *device = m_framework.Context.MetalDevice;
         MTL::CommandQueue *queue = m_framework.Context.MetalCommandQueue;

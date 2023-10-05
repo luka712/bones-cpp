@@ -40,6 +40,7 @@ do: Simply run project in xcode
 
 # Dependencies
 TODO: 
+- implement blur effect for metal
 - All utils to utils folder
 - Figure out WebGPU Metal debugger.
-- move texture combine effect similar to grayscale effect
+- merge initialize into 1 method

@@ -15,7 +15,7 @@
 #include <Metal/Metal.hpp>
 #include "data/Vec2.hpp"
 #include "renderer/Renderer.hpp"
-#include "post-process/PostProcessEffectFactory.hpp"
+#include "post-process/EffectFactory.hpp"
 
 namespace bns
 {
@@ -69,7 +69,7 @@ namespace bns
         SpriteRenderer *m_spriteRenderer;
         BitmapSpriteFontLoader* m_bitmapSpriteFontLoader;
         TextureFactory *m_textureFactory;
-        PostProcessEffectFactory *m_postProcessEffectFactory;
+        EffectFactory *m_effectFactory;
 
         /**
          * @brief Initialize the framework with Metal as the backend.
@@ -167,9 +167,9 @@ namespace bns
         /**
          * @brief Get the post process effect factory.
          */
-        inline PostProcessEffectFactory& GetPostProcessEffectFactory() const
+        inline EffectFactory& GetEffectFactory() const
         {
-            return *m_postProcessEffectFactory;
+            return *m_effectFactory;
         }
 
         FileLoader FileLoader;

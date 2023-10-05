@@ -1,7 +1,7 @@
 #ifndef BNS_POST_PROCESS_GRAYSCALE_EFFECT_HPP
 #define BNS_POST_PROCESS_GRAYSCALE_EFFECT_HPP
 
-#include "post-process/PostProcessEffect.hpp"
+#include "post-process/Effect.hpp"
 
 namespace bns 
 {
@@ -9,10 +9,10 @@ namespace bns
     /**
      * @brief A post process effect which converts the source texture to grayscale. This is an interface.
     */
-    class PostProcessGrayscaleEffect : public PostProcessEffect
+    class GrayscaleEffect : public Effect
     {
         public:
-            PostProcessGrayscaleEffect(const Framework &framework);
+            GrayscaleEffect(const Framework &framework);
     };
 }
 

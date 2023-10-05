@@ -1,20 +1,20 @@
-#include "post-process/wgpu/WebGPUPostProcessTextureCombineEffect.hpp"
+#include "post-process/wgpu/WebGPUTextureCombineEffect.hpp"
 #include "util/WebGPUUtil.hpp"
 #include "Framework.hpp"
 
 namespace bns
 {
-    WebGPUPostProcessTextureCombineEffect::WebGPUPostProcessTextureCombineEffect(const Framework &framework)
-        : WebGPUPostProcessEffect(framework)
+    WebGPUTextureCombineEffectImpl::WebGPUTextureCombineEffectImpl(const Framework &framework)
+        : WebGPUEffectImpl(framework)
     {
         m_combineTexture = nullptr;
         m_combineTextureBindGroup = nullptr;
         m_mixValue = 0.5f;
     }
 
-    std::vector<WGPUBindGroupLayout> WebGPUPostProcessTextureCombineEffect::CreateBindGroupLayouts()
+    std::vector<WGPUBindGroupLayout> WebGPUTextureCombineEffectImpl::CreateBindGroupLayouts()
     {
-        std::vector<WGPUBindGroupLayout> result = WebGPUPostProcessEffect::CreateBindGroupLayouts();
+        std::vector<WGPUBindGroupLayout> result = WebGPUEffectImpl::CreateBindGroupLayouts();
 
         // Combine texture layout
         // create the bind group layout entries
@@ -57,7 +57,7 @@ namespace bns
         return result;
     }
 
-    WGPUBindGroup WebGPUPostProcessTextureCombineEffect::CreateCombineTextureBindGroup()
+    WGPUBindGroup WebGPUTextureCombineEffectImpl::CreateCombineTextureBindGroup()
     {
         // there is no texture, it cannot be created
         if (m_combineTexture == nullptr)
@@ -90,16 +90,16 @@ namespace bns
         return bindGroup;
     }
 
-    void WebGPUPostProcessTextureCombineEffect::SetCombineTexture(WebGPUTexture2D *combineTexture)
+    void WebGPUTextureCombineEffectImpl::SetCombineTexture(WebGPUTexture2D *combineTexture)
     {
         m_combineTexture = combineTexture;
         // m_combineTextureBindGroup is assigned by default in CreateBindGroupLayouts.
         CreateCombineTextureBindGroup();
     }
 
-    std::vector<WGPUBindGroup> WebGPUPostProcessTextureCombineEffect::CreateBindGroups(std::vector<WGPUBindGroupLayout> bindGroupLayouts)
+    std::vector<WGPUBindGroup> WebGPUTextureCombineEffectImpl::CreateBindGroups(std::vector<WGPUBindGroupLayout> bindGroupLayouts)
     {
-        std::vector<WGPUBindGroup> result = WebGPUPostProcessEffect::CreateBindGroups(bindGroupLayouts);
+        std::vector<WGPUBindGroup> result = WebGPUEffectImpl::CreateBindGroups(bindGroupLayouts);
 
         // m_combineTextureBindGroup is assigned by default in CreateBindGroupLayouts.
         WGPUBindGroup combineTextureBindGroup = CreateCombineTextureBindGroup();
@@ -126,7 +126,7 @@ namespace bns
         return result;
     }
 
-    void WebGPUPostProcessTextureCombineEffect::Draw(void *texture)
+    void WebGPUTextureCombineEffectImpl::Draw(void *texture)
     {
         WGPUDevice device = m_framework.Context.WebGPUDevice;
         WGPUQueue queue = m_framework.Context.WebGPUQueue;
@@ -134,7 +134,7 @@ namespace bns
         // Create a command encoder which can be used to submit GPU operations.
         WGPUCommandEncoderDescriptor desc;
         desc.nextInChain = nullptr;
-        desc.label = "PostProcessEffect";
+        desc.label = "Effect";
         WGPUCommandEncoder encoder = wgpuDeviceCreateCommandEncoder(device, &desc);
 
         // Create a render pass for the encoder.

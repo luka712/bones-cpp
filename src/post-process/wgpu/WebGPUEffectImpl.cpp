@@ -1,28 +1,24 @@
-#include "post-process/wgpu/WebGPUPostProcessEffect.hpp"
+#include "post-process/wgpu/WebGPUEffectImpl.hpp"
 #include "textures/wgpu/WebGPUTexture2D.hpp"
 #include "Framework.hpp"
 #include "util/WebGPUUtil.hpp"
 #include "util/wgpu/WebGPUBufferUtil.hpp"
 #include "util/wgpu/WebGPUBindGroupLayoutEntryUtil.hpp"
 #include "util/wgpu/WebGPUBindGroupLayoutDescriptorUtil.hpp"
-#include "util/wgpu/WebGPUBindGroupEntryUtil.hpp"
-#include "util/wgpu/WebGPUBindGroupDescriptorUtil.hpp"
 #include "util/wgpu/WebGPUPipelineLayoutDescriptorUtil.hpp"
-#include "util/wgpu/WebGPUShaderModuleUtil.hpp"
 #include "util/wgpu/WebGPURenderPipelineDescriptorUtil.hpp"
 #include "buffer-layout/BufferLayoutData.hpp"
-#include "util/wgpu/WebGPUVertexBufferLayoutUtil.hpp"
 #include "util/wgpu/WebGPUFragmentStateUtil.hpp"
 #include "util/wgpu/WebGPUDepthStencilStateUtil.hpp"
 
 namespace bns
 {
-    WebGPUPostProcessEffect::WebGPUPostProcessEffect(const Framework &framework)
-        : PostProcessEffect(framework)
+    WebGPUEffectImpl::WebGPUEffectImpl(const Framework &framework)
+        : Effect(framework)
     {
     }
 
-    WGPUBuffer WebGPUPostProcessEffect::CreateVertexBuffer()
+    WGPUBuffer WebGPUEffectImpl::CreateVertexBuffer()
     {
         std::vector<float> data = {
             // position, tex coords
@@ -39,7 +35,7 @@ namespace bns
         return vertexBuffer;
     }
 
-    std::vector<WGPUBindGroupLayout> WebGPUPostProcessEffect::CreateBindGroupLayouts()
+    std::vector<WGPUBindGroupLayout> WebGPUEffectImpl::CreateBindGroupLayouts()
     {
         // result
         std::vector<WGPUBindGroupLayout> result;
@@ -66,7 +62,7 @@ namespace bns
         return result;
     }
 
-    std::vector<WGPUBindGroup> WebGPUPostProcessEffect::CreateBindGroups(std::vector<WGPUBindGroupLayout> layouts)
+    std::vector<WGPUBindGroup> WebGPUEffectImpl::CreateBindGroups(std::vector<WGPUBindGroupLayout> layouts)
     {
         std::vector<WGPUBindGroup> result;
 
@@ -84,13 +80,13 @@ namespace bns
 
         // sampler entry
         WebGPUTexture2D *webGPUTexture2D = static_cast<WebGPUTexture2D *>(m_sourceTexture);
-        bindGroupEntries[0] = WebGPUBindGroupEntryUtil::Create(0, webGPUTexture2D->Sampler);
+        bindGroupEntries[0] =  WebGPUUtil::BindGroupEntry.Create(0, webGPUTexture2D->Sampler);
         // texture entry
         WGPUTextureView view = webGPUTexture2D->CreateView();
-        bindGroupEntries[1] = WebGPUBindGroupEntryUtil::Create(1, view);
+        bindGroupEntries[1] =  WebGPUUtil::BindGroupEntry.Create(1, view);
 
         // Create bind group
-        WGPUBindGroupDescriptor bindGroupDesc = WebGPUBindGroupDescriptorUtil::Create(m_sourceTextureBindGroupLayout, bindGroupEntries, 2);
+        WGPUBindGroupDescriptor bindGroupDesc = WebGPUUtil::BindGroupDescriptor.Create(m_sourceTextureBindGroupLayout, bindGroupEntries, 2);
         WGPUBindGroup bindGroup = wgpuDeviceCreateBindGroup(m_device, &bindGroupDesc);
 
         // push bind group to result
@@ -102,12 +98,12 @@ namespace bns
         return result;
     }
 
-    WGPURenderPipeline WebGPUPostProcessEffect::CreateRenderPipeline(std::vector<WGPUBindGroupLayout> layouts)
+    WGPURenderPipeline WebGPUEffectImpl::CreateRenderPipeline(std::vector<WGPUBindGroupLayout> layouts)
     {
 
         FileLoader fileLoader;
         std::string shaderSource = fileLoader.OpenFile(GetShaderPath());
-        WGPUShaderModule shaderModule = WebGPUShaderModuleUtil::Create(m_device, shaderSource);
+        WGPUShaderModule shaderModule = WebGPUUtil::ShaderModule.Create(m_device, shaderSource);
 
         // Create pipeline layout. Here the global bind group layout is assigned.
         WGPUPipelineLayoutDescriptor desc = WebGPUPipelineLayoutDescriptorUtil::Create(layouts.data(), layouts.size());
@@ -123,7 +119,7 @@ namespace bns
         std::vector<BufferLayoutDescriptor> vertexBufferLayouts;
         vertexBufferLayouts.push_back(bufferLayoutDescriptor);
 
-        WGPUVertexBufferLayout *vertexBuffersLayout = WebGPUVertexBufferLayoutUtil::Create(vertexBufferLayouts);
+        WGPUVertexBufferLayout *vertexBuffersLayout = WebGPUUtil::VertexBufferLayout.Create(vertexBufferLayouts);
 
         // TODO: move to util
         WGPUVertexState vertexState;
@@ -166,7 +162,7 @@ namespace bns
         return pipeline;
     };
 
-    void WebGPUPostProcessEffect::Initialize()
+    void WebGPUEffectImpl::Initialize()
     {
         m_device = m_framework.Context.WebGPUDevice;
 
@@ -185,14 +181,14 @@ namespace bns
         m_pipeline = CreateRenderPipeline(layouts);
     }
 
-    void WebGPUPostProcessEffect::Draw(void *texture)
+    void WebGPUEffectImpl::Draw(void *texture)
     {
         WGPUDevice device = m_framework.Context.WebGPUDevice;
 
         // Create a command encoder which can be used to submit GPU operations.
         WGPUCommandEncoderDescriptor desc;
         desc.nextInChain = nullptr;
-        desc.label = "PostProcessEffect";
+        desc.label = "Effect";
         WGPUCommandEncoder encoder = wgpuDeviceCreateCommandEncoder(device, &desc);
 
         // Create a render pass for the encoder.
@@ -212,7 +208,7 @@ namespace bns
         wgpuRenderPassEncoderEnd(renderPass);
 
         WGPUCommandBufferDescriptor commandBufferDesc;
-        commandBufferDesc.label = "PostProcessEffect";
+        commandBufferDesc.label = "Effect";
         WGPUCommandBuffer commandBuffer = wgpuCommandEncoderFinish(encoder, &commandBufferDesc);
 
         wgpuQueueSubmit(m_framework.Context.WebGPUQueue, 1, &commandBuffer);

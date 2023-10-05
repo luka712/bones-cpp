@@ -2,12 +2,13 @@
 
 #define BNS_WEBGPU_POST_PROCESS_TEXTURE_COMBINE_EFFECT_HPP
 
-#include "post-process/wgpu/WebGPUPostProcessEffect.hpp"
+#include "post-process/wgpu/WebGPUEffectImpl.hpp"
+#include "post-process/TextureCombineEffect.hpp"
 #include <math.h>
 
 namespace bns
 {
-    class WebGPUPostProcessTextureCombineEffect final : public WebGPUPostProcessEffect
+    class WebGPUTextureCombineEffectImpl final : public WebGPUEffectImpl
     {
     private:
         // combine texture data
@@ -94,7 +95,7 @@ namespace bns
         WGPUBindGroup CreateCombineTextureBindGroup();
 
     public:
-        WebGPUPostProcessTextureCombineEffect(const Framework &framework);
+        WebGPUTextureCombineEffectImpl(const Framework &framework);
 
         /**
          * @brief Get the mix value.
@@ -146,6 +147,97 @@ namespace bns
          */
         void Draw(void *destinationTexture) override;
     };
+
+    class WebGPUTextureCombineEffect final : public TextureCombineEffect
+    {
+    private:
+        WebGPUTextureCombineEffectImpl *m_impl;
+
+    public:
+        WebGPUTextureCombineEffect(const Framework &framework)
+            : TextureCombineEffect(framework)
+        {
+            m_impl = new WebGPUTextureCombineEffectImpl(framework);
+        }
+
+        ~WebGPUTextureCombineEffect()
+        {
+            delete m_impl;
+        }
+
+        /**
+         * @brief Initialize the post process effect.
+         */
+        inline void Initialize() override
+        {
+            m_impl->Initialize();
+        }
+
+        /**
+         * @brief Get the mix value.
+         * This is the value which is used to mix the combine texture with the source texture in the fragment shader.
+         * The value is clamped between 0 and 1.
+         * 0 means that the source(scene) texture is used.
+         * 1 means that the combine texture is used.
+         * 0.5 means that the textures are mixed equally.
+         */
+        inline f32 GetMixValue(f32 v) override
+        {
+            return m_impl->GetMixValue(v);
+        }
+
+        /**
+         * @brief Sets the mix value.
+         * This is the value which is used to mix the combine texture with the source texture in the fragment shader.
+         * The value is clamped between 0 and 1.
+         * 0 means that the source(scene) texture is used.
+         * 1 means that the combine texture is used.
+         * 0.5 means that the textures are mixed equally.
+         */
+        inline void SetMixValue(f32 v) override
+        {
+            m_impl->SetMixValue(v);
+        }
+
+        /// @brief Gets the source texture.
+        /// @return The source texture.
+        inline Texture2D *GetSourceTexture() override
+        {
+            return m_impl->GetSourceTexture();
+        }
+
+        /**
+         * @brief Get the combine texture.
+         * @return The combine texture.
+         * The combine texture is the texture which is combined with the source texture in the fragment shader.
+         */
+        inline Texture2D *GetCombineTexture() const override
+        {
+            return m_impl->GetCombineTexture();
+        }
+
+        /**
+         * @brief Set the combine texture.
+         * @param combineTexture The combine texture.
+         * The combine texture is the texture which is combined with the source texture in the fragment shader.
+         */
+        inline void SetCombineTexture(Texture2D *combineTexture) override
+        {
+            m_impl->SetCombineTexture(static_cast<WebGPUTexture2D *>(combineTexture));
+        }
+
+        /**
+         * @brief Draw the effect to the destination texture.
+         * @param destinationTexture The destination texture. In this case it is of type WGPUTextureView.
+         * This is a texture to which we want to render, usually the screen texture.
+         * But can be any other texture if there are multiple post process effects.
+         */
+        inline void Draw(void *destinationTexture) override
+        {
+            m_impl->Draw(destinationTexture);
+        }
+    };
+
 } // namespace bns
 
 #endif // !BNS_WEBGPU_POST_PROCESS_TEXTURE_COMBINE_EFFECT_HPP

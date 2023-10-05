@@ -8,23 +8,22 @@ namespace bns
 {
     class Framework;
 
-    class PostProcessEffect
+    class Effect
     {
     protected:
         const Framework &m_framework;
 
     public:
-        PostProcessEffect(const Framework &framework);
+        Effect(const Framework &framework);
 
-        /**
-         * @brief Get the source texture.
-         * @return The source texture.
-         * This is the texture that we want to apply the effect to.
-         */
+        /// @brief Get the source texture.
+        /// @return The source texture.
+        /// This is the texture that we want to apply the effect to.
+        /// Usually this is the screen texture.
         virtual Texture2D *GetSourceTexture() = 0;
         /**
          * @brief Initialize the effect.
-        */
+         */
         virtual void Initialize() = 0;
 
         /**

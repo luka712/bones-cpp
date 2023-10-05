@@ -8,6 +8,9 @@ project(
 include(FetchContent)
 include(utils.cmake)
 
+# If we are on Apple, we can use Metal or WebGPU.
+set(USE_METAL 0)
+
 # Set the build type to Debug
 set(CMAKE_BUILD_TYPE Debug)
 
@@ -78,7 +81,7 @@ add_executable(App main.cpp ${SOURCES})
 target_compile_options(SDL2Extension PRIVATE -x objective-c)
 
 # If we are on Apple, we can use Metal or WebGPU (Metal is the default)
-target_compile_options(App PRIVATE -DUSE_METAL=0)
+target_compile_options(App PRIVATE -DUSE_METAL=${USE_METAL})
 
 if(WIN32)
     # SDL2::SDL2main may or may not be available. It is e.g. required by Windows GUI applications

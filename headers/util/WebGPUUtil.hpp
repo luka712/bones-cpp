@@ -13,6 +13,10 @@
 #include "util/wgpu/WebGPUBlendStateUtil.hpp"
 #include "util/wgpu/WebGPURenderPassColorAttachmentUtil.hpp"
 #include "util/wgpu/WebGPURenderPassDescriptorUtil.hpp"
+#include "util/wgpu/WebGPUShaderModuleUtil.hpp"
+#include "util/wgpu/WebGPUVertexBufferLayoutUtil.hpp"
+#include "util/wgpu/WebGPURenderPipelineDescriptorUtil.hpp"
+#include "util/wgpu/WebGPUCommandEncoderUtil.hpp"
 
 
 namespace bns
@@ -30,6 +34,22 @@ namespace bns
         static WebGPUBlendStateUtil BlendState;
         static WebGPURenderPassColorAttachmentUtil RenderPassColorAttachment;
         static WebGPURenderPassDescriptorUtil RenderPassDescriptor;
+
+        /// @brief The shader module util. Utility for creating shader modules.
+        static WebGPUShaderModuleUtil ShaderModule;
+
+        /// @brief The vertex buffer layout util. Utility for creating vertex buffer layouts.
+        static WebGPUVertexBufferLayoutUtil VertexBufferLayout;
+
+        /// @brief The render pipeline descriptor util. Utility for creating render pipeline descriptors.
+        static WebGPURenderPipelineDescriptorUtil RenderPipelineDescriptor;
+
+        /// @brief The command encoder util. Utility for creating command encoders.
+        /// Command encoders are used to encode GPU operations.
+        /// Usually one wants to create command encoder for: 
+        /// - Rendering
+        /// - Compute
+        static WebGPUCommandEncoderUtil CommandEncoder;
     };
 }
 

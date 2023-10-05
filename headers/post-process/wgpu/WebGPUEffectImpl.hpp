@@ -2,7 +2,7 @@
 
 #define BNS_WEBGPU_POST_PROCESS_EFFECT_HPP
 
-#include "post-process/PostProcessEffect.hpp"
+#include "post-process/Effect.hpp"
 #include "textures/wgpu/WebGPUTexture2D.hpp"
 #include <string>
 
@@ -16,7 +16,7 @@ namespace bns
 {
     class Framework;
 
-    class WebGPUPostProcessEffect : public PostProcessEffect
+    class WebGPUEffectImpl : public Effect
     {
     protected:
         /**
@@ -79,12 +79,10 @@ namespace bns
          */
         virtual std::vector<WGPUBindGroup> CreateBindGroups(std::vector<WGPUBindGroupLayout> bindGroupLayouts);
 
-        /**
-         * @brief Create a render pipeline for the post process effect.
-         * By default simple pipeline is provided which assumes that it takes a texture and draws it to screen.
-         * 
-         * @param bindGroupLayouts The bind group layouts created by CreateBindGroupLayouts.
-         */
+    
+        /// @brief Create a render pipeline for the post process effect.
+        /// By default simple pipeline is provided which assumes that it takes a texture and draws it to screen.
+        /// @param bindGroupLayouts The bind group layouts created by CreateBindGroupLayouts.
         virtual WGPURenderPipeline CreateRenderPipeline(std::vector<WGPUBindGroupLayout> bindGroupLayouts);
 
         /**
@@ -93,7 +91,7 @@ namespace bns
         virtual std::string GetShaderPath() = 0;
 
     public:
-        WebGPUPostProcessEffect(const Framework &framework);
+        WebGPUEffectImpl(const Framework &framework);
 
         /**
          * @brief Get the source texture.
@@ -104,6 +102,7 @@ namespace bns
             return m_sourceTexture;
         }
 
+        /// @brief Initializes the effect.
         void Initialize() override;
 
          /**
