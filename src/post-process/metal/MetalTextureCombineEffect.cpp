@@ -8,7 +8,7 @@ namespace bns
     #pragma region Implementation
 
     MetalTextureCombineEffectImpl::MetalTextureCombineEffectImpl(const Framework &framework)
-        : MetalEffect(framework)
+        : MetalEffectImpl(framework)
     {
         m_mixValue = 0.5;
     }
@@ -17,7 +17,7 @@ namespace bns
     {
         MTL::Device* device = m_framework.Context.MetalDevice;
         
-        MetalEffect::Initialize();
+        MetalEffectImpl::Initialize();
         
         m_mixValueBuffer = MetalUtil::Buffer.Create<f32>(m_device, sizeof(f32), "texture_combine_mix_value_buffer");
     }

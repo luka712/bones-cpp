@@ -26,7 +26,7 @@ namespace bns
         /// @param bindGroupLayout - The bind group layout. One of m_horizontalPassTextureBindGroupLayout or m_verticalPassTextureBindGroupLayout.
         /// @param fragmentMainName - The name of the fragment shader main function. One of fs_main_horizontal_pass or fs_main_vertical_pass.
         /// @return The render pipeline for the post process effect.
-        WGPURenderPipeline CreatePipeline(WGPUShaderModule shaderModule, WGPUBindGroupLayout bindGroupLayout, std::string fragmentMainName);
+        WGPURenderPipeline CreatePipeline(WGPUShaderModule shaderModule, WGPUBindGroupLayout bindGroupLayout, std::string& fragmentMainName);
 
     protected:
         inline std::string GetShaderPath() override
@@ -50,8 +50,8 @@ namespace bns
 
         inline Texture2D *GetSourceTexture() override
         {
-            // vertical pass is second pass, therefore return vertical pass texture
-            return m_verticalPassTexture;
+            // draw scene into horizontal pass texture as it is first pass
+            return m_horizontalPassTexture;
         }
 
         /// @brief Initializes the post process effect.

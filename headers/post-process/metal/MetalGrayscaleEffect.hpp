@@ -2,7 +2,7 @@
 
 #define BNS_METAL_POST_PROCESS_GRAYSCALE_EFFECT_HPP
 
-#include "post-process/metal/MetalEffect.hpp"
+#include "post-process/metal/MetalEffectImpl.hpp"
 #include "post-process/GrayscaleEffect.hpp"
 
 namespace bns
@@ -11,9 +11,9 @@ namespace bns
      * @brief A post process effect which converts the source texture to grayscale. This is an implementation.
      * @see GrayscaleEffect
      * @see MetalGrayscaleEffect
-     * @see MetalEffect
+     * @see MetalEffectImpl
      */
-    class MetalGrayscaleEffectImpl final : public MetalEffect
+    class MetalGrayscaleEffectImpl final : public MetalEffectImpl
     {
     protected:
         inline std::string GetShaderPath() override
@@ -31,7 +31,7 @@ namespace bns
      * @brief A post process effect which converts the source texture to grayscale. This is an interface.
      * @see GrayscaleEffect
      * @see MetalGrayscaleEffectImpl
-     * @see MetalEffect
+     * @see MetalEffectImpl
      */
     class MetalGrayscaleEffect final : public GrayscaleEffect
     {

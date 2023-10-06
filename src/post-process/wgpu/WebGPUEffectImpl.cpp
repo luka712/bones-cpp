@@ -8,7 +8,6 @@
 #include "util/wgpu/WebGPUPipelineLayoutDescriptorUtil.hpp"
 #include "util/wgpu/WebGPURenderPipelineDescriptorUtil.hpp"
 #include "buffer-layout/BufferLayoutData.hpp"
-#include "util/wgpu/WebGPUFragmentStateUtil.hpp"
 #include "util/wgpu/WebGPUDepthStencilStateUtil.hpp"
 
 namespace bns
@@ -140,7 +139,8 @@ namespace bns
         colorTarget.format = WGPUTextureFormat_BGRA8Unorm;
         colorTarget.blend = &blend;
         colorTarget.writeMask = WGPUColorWriteMask_All;
-        WGPUFragmentState fragmentState = WebGPUFragmentStateUtil::Create(shaderModule, colorTarget, "fs_main");
+        std::string fragFn = "fs_main";
+        WGPUFragmentState fragmentState = WebGPUUtil::FragmentState.Create(shaderModule, colorTarget, fragFn);
 
         // WGPUDepthStencilState depthStencilState = WebGPUDepthStencilStateUtil::Create();
 

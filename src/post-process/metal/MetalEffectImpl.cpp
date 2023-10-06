@@ -1,4 +1,4 @@
-#include "post-process/metal/MetalEffect.hpp"
+#include "post-process/metal/MetalEffectImpl.hpp"
 #include "textures/metal/MetalTexture2D.hpp"
 #include "util/MetalUtil.hpp"
 #include "Framework.hpp"
@@ -6,12 +6,12 @@
 
 namespace bns
 {
-    MetalEffect::MetalEffect(const Framework &framework)
+    MetalEffectImpl::MetalEffectImpl(const Framework &framework)
         : Effect(framework)
     {
     }
 
-    MTL::Buffer *MetalEffect::CreateVertexBuffer()
+    MTL::Buffer *MetalEffectImpl::CreateVertexBuffer()
     {
         std::vector<float> data = {
             // position, tex coords
@@ -29,19 +29,14 @@ namespace bns
         return vertexBuffer;
     }
 
-    MTL::RenderPipelineState* MetalEffect::CreateRenderPipeline()
+    MTL::RenderPipelineState *MetalEffectImpl::CreateRenderPipeline(MTL::Library *pLibrary, 
+    std::string vertexFunctionName, std::string fragmentFunctionName, MTL::PixelFormat pixelFormat)
     {
 
-        FileLoader fileLoader;
-        std::string shaderSource = fileLoader.OpenFile(GetShaderPath());
+        MTL::Function *pVertexFn = pLibrary->newFunction(NS::String::string(vertexFunctionName.c_str(), NS::StringEncoding::UTF8StringEncoding));
+        MTL::Function *pFragFn = pLibrary->newFunction(NS::String::string(fragmentFunctionName.c_str(), NS::StringEncoding::UTF8StringEncoding));
 
-        MTL::Library* pLibrary = MetalUtil::Library.Create(m_device, shaderSource);
-
-        MTL::Function *pVertexFn = pLibrary->newFunction(NS::String::string("vs_main", NS::StringEncoding::UTF8StringEncoding));
-        MTL::Function *pFragFn = pLibrary->newFunction(NS::String::string("fs_main", NS::StringEncoding::UTF8StringEncoding));
-
-        MTL::RenderPipelineDescriptor* pPipelineDescriptor = MetalUtil::RenderPipelineDescriptor.Create(pVertexFn, pFragFn);
-
+        MTL::RenderPipelineDescriptor *pPipelineDescriptor = MetalUtil::RenderPipelineDescriptor.Create(pVertexFn, pFragFn);
 
         // BUFFERS
         BufferLayoutDescriptor bufferLayoutDescriptor;
@@ -72,7 +67,7 @@ namespace bns
 
         // set pixel format
         MTL::RenderPipelineColorAttachmentDescriptor *colorAttachment = pPipelineDescriptor->colorAttachments()->object(NS::UInteger(0));
-        colorAttachment->setPixelFormat(MTL::PixelFormat::PixelFormatBGRA8Unorm);
+        colorAttachment->setPixelFormat(pixelFormat);
 
         colorAttachment->setBlendingEnabled(true);
 
@@ -95,12 +90,27 @@ namespace bns
         pPipelineDescriptor->release();
         pFragFn->release();
         pVertexFn->release();
+
+        return m_pipeline;
+    };
+
+   
+    MTL::RenderPipelineState *MetalEffectImpl::CreateRenderPipeline()
+    {
+
+        FileLoader fileLoader;
+        std::string shaderSource = fileLoader.OpenFile(GetShaderPath());
+
+        MTL::Library *pLibrary = MetalUtil::Library.Create(m_device, shaderSource);
+
+        m_pipeline = CreateRenderPipeline(pLibrary);
+
         pLibrary->release();
 
         return m_pipeline;
     };
 
-    void MetalEffect::Initialize()
+     void MetalEffectImpl::Initialize()
     {
         m_device = m_framework.Context.MetalDevice;
 
@@ -110,26 +120,24 @@ namespace bns
                                               TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
                                               TextureFormat::BGRA_8_Unorm);
         m_sourceTexture = static_cast<MetalTexture2D *>(texture);
-        m_samplerState = static_cast<MetalTexture2D*>(texture)->Sampler;
 
         m_vertexBuffer = CreateVertexBuffer();
         m_pipeline = CreateRenderPipeline();
     }
 
-    void MetalEffect::Draw(void *destinationTexture)
+    void MetalEffectImpl::Draw(void *destinationTexture)
     {
         MTL::Device *device = m_framework.Context.MetalDevice;
         MTL::CommandQueue *queue = m_framework.Context.MetalCommandQueue;
 
         // Convert to Metal types
-        MetalTexture2D* mtlTextureWrapper = static_cast<MetalTexture2D*>(m_sourceTexture);
-        MTL::Texture* mtlDestTexture = static_cast<MTL::Texture*>(destinationTexture);
+        MetalTexture2D *mtlTextureWrapper = static_cast<MetalTexture2D *>(m_sourceTexture);
+        MTL::Texture *mtlDestTexture = static_cast<MTL::Texture *>(destinationTexture);
 
-        MTL::CommandBuffer* commandBuffer = queue->commandBuffer();
-        
+        MTL::CommandBuffer *commandBuffer = queue->commandBuffer();
+
         // Create a command pEncoder which can be used to submit GPU operations.
         MTL::RenderPassDescriptor *pRenderPassDesc = MTL::RenderPassDescriptor::renderPassDescriptor();
-
 
         MTL::RenderPassColorAttachmentDescriptor *colorAttachment = pRenderPassDesc->colorAttachments()->object(0);
         colorAttachment->setLoadAction(MTL::LoadAction::LoadActionClear);
@@ -143,7 +151,7 @@ namespace bns
         pEncoder->setVertexBuffer(m_vertexBuffer, 0, 0);
         pEncoder->setFragmentTexture(mtlTextureWrapper->Texture, 0);
         pEncoder->setFragmentSamplerState(mtlTextureWrapper->Sampler, 0);
-        pEncoder->drawPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle, 0,6,1);
+        pEncoder->drawPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle, 0, 6, 1);
 
         pEncoder->endEncoding();
         commandBuffer->commit();

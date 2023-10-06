@@ -178,8 +178,8 @@ namespace bns
 
         static f32 rotation = 0.0f;
 
-        auto *effect = m_effectFactory->CreateTextureCombineEffect();
-        effect->SetCombineTexture(testTexture);
+        auto *effect = m_effectFactory->CreateBlurEffect();
+        // effect->SetCombineTexture(testTexture);
 
 
         /*

@@ -2,13 +2,13 @@
 
 #define BNS_METAL_POST_PROCESS_TEXTURE_COMBINE_EFFECT_HPP
 
-#include "post-process/metal/MetalEffect.hpp"
+#include "post-process/metal/MetalEffectImpl.hpp"
 #include "post-process/TextureCombineEffect.hpp"
 #include <math.h>
 
 namespace bns
 {
-    class MetalTextureCombineEffectImpl final : public MetalEffect
+    class MetalTextureCombineEffectImpl final : public MetalEffectImpl
     {
     private:
         // combine texture data

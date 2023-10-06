@@ -2,7 +2,7 @@
 
 namespace bns
 {
-    WGPUFragmentState WebGPUFragmentStateUtil::Create(WGPUShaderModule fragmentShaderModule, WGPUColorTargetState colorTarget, std::string function)
+    WGPUFragmentState WebGPUFragmentStateUtil::Create(WGPUShaderModule& fragmentShaderModule, WGPUColorTargetState colorTarget, std::string& function)
     {
         WGPUFragmentState fragment = {};
         fragment.nextInChain = nullptr;

@@ -59,7 +59,8 @@ namespace bns
         colorTarget.format = WGPUTextureFormat_BGRA8Unorm;
         colorTarget.blend = &blend;
         colorTarget.writeMask = WGPUColorWriteMask_All;
-        WGPUFragmentState fragment = WebGPUUtil::FragmentState.Create(shaderModule, colorTarget, "fs_main");
+        std::string fragFn = "fs_main";
+        WGPUFragmentState fragment = WebGPUUtil::FragmentState.Create(shaderModule, colorTarget, fragFn);
         descriptor.fragment = &fragment;
 
         // Other state

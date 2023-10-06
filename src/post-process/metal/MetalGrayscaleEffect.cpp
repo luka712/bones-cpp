@@ -5,7 +5,7 @@ namespace bns
 #pragma region Implementation
 
     MetalGrayscaleEffectImpl::MetalGrayscaleEffectImpl(const Framework &framework)
-        : MetalEffect(framework)
+        : MetalEffectImpl(framework)
     {
     }
 

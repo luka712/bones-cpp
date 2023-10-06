@@ -16,7 +16,7 @@ namespace bns
 {
     class Framework;
 
-    class MetalEffect : public Effect
+    class MetalEffectImpl : public Effect
     {
     protected:
         /**
@@ -26,7 +26,6 @@ namespace bns
 
         MTL::RenderPipelineState *m_pipeline; // post process shaders pipeline
         MTL::Buffer *m_vertexBuffer;          // for screen geometry
-        MTL::SamplerState *m_samplerState;    // for source texture
 
         /**
          * @brief The source texture.
@@ -41,11 +40,23 @@ namespace bns
          */
         virtual MTL::Buffer *CreateVertexBuffer();
 
-        /**
-         * @brief Create a render pipeline for the post process effect.
-         * By default simple pipeline is provided which assumes that it takes a texture and draws it to screen.
-         */
+        
+        /// @brief Create a render pipeline for the post process effect.
+        /// By default simple pipeline is provided which assumes that it takes a texture and draws it to screen.
+        /// @note @ref m_pipeline is set to the result of this method.
         virtual MTL::RenderPipelineState *CreateRenderPipeline();
+
+        /// @brief Creates a render pipeline for the post process effect. By default simply pipeline is provided, nothing is set internally.
+        /// @param pLibrary The library which contains the vertex and fragment functions.
+        /// @param vertexFunctionName The name of the vertex function. Usually "vs_main".
+        /// @param fragmentFunctionName The name of the fragment function Usually "fs_main".
+        /// @param pixelFormat The pixel format of the render pipeline. By default MTL::PixelFormat::PixelFormatBGRA8Unorm.
+        /// @return The render pipeline for the post process effect.
+        /// @note @ref CreateRenderPipeline as it is caller of this method.
+        virtual MTL::RenderPipelineState *CreateRenderPipeline(MTL::Library* pLibrary,
+         std::string vertexFunctionName = "vs_main", 
+         std::string fragmentFunctionName = "fs_main",
+         MTL::PixelFormat pixelFormat =  MTL::PixelFormat::PixelFormatBGRA8Unorm);
 
         /**
          * @brief Get the shader path for the post process effect.
@@ -53,7 +64,7 @@ namespace bns
         virtual std::string GetShaderPath() = 0;
 
     public:
-        MetalEffect(const Framework &framework);
+        MetalEffectImpl(const Framework &framework);
 
         void Initialize() override;
 

@@ -19,8 +19,9 @@ namespace bns
         /// @brief Get the source texture.
         /// @return The source texture.
         /// This is the texture that we want to apply the effect to.
-        /// Usually this is the screen texture.
+        /// Usually this is the texture that scene should be drawn to.
         virtual Texture2D *GetSourceTexture() = 0;
+        
         /**
          * @brief Initialize the effect.
          */

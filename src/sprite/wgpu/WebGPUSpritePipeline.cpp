@@ -60,7 +60,8 @@ namespace bns
         colorTarget.format = WGPUTextureFormat_BGRA8Unorm;
         colorTarget.blend = &blend;
         colorTarget.writeMask = WGPUColorWriteMask_All;
-        WGPUFragmentState fragmentState = WebGPUUtil::FragmentState.Create(shaderModule, colorTarget, "fs_main");
+        std::string fragFn = "fs_main";
+        WGPUFragmentState fragmentState = WebGPUUtil::FragmentState.Create(shaderModule, colorTarget, fragFn);
         renderPipelineDescriptor.fragment = &fragmentState;
 
         // Bind group layout for projection view matrix
