@@ -1,19 +1,23 @@
 #include "sprite/metal/MetalSpritePipeline.hpp"
 #include "loaders/FileLoader.hpp"
 #include "util/MetalUtil.hpp"
+#include "Framework.hpp"
 
 namespace bns
 {
 
     MetalSpritePipeline::MetalSpritePipeline(MTL::RenderPipelineState *pipeline,
                                              MetalTexture2D *texture)
-        : m_pipeline(pipeline), m_texture(texture) {
-            InstanceIndex = 0;
-        }
+        : m_pipeline(pipeline), m_texture(texture)
+    {
+        InstanceIndex = 0;
+    }
 
     // NOTE: STATIC FUNCTION
-    MetalSpritePipeline *MetalSpritePipeline::Create(MTL::Device *device, MetalTexture2D *texture, MTL::Buffer *projectionViewBuffer)
+    MetalSpritePipeline *MetalSpritePipeline::Create(Framework &framework, MetalTexture2D *texture, MTL::Buffer *projectionViewBuffer)
     {
+        MTL::Device *device = framework.Context.MetalDevice;
+
         FileLoader fileLoader;
         std::string shaderSource = fileLoader.LoadFile("shaders/metal/sprite/sprite.metal");
         MTL::Library *pLibrary = MetalUtil::Library.Create(device, shaderSource);
@@ -52,18 +56,14 @@ namespace bns
 
         // set pixel format
         MTL::RenderPipelineColorAttachmentDescriptor *colorAttachment = pDesc->colorAttachments()->object(NS::UInteger(0));
-        colorAttachment->setPixelFormat(MTL::PixelFormat::PixelFormatBGRA8Unorm);
+        MetalUtil::RenderPipelineColorAttachmentDescriptor.SetDefault(*colorAttachment);
 
-        colorAttachment->setBlendingEnabled(true);
-
-        colorAttachment->setRgbBlendOperation(MTL::BlendOperationAdd);
-        colorAttachment->setSourceRGBBlendFactor(MTL::BlendFactorSourceAlpha);
-        colorAttachment->setDestinationRGBBlendFactor(MTL::BlendFactorOneMinusSourceAlpha);
-
-        colorAttachment->setAlphaBlendOperation(MTL::BlendOperationAdd);
-        colorAttachment->setSourceAlphaBlendFactor(MTL::BlendFactorSourceAlpha);
-        colorAttachment->setDestinationAlphaBlendFactor(MTL::BlendFactorOneMinusSourceAlpha);
-
+        // set 2nd color attachment, for bloom/brightness
+        if (framework.GetRenderer().GetBrightnessTexture() != nullptr)
+        {
+            MTL::RenderPipelineColorAttachmentDescriptor *colorAttachment2 = pDesc->colorAttachments()->object(NS::UInteger(1));
+            MetalUtil::RenderPipelineColorAttachmentDescriptor.SetDefault(*colorAttachment2);
+        }
         NS::Error *pError = nullptr;
         MTL::RenderPipelineState *pipeline = device->newRenderPipelineState(pDesc, &pError);
         if (!pipeline)

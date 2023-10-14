@@ -33,7 +33,7 @@ fn fs_main(@location(0) v_texCoords: vec2<f32>) -> @location(0) vec4<f32>
     var sceneTex = textureSample(u_texture0, u_sampler0, v_texCoords).rgb;
     var bloomTex = textureSample(u_texture1, u_sampler1, v_texCoords).rgb;
 
-    // TODO: dampen
+    sceneTex *= (vec3f(1.0) - clamp(bloomTex, vec3f(0.0), vec3f(1.0)));
 
     return vec4f(sceneTex + bloomTex, 1.0);
    

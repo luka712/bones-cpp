@@ -33,6 +33,9 @@ namespace bns
          */
         WGPUBuffer m_projectionViewMatrixBuffer;
 
+        /// @brief The brightness threshold buffer.
+        WGPUBuffer m_brightnessThresholdBuffer;
+
         /**
          * @brief All the allocated pipelines per texture. Pop from this pipeline to current draw pipelines.
          * At the end of frame, push back to this pipeline from current draw pipelines.

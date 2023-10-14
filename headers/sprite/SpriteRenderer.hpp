@@ -21,6 +21,13 @@ namespace bns
         SpriteRendererCamera m_camera;
 
     public:
+        /// @brief The Brightness Threshold for the sprite renderer.
+        /// Sets the brightness threshold when written to texture unit 2.
+        /// Should be value between 0 and 1.
+        /// 0 means that full color is written.
+        /// 1 means no color is written (black).
+        f32 BrightnessThreshold;
+
         /**
          * @brief Initialize the sprite renderer.
          */

@@ -31,13 +31,13 @@ namespace bns
                                            .CreateEmpty(bufferSize.X, bufferSize.Y,
                                                         TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
                                                         TextureFormat::BGRA_8_Unorm);
-        m_horizontalPassTexture = static_cast<MetalTexture2D *>(horizontalTexture);
+        m_sourceTexture = static_cast<MetalTexture2D *>(horizontalTexture);
 
         Texture2D *verticalTexture = m_framework.GetTextureFactory()
                                          .CreateEmpty(bufferSize.X, bufferSize.Y,
                                                       TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
                                                       TextureFormat::BGRA_8_Unorm);
-        m_verticalPassTexture = static_cast<MetalTexture2D *>(verticalTexture);
+        m_midStepTexture = static_cast<MetalTexture2D *>(verticalTexture);
 
         // Pipelines
         FileLoader fileLoader;
@@ -57,6 +57,8 @@ namespace bns
         MTL::Device *device = m_framework.Context.MetalDevice;
         MTL::CommandQueue *queue = m_framework.Context.MetalCommandQueue;
 
+        // 
+
         // Convert to Metal types
         MTL::Texture *mtlDestTexture = static_cast<MTL::Texture *>(destinationTexture);
 
@@ -69,15 +71,19 @@ namespace bns
         MTL::RenderPassColorAttachmentDescriptor *horizontalPassColorAttachment = horizontalPassDesc->colorAttachments()->object(0);
         horizontalPassColorAttachment->setLoadAction(MTL::LoadAction::LoadActionClear);
         horizontalPassColorAttachment->setStoreAction(MTL::StoreAction::StoreActionStore);
-        horizontalPassColorAttachment->setTexture(m_verticalPassTexture->Texture); // horizontal pass writes to vertical pass texture
+        horizontalPassColorAttachment->setTexture(m_midStepTexture->Texture); // horizontal pass writes to vertical pass texture
 
         MTL::RenderCommandEncoder *horizontalPassEncoder = horizontaPassCommandBuffer->renderCommandEncoder(horizontalPassDesc);
 
         // Set the pipeline that will be used for this render pass.
         horizontalPassEncoder->setRenderPipelineState(m_horizontalPassPipeline);
         horizontalPassEncoder->setVertexBuffer(m_vertexBuffer, 0, 0);
-        horizontalPassEncoder->setFragmentTexture(m_horizontalPassTexture->Texture, 0);
-        horizontalPassEncoder->setFragmentSamplerState(m_horizontalPassTexture->Sampler, 0);
+
+        // Set texture
+        MetalTexture2D *mtlSourceTex = static_cast<MetalTexture2D *>(m_sourceTexture);
+        horizontalPassEncoder->setFragmentTexture(mtlSourceTex->Texture, 0);
+        horizontalPassEncoder->setFragmentSamplerState(mtlSourceTex->Sampler, 0);
+
         horizontalPassEncoder->drawPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle, 0, 6, 1);
 
         horizontalPassEncoder->endEncoding();
@@ -99,8 +105,11 @@ namespace bns
         // Set the pipeline that will be used for this render pass.
         verticalPassEncoder->setRenderPipelineState(m_verticalPassPipeline);
         verticalPassEncoder->setVertexBuffer(m_vertexBuffer, 0, 0);
-        verticalPassEncoder->setFragmentTexture(m_verticalPassTexture->Texture, 0);
-        verticalPassEncoder->setFragmentSamplerState(m_verticalPassTexture->Sampler, 0);
+
+        // Set texture
+        verticalPassEncoder->setFragmentTexture(m_midStepTexture->Texture, 0);
+        verticalPassEncoder->setFragmentSamplerState(m_midStepTexture->Sampler, 0);
+
         verticalPassEncoder->drawPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle, 0, 6, 1);
 
         verticalPassEncoder->endEncoding();

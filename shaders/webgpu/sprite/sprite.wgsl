@@ -27,6 +27,9 @@ var u_sampler: sampler;
 @group(1) @binding(1)
 var u_texture: texture_2d<f32>; 
 
+@group(2) @binding(0)
+var<uniform> u_brightnessThreshold: f32;
+
 struct FSResult
 {
     @location(0) FragColor: vec4<f32>,
@@ -39,10 +42,10 @@ fn fs_main(@location(0) v_texCoords: vec2<f32>, @location(1) v_tintColor: vec4<f
     var out: FSResult;
     out.FragColor = textureSample(u_texture, u_sampler, v_texCoords) * v_tintColor;
 
-    var l = dot(out.FragColor.rgb, vec3<f32>(0.2126, 0.7152, 0.0722));
+    var l = dot(out.FragColor.rgb, vec3<f32>(0.299, 0.587, 0.114));
 
     // TODO: move to buffer variable
-    if(l > 0.4)
+    if(l > u_brightnessThreshold)
     {
         out.FragBrightness = out.FragColor;
     }

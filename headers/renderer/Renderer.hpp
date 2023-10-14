@@ -64,7 +64,12 @@ namespace bns
          */
         virtual void UnsetRenderTexture();
 
-        /// @brief Sets the brightness texture.
+        /// @brief Gets the brightness texture or nullptr if not set.
+        /// @return The brightness texture or nullptr if not set.
+        inline Texture2D* GetBrightnessTexture() const
+        {
+            return m_brightnessTexture;
+        }
 
         /// @brief The brightness texture. Every material should output 2nd color as brightness.
         /// @note This texture is used for bloom effect.

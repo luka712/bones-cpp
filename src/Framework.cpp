@@ -179,7 +179,7 @@ namespace bns
 
         static f32 rotation = 0.0f;
 
-        auto *effect = m_effectFactory->CreateBlurEffect();
+        auto *effect = m_effectFactory->CreateBloomEffect();
         // effect->SetCombineTexture(testTexture);
 
         /*
@@ -200,6 +200,7 @@ namespace bns
             }
 
             m_renderer->SetRenderTexture(effect->GetSourceTexture());
+            m_renderer->SetBrightnessTexture(effect->GetBrightnessTexture());
 
             m_renderer->BeginDraw();
 

@@ -16,19 +16,21 @@ namespace bns
         m_vertexBuffer = CreateVertexBuffer();
 
         Vec2u bufferSize = m_framework.GetRenderer().GetBufferSize();
-        Texture2D *horTexture = m_framework
-                                    .GetTextureFactory()
-                                    .CreateEmpty(bufferSize.X, bufferSize.Y,
-                                                 TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
-                                                 TextureFormat::BGRA_8_Unorm);
-        Texture2D *verTexture = m_framework
+
+        // since there is no parent call, create the source texture as well
+        m_sourceTexture = m_framework
+                              .GetTextureFactory()
+                              .CreateEmpty(bufferSize.X, bufferSize.Y,
+                                           TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
+                                           TextureFormat::BGRA_8_Unorm);
+
+        Texture2D *midStepTexture = m_framework
                                     .GetTextureFactory()
                                     .CreateEmpty(bufferSize.X, bufferSize.Y,
                                                  TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
                                                  TextureFormat::BGRA_8_Unorm);
 
-        m_horizontalPassTexture = static_cast<WebGPUTexture2D *>(horTexture);
-        m_verticalPassTexture = static_cast<WebGPUTexture2D *>(verTexture);
+        m_midStepTexture = static_cast<WebGPUTexture2D *>(midStepTexture);
 
         std::vector<WGPUBindGroupLayout> layouts = CreateBindGroupLayouts();
         std::vector<WGPUBindGroup> bindGroups = CreateBindGroups(layouts);
@@ -38,7 +40,8 @@ namespace bns
 
     std::vector<WGPUBindGroup> WebGPUBlurEffectImpl::CreateBindGroups(std::vector<WGPUBindGroupLayout> layouts)
     {
-        std::vector<WGPUBindGroup> result;
+
+        std::vector<WGPUBindGroup> result = WebGPUEffectImpl::CreateBindGroups(layouts);
 
         // bind group layout can be used for both!
         if (m_sourceTextureBindGroupLayout == nullptr)
@@ -46,44 +49,20 @@ namespace bns
             throw std::runtime_error("Texture bind group layout is null.");
         }
 
-        if (m_horizontalPassTexture == nullptr)
-        {
-            throw std::runtime_error("Horizontal pass texture is null.");
-        }
-
-        if (m_verticalPassTexture == nullptr)
+        if (m_midStepTexture == nullptr)
         {
             throw std::runtime_error("Vertical pass texture is null.");
         }
 
-        // HORIZONTAL
-        WGPUBindGroupEntry horizontalTexBindGroupEntries[2];
-        horizontalTexBindGroupEntries[0] = WebGPUUtil::BindGroupEntry.Create(0, m_horizontalPassTexture->Sampler);
-        horizontalTexBindGroupEntries[1] = WebGPUUtil::BindGroupEntry.Create(1, m_horizontalPassTexture->CreateView());
-
-        // Create bind group
-        WGPUBindGroupDescriptor bindGroupDesc = WebGPUUtil::BindGroupDescriptor.Create(m_sourceTextureBindGroupLayout, horizontalTexBindGroupEntries, 2);
-        m_horizontalPassTextureBindGroup = wgpuDeviceCreateBindGroup(m_device, &bindGroupDesc);
+        m_midStepTextureBindGroup = CreateTextureBindGroup(*m_midStepTexture);
 
         // push bind group to result
-        result.push_back(m_horizontalPassTextureBindGroup);
-
-        // VERTICAL
-        WGPUBindGroupEntry verticalTexBindGroupEntries[2];
-        verticalTexBindGroupEntries[0] = WebGPUUtil::BindGroupEntry.Create(0, m_verticalPassTexture->Sampler);
-        verticalTexBindGroupEntries[1] = WebGPUUtil::BindGroupEntry.Create(1, m_verticalPassTexture->CreateView());
-
-        // Create bind group
-        bindGroupDesc = WebGPUUtil::BindGroupDescriptor.Create(m_sourceTextureBindGroupLayout, verticalTexBindGroupEntries, 2);
-        m_verticalPassTextureBindGroup = wgpuDeviceCreateBindGroup(m_device, &bindGroupDesc);
-
-        // push bind group to result
-        result.push_back(m_verticalPassTextureBindGroup);
+        result.push_back(m_midStepTextureBindGroup);
 
         return result;
     }
 
-    WGPURenderPipeline WebGPUBlurEffectImpl::CreatePipeline(WGPUShaderModule shaderModule, WGPUBindGroupLayout bindGroupLayout, std::string& fragmentMainName)
+    WGPURenderPipeline WebGPUBlurEffectImpl::CreatePipeline(WGPUShaderModule shaderModule, WGPUBindGroupLayout bindGroupLayout, std::string &fragmentMainName)
     {
         // Create pipeline layout. Here the global bind group layout is assigned.
         WGPUPipelineLayoutDescriptor desc = WebGPUPipelineLayoutDescriptorUtil::Create(&bindGroupLayout, 1);
@@ -174,7 +153,7 @@ namespace bns
         WGPUCommandEncoder horizontalPassEncoder = WebGPUUtil::CommandEncoder.Create(device, "blur horizontal pass ce");
 
         // Create a render pass for the encoder.
-        WGPUTextureView viewIntoVerticalPassTexture = m_verticalPassTexture->CreateView();
+        WGPUTextureView viewIntoVerticalPassTexture = m_midStepTexture->CreateView();
 
         // Horizontal pass render into texture binding of vertical pass
         WGPURenderPassColorAttachment horizontalPassColorAttachment = WebGPUUtil::RenderPassColorAttachment.Create(viewIntoVerticalPassTexture);
@@ -183,7 +162,7 @@ namespace bns
 
         // Set the pipeline that will be used for this render pass.
         wgpuRenderPassEncoderSetPipeline(horizontalRenderPass, m_horizontalPassPipeline);
-        wgpuRenderPassEncoderSetBindGroup(horizontalRenderPass, 0, m_horizontalPassTextureBindGroup, 0, nullptr);
+        wgpuRenderPassEncoderSetBindGroup(horizontalRenderPass, 0, m_sourceTextureBindGroup, 0, nullptr);
         size_t byteSize = sizeof(float) * 5 * 6; // 5 per vertex, 6 vertices
         wgpuRenderPassEncoderSetVertexBuffer(horizontalRenderPass, 0, m_vertexBuffer, 0, byteSize);
         wgpuRenderPassEncoderDraw(horizontalRenderPass, 6, 1, 0, 0);
@@ -199,7 +178,6 @@ namespace bns
         wgpuTextureViewRelease(viewIntoVerticalPassTexture);
         wgpuCommandEncoderRelease(horizontalPassEncoder);
 
-
         // Create a command encoder which can be used to submit GPU operations.
         WGPUCommandEncoder verticalPassEncoder = WebGPUUtil::CommandEncoder.Create(device, "blur vertical pass ce");
 
@@ -209,7 +187,7 @@ namespace bns
 
         // Set the pipeline that will be used for this render pass.
         wgpuRenderPassEncoderSetPipeline(verticalRenderPass, m_verticalPassPipeline);
-        wgpuRenderPassEncoderSetBindGroup(verticalRenderPass, 0, m_verticalPassTextureBindGroup, 0, nullptr);
+        wgpuRenderPassEncoderSetBindGroup(verticalRenderPass, 0, m_midStepTextureBindGroup, 0, nullptr);
         wgpuRenderPassEncoderSetVertexBuffer(verticalRenderPass, 0, m_vertexBuffer, 0, byteSize);
         wgpuRenderPassEncoderDraw(verticalRenderPass, 6, 1, 0, 0);
         wgpuRenderPassEncoderEnd(verticalRenderPass);

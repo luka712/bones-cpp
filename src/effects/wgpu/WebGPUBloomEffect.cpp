@@ -5,10 +5,11 @@
 namespace bns
 {
     WebGPUBloomEffectImpl::WebGPUBloomEffectImpl(const Framework &framework)
-        : WebGPUEffectImpl(framework)
+        : WebGPUEffectImpl(framework), m_blurEffect(framework)
     {
         m_brightnessTexture = nullptr;
         m_brightnessTextureBindGroup = nullptr;
+        BrightnessBlurPasses = 3;
     }
 
     void WebGPUBloomEffectImpl::Initialize()
@@ -23,6 +24,8 @@ namespace bns
         m_brightnessTexture = static_cast<WebGPUTexture2D *>(texture);
         
         WebGPUEffectImpl::Initialize();
+        m_blurEffect.Initialize();
+        m_blurEffect.SetSourceTexture(m_brightnessTexture);
     }
 
     WGPUBindGroup WebGPUBloomEffectImpl::CreateBrightnessTextureBindGroup()
@@ -85,7 +88,6 @@ namespace bns
 
 WGPURenderPipeline WebGPUBloomEffectImpl::CreateRenderPipeline(std::vector<WGPUBindGroupLayout> layouts)
 {
-
     FileLoader fileLoader;
     std::string shaderSource = fileLoader.LoadFile(GetShaderPath());
     WGPUShaderModule shaderModule = WebGPUUtil::ShaderModule.Create(m_device, shaderSource);
@@ -155,6 +157,11 @@ WGPURenderPipeline WebGPUBloomEffectImpl::CreateRenderPipeline(std::vector<WGPUB
 
     void WebGPUBloomEffectImpl::Draw(void *texture)
     {
+        for(u32 i = 0; i < BrightnessBlurPasses; i++)
+        {
+            m_blurEffect.Draw(m_brightnessTexture->Texture);
+        }
+
         WGPUDevice device = m_framework.Context.WebGPUDevice;
         WGPUQueue queue = m_framework.Context.WebGPUQueue;
 

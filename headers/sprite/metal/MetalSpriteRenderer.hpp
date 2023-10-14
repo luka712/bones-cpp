@@ -20,10 +20,8 @@ namespace bns
     class MetalSpriteRenderer final : public SpriteRenderer
     {
     private:
-        /**
-         * @brief The framework.
-         */
-        const Framework &m_framework;
+        /// @brief The framework.
+        Framework &m_framework;
 
         /**
          * @brief The device.
@@ -72,7 +70,7 @@ namespace bns
         /**
          * The constructor.
          */
-        MetalSpriteRenderer(const Framework &framework);
+        MetalSpriteRenderer(Framework &framework);
 
         void Initialize() override;
 

@@ -8,6 +8,7 @@ namespace bns
     WebGPUSpriteRenderer::WebGPUSpriteRenderer(const Framework &framework)
         : m_framework(framework)
     {
+        BrightnessThreshold = 0.3f;
     }
 
     void WebGPUSpriteRenderer::SetupIndexBuffer()
@@ -47,7 +48,7 @@ namespace bns
             }
 
             // if not found, we are sure that there is no pipeline, create one and push it to current draw pipelines.
-            WebGPUSpritePipeline *pipeline = WebGPUSpritePipeline::Create(m_device, texture, m_projectionViewMatrixBuffer);
+            WebGPUSpritePipeline *pipeline = WebGPUSpritePipeline::Create(m_device, texture, m_projectionViewMatrixBuffer, m_brightnessThresholdBuffer);
             m_currentDrawPipelines[textureId].push(pipeline);
             m_allocatedPipelines[textureId].push(pipeline);
             return *pipeline;
@@ -62,7 +63,7 @@ namespace bns
             // return then new pipeline.
             if (m_allocatedPipelines[textureId].empty())
             {
-                WebGPUSpritePipeline *pipeline = WebGPUSpritePipeline::Create(m_device, texture, m_projectionViewMatrixBuffer);
+                WebGPUSpritePipeline *pipeline = WebGPUSpritePipeline::Create(m_device, texture, m_projectionViewMatrixBuffer, m_brightnessThresholdBuffer);
                 m_currentDrawPipelines[textureId].push(pipeline);
                 m_allocatedPipelines[textureId].push(pipeline);
                 return *pipeline;
@@ -79,14 +80,16 @@ namespace bns
 
     void WebGPUSpriteRenderer::Initialize()
     {
-        // setup camera buffer
-        m_device = m_framework.Context.WebGPUDevice;
-        m_projectionViewMatrixBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device, sizeof(Mat4x4f), "SpriteRendererCameraBuffer");
-
-        // setup camera
-        // TODO: should be buffer size
         auto size = m_framework.GetWindowManager().GetWindowSize();
         m_camera.Initialize(size.X, size.Y);
+
+        // GLOBLA BUFFERS
+        // setup camera buffer
+        m_device = m_framework.Context.WebGPUDevice;
+        m_projectionViewMatrixBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device, sizeof(Mat4x4f), "Sprite Renderer Camera Buffer");
+
+        // setup brightness threshold buffer
+        m_brightnessThresholdBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device, sizeof(f32), "Sprite Renderer Brightness Threshold Buffer");
 
         SetupIndexBuffer();
     }
@@ -99,6 +102,9 @@ namespace bns
 
         // write camera buffer to gpu
         wgpuQueueWriteBuffer(queue, m_projectionViewMatrixBuffer, 0, &m_camera.ProjectionViewMatrix, sizeof(Mat4x4f));
+
+        // Write brightness threshold buffer to gpu
+        wgpuQueueWriteBuffer(queue, m_brightnessThresholdBuffer, 0, &BrightnessThreshold, sizeof(f32));
 
         // empty current draw pipelines
         for (auto keyValuePair : m_currentDrawPipelines)
@@ -297,6 +303,7 @@ namespace bns
                 auto pipeline = spritePipeline->GetPipeline();
                 auto projectionViewBindGroup = spritePipeline->GetProjectionViewBindGroup();
                 auto textureBindGroup = spritePipeline->GetTextureBindGroup();
+                auto brightnessThresholdBindGroup = spritePipeline->GetBrightnessThresholdBindGroup();
 
                 // allocate or get vertex buffer.
                 WGPUBuffer vertexBuffer;
@@ -323,6 +330,7 @@ namespace bns
                 // set bind groups
                 wgpuRenderPassEncoderSetBindGroup(renderPass, 0, projectionViewBindGroup, 0, 0);
                 wgpuRenderPassEncoderSetBindGroup(renderPass, 1, textureBindGroup, 0, 0);
+                wgpuRenderPassEncoderSetBindGroup(renderPass, 2, brightnessThresholdBindGroup, 0, 0);
 
                 // set vertex index buffer
                 wgpuRenderPassEncoderSetVertexBuffer(renderPass, 0, vertexBuffer, 0, 0);

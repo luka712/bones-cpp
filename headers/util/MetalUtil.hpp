@@ -6,6 +6,7 @@
 #include "util/metal/MetalLibraryUtil.hpp"
 #include "util/metal/MetalVertexBufferLayoutUtil.hpp"
 #include "util/metal/MetalRenderPipelineDescriptorUtil.hpp"
+#include "util/metal/MetalRenderPipelineColorAttachmentDescriptorUtil.hpp"
 
 
 namespace bns
@@ -16,6 +17,7 @@ namespace bns
         static MetalLibraryUtil Library;
         static MetalVertexBufferLayoutUtil VertexBufferLayout;
         static MetalRenderPipelineDescriptorUtil RenderPipelineDescriptor;
+        static MetalRenderPipelineColorAttachmentDescriptorUtil RenderPipelineColorAttachmentDescriptor;
     };
 }
 

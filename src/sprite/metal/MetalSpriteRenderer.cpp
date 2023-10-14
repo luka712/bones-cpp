@@ -6,7 +6,7 @@
 namespace bns
 {
 
-    MetalSpriteRenderer::MetalSpriteRenderer(const Framework &framework)
+    MetalSpriteRenderer::MetalSpriteRenderer(Framework &framework)
         : m_framework(framework)
     {
     }
@@ -48,7 +48,7 @@ namespace bns
             }
 
             // if not found, we are sure that there is no pipeline, create one and push it to current draw pipelines.
-            MetalSpritePipeline *pipeline = MetalSpritePipeline::Create(m_device, texture, m_projectionViewMatrixBuffer);
+            MetalSpritePipeline *pipeline = MetalSpritePipeline::Create(m_framework, texture, m_projectionViewMatrixBuffer);
             m_currentDrawPipelines[textureId].push(pipeline);
             m_allocatedPipelines[textureId].push(pipeline);
             return *pipeline;
@@ -63,7 +63,7 @@ namespace bns
             // return then new pipeline.
             if (m_allocatedPipelines[textureId].empty())
             {
-                MetalSpritePipeline *pipeline = MetalSpritePipeline::Create(m_device, texture, m_projectionViewMatrixBuffer);
+                MetalSpritePipeline *pipeline = MetalSpritePipeline::Create(m_framework, texture, m_projectionViewMatrixBuffer);
                 m_currentDrawPipelines[textureId].push(pipeline);
                 m_allocatedPipelines[textureId].push(pipeline);
                 return *pipeline;

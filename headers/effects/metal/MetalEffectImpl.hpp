@@ -78,6 +78,14 @@ namespace bns
             return m_sourceTexture;
         }
 
+        /// @brief Sets the source texture.
+        /// @param sourceTexture The source texture.
+        /// This is the texture that we want to apply the effect to.
+        inline void SetSourceTexture(Texture2D* sourceTexture) override
+        {
+            m_sourceTexture = sourceTexture;
+        }
+
         /**
          * @brief Draw the effect to the destination texture.
          * @param destinationTexture The destination texture. In this case it is of type MetalTexture.

@@ -51,15 +51,20 @@ namespace bns
          * The source texture is the texture which comes into draw.
          * Holds slot 0 for the source texture sampler.
          * Holds slot 1 for the source texture.
-         * 
-         * note 
-         * m_sourceTextureBindGroupLayout is assigned by default in parent. 
+         *
+         * note
+         * m_sourceTextureBindGroupLayout is assigned by default in parent.
          * Override to create additional layouts.
          * Best to override by calling parent method and adding to the result.
-         * 
+         *
          * @return The bind group layout for the post process effect.
          */
         virtual std::vector<WGPUBindGroupLayout> CreateBindGroupLayouts();
+
+        /// @brief Creates the bind group for the texture
+        /// @param texture - the texture to create bind group for.
+        /// @return The gpu bind group.
+        WGPUBindGroup CreateTextureBindGroup(WebGPUTexture2D &texture);
 
         /**
          * @brief Create a bind groups.
@@ -67,19 +72,18 @@ namespace bns
          * The source texture is the texture which comes into draw.
          * Holds slot 0 for the source texture.
          * Holds slot 1 for the source texture sampler.
-         * 
+         *
          * @param bindGroupLayouts The bind group layouts created by CreateBindGroupLayouts.
-         * 
+         *
          * note
          * m_sourceTextureBindGroup is assigned by default in parent.
          * Override to create additional bind groups.
          * Best to override by calling parent method and adding to the result.
-         * 
+         *
          * @return The bind groups.
          */
         virtual std::vector<WGPUBindGroup> CreateBindGroups(std::vector<WGPUBindGroupLayout> bindGroupLayouts);
 
-    
         /// @brief Create a render pipeline for the post process effect.
         /// By default simple pipeline is provided which assumes that it takes a texture and draws it to screen.
         /// @param bindGroupLayouts The bind group layouts created by CreateBindGroupLayouts.
@@ -97,16 +101,21 @@ namespace bns
         /**
          * @brief Get the source texture.
          * @return The source texture.
-        */
+         */
         inline Texture2D *GetSourceTexture() override
         {
             return m_sourceTexture;
         }
 
+        /// @brief Set the source texture.
+        /// @param sourceTexture The source texture.
+        /// This is the texture that we want to apply the effect to.
+        void SetSourceTexture(Texture2D *sourceTexture) override;
+
         /// @brief Initializes the effect.
         void Initialize() override;
 
-         /**
+        /**
          * @brief Draw the effect to the destination texture.
          * @param destinationTexture The destination texture. In this case it is of type WGPUTextureView.
          * This is a texture to which we want to render, usually the screen texture.

@@ -15,11 +15,9 @@ namespace bns
         WGPURenderPipeline m_horizontalPassPipeline;
         WGPURenderPipeline m_verticalPassPipeline;
 
-        WebGPUTexture2D *m_horizontalPassTexture;
-        WebGPUTexture2D *m_verticalPassTexture;
-
-        WGPUBindGroup m_horizontalPassTextureBindGroup;
-        WGPUBindGroup m_verticalPassTextureBindGroup;
+        // when rendering from horizontal to vertical pass.
+        WebGPUTexture2D *m_midStepTexture;
+        WGPUBindGroup m_midStepTextureBindGroup;
 
         /// @brief Create a render pipeline for the post process effect.
         /// @param shaderModule - The shader module. This is module created from blur.wgsl
@@ -48,12 +46,6 @@ namespace bns
     public:
         WebGPUBlurEffectImpl(const Framework &framework);
 
-        inline Texture2D *GetSourceTexture() override
-        {
-            // draw scene into horizontal pass texture as it is first pass
-            return m_horizontalPassTexture;
-        }
-
         /// @brief Initializes the post process effect.
         void Initialize() override;
 
@@ -81,6 +73,13 @@ namespace bns
         Texture2D *GetSourceTexture() override
         {
             return m_impl->GetSourceTexture();
+        }
+
+        /// @brief Sets the render texture, texture to which effect will render.
+        /// @param texture The render texture
+        inline void SetSourceTexture(Texture2D *texture) override
+        {
+            m_impl->SetSourceTexture(texture);
         }
 
         /// @brief Initializes the effect.

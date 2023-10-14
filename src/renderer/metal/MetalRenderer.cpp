@@ -9,8 +9,8 @@ namespace bns
 MetalRenderer::MetalRenderer(Framework &framework)
 : Renderer(framework)
 {
+ 
 }
-
 
 /**
  * @brief Gets the view into swap chain texture.
@@ -62,6 +62,17 @@ void MetalRenderer::BeginDraw()
     colorAttachment->setLoadAction(MTL::LoadAction::LoadActionClear);
     colorAttachment->setStoreAction(MTL::StoreAction::StoreActionStore);
     colorAttachment->setTexture(drawToTexture);
+
+    // if there is a brightness texture, use that as well as a second color attachment
+    if(m_brightnessTexture != nullptr)
+    {
+        MTL::Texture* mtlTexture = static_cast<MetalTexture2D*>(m_brightnessTexture)->Texture;
+        MTL::RenderPassColorAttachmentDescriptor *colorAttachment2 = pRenderPassDesc->colorAttachments()->object(1);
+        colorAttachment2->setClearColor(clearColor);
+        colorAttachment2->setLoadAction(MTL::LoadAction::LoadActionClear);
+        colorAttachment2->setStoreAction(MTL::StoreAction::StoreActionStore);
+        colorAttachment2->setTexture(mtlTexture);   
+    }
     
     // MTL::RenderPassDepthAttachmentDescriptor *depthAttachment = pRenderPassDesc->depthAttachment();
     // depthAttachment->setTexture(m_depthTexture);

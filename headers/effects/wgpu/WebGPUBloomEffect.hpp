@@ -4,6 +4,7 @@
 
 #include "effects/wgpu/WebGPUEffectImpl.hpp"
 #include "effects/BloomEffect.hpp"
+#include "effects/wgpu/WebGPUBlurEffect.hpp"
 #include <math.h>
 
 namespace bns
@@ -11,8 +12,10 @@ namespace bns
     class WebGPUBloomEffectImpl final : public WebGPUEffectImpl
     {
     private:
-        WGPUBindGroup m_brightnessTextureBindGroup;             // the bind group for the combine texture
-        WebGPUTexture2D *m_brightnessTexture;                   // the combine texture
+        WGPUBindGroup m_brightnessTextureBindGroup; // the bind group for the combine texture
+        WebGPUTexture2D *m_brightnessTexture;       // the combine texture
+
+        WebGPUBlurEffect m_blurEffect;
 
     protected:
         inline std::string GetShaderPath() override
@@ -47,7 +50,6 @@ namespace bns
         /// @param layouts ignored.
         WGPURenderPipeline CreateRenderPipeline(std::vector<WGPUBindGroupLayout> layouts) override;
 
-        
         /**
          * @brief Creates the bind group for the brightness texture.
          * The brightness texture is the texture which is combined with the source texture in the fragment shader.
@@ -63,8 +65,10 @@ namespace bns
         WGPUBindGroup CreateBrightnessTextureBindGroup();
 
     public:
+        u32 BrightnessBlurPasses;
+
         WebGPUBloomEffectImpl(const Framework &framework);
-        
+
         /// @brief Initializes the post process effect.
         void Initialize() override;
 
@@ -76,7 +80,6 @@ namespace bns
 
         /// @brief Sets the brightness texture.
         void SetBrightnessTexture(WebGPUTexture2D *brightnessTexture);
-        
 
         /**
          * @brief Draw the effect to the destination texture.
@@ -117,6 +120,13 @@ namespace bns
         inline Texture2D *GetSourceTexture() override
         {
             return m_impl->GetSourceTexture();
+        }
+
+        /// @brief Sets the source texture.
+        /// @param texture The source texture.
+        inline void SetSourceTexture(Texture2D* texture) override 
+        {
+            m_impl->SetSourceTexture(texture);
         }
 
         /**

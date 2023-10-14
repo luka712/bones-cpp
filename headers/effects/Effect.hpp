@@ -21,6 +21,11 @@ namespace bns
         /// This is the texture that we want to apply the effect to.
         /// Usually this is the texture that scene should be drawn to.
         virtual Texture2D *GetSourceTexture() = 0;
+
+        /// @brief Set the source texture.
+        /// @param sourceTexture The source texture.
+        /// This is the texture that we want to apply the effect to.
+        virtual void SetSourceTexture(Texture2D *sourceTexture) = 0;
         
         /**
          * @brief Initialize the effect.

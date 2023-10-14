@@ -12,6 +12,8 @@
 
 namespace bns
 {
+    class Framework;
+
     class MetalSpritePipeline final
     {
 
@@ -32,13 +34,11 @@ namespace bns
          */
         f32 DataArray[SPRITE_RENDERER_MAX_SPRITES_PER_DRAW * FLOATS_PER_INSTANCE];
 
-        /**
-         * @brief Create a sprite pipeline
-         * @param device The webgpu device
-         * @param texture The texture to be used
-         * @return The sprite pipeline
-         */
-        static MetalSpritePipeline *Create(MTL::Device *device,  MetalTexture2D *texture, MTL::Buffer *projectionViewBuffer);
+        /// @brief Create a sprite pipeline
+        /// @param device The webgpu device
+        /// @param texture The texture to be used
+        /// @return The sprite pipeline
+        static MetalSpritePipeline *Create(Framework &framework, MetalTexture2D *texture, MTL::Buffer *projectionViewBuffer);
 
         /**
          * @brief Gets the pipeline

@@ -9,7 +9,7 @@ struct VertexIn
     packed_float4 tintColor;
 };
 
-struct VSOutput 
+struct VSResult 
 {
     float4 position [[position]];
     float2 texCoords;
@@ -17,12 +17,12 @@ struct VSOutput
 };
 
 vertex 
-VSOutput vs_main(
+VSResult vs_main(
     const device VertexIn* in [[buffer(0)]],
     constant float4x4& u_projectionViewMatrix [[buffer(1)]],
     uint vid [[vertex_id]])
 {
-    VSOutput out;
+    VSResult out;
     out.position = u_projectionViewMatrix * float4(in[vid].position.xyz, 1.0);
     out.texCoords = in[vid].texCoords;
     out.tintColor = in[vid].tintColor;
@@ -30,11 +30,32 @@ VSOutput vs_main(
     return out;
 }
 
+struct FSResult 
+{
+    float4 fragColor [[color(0)]];
+    float4 brightnessColor [[color(1)]];
+};
+
+
 fragment 
-float4 fs_main(VSOutput in [[stage_in]],
+FSResult fs_main(VSResult in [[stage_in]],
                 texture2d<float, access::sample> texture [[texture(0)]],
                 sampler sampler [[sampler(0)]])
 {
-    float4 texColor = texture.sample(sampler, in.texCoords);
-    return texColor * in.tintColor;
+    FSResult out;
+
+    out.fragColor = texture.sample(sampler, in.texCoords) * in.tintColor;
+
+    float l = dot(out.fragColor.rgb, float3(0.299f, 0.587f, 0.114f));
+
+    if(l > 0.3f)
+    {
+        out.brightnessColor = out.fragColor;
+    }
+    else
+    {
+        out.brightnessColor = float4(0.0f, 0.0f, 0.0f,out.fragColor.a);
+    }
+
+    return out; 
 }

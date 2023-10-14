@@ -26,6 +26,13 @@ namespace bns
         wgpuRenderPipelineRelease(m_pipeline);
     }
 
+    void WebGPUEffectImpl::SetSourceTexture(Texture2D *sourceTexture)
+    {
+        m_sourceTexture = sourceTexture;
+        WebGPUTexture2D *tex = static_cast<WebGPUTexture2D *>(sourceTexture);
+        m_sourceTextureBindGroup = CreateTextureBindGroup(*tex);
+    }
+
     WGPUBuffer WebGPUEffectImpl::CreateVertexBuffer()
     {
         std::vector<float> data = {
@@ -70,6 +77,23 @@ namespace bns
         return result;
     }
 
+    WGPUBindGroup WebGPUEffectImpl::CreateTextureBindGroup(WebGPUTexture2D &texture)
+    {
+        WGPUBindGroupEntry bindGroupEntries[2];
+
+        // sampler entry
+        bindGroupEntries[0] = WebGPUUtil::BindGroupEntry.Create(0, texture.Sampler);
+        // texture entry
+        WGPUTextureView view = texture.CreateView();
+        bindGroupEntries[1] = WebGPUUtil::BindGroupEntry.Create(1, view);
+
+        // Create bind group
+        WGPUBindGroupDescriptor bindGroupDesc = WebGPUUtil::BindGroupDescriptor.Create(m_sourceTextureBindGroupLayout, bindGroupEntries, 2);
+        WGPUBindGroup bindGroup = wgpuDeviceCreateBindGroup(m_device, &bindGroupDesc);
+
+        return bindGroup;
+    }
+
     std::vector<WGPUBindGroup> WebGPUEffectImpl::CreateBindGroups(std::vector<WGPUBindGroupLayout> layouts)
     {
         std::vector<WGPUBindGroup> result;
@@ -84,18 +108,7 @@ namespace bns
             throw std::runtime_error("Source texture is null.");
         }
 
-        WGPUBindGroupEntry bindGroupEntries[2];
-
-        // sampler entry
-        WebGPUTexture2D *webGPUTexture2D = static_cast<WebGPUTexture2D *>(m_sourceTexture);
-        bindGroupEntries[0] = WebGPUUtil::BindGroupEntry.Create(0, webGPUTexture2D->Sampler);
-        // texture entry
-        WGPUTextureView view = webGPUTexture2D->CreateView();
-        bindGroupEntries[1] = WebGPUUtil::BindGroupEntry.Create(1, view);
-
-        // Create bind group
-        WGPUBindGroupDescriptor bindGroupDesc = WebGPUUtil::BindGroupDescriptor.Create(m_sourceTextureBindGroupLayout, bindGroupEntries, 2);
-        WGPUBindGroup bindGroup = wgpuDeviceCreateBindGroup(m_device, &bindGroupDesc);
+        WGPUBindGroup bindGroup = CreateTextureBindGroup(*static_cast<WebGPUTexture2D *>(m_sourceTexture));
 
         // push bind group to result
         result.push_back(bindGroup);

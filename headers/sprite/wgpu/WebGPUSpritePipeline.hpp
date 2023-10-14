@@ -17,9 +17,13 @@ namespace bns
         WGPURenderPipeline m_pipeline;
         WGPUBindGroup m_projectionViewBindGroup;
         WGPUBindGroup m_sourceTextureBindGroup;
+        WGPUBindGroup m_brightnessThresholdBindGroup;
 
     public:
-       WebGPUSpritePipeline(WGPURenderPipeline pipeline, WGPUBindGroup projectionViewBindGroup, WGPUBindGroup textureBindGroup);
+        WebGPUSpritePipeline(WGPURenderPipeline pipeline,
+                             WGPUBindGroup projectionViewBindGroup,
+                             WGPUBindGroup textureBindGroup,
+                             WGPUBindGroup brighntessThresholdBindGroup);
 
         /**
          * @brief The instance index which is used to tell how many instances are in buffer and to be drawn.
@@ -28,16 +32,21 @@ namespace bns
 
         /**
          * @brief The vertex buffer data.
-        */
+         */
         f32 DataArray[SPRITE_RENDERER_MAX_SPRITES_PER_DRAW * FLOATS_PER_INSTANCE];
 
-        /**
-         * @brief Create a sprite pipeline
-         * @param device The webgpu device
-         * @param texture The texture to be used
-         * @return The sprite pipeline
-         */
-        static WebGPUSpritePipeline *Create(WGPUDevice device,  WebGPUTexture2D* texture, WGPUBuffer projectionViewBuffer);
+        
+        /// @brief Create a sprite pipeline
+        /// @param device The webgpu device
+        /// @param texture The texture to be used
+        /// @param projectionViewBuffer The projection view buffer
+        /// @param brightnessThresholdBuffer The brightness threshold buffer
+        /// @return The sprite pipeline
+        static WebGPUSpritePipeline *Create(
+            WGPUDevice device,
+            WebGPUTexture2D *texture,
+            WGPUBuffer projectionViewBuffer,
+            WGPUBuffer brightnessThresholdBuffer);
 
         /**
          * @brief Gets the pipeline
@@ -49,10 +58,11 @@ namespace bns
          */
         inline const WGPUBindGroup &GetProjectionViewBindGroup() const { return m_projectionViewBindGroup; }
 
-        /**
-         * @brief Gets the texture bind group
-         */
+        /// @brief Gets the texture bind group
         inline const WGPUBindGroup &GetTextureBindGroup() const { return m_sourceTextureBindGroup; }
+
+        /// @brief Gets the brightness threshold bind group
+        inline const WGPUBindGroup &GetBrightnessThresholdBindGroup() const { return m_brightnessThresholdBindGroup; }
     };
 }
 

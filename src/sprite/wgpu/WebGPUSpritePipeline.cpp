@@ -8,11 +8,21 @@
 
 namespace bns
 {
-    WebGPUSpritePipeline::WebGPUSpritePipeline(WGPURenderPipeline pipeline, WGPUBindGroup projectionViewBindGroup, WGPUBindGroup textureBindGroup)
-        : m_pipeline(pipeline), m_projectionViewBindGroup(projectionViewBindGroup), m_sourceTextureBindGroup(textureBindGroup) {}
+    WebGPUSpritePipeline::WebGPUSpritePipeline(
+        WGPURenderPipeline pipeline,
+        WGPUBindGroup projectionViewBindGroup,
+        WGPUBindGroup textureBindGroup,
+        WGPUBindGroup brightnessThresholdBindGroup)
+        : m_pipeline(pipeline),
+          m_projectionViewBindGroup(projectionViewBindGroup),
+          m_sourceTextureBindGroup(textureBindGroup),
+          m_brightnessThresholdBindGroup(brightnessThresholdBindGroup)
+
+    {
+    }
 
     // NOTE: STATIC FUNCTION
-    WebGPUSpritePipeline *WebGPUSpritePipeline::Create(WGPUDevice device, WebGPUTexture2D *texture, WGPUBuffer projectionViewBuffer)
+    WebGPUSpritePipeline *WebGPUSpritePipeline::Create(WGPUDevice device, WebGPUTexture2D *texture, WGPUBuffer projectionViewBuffer, WGPUBuffer brightnessThresholdBuffer)
     {
         FileLoader fileLoader;
         std::string shaderSource = fileLoader.LoadFile("shaders/webgpu/sprite/sprite.wgsl");
@@ -87,19 +97,26 @@ namespace bns
         WGPUBindGroupLayoutEntry textureLayoutEntry = WebGPUUtil::BindGroupLayoutEntry.CreateBindGroupLayoutEntry(1, WGPUShaderStage_Fragment, textureBindingLayout);
 
         // bind group layout descriptor
-        WGPUBindGroupLayoutEntry bindGroupLayoutEntries[2] = {
+        WGPUBindGroupLayoutEntry bindGroupLayoutEntries[3] = {
             samplerLayoutEntry,
-            textureLayoutEntry};
+            textureLayoutEntry,
+        };
         WGPUBindGroupLayoutDescriptor textureBindGroupLayoutDescriptor = WebGPUUtil::BindGroupLayoutDescriptor.Create(bindGroupLayoutEntries, 2);
         WGPUBindGroupLayout textureBindGroupLayout = wgpuDeviceCreateBindGroupLayout(device, &textureBindGroupLayoutDescriptor);
 
+        // brightness threshold layout
+        WGPUBindGroupLayoutEntry brightnessThresholdBindingLayoutEntry = WebGPUUtil::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(0, WGPUShaderStage_Fragment);
+        WGPUBindGroupLayoutDescriptor brightnessThresholdBindGroupLayoutDescriptor = WebGPUUtil::BindGroupLayoutDescriptor.Create(&brightnessThresholdBindingLayoutEntry, 1);
+        WGPUBindGroupLayout brightnessThresholdBindGroupLayout = wgpuDeviceCreateBindGroupLayout(device, &brightnessThresholdBindGroupLayoutDescriptor);
+
         // merge layout to array.
-        WGPUBindGroupLayout bindGroupLayouts[2] = {
+        WGPUBindGroupLayout bindGroupLayouts[3] = {
             projectionViewBufferBindGroupLayout,
-            textureBindGroupLayout};
+            textureBindGroupLayout,
+            brightnessThresholdBindGroupLayout};
 
         // TODO: move to util
-        WGPUPipelineLayoutDescriptor pipelineLayoutDescriptor = WebGPUUtil::PipelineLayoutDescriptor.Create(&bindGroupLayouts[0], 2);
+        WGPUPipelineLayoutDescriptor pipelineLayoutDescriptor = WebGPUUtil::PipelineLayoutDescriptor.Create(&bindGroupLayouts[0], 3);
         renderPipelineDescriptor.layout = wgpuDeviceCreatePipelineLayout(device, &pipelineLayoutDescriptor);
 
         renderPipelineDescriptor.depthStencil = nullptr;
@@ -133,14 +150,21 @@ namespace bns
         WGPUBindGroupDescriptor textureBindGroupDescriptor = WebGPUUtil::BindGroupDescriptor.Create(textureBindGroupLayout, textureBindGroupEntries, 2);
         WGPUBindGroup textureBindGroup = wgpuDeviceCreateBindGroup(device, &textureBindGroupDescriptor);
 
+        // Brightness threshold bind group
+        auto brightnessThresholdBindGroupEntry =WebGPUUtil::BindGroupEntry.Create(0, brightnessThresholdBuffer, sizeof(f32));
+        auto brightnessThresholdBindGroupDescriptor = WebGPUUtil::BindGroupDescriptor.Create(brightnessThresholdBindGroupLayout, &brightnessThresholdBindGroupEntry, 1);
+        auto brightnessThresholdBindGroup = wgpuDeviceCreateBindGroup(device, &brightnessThresholdBindGroupDescriptor);
+
+
         // release resources that are no longer needed
         wgpuShaderModuleRelease(shaderModule);
         wgpuBindGroupLayoutRelease(projectionViewBufferBindGroupLayout);
         wgpuBindGroupLayoutRelease(textureBindGroupLayout);
+        wgpuBindGroupLayoutRelease(brightnessThresholdBindGroupLayout);
         wgpuPipelineLayoutRelease(renderPipelineDescriptor.layout);
         wgpuTextureViewRelease(textureView);
         WebGPUVertexBufferLayoutUtil::Delete(layout, 1);
 
-        return new WebGPUSpritePipeline(pipeline, projectionViewBindGroup, textureBindGroup);
+        return new WebGPUSpritePipeline(pipeline, projectionViewBindGroup, textureBindGroup, brightnessThresholdBindGroup);
     }
 }

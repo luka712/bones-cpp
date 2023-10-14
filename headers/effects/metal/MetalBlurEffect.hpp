@@ -15,8 +15,7 @@ namespace bns
         MTL::RenderPipelineState* m_horizontalPassPipeline;
         MTL::RenderPipelineState* m_verticalPassPipeline;
 
-        MetalTexture2D *m_horizontalPassTexture;
-        MetalTexture2D *m_verticalPassTexture;
+        MetalTexture2D *m_midStepTexture;
 
     protected:
         inline std::string GetShaderPath() override
@@ -26,12 +25,6 @@ namespace bns
 
     public:
         MetalBlurEffectImpl(const Framework &framework);
-
-        inline Texture2D *GetSourceTexture() override
-        {
-            // draw scene into horizontal pass texture, as it is first pass 
-            return m_horizontalPassTexture;
-        }
 
         /// @brief Initializes the post process effect.
         void Initialize() override;
@@ -56,6 +49,13 @@ namespace bns
         inline Texture2D *GetSourceTexture() override
         {
             return m_impl->GetSourceTexture();
+        }
+
+        /// @brief Sets the render texture, texture to which effect will render.
+        /// @param texture The render texture
+        inline void SetSourceTexture(Texture2D *texture) override
+        {
+            m_impl->SetSourceTexture(texture);
         }
 
         /// @brief Initializes the effect.

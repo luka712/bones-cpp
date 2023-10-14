@@ -50,6 +50,13 @@ namespace bns
             return m_impl->GetSourceTexture();
         }
 
+        /// @brief Sets the render texture, texture to which effect will render.
+        /// @param texture The render texture
+        void SetSourceTexture(Texture2D *texture) override
+        {
+            m_impl->SetSourceTexture(texture);
+        }
+
         void Initialize() override
         {
             m_impl->Initialize();

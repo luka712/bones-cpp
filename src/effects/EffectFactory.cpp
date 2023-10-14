@@ -4,6 +4,7 @@
 #include "effects/metal/MetalGrayscaleEffect.hpp"
 #include "effects/metal/MetalTextureCombineEffect.hpp"
 #include "effects/metal/MetalBlurEffect.hpp"
+#include "effects/metal/MetalBloomEffect.hpp"
 #else
 #include "effects/wgpu/WebGPUGrayscaleEffect.hpp"
 #include "effects/wgpu/WebGPUTextureCombineEffect.hpp"
@@ -56,12 +57,12 @@ namespace bns
                 return effect;
         }
 
-          BloomEffect *EffectFactory::CreateBloomEffect()
+        BloomEffect *EffectFactory::CreateBloomEffect()
         {
                 BloomEffect *effect = nullptr;
 #if __APPLE__ && USE_METAL
-                // TODO:
-                // effect = new MetalBlurEffect(m_framework);
+
+                effect = new MetalBloomEffect(m_framework);
 #else
                 effect = new WebGPUBloomEffect(m_framework);
 #endif
