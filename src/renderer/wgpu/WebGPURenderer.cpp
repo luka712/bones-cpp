@@ -164,12 +164,17 @@ namespace bns
         wgpuDeviceSetUncapturedErrorCallback(m_device, handleWebGPUError, nullptr);
 
         Resize(); // creates swap chain
+
+        m_brightnessTexture = nullptr;
     }
 
     void WebGPURenderer::BeginDraw()
     {
         m_drawCommandEncoder = wgpuDeviceCreateCommandEncoder(m_device, nullptr);
-        
+
+        WGPURenderPassColorAttachment colorAttachment[2];
+        i32 colorAttachmentCount = 1; // there is always at least one color attachment, for canvas/first render target
+
         // if there is no render texture, we render to the swap chain
         if (m_renderTexture == nullptr)
         {
@@ -181,19 +186,32 @@ namespace bns
             WGPUTexture wgpuTexture = static_cast<WebGPUTexture2D *>(m_renderTexture)->Texture;
             m_currentTextureView = wgpuTextureCreateView(wgpuTexture, nullptr);
         }
+        colorAttachment[0].nextInChain = nullptr;
+        colorAttachment[0].view = m_currentTextureView;
+        colorAttachment[0].resolveTarget = nullptr;
+        colorAttachment[0].clearValue = {ClearColor.R, ClearColor.G, ClearColor.B, ClearColor.A};
+        colorAttachment[0].loadOp = WGPULoadOp_Clear;
+        colorAttachment[0].storeOp = WGPUStoreOp_Store;
+
+        // if there is a brightness texture, we render to it
+        if (m_brightnessTexture != nullptr)
+        {
+            WGPUTexture wgpuTexture = static_cast<WebGPUTexture2D *>(m_brightnessTexture)->Texture;
+            m_brightnessTextureView = wgpuTextureCreateView(wgpuTexture, nullptr);
+
+            colorAttachmentCount = 2;
+            colorAttachment[1].nextInChain = nullptr;
+            colorAttachment[1].view = m_brightnessTextureView;
+            colorAttachment[1].resolveTarget = nullptr;
+            colorAttachment[1].clearValue = {ClearColor.R, ClearColor.G, ClearColor.B, ClearColor.A};
+            colorAttachment[1].loadOp = WGPULoadOp_Clear;
+            colorAttachment[1].storeOp = WGPUStoreOp_Store;
+        }
 
         WGPURenderPassDescriptor renderPassDesc = {};
-        WGPURenderPassColorAttachment colorAttachment = {};
-
-        colorAttachment.view = m_currentTextureView;
-        colorAttachment.resolveTarget = nullptr;
-        colorAttachment.clearValue = {ClearColor.R, ClearColor.G, ClearColor.B, ClearColor.A};
-        colorAttachment.loadOp = WGPULoadOp_Clear;
-        colorAttachment.storeOp = WGPUStoreOp_Store;
-        renderPassDesc.colorAttachmentCount = 1;
-        renderPassDesc.colorAttachments = &colorAttachment;
+        renderPassDesc.colorAttachmentCount = colorAttachmentCount;
+        renderPassDesc.colorAttachments = colorAttachment;
         renderPassDesc.depthStencilAttachment = nullptr;
-
 
         m_currentPassEncoder = wgpuCommandEncoderBeginRenderPass(m_drawCommandEncoder, &renderPassDesc);
         wgpuRenderPassEncoderPushDebugGroup(m_currentPassEncoder, "debug");
@@ -237,6 +255,11 @@ namespace bns
         wgpuSwapChainPresent(m_swapChain);
 
         wgpuTextureViewRelease(m_currentTextureView);
+
+        if (m_brightnessTextureView != nullptr)
+        {
+            wgpuTextureViewRelease(m_brightnessTextureView);
+        }
     }
 
     void WebGPURenderer::Destroy()

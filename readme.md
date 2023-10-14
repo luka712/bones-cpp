@@ -40,7 +40,12 @@ do: Simply run project in xcode
 
 # Dependencies
 TODO: 
-- implement blur effect for metal
+- Implement blur in webgpu bloom
+- Implement bloom for metal
+- Think about and document post process pipeline
+- Texture factory to texture manager
+- Optimize sprite renderers in endframe
 - All utils to utils folder
 - Figure out WebGPU Metal debugger.
 - merge initialize into 1 method
+- add scene test cases

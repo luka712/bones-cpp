@@ -15,7 +15,7 @@ namespace bns
     MetalSpritePipeline *MetalSpritePipeline::Create(MTL::Device *device, MetalTexture2D *texture, MTL::Buffer *projectionViewBuffer)
     {
         FileLoader fileLoader;
-        std::string shaderSource = fileLoader.OpenFile("shaders/metal/sprite/sprite_shader.metal");
+        std::string shaderSource = fileLoader.LoadFile("shaders/metal/sprite/sprite.metal");
         MTL::Library *pLibrary = MetalUtil::Library.Create(device, shaderSource);
 
         MTL::Function *pVertexFn = pLibrary->newFunction(NS::String::string("vs_main", NS::StringEncoding::UTF8StringEncoding));

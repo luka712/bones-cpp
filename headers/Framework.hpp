@@ -15,7 +15,7 @@
 #include <Metal/Metal.hpp>
 #include "data/Vec2.hpp"
 #include "renderer/Renderer.hpp"
-#include "post-process/EffectFactory.hpp"
+#include "effects/EffectFactory.hpp"
 
 namespace bns
 {

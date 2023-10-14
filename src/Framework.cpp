@@ -85,14 +85,14 @@ namespace bns
 
         static f32 rotation = 0.0f;
 
-        auto *effect = m_effectFactory->CreateBlurEffect();
+        auto *effect = m_effectFactory->CreateBloomEffect();
         // effect->SetCombineTexture(testTexture);
 
-/*
-        WebGPUTextureCombineEffect effect(*this);
-        effect.Initialize();
-        effect.SetCombineTexture(testTexture);
-*/
+        /*
+                WebGPUTextureCombineEffect effect(*this);
+                effect.Initialize();
+                effect.SetCombineTexture(testTexture);
+        */
         while (!quit)
         {
             // Process events
@@ -103,14 +103,15 @@ namespace bns
                     quit = true;
                 }
             }
-            
+
             // Do nothing, this checks for ongoing asynchronous operations and call their callbacks
             // NOTE: this is specific to DAWN and is not part of WebGPU standard.
             wgpuDeviceTick(Context.WebGPUDevice);
-            
-            m_renderer->BeginDraw();
-            
+
             m_renderer->SetRenderTexture(effect->GetSourceTexture());
+            m_renderer->SetBrightnessTexture(effect->GetBrightnessTexture());
+
+            m_renderer->BeginDraw();
 
             // testMaterial->Draw(camera, mesh);
             m_spriteRenderer->BeginFrame();
@@ -155,7 +156,7 @@ namespace bns
         CA::MetalLayer *swapchain = m_windowManager->InitializeForMetal(windowParameters);
 
         // TEMPORARY CODE
-        static_cast<MetalRenderer*>(m_renderer)->Initialize(swapchain);
+        static_cast<MetalRenderer *>(m_renderer)->Initialize(swapchain);
 
         SpriteFont *font = GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
 
@@ -165,7 +166,7 @@ namespace bns
 
         // TEST DATA
         MetalTexture2D *testTexture = new MetalTexture2D(*this, m_imageLoader->LoadImage("assets/uv_test.png"),
-             TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST, TextureFormat::RGBA_8_Unorm);
+                                                         TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST, TextureFormat::RGBA_8_Unorm);
         testTexture->Initialize();
 
         MetalBasicMeshTexturedTestMaterial *testMaterial = new MetalBasicMeshTexturedTestMaterial(*this, testTexture);
@@ -180,7 +181,6 @@ namespace bns
 
         auto *effect = m_effectFactory->CreateBlurEffect();
         // effect->SetCombineTexture(testTexture);
-
 
         /*
         MetalTextureCombineEffect effect(*this);

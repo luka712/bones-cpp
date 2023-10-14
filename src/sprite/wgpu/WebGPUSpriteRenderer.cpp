@@ -1,5 +1,5 @@
 #include "sprite/wgpu/WebGPUSpriteRenderer.hpp"
-#include "util/wgpu/WebGPUBufferUtil.hpp"
+#include "util/WebGPUUtil.hpp"
 #include "Constants.hpp"
 #include "Framework.hpp"
 
@@ -81,11 +81,12 @@ namespace bns
     {
         // setup camera buffer
         m_device = m_framework.Context.WebGPUDevice;
-        m_projectionViewMatrixBuffer = WebGPUBufferUtil::CreateUniformBuffer(m_device, sizeof(Mat4x4f), "SpriteRendererCameraBuffer");
+        m_projectionViewMatrixBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device, sizeof(Mat4x4f), "SpriteRendererCameraBuffer");
 
         // setup camera
+        // TODO: should be buffer size
         auto size = m_framework.GetWindowManager().GetWindowSize();
-        m_camera = SpriteRendererCamera(size.X, size.Y);
+        m_camera.Initialize(size.X, size.Y);
 
         SetupIndexBuffer();
     }
@@ -190,6 +191,8 @@ namespace bns
 
         pipeline.InstanceIndex++;
     }
+
+    // TODO: draw without source rect
 
     void WebGPUSpriteRenderer::DrawString(SpriteFont *font, const std::string &text, const Vec2f &position,
                                           const Color &tintColor, const f32 scale)
@@ -311,7 +314,7 @@ namespace bns
                 // push to temp stack
                 tempVertexBufferStack.push(vertexBuffer);
 
-                size_t byteSize = SPRITE_RENDERER_MAX_SPRITES_PER_DRAW * FLOATS_PER_INSTANCE * sizeof(f32);
+                size_t byteSize = spritePipeline->InstanceIndex * FLOATS_PER_INSTANCE * sizeof(f32);
                 wgpuQueueWriteBuffer(queue, vertexBuffer, 0, spritePipeline->DataArray, byteSize);
 
                 // set pipeline

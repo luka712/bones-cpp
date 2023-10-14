@@ -19,19 +19,13 @@ namespace bns
     class WebGPUSpriteRenderer final : public SpriteRenderer
     {
     private:
-        /**
-         * @brief The framework.
-         */
+        /// @brief The framework.
         const Framework &m_framework;
 
-        /**
-         * @brief The device.
-         */
+        /// @brief The device.
         WGPUDevice m_device;
 
-        /**
-         * @brief The index buffer.
-         */
+        /// @brief The index buffer.
         WGPUBuffer m_indexBuffer;
 
         /**

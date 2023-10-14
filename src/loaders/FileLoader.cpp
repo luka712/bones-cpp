@@ -5,7 +5,7 @@
 
 namespace bns
 {
-    std::string FileLoader::OpenFile(std::string path)
+    std::string FileLoader::LoadFile(std::string path)
     {
         std::ifstream input_file(path);
         if (!input_file.is_open())

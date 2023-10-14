@@ -22,7 +22,7 @@ namespace bns
 		 * @param std::string - file path
 		 * @return std::string
 		 */
-		std::string OpenFile(std::string path);
+		std::string LoadFile(std::string path);
 
 		/**
 		 * @brief Creates or open the file from path into string. If file is newly created one or empty, empty string is returned.

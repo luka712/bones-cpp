@@ -16,7 +16,7 @@ namespace bns
 
     void MetalBasicMeshTestMaterial::Initialize()
     {
-        std::string shaderSource = m_framework.FileLoader.OpenFile("shaders/metal/basic_mesh_test_shader.metal");
+        std::string shaderSource = m_framework.FileLoader.LoadFile("shaders/metal/basic_mesh_test_shader.metal");
 
         MTL::Device *device = m_framework.Context.MetalDevice;
 

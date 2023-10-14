@@ -13,7 +13,8 @@ namespace bns
     {
         public:
             SpriteRendererCamera();
-            SpriteRendererCamera(i32 width, i32 height);
+
+            void Initialize(i32 width, i32 height);
             void Update(f32 deltaTime) override;
     };
 }

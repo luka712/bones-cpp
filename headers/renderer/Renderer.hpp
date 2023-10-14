@@ -22,6 +22,10 @@ namespace bns
          */
         Texture2D *m_renderTexture = nullptr;
 
+        /// @brief The brightness texture. Every material should output 2nd color as brightness.
+        /// @note This texture is used for bloom effect.
+        Texture2D *m_brightnessTexture = nullptr;
+
         /**
          * @brief The size of the render buffer.
          */
@@ -43,7 +47,7 @@ namespace bns
         /**
          * @brief Gets the view into swap chain texture.
          */
-        virtual void* GetSwapChainTexture() = 0;
+        virtual void *GetSwapChainTexture() = 0;
 
         /**
          * @brief Set the render texture.
@@ -59,6 +63,17 @@ namespace bns
          * Same as SetRenderTexture(nullptr).
          */
         virtual void UnsetRenderTexture();
+
+        /// @brief Sets the brightness texture.
+
+        /// @brief The brightness texture. Every material should output 2nd color as brightness.
+        /// @note This texture is used for bloom effect.
+        /// @param texture The brightness texture.
+        virtual void SetBrightnessTexture(Texture2D *texture);
+
+        /// @brief Unsets the brightness texture.
+        /// Same as SetBrightnessTexture(nullptr).
+        virtual void UnsetBrightnessTexture();
 
         /**
          * @brief Prepares the renderer.

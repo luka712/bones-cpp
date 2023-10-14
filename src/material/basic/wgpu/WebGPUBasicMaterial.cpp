@@ -55,7 +55,7 @@ namespace bns
     {
         WGPUDevice device = static_cast<WGPUDevice>(m_framework->Context.WebGPUDevice);
 
-        std::string shaderSource = m_framework->FileLoader.OpenFile("shaders/webgpu/basic_material_shader.wgsl");
+        std::string shaderSource = m_framework->FileLoader.LoadFile("shaders/webgpu/basic_material_shader.wgsl");
 
         std::cout << shaderSource << std::endl;
 

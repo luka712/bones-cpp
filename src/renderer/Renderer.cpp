@@ -17,4 +17,14 @@ namespace bns
     {
         SetRenderTexture(nullptr);
     }
+
+    void Renderer::SetBrightnessTexture(Texture2D *texture)
+    {
+        m_brightnessTexture = texture;
+    }
+
+    void Renderer::UnsetBrightnessTexture()
+    {
+        SetBrightnessTexture(nullptr);
+    }
 }

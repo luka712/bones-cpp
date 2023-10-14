@@ -6,7 +6,6 @@
 #include "loaders/FileLoader.hpp"
 #include "util/wgpu/WebGPUShaderModuleUtil.hpp"
 
-
 namespace bns
 {
     WebGPUSpritePipeline::WebGPUSpritePipeline(WGPURenderPipeline pipeline, WGPUBindGroup projectionViewBindGroup, WGPUBindGroup textureBindGroup)
@@ -16,11 +15,11 @@ namespace bns
     WebGPUSpritePipeline *WebGPUSpritePipeline::Create(WGPUDevice device, WebGPUTexture2D *texture, WGPUBuffer projectionViewBuffer)
     {
         FileLoader fileLoader;
-        std::string shaderSource = fileLoader.OpenFile("shaders/webgpu/sprite/sprite_shader.wgsl");
+        std::string shaderSource = fileLoader.LoadFile("shaders/webgpu/sprite/sprite.wgsl");
         WGPUShaderModule shaderModule = WebGPUShaderModuleUtil::Create(device, shaderSource, "Sprite Shader Module");
 
         WGPURenderPipelineDescriptor renderPipelineDescriptor;
-        renderPipelineDescriptor.label = "Sprite Render Pipeline Descriptor";
+        renderPipelineDescriptor.label = "Sprite Pipeline";
         renderPipelineDescriptor.nextInChain = nullptr;
 
         BufferLayoutDescriptor bufferLayoutDescriptor;
@@ -61,7 +60,13 @@ namespace bns
         colorTarget.blend = &blend;
         colorTarget.writeMask = WGPUColorWriteMask_All;
         std::string fragFn = "fs_main";
-        WGPUFragmentState fragmentState = WebGPUUtil::FragmentState.Create(shaderModule, colorTarget, fragFn);
+
+        // 2 color target states, first one for the screen, second one for the bloom/brightness texture
+        // Here both color target states can be same, there is no difference.
+        WGPUColorTargetState colorTargetsStates[2];
+        colorTargetsStates[0] = colorTarget;
+        colorTargetsStates[1] = colorTarget;
+        WGPUFragmentState fragmentState = WebGPUUtil::FragmentState.Create(shaderModule, &colorTargetsStates[0], 2, fragFn);
         renderPipelineDescriptor.fragment = &fragmentState;
 
         // Bind group layout for projection view matrix

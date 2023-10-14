@@ -100,4 +100,10 @@ namespace bns
 
         Sampler = sampler;
     }
+
+        void WebGPUTexture2D::Release()
+        {
+            wgpuSamplerRelease(Sampler);
+            wgpuTextureRelease(Texture);
+        }
 }

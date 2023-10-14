@@ -105,6 +105,9 @@ namespace bns
          * @brief Initialize the texture.
          */
         virtual void Initialize() = 0;
+
+        /// @brief Release the texture.
+        virtual void Release() = 0;
     };
 }
 

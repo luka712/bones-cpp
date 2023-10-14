@@ -47,6 +47,11 @@ namespace bns
          */
         WebGPUTexture2D(const Framework &framework, ImageData *imageData, i32 textureUsageFlags, TextureFormat format);
 
+        inline ~WebGPUTexture2D()
+        {
+            Release();
+        }
+
         /**
          * Creates the texture view.
          */
@@ -63,6 +68,9 @@ namespace bns
          * @brief Initialize the texture.
          */
         void Initialize() override;
+
+        /// @brief Destroy the texture.
+        void Release() override;
     };
 }
 

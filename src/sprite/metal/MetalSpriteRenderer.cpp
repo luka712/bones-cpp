@@ -86,7 +86,7 @@ namespace bns
 
         // setup camera
         auto size = m_framework.GetWindowManager().GetWindowSize();
-        m_camera = SpriteRendererCamera(size.X, size.Y);
+        m_camera.Initialize(size.X, size.Y);
 
         SetupIndexBuffer();
     }
@@ -310,7 +310,7 @@ namespace bns
                 // push to temp stack
                 tempVertexBufferStack.push(vertexBuffer);
 
-                size_t byteSize = SPRITE_RENDERER_MAX_SPRITES_PER_DRAW * FLOATS_PER_INSTANCE * sizeof(f32);
+                size_t byteSize = spritePipeline->InstanceIndex * FLOATS_PER_INSTANCE * sizeof(f32);
                 memcpy(vertexBuffer->contents(), spritePipeline->DataArray, byteSize);
 
                 // set pipeline

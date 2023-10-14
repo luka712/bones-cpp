@@ -85,6 +85,10 @@ namespace bns
          */
         WGPUTextureView m_currentTextureView;
 
+        /// @brief The brightness texture view. Is create from @ref m_brightnessTexture.
+        /// Will be null if @ref m_brightnessTexture is null.
+        WGPUTextureView m_brightnessTextureView;
+
         /**
          * Creates the webgpu adapter.
          */

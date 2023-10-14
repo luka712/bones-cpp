@@ -17,7 +17,7 @@ namespace bns
 
     void WebGPUBasicMeshTestMaterial::Initialize()
     {
-        std::string shaderSource = m_framework.FileLoader.OpenFile("shaders/webgpu/basic_mesh_test_shader.wgsl");
+        std::string shaderSource = m_framework.FileLoader.LoadFile("shaders/webgpu/basic_mesh_test_shader.wgsl");
         WGPUShaderModule shaderModule = WebGPUShaderModuleUtil::Create(m_framework.Context.WebGPUDevice, shaderSource);
 
         WGPURenderPipelineDescriptor descriptor = {};
