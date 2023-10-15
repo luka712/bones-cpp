@@ -24,7 +24,7 @@ namespace bns
     void MetalBlurEffectImpl::Initialize()
     {
         m_device = m_framework.Context.MetalDevice;
-        Vec2u bufferSize = m_framework.GetRenderer().GetBufferSize();
+        Vec2u bufferSize = m_framework.GetRenderer()->GetBufferSize();
 
         // Textures
         Texture2D *horizontalTexture = m_framework.GetTextureFactory()

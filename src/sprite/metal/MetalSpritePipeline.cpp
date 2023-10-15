@@ -59,7 +59,7 @@ namespace bns
         MetalUtil::RenderPipelineColorAttachmentDescriptor.SetDefault(*colorAttachment);
 
         // set 2nd color attachment, for bloom/brightness
-        if (framework.GetRenderer().GetBrightnessTexture() != nullptr)
+        if (framework.GetRenderer()->GetBrightnessTexture() != nullptr)
         {
             MTL::RenderPipelineColorAttachmentDescriptor *colorAttachment2 = pDesc->colorAttachments()->object(NS::UInteger(1));
             MetalUtil::RenderPipelineColorAttachmentDescriptor.SetDefault(*colorAttachment2);

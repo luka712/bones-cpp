@@ -40,7 +40,6 @@ do: Simply run project in xcode
 
 # Dependencies
 TODO: 
-- merge initialize into 1 method
 - Texture factory to texture manager
 - Think about and document post process pipeline
 - Optimize sprite renderers in endframe

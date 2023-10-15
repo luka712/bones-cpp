@@ -114,7 +114,7 @@ namespace bns
     {
         m_device = m_framework.Context.MetalDevice;
 
-        Vec2u bufferSize = m_framework.GetRenderer().GetBufferSize();
+        Vec2u bufferSize = m_framework.GetRenderer()->GetBufferSize();
         Texture2D *texture = m_framework.GetTextureFactory()
                                  .CreateEmpty(bufferSize.X, bufferSize.Y,
                                               TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,

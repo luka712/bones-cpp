@@ -16,6 +16,7 @@
 #include "data/Vec2.hpp"
 #include "renderer/Renderer.hpp"
 #include "effects/EffectFactory.hpp"
+#include <functional>
 
 namespace bns
 {
@@ -95,9 +96,9 @@ namespace bns
         /**
          * @brief Get the renderer.
          */
-        inline Renderer& GetRenderer() const
+        inline Renderer* GetRenderer() const
         {
-            return *m_renderer;
+            return m_renderer;
         }
 
         /**
@@ -140,12 +141,11 @@ namespace bns
             return *m_directory;
         }
 
-        /**
-         * @brief Get the sprite renderer.
-         */
-        inline SpriteRenderer &GetSpriteRenderer() const
+        /// @brief Gets the sprite renderer.
+        /// @return The sprite renderer.
+        inline SpriteRenderer *GetSpriteRenderer() const
         {
-            return *m_spriteRenderer;
+            return m_spriteRenderer;
         }
 
         /**
@@ -177,7 +177,14 @@ namespace bns
         Framework();
         ~Framework();
 
-        void Initialize(bns::WindowParameters windowParameters);
+        /// @brief Initialize the framework.
+        /// @param windowParameters The window parameters.
+        /// @param callback The callback to be called after initialization.
+        void Initialize(bns::WindowParameters windowParameters, std::function<void()> callback);
+
+        /// @brief Draw callback for the framework.
+        /// @param updateCallback The callback to be called on each frame when scene is ready to be drawn.
+        void Draw(std::function<void()> updateCallback);
     };
 }
 #endif

@@ -13,18 +13,75 @@
 // for our use
 #define USE_WEBGPU
 
-
 #include <iostream>
 #include <SDL2/SDL.h>
 
 #include "Framework.hpp"
 
+bns::Framework engine;
+
+// Scene data
+bns::SpriteFont *font;
+bns::Texture2D *testTexture;
+bns::BloomEffect *effect;
+
+static bns::f32 rotation = 0.0f;
+
+void Initialize();
+void Draw();
 
 int main()
 {
-    bns::Framework engine;
+
     bns::WindowParameters parameters;
-    engine.Initialize(parameters);
+
+    engine.Initialize(parameters, Initialize);
+
+    engine.Draw(Draw);
 
     return 0;
+}
+
+void Initialize()
+{
+    font = engine.GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
+    auto imageData = engine.GetImageLoader().LoadImage("assets/uv_test.png");
+    testTexture = engine.GetTextureFactory().CreateTexture(imageData);
+
+    effect = engine.GetEffectFactory().CreateBloomEffect();
+
+    bns::Renderer *renderer = engine.GetRenderer();
+    renderer->SetRenderTexture(effect->GetSourceTexture());
+    renderer->SetBrightnessTexture(effect->GetBrightnessTexture());
+}
+
+void Draw()
+{
+    bns::Renderer *renderer = engine.GetRenderer();
+    bns::SpriteRenderer *spriteRenderer = engine.GetSpriteRenderer();
+
+    bns::i32 hw = testTexture->GetWidth() / 2;
+    bns::i32 hh = testTexture->GetHeight() / 2;
+
+    rotation += 0.1;
+    bns::Vec2f rotationOrigin = bns::Vec2f(0.5f, 0.5f);
+
+    spriteRenderer->DrawString(font, "Hello World!", bns::Vec2f(300, 300), bns::Color::White(), 1.0f);
+
+    // whole texture
+    spriteRenderer->Draw(testTexture, bns::Rect(0, 0, 100, 100));
+
+    // top left quadrant
+    spriteRenderer->Draw(testTexture, bns::Rect(100, 0, 100, 100), bns::Rect(0, 0, hw, hh), bns::Color::White(), rotation, rotationOrigin);
+
+    // top right quadrant
+    spriteRenderer->Draw(testTexture, bns::Rect(200, 0, 100, 100), bns::Rect(hw, 0, hw, hh), bns::Color::White(), rotation, rotationOrigin);
+
+    // bottom left quadrant
+    spriteRenderer->Draw(testTexture, bns::Rect(100, 100, 100, 100), bns::Rect(0, hh, hw, hh), bns::Color::White(), rotation, rotationOrigin);
+
+    // bottom right quadrant
+    spriteRenderer->Draw(testTexture, bns::Rect(200, 100, 100, 100), bns::Rect(hw, hh, hw, hh), bns::Color::White(), rotation, rotationOrigin);
+
+    effect->Draw(renderer->GetSwapChainTexture());
 }

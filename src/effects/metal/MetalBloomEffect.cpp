@@ -17,7 +17,7 @@ namespace bns
     {
         MTL::Device *device = m_framework.Context.MetalDevice;
 
-        auto bufferSize = m_framework.GetRenderer().GetBufferSize();
+        auto bufferSize = m_framework.GetRenderer()->GetBufferSize();
 
         auto tex = m_framework.GetTextureFactory().CreateEmpty(
             bufferSize.X, bufferSize.Y,

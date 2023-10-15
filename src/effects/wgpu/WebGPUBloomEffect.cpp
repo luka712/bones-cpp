@@ -14,7 +14,7 @@ namespace bns
 
     void WebGPUBloomEffectImpl::Initialize()
     {
-        Vec2u bufferSize = m_framework.GetRenderer().GetBufferSize();
+        Vec2u bufferSize = m_framework.GetRenderer()->GetBufferSize();
         Texture2D *texture = m_framework
                                     .GetTextureFactory()
                                     .CreateEmpty(bufferSize.X, bufferSize.Y,

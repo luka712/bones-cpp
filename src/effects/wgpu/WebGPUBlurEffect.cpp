@@ -15,7 +15,7 @@ namespace bns
         m_device = m_framework.Context.WebGPUDevice;
         m_vertexBuffer = CreateVertexBuffer();
 
-        Vec2u bufferSize = m_framework.GetRenderer().GetBufferSize();
+        Vec2u bufferSize = m_framework.GetRenderer()->GetBufferSize();
 
         // since there is no parent call, create the source texture as well
         m_sourceTexture = m_framework
