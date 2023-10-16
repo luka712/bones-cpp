@@ -26,7 +26,7 @@ namespace bns
         m_geometryBuilder = new GeometryBuilder();
         m_imageLoader = new ImageLoader(*m_directory);
         m_bitmapSpriteFontLoader = new BitmapSpriteFontLoader(*this);
-        m_textureFactory = new TextureFactory(*this);
+        m_textureFactory = new TextureManager(*this);
         m_effectFactory = new EffectFactory(*this);
         m_windowManager = new SDLWindowManager();
 

@@ -19,13 +19,13 @@ namespace bns
 
         // since there is no parent call, create the source texture as well
         m_sourceTexture = m_framework
-                              .GetTextureFactory()
+                              .GetTextureManager()
                               .CreateEmpty(bufferSize.X, bufferSize.Y,
                                            TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
                                            TextureFormat::BGRA_8_Unorm);
 
         Texture2D *midStepTexture = m_framework
-                                    .GetTextureFactory()
+                                    .GetTextureManager()
                                     .CreateEmpty(bufferSize.X, bufferSize.Y,
                                                  TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
                                                  TextureFormat::BGRA_8_Unorm);

@@ -6,10 +6,15 @@
 
 #define PI 3.14159265358979323846f
 
+enum class LifecycleState
+{
+   Created,
+   Initialized,
+   Released,
+};
+
 namespace bns
 {
-
-
     typedef uint8_t u8;
 
     typedef int16_t i16;
@@ -22,7 +27,5 @@ namespace bns
     typedef uint64_t u64;
 
     typedef float f32;
-
- 
 } // namespace BNS
 #endif

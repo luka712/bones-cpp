@@ -14,7 +14,7 @@ namespace bns
     {
         // load image and create texture
         ImageData *imageData = m_framework.GetImageLoader().LoadImage(imagePath);
-        Texture2D *texture = m_framework.GetTextureFactory().CreateTexture(imageData);
+        Texture2D *texture = m_framework.GetTextureManager().CreateTexture(imageData);
 
         // load font xml file
         std::string root = m_framework.GetDirectory().Root();

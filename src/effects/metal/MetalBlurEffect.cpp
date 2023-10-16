@@ -27,13 +27,13 @@ namespace bns
         Vec2u bufferSize = m_framework.GetRenderer()->GetBufferSize();
 
         // Textures
-        Texture2D *horizontalTexture = m_framework.GetTextureFactory()
+        Texture2D *horizontalTexture = m_framework.GetTextureManager()
                                            .CreateEmpty(bufferSize.X, bufferSize.Y,
                                                         TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
                                                         TextureFormat::BGRA_8_Unorm);
         m_sourceTexture = static_cast<MetalTexture2D *>(horizontalTexture);
 
-        Texture2D *verticalTexture = m_framework.GetTextureFactory()
+        Texture2D *verticalTexture = m_framework.GetTextureManager()
                                          .CreateEmpty(bufferSize.X, bufferSize.Y,
                                                       TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
                                                       TextureFormat::BGRA_8_Unorm);

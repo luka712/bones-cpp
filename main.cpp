@@ -45,8 +45,7 @@ int main()
 void Initialize()
 {
     font = engine.GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
-    auto imageData = engine.GetImageLoader().LoadImage("assets/uv_test.png");
-    testTexture = engine.GetTextureFactory().CreateTexture(imageData);
+    testTexture = engine.GetTextureManager().LoadTexture2D("assets/uv_test.png");
 
     effect = engine.GetEffectFactory().CreateBloomEffect();
 

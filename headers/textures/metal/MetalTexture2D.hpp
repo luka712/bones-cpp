@@ -47,10 +47,7 @@ namespace bns
          */
         MetalTexture2D(const Framework &framework, ImageData *imageData,  i32 textureUsageFlags, TextureFormat format);
 
-        inline ~MetalTexture2D()
-        {
-            Release();
-        }
+         ~MetalTexture2D();
 
         /**
          * @brief Initialize the texture.

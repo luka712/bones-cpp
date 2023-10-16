@@ -40,9 +40,7 @@ do: Simply run project in xcode
 
 # Dependencies
 TODO: 
-- Texture factory to texture manager
-- Think about and document post process pipeline
 - Optimize sprite renderers in endframe
+- Think about and document post process pipeline
 - All utils to utils folder
-- Figure out WebGPU Metal debugger.
 - add scene test cases

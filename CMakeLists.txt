@@ -9,7 +9,7 @@ include(FetchContent)
 include(utils.cmake)
 
 # If we are on Apple, we can use Metal or WebGPU.
-set(USE_METAL 1)
+set(USE_METAL 0)
 
 # Set the build type to Debug
 set(CMAKE_BUILD_TYPE Debug)

@@ -53,6 +53,7 @@ namespace bns
 
     void WebGPUTexture2D::Initialize()
     {
+        m_lifecycleState = LifecycleState::Initialized;
         WGPUDevice device = m_framework.Context.WebGPUDevice;
         WGPUQueue queue = wgpuDeviceGetQueue(device);
 
@@ -101,9 +102,10 @@ namespace bns
         Sampler = sampler;
     }
 
-        void WebGPUTexture2D::Release()
-        {
-            wgpuSamplerRelease(Sampler);
-            wgpuTextureRelease(Texture);
-        }
+    void WebGPUTexture2D::Release()
+    {
+        m_lifecycleState = LifecycleState::Released;
+        wgpuSamplerRelease(Sampler);
+        wgpuTextureRelease(Texture);
+    }
 }

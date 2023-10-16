@@ -10,7 +10,7 @@
 #include "geometry/GeometryBuilder.hpp"
 #include "mesh/MeshFactory.hpp"
 #include "sprite/SpriteRenderer.hpp"
-#include "textures/TextureFactory.hpp"
+#include "textures/TextureManager.hpp"
 #include <webgpu/webgpu.h>
 #include <Metal/Metal.hpp>
 #include "data/Vec2.hpp"
@@ -69,7 +69,7 @@ namespace bns
         Directory *m_directory;
         SpriteRenderer *m_spriteRenderer;
         BitmapSpriteFontLoader* m_bitmapSpriteFontLoader;
-        TextureFactory *m_textureFactory;
+        TextureManager *m_textureFactory;
         EffectFactory *m_effectFactory;
 
         /**
@@ -159,7 +159,7 @@ namespace bns
         /**
          * @brief Get the texture factory.
          */
-        inline TextureFactory& GetTextureFactory() const
+        inline TextureManager& GetTextureManager() const
         {
             return *m_textureFactory;
         }

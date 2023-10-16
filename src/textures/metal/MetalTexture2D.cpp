@@ -49,8 +49,14 @@ namespace bns
     {
     }
 
+    MetalTexture2D::~MetalTexture2D()
+    {
+        Release();
+    }
+
     void MetalTexture2D::Initialize()
     {
+        m_lifecycleState = LifecycleState::Initialized;
         MTL::Device *device = m_framework.Context.MetalDevice;
 
         NS::UInteger texWidth = m_imageData->Width;
@@ -82,13 +88,13 @@ namespace bns
         MTL::SamplerDescriptor *samplerDescriptor = MTL::SamplerDescriptor::alloc()->init();
 
         Sampler = device->newSamplerState(samplerDescriptor);
-        //  samplerDescriptor->release();
 
         Texture = texture;
     }
 
     void MetalTexture2D::Release()
     {
+        m_lifecycleState = LifecycleState::Released;
         Sampler->release();
         Texture->release();
     }

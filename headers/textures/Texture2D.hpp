@@ -59,6 +59,8 @@ namespace bns
     class Texture2D
     {
     protected:
+        LifecycleState m_lifecycleState;
+
         u32 m_id;
         i32 m_width;
         i32 m_height;
@@ -85,6 +87,8 @@ namespace bns
 
     public:
         Texture2D(i32 width, i32 height, int textureUsageFlags, TextureFormat format);
+
+        virtual ~Texture2D();
 
         /**
          * @brief The id of the texture.

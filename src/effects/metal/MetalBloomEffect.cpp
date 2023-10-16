@@ -19,7 +19,7 @@ namespace bns
 
         auto bufferSize = m_framework.GetRenderer()->GetBufferSize();
 
-        auto tex = m_framework.GetTextureFactory().CreateEmpty(
+        auto tex = m_framework.GetTextureManager().CreateEmpty(
             bufferSize.X, bufferSize.Y,
             TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
             TextureFormat::BGRA_8_Unorm);
