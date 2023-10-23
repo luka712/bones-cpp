@@ -33,10 +33,15 @@ namespace bns
          */
         MTL::Buffer *m_indexBuffer;
 
-        /**
-         * @brief The projection view matrix buffer.
-         */
+        
+        /// @brief The projection view matrix buffer.
         MTL::Buffer *m_projectionViewMatrixBuffer;
+
+        /// @brief The brightness threshold buffer.
+        MTL::Buffer* m_brightnessThresholdBuffer;
+
+        /// @brief The ambient light buffer.
+        MTL::Buffer* m_ambientLightBuffer;
 
         /**
          * @brief All the allocated pipelines per texture. Pop from this pipeline to current draw pipelines.

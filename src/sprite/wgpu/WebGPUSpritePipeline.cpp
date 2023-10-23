@@ -5,6 +5,7 @@
 #include "util/wgpu/WebGPUVertexBufferLayoutUtil.hpp"
 #include "loaders/FileLoader.hpp"
 #include "util/wgpu/WebGPUShaderModuleUtil.hpp"
+#include "lights/AmbientLight.hpp"
 
 namespace bns
 {
@@ -19,10 +20,16 @@ namespace bns
           m_brightnessThresholdBindGroup(brightnessThresholdBindGroup)
 
     {
+        InstanceIndex = 0;
     }
 
     // NOTE: STATIC FUNCTION
-    WebGPUSpritePipeline *WebGPUSpritePipeline::Create(WGPUDevice device, WebGPUTexture2D *texture, WGPUBuffer projectionViewBuffer, WGPUBuffer brightnessThresholdBuffer)
+    WebGPUSpritePipeline *WebGPUSpritePipeline::Create(
+        WGPUDevice device,
+        WebGPUTexture2D *texture,
+        WGPUBuffer projectionViewBuffer,
+        WGPUBuffer brightnessThresholdBuffer,
+        WGPUBuffer ambientLightBuffer)
     {
         FileLoader fileLoader;
         std::string shaderSource = fileLoader.LoadFile("shaders/webgpu/sprite/sprite.wgsl");
@@ -105,15 +112,18 @@ namespace bns
         WGPUBindGroupLayout textureBindGroupLayout = wgpuDeviceCreateBindGroupLayout(device, &textureBindGroupLayoutDescriptor);
 
         // brightness threshold layout
-        WGPUBindGroupLayoutEntry brightnessThresholdBindingLayoutEntry = WebGPUUtil::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(0, WGPUShaderStage_Fragment);
-        WGPUBindGroupLayoutDescriptor brightnessThresholdBindGroupLayoutDescriptor = WebGPUUtil::BindGroupLayoutDescriptor.Create(&brightnessThresholdBindingLayoutEntry, 1);
-        WGPUBindGroupLayout brightnessThresholdBindGroupLayout = wgpuDeviceCreateBindGroupLayout(device, &brightnessThresholdBindGroupLayoutDescriptor);
+        WGPUBindGroupLayoutEntry brightnessLightsBindGroupLayoutEntries[2] = {
+            WebGPUUtil::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(0, WGPUShaderStage_Fragment),
+            WebGPUUtil::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(1, WGPUShaderStage_Fragment)};
+
+        auto brightnessLightsBindGroupLayoutDescriptor = WebGPUUtil::BindGroupLayoutDescriptor.Create(&brightnessLightsBindGroupLayoutEntries[0], 2);
+        WGPUBindGroupLayout brightnessLightsBindGroupLayout = wgpuDeviceCreateBindGroupLayout(device, &brightnessLightsBindGroupLayoutDescriptor);
 
         // merge layout to array.
         WGPUBindGroupLayout bindGroupLayouts[3] = {
             projectionViewBufferBindGroupLayout,
             textureBindGroupLayout,
-            brightnessThresholdBindGroupLayout};
+            brightnessLightsBindGroupLayout};
 
         // TODO: move to util
         WGPUPipelineLayoutDescriptor pipelineLayoutDescriptor = WebGPUUtil::PipelineLayoutDescriptor.Create(&bindGroupLayouts[0], 3);
@@ -151,16 +161,18 @@ namespace bns
         WGPUBindGroup textureBindGroup = wgpuDeviceCreateBindGroup(device, &textureBindGroupDescriptor);
 
         // Brightness threshold bind group
-        auto brightnessThresholdBindGroupEntry =WebGPUUtil::BindGroupEntry.Create(0, brightnessThresholdBuffer, sizeof(f32));
-        auto brightnessThresholdBindGroupDescriptor = WebGPUUtil::BindGroupDescriptor.Create(brightnessThresholdBindGroupLayout, &brightnessThresholdBindGroupEntry, 1);
-        auto brightnessThresholdBindGroup = wgpuDeviceCreateBindGroup(device, &brightnessThresholdBindGroupDescriptor);
+        WGPUBindGroupEntry brightnessThresholdBindGroupEntries[2] = {
+            WebGPUUtil::BindGroupEntry.Create(0, brightnessThresholdBuffer, sizeof(f32)),
+            WebGPUUtil::BindGroupEntry.Create(1, ambientLightBuffer, sizeof(AmbientLight))};
 
+        auto brightnessThresholdBindGroupDescriptor = WebGPUUtil::BindGroupDescriptor.Create(brightnessLightsBindGroupLayout, &brightnessThresholdBindGroupEntries[0], 2);
+        auto brightnessThresholdBindGroup = wgpuDeviceCreateBindGroup(device, &brightnessThresholdBindGroupDescriptor);
 
         // release resources that are no longer needed
         wgpuShaderModuleRelease(shaderModule);
         wgpuBindGroupLayoutRelease(projectionViewBufferBindGroupLayout);
         wgpuBindGroupLayoutRelease(textureBindGroupLayout);
-        wgpuBindGroupLayoutRelease(brightnessThresholdBindGroupLayout);
+        wgpuBindGroupLayoutRelease(brightnessLightsBindGroupLayout);
         wgpuPipelineLayoutRelease(renderPipelineDescriptor.layout);
         wgpuTextureViewRelease(textureView);
         WebGPUVertexBufferLayoutUtil::Delete(layout, 1);

@@ -40,6 +40,7 @@ do: Simply run project in xcode
 
 # Dependencies
 TODO: 
+- Point lights for Metal and WebGPU
 - Optimize sprite renderers in endframe
 - Think about and document post process pipeline
 - All utils to utils folder

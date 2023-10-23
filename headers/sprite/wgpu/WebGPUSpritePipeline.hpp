@@ -41,12 +41,14 @@ namespace bns
         /// @param texture The texture to be used
         /// @param projectionViewBuffer The projection view buffer
         /// @param brightnessThresholdBuffer The brightness threshold buffer
+        /// @param ambientLightBuffer The ambient light buffer
         /// @return The sprite pipeline
         static WebGPUSpritePipeline *Create(
             WGPUDevice device,
             WebGPUTexture2D *texture,
             WGPUBuffer projectionViewBuffer,
-            WGPUBuffer brightnessThresholdBuffer);
+            WGPUBuffer brightnessThresholdBuffer,
+            WGPUBuffer ambientLightBuffer);
 
         /**
          * @brief Gets the pipeline

@@ -5,6 +5,12 @@ struct VSResult
     @location(1) v_tintColor: vec4<f32>
 };
 
+struct AmbientLight 
+{
+    color: vec3f,
+    intensity: f32 
+}
+
  // group 0, update once per pass 
  @group(0) @binding(0)
  var<uniform> u_projectionViewMatrix: mat4x4<f32>;
@@ -29,6 +35,8 @@ var u_texture: texture_2d<f32>;
 
 @group(2) @binding(0)
 var<uniform> u_brightnessThreshold: f32;
+@group(2) @binding(1)
+var<uniform> u_ambientLight: AmbientLight; 
 
 struct FSResult
 {
@@ -39,8 +47,11 @@ struct FSResult
 @fragment
 fn fs_main(@location(0) v_texCoords: vec2<f32>, @location(1) v_tintColor: vec4<f32>) -> FSResult 
 {
+    var ambient = u_ambientLight.color.rgb * u_ambientLight.intensity;
+
     var out: FSResult;
-    out.FragColor = textureSample(u_texture, u_sampler, v_texCoords) * v_tintColor;
+    var fragColor = textureSample(u_texture, u_sampler, v_texCoords) * v_tintColor;
+    out.FragColor = vec4f(fragColor.rgb * ambient, fragColor.a);
 
     var l = dot(out.FragColor.rgb, vec3<f32>(0.299, 0.587, 0.114));
 

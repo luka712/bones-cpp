@@ -79,7 +79,6 @@ namespace bns
         bool quit = false;
         SDL_Event event;
 
-
         while (!quit)
         {
             // Process events
@@ -91,11 +90,11 @@ namespace bns
                 }
             }
 
-#if __USE_WEBGPU__
+// #if __USE_WEBGPU__
             // Do nothing, this checks for ongoing asynchronous operations and call their callbacks
             // NOTE: this is specific to DAWN and is not part of WebGPU standard.
-            wgpuDeviceTick(Context.WebGPUDevice);
-#endif
+           //  wgpuDeviceTick(Context.WebGPUDevice);
+// #endif
            
             m_renderer->BeginDraw();
             m_spriteRenderer->BeginFrame();

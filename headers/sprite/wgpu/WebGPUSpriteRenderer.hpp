@@ -36,6 +36,9 @@ namespace bns
         /// @brief The brightness threshold buffer.
         WGPUBuffer m_brightnessThresholdBuffer;
 
+        /// @brief The ambient light buffer.
+        WGPUBuffer m_ambientLightBuffer;
+
         /**
          * @brief All the allocated pipelines per texture. Pop from this pipeline to current draw pipelines.
          * At the end of frame, push back to this pipeline from current draw pipelines.

@@ -50,6 +50,7 @@ void Initialize()
     effect = engine.GetEffectFactory().CreateBloomEffect();
 
     bns::Renderer *renderer = engine.GetRenderer();
+
     renderer->SetRenderTexture(effect->GetSourceTexture());
     renderer->SetBrightnessTexture(effect->GetBrightnessTexture());
 }

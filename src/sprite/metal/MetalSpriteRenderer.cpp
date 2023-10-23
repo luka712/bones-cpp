@@ -9,6 +9,9 @@ namespace bns
     MetalSpriteRenderer::MetalSpriteRenderer(Framework &framework)
         : m_framework(framework)
     {
+        BrightnessThreshold = 0.3f;
+        AmbientLight.Intensity = 1.0f;
+        AmbientLight.Color = Color::White();
     }
 
     void MetalSpriteRenderer::SetupIndexBuffer()
@@ -48,7 +51,7 @@ namespace bns
             }
 
             // if not found, we are sure that there is no pipeline, create one and push it to current draw pipelines.
-            MetalSpritePipeline *pipeline = MetalSpritePipeline::Create(m_framework, texture, m_projectionViewMatrixBuffer);
+            MetalSpritePipeline *pipeline = MetalSpritePipeline::Create(m_framework, texture);
             m_currentDrawPipelines[textureId].push(pipeline);
             m_allocatedPipelines[textureId].push(pipeline);
             return *pipeline;
@@ -63,7 +66,7 @@ namespace bns
             // return then new pipeline.
             if (m_allocatedPipelines[textureId].empty())
             {
-                MetalSpritePipeline *pipeline = MetalSpritePipeline::Create(m_framework, texture, m_projectionViewMatrixBuffer);
+                MetalSpritePipeline *pipeline = MetalSpritePipeline::Create(m_framework, texture);
                 m_currentDrawPipelines[textureId].push(pipeline);
                 m_allocatedPipelines[textureId].push(pipeline);
                 return *pipeline;
@@ -82,7 +85,13 @@ namespace bns
     {
         // setup camera buffer
         m_device = m_framework.Context.MetalDevice;
-        m_projectionViewMatrixBuffer = MetalUtil::Buffer.Create<f32>(m_device, sizeof(Mat4x4f), "SpriteRendererCameraBuffer");
+        m_projectionViewMatrixBuffer = MetalUtil::Buffer.Create<f32>(m_device, sizeof(Mat4x4f), "Sprite Renderer Camera Buffer");
+
+        // setup brightness threshold buffer
+        m_brightnessThresholdBuffer = MetalUtil::Buffer.Create<f32>(m_device, sizeof(f32), "Sprite Renderer Brightness Threshold Buffer");
+
+        // setup ambient light buffer
+        m_ambientLightBuffer = MetalUtil::Buffer.Create<f32>(m_device, sizeof(AmbientLight), "Sprite Renderer Ambient Light Buffer");
 
         // setup camera
         auto size = m_framework.GetWindowManager().GetWindowSize();
@@ -95,8 +104,10 @@ namespace bns
     {
         m_camera.Update(0.0f);
 
-        // write camera buffer to gpu
+        // write constants buffers
         memcpy(m_projectionViewMatrixBuffer->contents(), &m_camera.ProjectionViewMatrix, sizeof(Mat4x4f));
+        memcpy(m_brightnessThresholdBuffer->contents(), &BrightnessThreshold, sizeof(f32));
+        memcpy(m_ambientLightBuffer->contents(), &AmbientLight, sizeof(AmbientLight));
 
         // empty current draw pipelines
         for (auto keyValuePair : m_currentDrawPipelines)
@@ -321,6 +332,8 @@ namespace bns
                 renderPass->setVertexBuffer(m_projectionViewMatrixBuffer, 0, 1);
                 renderPass->setFragmentTexture(texture->Texture, NS::UInteger(0));
                 renderPass->setFragmentSamplerState(texture->Sampler, NS::UInteger(0));
+                renderPass->setFragmentBuffer(m_brightnessThresholdBuffer, 0, 0);
+                renderPass->setFragmentBuffer(m_ambientLightBuffer, 0, 1);
 
                 // draw
                 renderPass->drawIndexedPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle,

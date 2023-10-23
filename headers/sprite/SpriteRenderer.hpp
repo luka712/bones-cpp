@@ -9,6 +9,7 @@
 #include "data/Vec2.hpp"
 #include "camera/SpriteRendererCamera.hpp"
 #include "font/SpriteFont.hpp"
+#include "lights/AmbientLight.hpp"
 
 namespace bns
 {
@@ -27,6 +28,10 @@ namespace bns
         /// 0 means that full color is written.
         /// 1 means no color is written (black).
         f32 BrightnessThreshold;
+
+        /// @brief The ambient light.
+        /// Controls the amount of ambient light for sprites.
+        AmbientLight AmbientLight;
 
         /**
          * @brief Initialize the sprite renderer.

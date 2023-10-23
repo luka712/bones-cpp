@@ -14,7 +14,9 @@ namespace bns
     }
 
     // NOTE: STATIC FUNCTION
-    MetalSpritePipeline *MetalSpritePipeline::Create(Framework &framework, MetalTexture2D *texture, MTL::Buffer *projectionViewBuffer)
+    MetalSpritePipeline *MetalSpritePipeline::Create(
+        Framework &framework, 
+        MetalTexture2D *texture)
     {
         MTL::Device *device = framework.Context.MetalDevice;
 

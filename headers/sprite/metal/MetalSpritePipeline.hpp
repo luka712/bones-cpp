@@ -38,7 +38,9 @@ namespace bns
         /// @param device The webgpu device
         /// @param texture The texture to be used
         /// @return The sprite pipeline
-        static MetalSpritePipeline *Create(Framework &framework, MetalTexture2D *texture, MTL::Buffer *projectionViewBuffer);
+        static MetalSpritePipeline *Create(
+            Framework &framework,
+            MetalTexture2D *texture);
 
         /**
          * @brief Gets the pipeline

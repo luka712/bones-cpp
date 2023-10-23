@@ -16,6 +16,8 @@ struct VSResult
     float4 tintColor;
 };
 
+
+
 vertex 
 VSResult vs_main(
     const device VertexIn* in [[buffer(0)]],
@@ -36,19 +38,30 @@ struct FSResult
     float4 brightnessColor [[color(1)]];
 };
 
+struct AmbientLight 
+{
+    float3 color;
+    float intensity;
+};
+
 
 fragment 
 FSResult fs_main(VSResult in [[stage_in]],
                 texture2d<float, access::sample> texture [[texture(0)]],
-                sampler sampler [[sampler(0)]])
+                sampler sampler [[sampler(0)]],
+                constant float& u_brightnessThreshold [[buffer(0)]],
+                constant AmbientLight& u_ambientLight [[buffer(1)]])
 {
     FSResult out;
 
+    float3 ambient = u_ambientLight.color * u_ambientLight.intensity;
+
     out.fragColor = texture.sample(sampler, in.texCoords) * in.tintColor;
+    out.fragColor.rgb *= ambient;
 
     float l = dot(out.fragColor.rgb, float3(0.299f, 0.587f, 0.114f));
 
-    if(l > 0.3f)
+    if(l > u_brightnessThreshold)
     {
         out.brightnessColor = out.fragColor;
     }

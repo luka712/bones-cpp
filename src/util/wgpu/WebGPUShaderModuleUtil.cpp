@@ -1,4 +1,5 @@
 #include "util/wgpu/WebGPUShaderModuleUtil.hpp"
+#include <exception>
 
 namespace bns
 {
@@ -12,6 +13,12 @@ namespace bns
         descriptor.nextInChain = reinterpret_cast<WGPUChainedStruct *>(&wgslDesc);
         descriptor.label = label.c_str();
 
-        return wgpuDeviceCreateShaderModule(device, &descriptor);
+         WGPUShaderModule module = wgpuDeviceCreateShaderModule(device, &descriptor);
+         if(module == nullptr)
+         {
+            throw std::runtime_error("Failed to create shader module!");
+         }
+
+         return module;
     }
 }
