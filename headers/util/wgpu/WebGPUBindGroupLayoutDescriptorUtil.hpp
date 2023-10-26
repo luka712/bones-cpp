@@ -5,6 +5,7 @@
 #include <webgpu/webgpu.h>
 #include <vector>
 #include "data/Types.hpp"
+#include <string>
 
 namespace bns
 {
@@ -13,6 +14,16 @@ namespace bns
         /**
          * @brief Create a bind group layout descriptor
          * @param bindGroupLayoutEntries The bind group layout entries
+         * @param count The count of the bind group layout entries
+         * @param label The label. Default is empty string
+         * @return The bind group layout descriptor
+         */
+        static WGPUBindGroupLayoutDescriptor Create(WGPUBindGroupLayoutEntry *bindGroupLayoutEntries, u32 count, std::string &label);
+
+        /**
+         * @brief Create a bind group layout descriptor
+         * @param bindGroupLayoutEntries The bind group layout entries
+         * @param count The count of the bind group layout entries
          * @return The bind group layout descriptor
          */
         static WGPUBindGroupLayoutDescriptor Create(WGPUBindGroupLayoutEntry *bindGroupLayoutEntries, u32 count);

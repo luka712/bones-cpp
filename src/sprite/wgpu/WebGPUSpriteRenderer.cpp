@@ -5,8 +5,8 @@
 
 namespace bns
 {
-    WebGPUSpriteRenderer::WebGPUSpriteRenderer(const Framework &framework)
-        : m_framework(framework)
+    WebGPUSpriteRenderer::WebGPUSpriteRenderer(Framework &framework)
+        : SpriteRenderer(framework)
     {
         BrightnessThreshold = 0.3f;
         AmbientLight.Intensity = 1.0f;
@@ -54,7 +54,8 @@ namespace bns
                 m_device, texture,
                 m_projectionViewMatrixBuffer,
                 m_brightnessThresholdBuffer,
-                m_ambientLightBuffer);
+                m_ambientLightBuffer,
+                m_pointLightBuffer);
             m_currentDrawPipelines[textureId].push(pipeline);
             m_allocatedPipelines[textureId].push(pipeline);
             return *pipeline;
@@ -73,7 +74,8 @@ namespace bns
                                                                               texture,
                                                                               m_projectionViewMatrixBuffer,
                                                                               m_brightnessThresholdBuffer,
-                                                                              m_ambientLightBuffer);
+                                                                              m_ambientLightBuffer,
+                                                                              m_pointLightBuffer);
                 m_currentDrawPipelines[textureId].push(pipeline);
                 m_allocatedPipelines[textureId].push(pipeline);
                 return *pipeline;
@@ -110,6 +112,11 @@ namespace bns
                                                                       sizeof(AmbientLight),
                                                                       "Ambient Light Uniform Buffer.");
 
+        // setup point light buffer
+        m_pointLightBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device,
+                                                                    sizeof(PointLight) * FORWARD_2D_NUM_OF_POINT_LIGHTS,
+                                                                    "Point Light Uniform Buffer.");
+
         SetupIndexBuffer();
     }
 
@@ -127,6 +134,9 @@ namespace bns
 
         // Write ambient light to the buffer.
         wgpuQueueWriteBuffer(queue, m_ambientLightBuffer, 0, &AmbientLight, sizeof(AmbientLight));
+
+        // Write point lights to the buffer.
+        wgpuQueueWriteBuffer(queue, m_pointLightBuffer, 0, &PointLights[0], sizeof(PointLight) * FORWARD_2D_NUM_OF_POINT_LIGHTS);
 
         // empty current draw pipelines
         for (auto keyValuePair : m_currentDrawPipelines)

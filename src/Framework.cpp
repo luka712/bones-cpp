@@ -93,7 +93,8 @@ namespace bns
 // #if __USE_WEBGPU__
             // Do nothing, this checks for ongoing asynchronous operations and call their callbacks
             // NOTE: this is specific to DAWN and is not part of WebGPU standard.
-           //  wgpuDeviceTick(Context.WebGPUDevice);
+            // TODO: move to renderer of webgpu
+            // wgpuDeviceTick(Context.WebGPUDevice);
 // #endif
            
             m_renderer->BeginDraw();

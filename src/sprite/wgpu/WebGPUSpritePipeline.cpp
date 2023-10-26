@@ -6,6 +6,7 @@
 #include "loaders/FileLoader.hpp"
 #include "util/wgpu/WebGPUShaderModuleUtil.hpp"
 #include "lights/AmbientLight.hpp"
+#include "lights/PointLight.hpp"
 
 namespace bns
 {
@@ -29,10 +30,13 @@ namespace bns
         WebGPUTexture2D *texture,
         WGPUBuffer projectionViewBuffer,
         WGPUBuffer brightnessThresholdBuffer,
-        WGPUBuffer ambientLightBuffer)
+        WGPUBuffer ambientLightBuffer,
+        WGPUBuffer pointLightBuffer)
     {
         FileLoader fileLoader;
-        std::string shaderSource = fileLoader.LoadFile("shaders/webgpu/sprite/sprite.wgsl");
+        std::string shaderSource = fileLoader.LoadFile("shaders/webgpu/sprite/sprite.wgsl", {
+            { "##FORWARD_2D_NUM_OF_POINT_LIGHTS##", std::to_string(FORWARD_2D_NUM_OF_POINT_LIGHTS) }
+        });
         WGPUShaderModule shaderModule = WebGPUShaderModuleUtil::Create(device, shaderSource, "Sprite Shader Module");
 
         WGPURenderPipelineDescriptor renderPipelineDescriptor;
@@ -112,11 +116,17 @@ namespace bns
         WGPUBindGroupLayout textureBindGroupLayout = wgpuDeviceCreateBindGroupLayout(device, &textureBindGroupLayoutDescriptor);
 
         // brightness threshold layout
-        WGPUBindGroupLayoutEntry brightnessLightsBindGroupLayoutEntries[2] = {
-            WebGPUUtil::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(0, WGPUShaderStage_Fragment),
-            WebGPUUtil::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(1, WGPUShaderStage_Fragment)};
+        WGPUBindGroupLayoutEntry brightnessLightsBindGroupLayoutEntries[3] = {
+            WebGPUUtil::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(0, WGPUShaderStage_Fragment), // brightness threshold
+            WebGPUUtil::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(1, WGPUShaderStage_Fragment), // ambient light
+            WebGPUUtil::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(2, WGPUShaderStage_Fragment)  // point light
+        };
 
-        auto brightnessLightsBindGroupLayoutDescriptor = WebGPUUtil::BindGroupLayoutDescriptor.Create(&brightnessLightsBindGroupLayoutEntries[0], 2);
+        std::string brightnessLightsBindGroupLayoutLabel = "Brightness Lights Bind Group Layout";
+        WGPUBindGroupLayoutDescriptor brightnessLightsBindGroupLayoutDescriptor = WebGPUUtil::BindGroupLayoutDescriptor.Create(
+            &brightnessLightsBindGroupLayoutEntries[0],
+            3,
+            brightnessLightsBindGroupLayoutLabel);
         WGPUBindGroupLayout brightnessLightsBindGroupLayout = wgpuDeviceCreateBindGroupLayout(device, &brightnessLightsBindGroupLayoutDescriptor);
 
         // merge layout to array.
@@ -161,11 +171,15 @@ namespace bns
         WGPUBindGroup textureBindGroup = wgpuDeviceCreateBindGroup(device, &textureBindGroupDescriptor);
 
         // Brightness threshold bind group
-        WGPUBindGroupEntry brightnessThresholdBindGroupEntries[2] = {
+        WGPUBindGroupEntry brightnessThresholdBindGroupEntries[3] = {
             WebGPUUtil::BindGroupEntry.Create(0, brightnessThresholdBuffer, sizeof(f32)),
-            WebGPUUtil::BindGroupEntry.Create(1, ambientLightBuffer, sizeof(AmbientLight))};
+            WebGPUUtil::BindGroupEntry.Create(1, ambientLightBuffer, sizeof(AmbientLight)),
+            WebGPUUtil::BindGroupEntry.Create(2, pointLightBuffer, sizeof(PointLight) * FORWARD_2D_NUM_OF_POINT_LIGHTS)};
 
-        auto brightnessThresholdBindGroupDescriptor = WebGPUUtil::BindGroupDescriptor.Create(brightnessLightsBindGroupLayout, &brightnessThresholdBindGroupEntries[0], 2);
+        auto brightnessThresholdBindGroupDescriptor = WebGPUUtil::BindGroupDescriptor.Create(
+            brightnessLightsBindGroupLayout,
+            &brightnessThresholdBindGroupEntries[0],
+            3);
         auto brightnessThresholdBindGroup = wgpuDeviceCreateBindGroup(device, &brightnessThresholdBindGroupDescriptor);
 
         // release resources that are no longer needed

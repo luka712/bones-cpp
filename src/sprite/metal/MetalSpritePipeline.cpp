@@ -21,7 +21,9 @@ namespace bns
         MTL::Device *device = framework.Context.MetalDevice;
 
         FileLoader fileLoader;
-        std::string shaderSource = fileLoader.LoadFile("shaders/metal/sprite/sprite.metal");
+        std::string shaderSource = fileLoader.LoadFile("shaders/metal/sprite/sprite.metal", { 
+            { "##FORWARD_2D_NUM_OF_POINT_LIGHTS##", std::to_string(FORWARD_2D_NUM_OF_POINT_LIGHTS) }
+        });
         MTL::Library *pLibrary = MetalUtil::Library.Create(device, shaderSource);
 
         MTL::Function *pVertexFn = pLibrary->newFunction(NS::String::string("vs_main", NS::StringEncoding::UTF8StringEncoding));

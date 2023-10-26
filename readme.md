@@ -40,7 +40,9 @@ do: Simply run project in xcode
 
 # Dependencies
 TODO: 
-- Point lights for Metal and WebGPU
+- FORWARD_2D_NUM_OF_POINT_LIGHTS make sure it's passed to shader as well
+- make sure to work correctly with 1 point light 
+- Check point lights
 - Optimize sprite renderers in endframe
 - Think about and document post process pipeline
 - All utils to utils folder

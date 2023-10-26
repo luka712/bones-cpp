@@ -11,8 +11,9 @@ include(utils.cmake)
 # If we are on Apple, we can use Metal or WebGPU.
 set(USE_METAL 1)
 
-# Set the build type to Debug
-set(CMAKE_BUILD_TYPE Debug)
+# LIGHTS 
+# Number of point lights available for sprite renderer when forward rendering is used 
+set(FORWARD_2D_NUM_OF_POINT_LIGHTS 1)
 
 # Leave this for now
 # find_package(SDL2 REQUIRED) # Find the SDL2 library, assumes it's installed system-wide
@@ -130,6 +131,7 @@ else()
 # Set the executable's properties for Cmake
 set_target_properties(App PROPERTIES CXX_STANDARD 17)
 endif()
+
 
 # set 
 set_target_properties(webgpu PROPERTIES IMPORTED_LOCATION webgpu)

@@ -52,7 +52,14 @@ void Initialize()
     bns::Renderer *renderer = engine.GetRenderer();
 
     renderer->SetRenderTexture(effect->GetSourceTexture());
-    renderer->SetBrightnessTexture(effect->GetBrightnessTexture());
+   renderer->SetBrightnessTexture(effect->GetBrightnessTexture());
+
+    engine.GetSpriteRenderer()->PointLights[0].Intensity = 0.0;
+    engine.GetSpriteRenderer()->PointLights[0].Position = bns::Vec3f(50.0f, 50.0f, 100.0f);
+    engine.GetSpriteRenderer()->PointLights[0].Color = bns::Color::Red();
+    engine.GetSpriteRenderer()->PointLights[0].Attenuation.Unit = 100.0f;
+    engine.GetSpriteRenderer()->AmbientLight.Intensity = 0.0f;
+    engine.GetSpriteRenderer()->AmbientLight.Color = bns::Color::Black();
 }
 
 void Draw()
@@ -63,9 +70,11 @@ void Draw()
     bns::i32 hw = testTexture->GetWidth() / 2;
     bns::i32 hh = testTexture->GetHeight() / 2;
 
-    rotation += 0.1;
+    rotation += 0.001;
     bns::Vec2f rotationOrigin = bns::Vec2f(0.5f, 0.5f);
 
+
+    engine.GetSpriteRenderer()->PointLights[0].Intensity += 0.1f;
     spriteRenderer->DrawString(font, "Hello World!", bns::Vec2f(300, 300), bns::Color::White(), 1.0f);
 
     // whole texture
@@ -83,5 +92,5 @@ void Draw()
     // bottom right quadrant
     spriteRenderer->Draw(testTexture, bns::Rect(200, 100, 100, 100), bns::Rect(hw, hh, hw, hh), bns::Color::White(), rotation, rotationOrigin);
 
-    effect->Draw(renderer->GetSwapChainTexture());
+   effect->Draw(renderer->GetSwapChainTexture());
 }

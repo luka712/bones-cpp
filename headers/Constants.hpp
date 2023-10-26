@@ -32,6 +32,12 @@
 #define SPRITE_RENDERER_MAX_SPRITES_PER_DRAW 1000
 #endif
 
+
+#ifndef FORWARD_2D_NUM_OF_POINT_LIGHTS
+/// @brief The maximum number of point lights for forward rendered sprite renderer
+#define FORWARD_2D_NUM_OF_POINT_LIGHTS 1
+#endif 
+
 #pragma endregion
 
 #endif // !BNS_CONSTANTS_H

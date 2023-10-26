@@ -3,6 +3,7 @@
 #define BNS_MATH_VEC3_H
 
 #include <math.h>
+#include <cmath>
 #include "Types.hpp"
 
 namespace bns

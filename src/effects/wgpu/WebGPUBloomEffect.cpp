@@ -54,10 +54,11 @@ namespace bns
         bindGroupEntries[1] = WebGPUUtil::BindGroupEntry.Create(1, view);
 
         // Create bind group
+        std::string bindGroupName = "Brightness Texture Bind Group";
         WGPUBindGroupDescriptor bindGroupDesc = WebGPUUtil::BindGroupDescriptor.Create(m_sourceTextureBindGroupLayout,
                                                                                        bindGroupEntries,
                                                                                        2,
-                                                                                       "Brightness Texture Bind Group");
+                                                                                       bindGroupName);
         WGPUBindGroup bindGroup = wgpuDeviceCreateBindGroup(m_device, &bindGroupDesc);
 
         m_brightnessTextureBindGroup = bindGroup;

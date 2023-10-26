@@ -19,9 +19,6 @@ namespace bns
     class WebGPUSpriteRenderer final : public SpriteRenderer
     {
     private:
-        /// @brief The framework.
-        const Framework &m_framework;
-
         /// @brief The device.
         WGPUDevice m_device;
 
@@ -38,6 +35,9 @@ namespace bns
 
         /// @brief The ambient light buffer.
         WGPUBuffer m_ambientLightBuffer;
+
+        /// @brief The point light buffer.
+        WGPUBuffer m_pointLightBuffer;
 
         /**
          * @brief All the allocated pipelines per texture. Pop from this pipeline to current draw pipelines.
@@ -68,10 +68,8 @@ namespace bns
         WebGPUSpritePipeline &GetPipeline(WebGPUTexture2D *texture);
 
     public:
-        /**
-         * The constructor.
-         */
-        WebGPUSpriteRenderer(const Framework &framework);
+        /// @brief The default constructor.
+        WebGPUSpriteRenderer(Framework &framework);
 
         void Initialize() override;
 

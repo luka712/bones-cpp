@@ -2,12 +2,13 @@
 #include "util/MetalUtil.hpp"
 #include "Constants.hpp"
 #include "Framework.hpp"
+#include "Constants.hpp"
 
 namespace bns
 {
 
     MetalSpriteRenderer::MetalSpriteRenderer(Framework &framework)
-        : m_framework(framework)
+        : SpriteRenderer(framework)
     {
         BrightnessThreshold = 0.3f;
         AmbientLight.Intensity = 1.0f;
@@ -93,6 +94,10 @@ namespace bns
         // setup ambient light buffer
         m_ambientLightBuffer = MetalUtil::Buffer.Create<f32>(m_device, sizeof(AmbientLight), "Sprite Renderer Ambient Light Buffer");
 
+        // setup point lights buffer
+        size_t byteSize = sizeof(PointLight) * FORWARD_2D_NUM_OF_POINT_LIGHTS;
+        m_pointLightsBuffer = MetalUtil::Buffer.Create<f32>(m_device, byteSize, "Sprite Renderer Point Lights Buffer");
+
         // setup camera
         auto size = m_framework.GetWindowManager().GetWindowSize();
         m_camera.Initialize(size.X, size.Y);
@@ -108,6 +113,7 @@ namespace bns
         memcpy(m_projectionViewMatrixBuffer->contents(), &m_camera.ProjectionViewMatrix, sizeof(Mat4x4f));
         memcpy(m_brightnessThresholdBuffer->contents(), &BrightnessThreshold, sizeof(f32));
         memcpy(m_ambientLightBuffer->contents(), &AmbientLight, sizeof(AmbientLight));
+        memcpy(m_pointLightsBuffer->contents(), &PointLights, sizeof(PointLight) * FORWARD_2D_NUM_OF_POINT_LIGHTS);
 
         // empty current draw pipelines
         for (auto keyValuePair : m_currentDrawPipelines)
@@ -334,6 +340,7 @@ namespace bns
                 renderPass->setFragmentSamplerState(texture->Sampler, NS::UInteger(0));
                 renderPass->setFragmentBuffer(m_brightnessThresholdBuffer, 0, 0);
                 renderPass->setFragmentBuffer(m_ambientLightBuffer, 0, 1);
+                renderPass->setFragmentBuffer(m_pointLightsBuffer, 0, 2);
 
                 // draw
                 renderPass->drawIndexedPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle,

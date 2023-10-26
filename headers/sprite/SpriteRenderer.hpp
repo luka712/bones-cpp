@@ -10,15 +10,23 @@
 #include "camera/SpriteRendererCamera.hpp"
 #include "font/SpriteFont.hpp"
 #include "lights/AmbientLight.hpp"
+#include "lights/PointLight.hpp"
+#include "Constants.hpp"
 
 namespace bns
 {
+    class Framework;
+
     /**
      * @brief The sprite renderer.
      */
     class SpriteRenderer
     {
     protected:
+        /// @brief The framework.
+        Framework &m_framework;
+
+        /// @brief The camera.
         SpriteRendererCamera m_camera;
 
     public:
@@ -32,6 +40,13 @@ namespace bns
         /// @brief The ambient light.
         /// Controls the amount of ambient light for sprites.
         AmbientLight AmbientLight;
+
+        /// @brief The point lights.
+        PointLight PointLights[FORWARD_2D_NUM_OF_POINT_LIGHTS];
+
+        /// @brief The default constructor.
+        /// @param framework The framework.
+        SpriteRenderer(Framework& framework);
 
         /**
          * @brief Initialize the sprite renderer.

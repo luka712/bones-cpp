@@ -6,13 +6,11 @@
 
 namespace bns 
 {
+    /// @brief The ambient light.
     struct AmbientLight 
     {
-        AmbientLight()
-        {
-            Color = Color::White();
-            Intensity = 0.2f;
-        };
+        /// @brief The default constructor.
+        AmbientLight();
 
         /// @brief The color of the ambient light.
         Color Color;

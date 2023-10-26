@@ -20,9 +20,6 @@ namespace bns
     class MetalSpriteRenderer final : public SpriteRenderer
     {
     private:
-        /// @brief The framework.
-        Framework &m_framework;
-
         /**
          * @brief The device.
          */
@@ -42,6 +39,9 @@ namespace bns
 
         /// @brief The ambient light buffer.
         MTL::Buffer* m_ambientLightBuffer;
+
+        /// @brief The point lights buffer.
+        MTL::Buffer* m_pointLightsBuffer;
 
         /**
          * @brief All the allocated pipelines per texture. Pop from this pipeline to current draw pipelines.
@@ -72,9 +72,7 @@ namespace bns
         MetalSpritePipeline &GetPipeline(MetalTexture2D *texture);
 
     public:
-        /**
-         * The constructor.
-         */
+        /// @brief The default constructor.
         MetalSpriteRenderer(Framework &framework);
 
         void Initialize() override;

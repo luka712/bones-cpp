@@ -5,7 +5,7 @@
 
 namespace bns
 {
-    std::string FileLoader::LoadFile(std::string path)
+    std::string FileLoader::LoadFile(std::string path, std::map<std::string, std::string> defines)
     {
         std::ifstream input_file(path);
         if (!input_file.is_open())
@@ -16,6 +16,16 @@ namespace bns
         std::string text = std::string((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
 
         input_file.close();
+
+        // replace defines
+        // define can be for example ##WIDTH## and we can replace it with 100, if key is ##WIDTH## and value is 100.
+        for(auto kvp : defines)
+        {
+            auto key = kvp.first;
+            auto value = kvp.second;
+
+            text.replace(text.find(key), key.length(), value);
+        }
 
         return text;
     }

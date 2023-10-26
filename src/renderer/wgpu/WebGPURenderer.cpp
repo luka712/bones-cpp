@@ -165,7 +165,9 @@ namespace bns
 
         Resize(); // creates swap chain
 
-        m_brightnessTexture = nullptr;
+        m_brightnessTexture = m_framework.GetTextureManager().CreateEmpty(m_bufferSize.X, m_bufferSize.Y,
+                                                                          TextureUsage::RENDER_ATTACHMENT | TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_SRC,
+                                                                          TextureFormat::BGRA_8_Unorm);
     }
 
     void WebGPURenderer::BeginDraw()
@@ -173,7 +175,6 @@ namespace bns
         m_drawCommandEncoder = wgpuDeviceCreateCommandEncoder(m_device, nullptr);
 
         WGPURenderPassColorAttachment colorAttachment[2];
-        i32 colorAttachmentCount = 1; // there is always at least one color attachment, for canvas/first render target
 
         // if there is no render texture, we render to the swap chain
         if (m_renderTexture == nullptr)
@@ -193,23 +194,18 @@ namespace bns
         colorAttachment[0].loadOp = WGPULoadOp_Clear;
         colorAttachment[0].storeOp = WGPUStoreOp_Store;
 
-        // if there is a brightness texture, we render to it
-        if (m_brightnessTexture != nullptr)
-        {
-            WGPUTexture wgpuTexture = static_cast<WebGPUTexture2D *>(m_brightnessTexture)->Texture;
-            m_brightnessTextureView = wgpuTextureCreateView(wgpuTexture, nullptr);
+        WGPUTexture wgpuTexture = static_cast<WebGPUTexture2D *>(m_brightnessTexture)->Texture;
+        m_brightnessTextureView = wgpuTextureCreateView(wgpuTexture, nullptr);
 
-            colorAttachmentCount = 2;
-            colorAttachment[1].nextInChain = nullptr;
-            colorAttachment[1].view = m_brightnessTextureView;
-            colorAttachment[1].resolveTarget = nullptr;
-            colorAttachment[1].clearValue = {ClearColor.R, ClearColor.G, ClearColor.B, ClearColor.A};
-            colorAttachment[1].loadOp = WGPULoadOp_Clear;
-            colorAttachment[1].storeOp = WGPUStoreOp_Store;
-        }
+        colorAttachment[1].nextInChain = nullptr;
+        colorAttachment[1].view = m_brightnessTextureView;
+        colorAttachment[1].resolveTarget = nullptr;
+        colorAttachment[1].clearValue = {ClearColor.R, ClearColor.G, ClearColor.B, ClearColor.A};
+        colorAttachment[1].loadOp = WGPULoadOp_Clear;
+        colorAttachment[1].storeOp = WGPUStoreOp_Store;
 
         WGPURenderPassDescriptor renderPassDesc = {};
-        renderPassDesc.colorAttachmentCount = colorAttachmentCount;
+        renderPassDesc.colorAttachmentCount = 2;
         renderPassDesc.colorAttachments = colorAttachment;
         renderPassDesc.depthStencilAttachment = nullptr;
 
