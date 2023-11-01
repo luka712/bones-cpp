@@ -2,8 +2,8 @@
 
 #define BNS_WINDOW_H
 
-#include "data/Types.hpp"
-#include "data/Vec2.hpp"
+#include "Types.hpp"
+#include "Vec2.hpp"
 #include <string>
 
 #include "Metal/Metal.hpp"

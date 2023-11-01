@@ -14,6 +14,8 @@ Projects files are build with CMake, one can use it to generate following soluti
 
 ## PROJECT
 
+- lib - all game dependices go to lib folder. Engine is broken into smaller parts and parts of engine are in lib folder
+
 ### Generate Build Files
 cmake . -B build
 
@@ -40,6 +42,10 @@ do: Simply run project in xcode
 
 # Dependencies
 TODO: 
+
+- in lib, create WebGPU backend, here move texture implementation similar to Metal backend
+- Break project into smaller parts, start with loaders! 
+
 - FORWARD_2D_NUM_OF_POINT_LIGHTS make sure it's passed to shader as well
 - make sure to work correctly with 1 point light 
 - Check point lights

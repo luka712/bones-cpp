@@ -2,7 +2,7 @@
 
 #define BNS_GEOMETRY_BUILDER_HPP
 
-#include "data/Types.hpp"
+#include "Types.hpp"
 #include "geometry/Geometry.hpp"
 
 namespace bns

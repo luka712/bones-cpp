@@ -1,5 +1,5 @@
 #include "sprite/metal/MetalSpritePipeline.hpp"
-#include "loaders/FileLoader.hpp"
+#include "FileLoader.hpp"
 #include "util/MetalUtil.hpp"
 #include "Framework.hpp"
 

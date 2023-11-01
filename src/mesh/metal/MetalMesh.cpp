@@ -1,6 +1,6 @@
 #include "mesh/metal/MetalMesh.hpp"
 #include "Framework.hpp"
-#include "data/Types.hpp"
+#include "Types.hpp"
 #include "util/MetalUtil.hpp"
 
 namespace bns

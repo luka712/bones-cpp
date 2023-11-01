@@ -2,7 +2,7 @@
 #include "mesh/metal/MetalMesh.hpp"
 #include "material/test/metal/MetalBasicMeshTexturedTestMaterial.hpp"
 #include "util/MetalUtil.hpp"
-#include "textures/metal/MetalTexture2D.hpp"
+#include "texture/MetalTexture2D.hpp"
 
 namespace bns
 {

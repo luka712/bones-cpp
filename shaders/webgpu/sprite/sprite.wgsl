@@ -1,5 +1,3 @@
-#define FORWARD_2D_NUM_OF_POINT_LIGHTS ##FORWARD_2D_NUM_OF_POINT_LIGHTS##
-
 struct VSResult
 {
     @builtin(position) Position: vec4f,
@@ -50,7 +48,7 @@ var u_texture: texture_2d<f32>;
 
 @group(2) @binding(0) var<uniform> u_brightnessThreshold: f32;
 @group(2) @binding(1) var<uniform> u_ambientLight: AmbientLight; 
-@group(2) @binding(2) var<uniform> u_pointLights: array<PointLight,FORWARD_2D_NUM_OF_POINT_LIGHTS>;
+@group(2) @binding(2) var<uniform> u_pointLights: array<PointLight,##FORWARD_2D_NUM_OF_POINT_LIGHTS##>;
 
 fn point_light(light: PointLight, worldPos: vec3f) -> vec3f
 {
@@ -86,7 +84,7 @@ fn fs_main(
     var ambient = u_ambientLight.color.rgb * u_ambientLight.intensity;
 
     var point = vec3f(0.0);
-    for(var i = 0; i < FORWARD_2D_NUM_OF_POINT_LIGHTS; i++)
+    for(var i = 0; i < ##FORWARD_2D_NUM_OF_POINT_LIGHTS##; i++)
     {
         point += point_light(u_pointLights[i], v_worldPos);
     }

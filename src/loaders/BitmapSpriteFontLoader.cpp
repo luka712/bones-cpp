@@ -1,5 +1,5 @@
 #include "loaders/BitmapSpriteFontLoader.hpp"
-#include "loaders/ImageLoader.hpp"
+#include "ImageLoader.hpp"
 #include "tinyxml2/tinyxml2.h"
 #include "Framework.hpp"
 
@@ -17,7 +17,6 @@ namespace bns
         Texture2D *texture = m_framework.GetTextureManager().CreateTexture(imageData);
 
         // load font xml file
-        std::string root = m_framework.GetDirectory().Root();
         tinyxml2::XMLDocument doc;
         doc.LoadFile(fntPath.c_str());
 

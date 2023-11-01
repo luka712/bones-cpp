@@ -13,20 +13,19 @@
 #include "material/test/metal/MetalNoMeshTestMaterial.hpp"
 #include "material/test/metal/MetalBasicMeshTestMaterial.hpp"
 #include "material/test/metal/MetalBasicMeshTexturedTestMaterial.hpp"
-#include "textures/wgpu/WebGPUTexture2D.hpp"
-#include "textures/metal/MetalTexture2D.hpp"
+#include "texture/MetalTexture2D.hpp"
 #include "sprite/wgpu/WebGPUSpriteRenderer.hpp"
 #include "sprite/metal/MetalSpriteRenderer.hpp"
+#include "textures/TextureManagerImpl.hpp"
 
 namespace bns
 {
     Framework::Framework()
     {
-        m_directory = new Directory();
         m_geometryBuilder = new GeometryBuilder();
-        m_imageLoader = new ImageLoader(*m_directory);
+        m_imageLoader = new ImageLoader();
         m_bitmapSpriteFontLoader = new BitmapSpriteFontLoader(*this);
-        m_textureFactory = new TextureManager(*this);
+        m_textureFactory = new TextureManagerImpl(*this);
         m_effectFactory = new EffectFactory(*this);
         m_windowManager = new SDLWindowManager();
 
@@ -94,7 +93,7 @@ namespace bns
             // Do nothing, this checks for ongoing asynchronous operations and call their callbacks
             // NOTE: this is specific to DAWN and is not part of WebGPU standard.
             // TODO: move to renderer of webgpu
-            // wgpuDeviceTick(Context.WebGPUDevice);
+            wgpuDeviceTick(Context.WebGPUDevice);
 // #endif
            
             m_renderer->BeginDraw();

@@ -3,7 +3,7 @@
 #define BNS_RENDERER_WGPU_HPP
 
 #include <webgpu/webgpu.h>
-#include "data/bns_math.hpp"
+#include "Math.hpp"
 #include "renderer/Renderer.hpp"
 
 namespace bns

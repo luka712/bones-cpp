@@ -3,7 +3,7 @@
 #define METAL_BASIC_MESH_TEXTURED_TEST_MATERIAL_HPP
 
 #include "material/Material.hpp"
-#include "textures/Texture2D.hpp"
+#include "Texture2D.hpp"
 #include <Metal/Metal.hpp>
 
 namespace bns

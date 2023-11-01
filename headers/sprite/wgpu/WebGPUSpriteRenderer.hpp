@@ -4,7 +4,6 @@
 
 #include "sprite/SpriteRenderer.hpp"
 #include "sprite/wgpu/WebGPUSpritePipeline.hpp"
-#include "textures/wgpu/WebGPUTexture2D.hpp"
 #include <webgpu/webgpu.h>
 #include <map>
 #include <stack>

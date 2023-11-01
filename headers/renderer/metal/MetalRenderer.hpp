@@ -6,8 +6,8 @@
 
 #include "renderer/Renderer.hpp"
 #include "Metal/Metal.hpp"
-#include "data/Vec2.hpp"
-#include "data/Color.hpp"
+#include "Vec2.hpp"
+#include "Color.hpp"
 
 namespace bns
 {

@@ -3,7 +3,7 @@
 #define BNS_METAL_SPRITE_PIPELINE_HPP
 
 #include "Constants.hpp"
-#include "textures/metal/MetalTexture2D.hpp"
+#include "texture/MetalTexture2D.hpp"
 #include <vector>
 #include <Metal/Metal.hpp>
 

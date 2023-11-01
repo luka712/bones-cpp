@@ -4,7 +4,7 @@
 
 #include <vector>
 #include "camera/Camera.hpp"
-#include "data/Mat4x4.hpp"
+#include "Mat4x4.hpp"
 
 namespace bns
 {

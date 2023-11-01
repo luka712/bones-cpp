@@ -3,10 +3,10 @@
 #define BNS_SPRITE_RENDERER_HPP
 
 #include <string>
-#include "textures/Texture2D.hpp"
-#include "data/Color.hpp"
-#include "data/Rect.hpp"
-#include "data/Vec2.hpp"
+#include "Texture2D.hpp"
+#include "Color.hpp"
+#include "Rect.hpp"
+#include "Vec2.hpp"
 #include "camera/SpriteRendererCamera.hpp"
 #include "font/SpriteFont.hpp"
 #include "lights/AmbientLight.hpp"

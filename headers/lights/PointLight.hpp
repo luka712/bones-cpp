@@ -2,8 +2,8 @@
 
 #define BNS_POINT_LIGHT_HPP
 
-#include "data/Color.hpp"
-#include "data/Vec3.hpp"
+#include "Color.hpp"
+#include "Vec3.hpp"
 
 namespace bns
 {

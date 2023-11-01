@@ -98,22 +98,22 @@ namespace bns
         // GLOBLA BUFFERS
         // setup camera buffer
         m_device = m_framework.Context.WebGPUDevice;
-        m_projectionViewMatrixBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device,
+        m_projectionViewMatrixBuffer = WebGPUUtilDeprecated::Buffer.CreateUniformBuffer(m_device,
                                                                               sizeof(Mat4x4f),
                                                                               "Sprite Renderer Camera Buffer");
 
         // setup brightness threshold buffer
-        m_brightnessThresholdBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device,
+        m_brightnessThresholdBuffer = WebGPUUtilDeprecated::Buffer.CreateUniformBuffer(m_device,
                                                                              sizeof(f32),
                                                                              "Sprite Renderer Brightness Threshold Buffer");
 
         // setup ambient light buffer
-        m_ambientLightBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device,
+        m_ambientLightBuffer = WebGPUUtilDeprecated::Buffer.CreateUniformBuffer(m_device,
                                                                       sizeof(AmbientLight),
                                                                       "Ambient Light Uniform Buffer.");
 
         // setup point light buffer
-        m_pointLightBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device,
+        m_pointLightBuffer = WebGPUUtilDeprecated::Buffer.CreateUniformBuffer(m_device,
                                                                     sizeof(PointLight) * FORWARD_2D_NUM_OF_POINT_LIGHTS,
                                                                     "Point Light Uniform Buffer.");
 

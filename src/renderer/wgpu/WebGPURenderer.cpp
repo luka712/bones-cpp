@@ -2,8 +2,7 @@
 #include "renderer/wgpu/WebGPURenderer.hpp"
 #include <iostream>
 #include <webgpu/webgpu.hpp>
-#include "textures/wgpu/WebGPUTexture2D.hpp"
-#include "util/wgpu/WebGPUTextureViewDescriptorUtil.hpp"
+#include "texture/WebGPUTexture2D.hpp"
 
 namespace bns
 {

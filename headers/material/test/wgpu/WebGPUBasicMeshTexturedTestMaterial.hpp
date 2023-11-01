@@ -4,7 +4,7 @@
 
 #include "material/Material.hpp"
 #include <webgpu/webgpu.h>
-#include <textures/Texture2D.hpp>
+#include "Texture2D.hpp"
 
 namespace bns
 {

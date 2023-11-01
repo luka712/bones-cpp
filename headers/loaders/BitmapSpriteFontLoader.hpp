@@ -7,7 +7,7 @@
 
 namespace bns
 {
-    class Framework;
+     class Framework;
 
     /**
      * @brief A class to load a bitmap font from various implementations.

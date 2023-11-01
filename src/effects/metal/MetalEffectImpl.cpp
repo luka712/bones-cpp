@@ -1,5 +1,5 @@
 #include "effects/metal/MetalEffectImpl.hpp"
-#include "textures/metal/MetalTexture2D.hpp"
+#include "texture/MetalTexture2D.hpp"
 #include "util/MetalUtil.hpp"
 #include "Framework.hpp"
 #include "buffer-layout/BufferLayoutData.hpp"

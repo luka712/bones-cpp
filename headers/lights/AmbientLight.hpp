@@ -2,7 +2,7 @@
 
 #define BNS_AMBIENT_LIGHT_HPP
 
-#include "data/Color.hpp"
+#include "Color.hpp"
 
 namespace bns 
 {

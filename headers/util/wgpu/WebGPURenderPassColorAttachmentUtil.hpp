@@ -3,7 +3,7 @@
 #define BNS_WEBGPU_RENDER_PASS_COLOR_ATTACHMENT_UTIL_HPP
 
 #include <webgpu/webgpu.h>
-#include "data/Color.hpp"
+#include "Color.hpp"
 
 namespace bns
 {

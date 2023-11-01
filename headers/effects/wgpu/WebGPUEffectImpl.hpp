@@ -3,7 +3,7 @@
 #define BNS_WEBGPU_POST_PROCESS_EFFECT_HPP
 
 #include "effects/Effect.hpp"
-#include "textures/wgpu/WebGPUTexture2D.hpp"
+#include "texture/WebGPUTexture2D.hpp"
 #include <string>
 
 /**

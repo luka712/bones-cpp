@@ -3,17 +3,17 @@
 #define BNS_ENGINE_H
 
 #include "window/Window.hpp"
-#include "loaders/FileLoader.hpp"
-#include "loaders/ImageLoader.hpp"
+#include "FileLoader.hpp"
+#include "ImageLoader.hpp"
 #include "loaders/BitmapSpriteFontLoader.hpp"
 #include "material/MaterialFactory.hpp"
 #include "geometry/GeometryBuilder.hpp"
 #include "mesh/MeshFactory.hpp"
 #include "sprite/SpriteRenderer.hpp"
-#include "textures/TextureManager.hpp"
+#include "TextureManager.hpp"
 #include <webgpu/webgpu.h>
 #include <Metal/Metal.hpp>
-#include "data/Vec2.hpp"
+#include "Vec2.hpp"
 #include "renderer/Renderer.hpp"
 #include "effects/EffectFactory.hpp"
 #include <functional>
@@ -66,7 +66,6 @@ namespace bns
         MeshFactory *m_meshFactory;
         MaterialFactory *m_materialFactory;
         ImageLoader *m_imageLoader;
-        Directory *m_directory;
         SpriteRenderer *m_spriteRenderer;
         BitmapSpriteFontLoader* m_bitmapSpriteFontLoader;
         TextureManager *m_textureFactory;
@@ -131,14 +130,6 @@ namespace bns
         inline ImageLoader &GetImageLoader() const
         {
             return *m_imageLoader;
-        }
-
-        /**
-         * @brief Get the directory.
-         */
-        inline Directory &GetDirectory() const
-        {
-            return *m_directory;
         }
 
         /// @brief Gets the sprite renderer.

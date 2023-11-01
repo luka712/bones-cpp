@@ -3,7 +3,7 @@
 #define BNS_METAL_POST_PROCESS_EFFECT_HPP
 
 #include "effects/Effect.hpp"
-#include "textures/metal/MetalTexture2D.hpp"
+#include "texture/MetalTexture2D.hpp"
 #include <string>
 
 /**

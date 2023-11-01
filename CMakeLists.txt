@@ -9,7 +9,7 @@ include(FetchContent)
 include(utils.cmake)
 
 # If we are on Apple, we can use Metal or WebGPU.
-set(USE_METAL 1)
+set(USE_METAL 0)
 
 # LIGHTS 
 # Number of point lights available for sprite renderer when forward rendering is used 
@@ -28,6 +28,16 @@ FetchContent_MakeAvailable(SDL2)
 
 add_subdirectory(vendor/webgpu)
 add_subdirectory(vendor/SDL2Extension)
+
+# project libraries
+add_subdirectory(lib/loaders)
+add_subdirectory(lib/math)
+add_subdirectory(lib/texture)
+add_subdirectory(lib/rendering_backend)
+if(APPLE)
+add_subdirectory(lib/metal_backend)
+endif()
+add_subdirectory(lib/webgpu_backend)
 
 # Set the target architecture to arm64
 if(APPLE)
@@ -68,9 +78,22 @@ include_guard(GLOBAL)
 include_directories(${SDL2_INCLUDE_DIRS})
 
 include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/vendor
-    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/include
     ${CMAKE_CURRENT_SOURCE_DIR}/headers
+
+    # vendor 
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/Metal
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/webgpu/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/include
+
+    # The lib dependencies
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/common/include()
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/loaders/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/math/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/texture/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/rendering_backend/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/metal_backend/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/webgpu_backend/include
     SYSTEM PUBLIC
     ${CMAKE_SOURCE_DIR}/metal-cpp
 )
@@ -95,9 +118,22 @@ endif()
 
 if(APPLE)
 # Link the libraries to the executable (SDL2, Metal, QuartzCore, Foundation) 
-target_link_libraries(App PRIVATE SDL2::SDL2 ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} glfw webgpu SDL2Extension)
+target_link_libraries(App PRIVATE SDL2::SDL2 ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} glfw webgpu SDL2Extension 
+BnsLoaders 
+BnsMath 
+BnsTexture
+BnsRenderingBackend
+BnsMetalBackend
+BnsWebGPUBackend
+)
 else()
-target_link_libraries(App PRIVATE SDL2::SDL webgpu SDL2Extension)
+target_link_libraries(App PRIVATE SDL2::SDL webgpu SDL2Extension
+BnsLoaders 
+BnsMath 
+BnsTexture
+BnsRenderingBackend
+BnsWebGPUBackend
+)
 endif()
 
 

@@ -2,7 +2,7 @@
 #define BNS_POST_PROCESS_TEXURE_COMBINE_EFFECT_HPP
 
 #include "effects/Effect.hpp"
-#include "textures/Texture2D.hpp"
+#include "Texture2D.hpp"
 
 namespace bns
 {

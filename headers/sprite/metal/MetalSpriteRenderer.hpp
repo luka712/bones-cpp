@@ -2,7 +2,7 @@
 
 #define BNS_METAL_SPRITE_RENDERER_HPP
 
-#include "data/Types.hpp"
+#include "Types.hpp"
 #include "sprite/metal/MetalSpritePipeline.hpp"
 #include "sprite/SpriteRenderer.hpp"
 #include "font/SpriteFont.hpp"

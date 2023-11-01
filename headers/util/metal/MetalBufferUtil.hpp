@@ -5,7 +5,7 @@
 #include <Metal/Metal.hpp>
 #include <string>
 #include <vector>
-#include "data/Types.hpp"
+#include "Types.hpp"
 
 namespace bns
 {

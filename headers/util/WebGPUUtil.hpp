@@ -1,6 +1,6 @@
-#ifndef BNS_WEBGPU_UTIL
+#ifndef BNS_WEBGPU_UTIL_DEPRECATED
 
-#define BNS_WEBGPU_UTIL
+#define BNS_WEBGPU_UTIL_DEPRECATED
 
 #include "util/wgpu/WebGPUBufferUtil.hpp"
 #include "util/wgpu/WebGPUFragmentStateUtil.hpp"
@@ -9,7 +9,6 @@
 #include "util/wgpu/WebGPUBindGroupEntryUtil.hpp"
 #include "util/wgpu/WebGPUPipelineLayoutDescriptorUtil.hpp"
 #include "util/wgpu/WebGPUBindGroupDescriptorUtil.hpp"
-#include "util/wgpu/WebGPUTextureViewDescriptorUtil.hpp"
 #include "util/wgpu/WebGPUBlendStateUtil.hpp"
 #include "util/wgpu/WebGPURenderPassColorAttachmentUtil.hpp"
 #include "util/wgpu/WebGPURenderPassDescriptorUtil.hpp"
@@ -21,7 +20,8 @@
 
 namespace bns
 {
-    struct WebGPUUtil final
+    /// @deprecated Use WebGPUtil from lib/webgpu_backend/include/WebGPUUtil instead
+    struct WebGPUUtilDeprecated final
     {
         static WebGPUBufferUtil Buffer;
         static WebGPUFragmentStateUtil FragmentState;
@@ -30,7 +30,6 @@ namespace bns
         static WebGPUBindGroupEntryUtil BindGroupEntry;
         static WebGPUPipelineLayoutDescriptorUtil PipelineLayoutDescriptor;
         static WebGPUBindGroupDescriptorUtil BindGroupDescriptor;
-        static WebGPUTextureViewDescriptorUtil TextureViewDescriptor;
         static WebGPUBlendStateUtil BlendState;
         static WebGPURenderPassColorAttachmentUtil RenderPassColorAttachment;
         static WebGPURenderPassDescriptorUtil RenderPassDescriptor;

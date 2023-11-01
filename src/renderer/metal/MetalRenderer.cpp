@@ -2,7 +2,7 @@
 #include <simd/simd.h>
 #include "util/MetalUtil.hpp"
 #include "Framework.hpp"
-#include "textures/metal/MetalTexture2D.hpp"
+#include "texture/MetalTexture2D.hpp"
 
 namespace bns
 {

@@ -3,7 +3,7 @@
 #define BNS_WEBGPU_BIND_GROUP_DESCRIPTOR_UTIL_HPP
 
 #include <webgpu/webgpu.h>
-#include "data/Types.hpp"
+#include "Types.hpp"
 #include <string>
 
 namespace bns

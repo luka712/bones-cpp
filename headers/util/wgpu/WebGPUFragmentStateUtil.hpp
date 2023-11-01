@@ -4,7 +4,7 @@
 
 #include <webgpu/webgpu.h>
 #include <string>
-#include "data/Types.hpp"
+#include "Types.hpp"
 
 namespace bns 
 {
