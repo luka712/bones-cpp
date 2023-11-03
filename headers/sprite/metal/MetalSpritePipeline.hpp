@@ -1,3 +1,6 @@
+#ifdef __APPLE__
+
+
 #ifndef BNS_METAL_SPRITE_PIPELINE_HPP
 
 #define BNS_METAL_SPRITE_PIPELINE_HPP
@@ -5,7 +8,7 @@
 #include "Constants.hpp"
 #include "texture/MetalTexture2D.hpp"
 #include <vector>
-#include <Metal/Metal.hpp>
+#include "Metal.hpp"
 
 #define FLOATS_PER_VERTEX 9
 #define FLOATS_PER_INSTANCE (4 * FLOATS_PER_VERTEX)
@@ -55,3 +58,5 @@ namespace bns
 }
 
 #endif
+
+#endif // __APPLE_

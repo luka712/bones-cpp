@@ -67,11 +67,13 @@ namespace bns
         static_cast<WebGPURenderer *>(m_renderer)->Initialize(instance, surface);
     }
 
+#ifdef __APPLE__
     void Framework::InitializeForMetal(WindowParameters windowParameters)
     {
         CA::MetalLayer *swapchain = m_windowManager->InitializeForMetal(windowParameters);
         static_cast<MetalRenderer *>(m_renderer)->Initialize(swapchain);
     }
+#endif // __APPLE__
 
     void Framework::Draw(std::function<void()> callback)
     {

@@ -2,6 +2,10 @@
 
 #define BNS_ENGINE_H
 
+
+#include "Metal.hpp"
+
+
 #include "window/Window.hpp"
 #include "FileLoader.hpp"
 #include "ImageLoader.hpp"
@@ -12,7 +16,6 @@
 #include "sprite/SpriteRenderer.hpp"
 #include "TextureManager.hpp"
 #include <webgpu/webgpu.h>
-#include <Metal/Metal.hpp>
 #include "Vec2.hpp"
 #include "renderer/Renderer.hpp"
 #include "effects/EffectFactory.hpp"
@@ -38,9 +41,8 @@ namespace bns
          */
         WGPURenderPassEncoder CurrentWebGPURenderPassEncoder;
 
-        /**
-         * @brief The metal device.
-         */
+#ifdef __APPLE__
+        /// @brief The metal device.
         MTL::Device *MetalDevice;
 
         /**
@@ -52,6 +54,7 @@ namespace bns
          * @brief The current render command encoder.
          */
         MTL::RenderCommandEncoder *CurrentMetalRenderCommandEncoder;
+#endif 
     };
 
     /**
@@ -71,14 +74,13 @@ namespace bns
         TextureManager *m_textureFactory;
         EffectFactory *m_effectFactory;
 
-        /**
-         * @brief Initialize the framework with Metal as the backend.
-        */
+#ifdef __APPLE__
+        /// @brief Initialize the framework with Metal as the backend.
         void InitializeForMetal(bns::WindowParameters windowParameters);
+#endif 
 
-        /**
-         * @brief Initialize the framework with WebGPU as the backend.
-        */
+        
+        /// @brief Initialize the framework with WebGPU as the backend.
         void InitializeForWGPU(bns::WindowParameters windowParameters);
 
     public:

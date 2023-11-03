@@ -1,3 +1,5 @@
+#ifdef __APPLE__
+
 #include "sprite/metal/MetalSpriteRenderer.hpp"
 #include "util/MetalUtil.hpp"
 #include "Constants.hpp"
@@ -362,3 +364,6 @@ namespace bns
         }
     }
 }
+
+
+#endif // __APPLE__

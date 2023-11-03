@@ -4,14 +4,21 @@
 
 # The SDL2WebGPU target
 add_library(SDL2Extension STATIC SDL2_Extension.c)
-find_package(SDL2 REQUIRED) 
-include_directories(${SDL2_INCLUDE_DIRS})
+
+# get it from github and build it
+FetchContent_MakeAvailable(SDL2)
+
+include_directories(
+  ${SDL2_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_SOURCE_DIR}/..
+  ${CMAKE_CURRENT_SOURCE_DIR}/../SDL2
+)
 
 target_include_directories(SDL2Extension PUBLIC .)
 target_link_libraries(SDL2Extension PUBLIC ${SDL2_LIBRARIES} webgpu)
 
-if (APPLE)
+if(APPLE)
   target_compile_options(SDL2Extension PRIVATE -x objective-c)
-  target_link_libraries( SDL2Extension PRIVATE "-framework Cocoa" "-framework CoreVideo" "-framework IOKit" "-framework QuartzCore")
-endif ()
+  target_link_libraries(SDL2Extension PRIVATE "-framework Cocoa" "-framework CoreVideo" "-framework IOKit" "-framework QuartzCore")
+endif()
 

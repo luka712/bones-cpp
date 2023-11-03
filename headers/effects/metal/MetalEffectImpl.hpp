@@ -1,3 +1,5 @@
+#ifdef __APPLE__
+
 #ifndef BNS_METAL_POST_PROCESS_EFFECT_HPP
 
 #define BNS_METAL_POST_PROCESS_EFFECT_HPP
@@ -97,3 +99,5 @@ namespace bns
 } // namespace bns
 
 #endif // !BNS_WEBGPU_POST_PROCESS_EFFECT_HPP
+
+#endif // __APPLE__

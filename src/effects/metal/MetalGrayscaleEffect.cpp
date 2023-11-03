@@ -1,3 +1,5 @@
+#ifdef __APPLE__ 
+
 #include "effects/metal/MetalGrayscaleEffect.hpp"
 
 namespace bns
@@ -12,3 +14,5 @@ namespace bns
 #pragma endregion
 
 } // namespace bns
+
+#endif // __APPLE__

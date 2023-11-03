@@ -15,15 +15,13 @@ set(USE_METAL 0)
 # Number of point lights available for sprite renderer when forward rendering is used 
 set(FORWARD_2D_NUM_OF_POINT_LIGHTS 1)
 
-# Leave this for now
-# find_package(SDL2 REQUIRED) # Find the SDL2 library, assumes it's installed system-wide
-
 # SDL2 - get it from github and build it
 FetchContent_Declare(
     SDL2 
     GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
     GIT_TAG release-2.28.3)
 FetchContent_MakeAvailable(SDL2)
+
 
 
 add_subdirectory(vendor/webgpu)
@@ -56,8 +54,12 @@ endif()
 set(CMAKE_CXX_STANDARD 17)
 
 # Set the compiler flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function")
-
+if(WIN32)
+# TODO: add windows flags   
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+else() 
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function")
+endif()
 # Set the build type to Debug
 set(CMAKE_BUILD_TYPE Debug)
 
@@ -101,11 +103,19 @@ include_directories(
 # Add the executable
 add_executable(App main.cpp ${SOURCES})
 
+# COMPILE OPTIONS
 # Custom extension for WebGPU and SDL2
-target_compile_options(SDL2Extension PRIVATE -x objective-c)
+if(APPLE)
+    target_compile_options(SDL2Extension PRIVATE -x objective-c)
+else()
+    target_compile_options(SDL2Extension PRIVATE)
+endif()
 
 # If we are on Apple, we can use Metal or WebGPU (Metal is the default)
 target_compile_options(App PRIVATE -DUSE_METAL=${USE_METAL})
+
+
+
 
 if(WIN32)
     # SDL2::SDL2main may or may not be available. It is e.g. required by Windows GUI applications
@@ -127,7 +137,7 @@ BnsMetalBackend
 BnsWebGPUBackend
 )
 else()
-target_link_libraries(App PRIVATE SDL2::SDL webgpu SDL2Extension
+target_link_libraries(App PRIVATE SDL2::SDL2 webgpu SDL2Extension
 BnsLoaders 
 BnsMath 
 BnsTexture
@@ -180,3 +190,12 @@ set_target_properties(App PROPERTIES VS_DEBUGGER_ENVIRONMENT "DAWN_DEBUG_BREAK_O
 # so we automatically copy it (it's called WGPU_RUNTIME_LIB in general)
 # next to the binary.
 target_copy_webgpu_binaries(App)
+
+if(WIN32)
+    # copy SDL2.dll, SDL2_image.dll to the output directory
+    add_custom_command(TARGET App POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:SDL2::SDL2> $<TARGET_FILE_DIR:App>
+           #  $<TARGET_FILE:SDL2_image::SDL2_image> $<TARGET_FILE_DIR:App>
+            )
+endif()

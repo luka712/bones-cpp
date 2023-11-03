@@ -1,7 +1,7 @@
 #include "ImageLoader.hpp"
 
 #include <stb/stb_image.hpp>
-
+#include <stdexcept>
 
 bns::ImageData *bns::ImageLoader::LoadImage(std::string path)
 {

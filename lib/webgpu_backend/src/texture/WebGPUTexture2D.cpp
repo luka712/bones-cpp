@@ -1,4 +1,5 @@
 #include "texture/WebGPUTexture2D.hpp"
+#include <stdexcept>
 
 namespace bns
 {

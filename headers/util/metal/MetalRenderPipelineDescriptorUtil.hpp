@@ -1,8 +1,10 @@
+#ifdef __APPLE__
+
 #ifndef BNS_METAL_RENDER_PIPELINE_UTIL_HPP
 
 #define BNS_METAL_RENDER_PIPELINE_UTIL_HPP
 
-#include <Metal/Metal.hpp>
+#include "Metal.hpp"
 
 namespace bns
 {
@@ -25,3 +27,5 @@ namespace bns
 }
 
 #endif // BNS_METAL_RENDER_PIPELINE_UTIL_HPP
+
+#endif // __APPLE__

@@ -1,3 +1,7 @@
+#ifdef  __APPLE__
+
+
+
 #include "effects/metal/MetalTextureCombineEffect.hpp"
 #include "Framework.hpp"
 #include "util/MetalUtil.hpp"
@@ -72,3 +76,6 @@ namespace bns
 #pragma endregion
 
 } // namespace bns
+
+
+#endif //  __APPLE__

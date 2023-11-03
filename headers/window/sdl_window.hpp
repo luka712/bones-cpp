@@ -22,7 +22,9 @@ namespace bns
         SDLWindowManager();
         ~SDLWindowManager();
         bool InitializeForWGPU(WindowParameters windowParameters, WGPUInstance *outInstance, WGPUSurface *outSurface) override;
+#ifdef __APPLE__
         CA::MetalLayer *InitializeForMetal(WindowParameters windowParameters) override;
+#endif // __APPLE__
     };
 }
 

@@ -1,3 +1,5 @@
+#ifdef __APPLE__
+
 #ifndef BNS_METAL_TEXTURE_2D_HPP
 
 #define BNS_METAL_TEXTURE_2D_HPP
@@ -57,3 +59,6 @@ namespace bns
 }
 
 #endif // !BNS_METAL_TEXTURE_2D_HPP
+
+
+#endif // __APPLE__

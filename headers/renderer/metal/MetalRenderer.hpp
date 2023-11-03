@@ -1,11 +1,17 @@
+
 #pragma once
+
+#ifdef __APPLE__
+
+
+
 
 #ifndef BNS_RENDERER_METAL_HPP
 
 #define BNS_RENDERER_METAL_HPP
 
 #include "renderer/Renderer.hpp"
-#include "Metal/Metal.hpp"
+#include "Metal.hpp"
 #include "Vec2.hpp"
 #include "Color.hpp"
 
@@ -70,3 +76,4 @@ namespace bns
 } // namespace BNS
 
 #endif // !BNS_RENDERER_METAL_HPP
+#endif // __APPLE__

@@ -1,5 +1,6 @@
 #include "util/wgpu/WebGPUShaderModuleUtil.hpp"
 #include <exception>
+#include <stdexcept>
 
 namespace bns
 {

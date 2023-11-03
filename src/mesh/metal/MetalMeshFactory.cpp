@@ -1,3 +1,5 @@
+#ifdef __APPLE__
+
 #include "mesh/metal/MetalMeshFactory.hpp"
 #include "mesh/metal/MetalMesh.hpp"
 #include "Framework.hpp"
@@ -34,3 +36,6 @@ namespace bns
         return mesh;
     }
 }
+
+
+#endif // __APPLE__

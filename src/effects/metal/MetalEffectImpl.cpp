@@ -1,3 +1,8 @@
+#ifdef __APPLE__
+
+
+
+
 #include "effects/metal/MetalEffectImpl.hpp"
 #include "texture/MetalTexture2D.hpp"
 #include "util/MetalUtil.hpp"
@@ -157,3 +162,5 @@ namespace bns
         commandBuffer->commit();
     }
 }
+
+#endif // __APPLE__

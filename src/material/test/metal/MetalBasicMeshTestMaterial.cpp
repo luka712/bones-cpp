@@ -1,3 +1,5 @@
+#ifdef __APPLE__
+
 #include "Framework.hpp"
 #include "mesh/metal/MetalMesh.hpp"
 #include "material/test/metal/MetalBasicMeshTestMaterial.hpp"
@@ -140,3 +142,6 @@ namespace bns
      */
     Material *MetalBasicMeshTestMaterial::Copy() { return new MetalBasicMeshTestMaterial(m_framework); }
 }
+
+
+#endif // __APPLE__

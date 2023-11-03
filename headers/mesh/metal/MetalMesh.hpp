@@ -1,8 +1,10 @@
+#ifdef __APPLE__
+
 #ifndef BNS_METAL_MESH_HPP
 
 #define BNS_METAL_MESH_HPP
 
-#include <Metal/Metal.hpp>
+#include "Metal.hpp"
 #include "mesh/Mesh.hpp"
 #include "geometry/Geometry.hpp"
 
@@ -64,3 +66,5 @@ namespace bns
 }
 
 #endif
+
+#endif // __APPLE__

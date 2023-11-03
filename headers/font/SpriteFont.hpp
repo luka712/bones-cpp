@@ -6,6 +6,7 @@
 #include <map>
 #include "font/SpriteFontChar.hpp"
 #include "Texture2D.hpp"
+#include <stdexcept>
 
 namespace bns
 {

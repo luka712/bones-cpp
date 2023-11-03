@@ -1,8 +1,10 @@
+#ifdef __APPLE__
+
 #ifndef BNS_METAL_VERTEX_BUFFER_LAYOUT_UTIL_HPP
 
 #define BNS_METAL_VERTEX_BUFFER_LAYOUT_UTIL_HPP
 
-#include <Metal/Metal.hpp>
+#include "Metal.hpp"
 #include <vector>
 #include <map>
 #include "buffer-layout/BufferLayoutData.hpp"
@@ -45,3 +47,5 @@ namespace bns
 }
 
 #endif // !BNS_METAL_VERTEX_BUFFER_LAYOUT_UTIL_HPP
+
+#endif // __APPLE__

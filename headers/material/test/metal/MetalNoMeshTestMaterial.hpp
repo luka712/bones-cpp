@@ -1,9 +1,11 @@
+#ifdef __APPLE__ 
+
 #ifndef METAL_NO_MESH_TEST_MATERIAL_HPP
 
 #define METAL_NO_MESH_TEST_MATERIAL_HPP
 
 #include "material/Material.hpp"
-#include <Metal/Metal.hpp>
+#include "Metal.hpp"
 
 namespace bns
 {
@@ -72,3 +74,5 @@ namespace bns
 }
 
 #endif // !METAL_NO_MESH_TEST_MATERIAL_HPP
+
+#endif // __APPLE__

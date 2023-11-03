@@ -1,3 +1,5 @@
+#ifdef __APPLE__
+
 #include "Framework.hpp"
 #include "mesh/metal/MetalMesh.hpp"
 #include "material/test/metal/MetalBasicMeshTexturedTestMaterial.hpp"
@@ -153,3 +155,6 @@ namespace bns
      */
     Material *MetalBasicMeshTexturedTestMaterial::Copy() { return new MetalBasicMeshTexturedTestMaterial(m_framework, m_texture); }
 }
+
+
+#endif // __APPLE__

@@ -1,11 +1,12 @@
+#ifdef __APPLE__
+
 #ifndef METAL_BASIC_MESH_TEXTURED_TEST_MATERIAL_HPP
 
 #define METAL_BASIC_MESH_TEXTURED_TEST_MATERIAL_HPP
 
 #include "material/Material.hpp"
 #include "Texture2D.hpp"
-#include <Metal/Metal.hpp>
-
+#include "Metal.hpp"
 namespace bns
 {
     class Framework;
@@ -78,3 +79,5 @@ namespace bns
 }
 
 #endif // !METAL_BASIC_MESH_TEST_MATERIAL_HPP
+
+#endif // __APPLE__

@@ -1,3 +1,5 @@
+#ifdef __APPLE__
+
 #include "util/metal/MetalRenderPipelineColorAttachmentDescriptorUtil.hpp"
 
 namespace bns
@@ -17,3 +19,5 @@ namespace bns
         colorAttachment.setDestinationAlphaBlendFactor(MTL::BlendFactorOneMinusSourceAlpha);
     }
 }
+
+#endif // __APPLE__

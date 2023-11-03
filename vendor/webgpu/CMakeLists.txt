@@ -5,6 +5,8 @@ message(STATUS "Using Dawn backend for WebGPU")
 
 add_library(webgpu INTERFACE)
 
+set(ENABLE_D3D12 ON)
+
 if (EMSCRIPTEN)
 
 	target_include_directories(webgpu INTERFACE

@@ -1,3 +1,5 @@
+#ifdef __APPLE__ 
+
 #include "effects/metal/MetalBlurEffect.hpp"
 #include "util/MetalUtil.hpp"
 #include "Framework.hpp"
@@ -118,3 +120,5 @@ namespace bns
 
 #pragma endregion
 }
+
+#endif //  __APPLE__

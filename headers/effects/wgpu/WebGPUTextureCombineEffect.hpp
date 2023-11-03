@@ -5,6 +5,7 @@
 #include "effects/wgpu/WebGPUEffectImpl.hpp"
 #include "effects/TextureCombineEffect.hpp"
 #include <math.h>
+#include <algorithm>
 
 namespace bns
 {

@@ -7,13 +7,18 @@ ADD_LIBRARY(BnsWebGPUBackend STATIC
             src/util/WebGPUTextureViewDescriptorUtil.cpp)
 
 # Set the target architecture to arm64 for Apple Silicon
-set(CMAKE_OSX_ARCHITECTURES "arm64")
-find_library(APPLE_FWK_FOUNDATION Foundation REQUIRED)
-find_library(APPLE_FWK_QUARTZ_CORE QuartzCore REQUIRED)
-find_library(APPLE_FWK_METAL Metal REQUIRED)
+if(APPLE)
+    set(CMAKE_OSX_ARCHITECTURES "arm64")
+    find_library(APPLE_FWK_FOUNDATION Foundation REQUIRED)
+    find_library(APPLE_FWK_QUARTZ_CORE QuartzCore REQUIRED)
+    find_library(APPLE_FWK_METAL Metal REQUIRED)
+endif()
 
-
-target_link_libraries(BnsWebGPUBackend PRIVATE ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} BnsTexture)
+if(APPLE)
+    target_link_libraries(BnsWebGPUBackend PRIVATE ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} BnsTexture)
+else()
+    target_link_libraries(BnsWebGPUBackend PRIVATE BnsTexture)
+endif()
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include

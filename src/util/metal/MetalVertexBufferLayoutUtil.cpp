@@ -1,3 +1,5 @@
+#ifdef __APPLE__
+
 #include "util/metal/MetalVertexBufferLayoutUtil.hpp"
 
 namespace bns
@@ -45,3 +47,5 @@ namespace bns
         }
     }
 }
+
+#endif // __APPLE__

@@ -1,3 +1,5 @@
+#ifdef __APPLE__
+
 #include "util/metal/MetalRenderPipelineDescriptorUtil.hpp"
 
 namespace bns
@@ -15,3 +17,5 @@ namespace bns
         return pDesc;
     }
 }
+
+#endif // __APPLE__

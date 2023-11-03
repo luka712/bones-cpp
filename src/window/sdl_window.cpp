@@ -68,11 +68,13 @@ namespace bns
         m_windowSize = Vec2u(width, height);
     }
 
+#ifdef __APPLE__
     CA::MetalLayer *SDLWindowManager::InitializeForMetal(WindowParameters windowParameters)
     {
         CreateWindowAndRenderer(windowParameters);
         return (CA::MetalLayer *)SDL_RenderGetMetalLayer(m_renderer);
     }
+#endif // __APPLE__
 
     bool SDLWindowManager::InitializeForWGPU(WindowParameters windowParameters, WGPUInstance *outInstance, WGPUSurface *outSurface)
     {

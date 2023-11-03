@@ -1,9 +1,12 @@
+#ifdef __APPLE__
+
 #ifndef BNS_METAL_BLUR_EFFECT_HPP
 
 #define BNS_METAL_BLUR_EFFECT_HPP
 
 #include "effects/metal/MetalEffectImpl.hpp"
 #include "effects/BlurEffect.hpp"
+#include <string>
 
 namespace bns
 {
@@ -77,3 +80,5 @@ namespace bns
 }
 
 #endif
+
+#endif // __APPLE__

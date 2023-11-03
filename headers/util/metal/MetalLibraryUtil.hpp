@@ -1,8 +1,13 @@
+#ifdef __APPLE__
+
+
+
+
 #ifndef BNS_METAL_LIBRARY_UTIL_HPP
 
 #define BNS_METAL_LIBRARY_UTIL_HPP
 
-#include <Metal/Metal.hpp>
+#include "Metal.hpp"
 #include <string>
 
 namespace bns
@@ -23,3 +28,5 @@ namespace bns
 }
 
 #endif
+
+#endif // __APPLE__

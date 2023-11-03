@@ -1,8 +1,10 @@
+#ifdef __APPLE__
+
 #ifndef BNS_METAL_BUFFER_UTIL_HPP
 
 #define BNS_METAL_BUFFER_UTIL_HPP
 
-#include <Metal/Metal.hpp>
+#include "Metal.hpp"
 #include <string>
 #include <vector>
 #include "Types.hpp"
@@ -49,3 +51,5 @@ namespace bns
 }
 
 #endif
+
+#endif // __APPLE__

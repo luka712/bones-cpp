@@ -1,3 +1,5 @@
+#ifdef __APPLE__ 
+
 #ifndef BNS_METAL_SPRITE_RENDERER_HPP
 
 #define BNS_METAL_SPRITE_RENDERER_HPP
@@ -6,7 +8,7 @@
 #include "sprite/metal/MetalSpritePipeline.hpp"
 #include "sprite/SpriteRenderer.hpp"
 #include "font/SpriteFont.hpp"
-#include <Metal/Metal.hpp>
+#include "Metal.hpp"
 #include <map>
 #include <stack>
 
@@ -96,3 +98,5 @@ namespace bns
 }
 
 #endif
+
+#endif // __APPLE__

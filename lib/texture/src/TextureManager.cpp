@@ -58,9 +58,7 @@ namespace bns
         ImageData imageData;
         imageData.Width = width;
         imageData.Height = height;
-
-        u8 data[width * height * 4];
-        imageData.Data = &data;
+        imageData.Data = new u8[width * height * 4];
 
         return CreateTexture(&imageData, textureUsageFlags, format);
     }

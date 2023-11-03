@@ -1,3 +1,5 @@
+#ifdef __APPLE__
+
 #include "mesh/metal/MetalMesh.hpp"
 #include "Framework.hpp"
 #include "Types.hpp"
@@ -96,3 +98,5 @@ namespace bns
     }
 
 }
+
+#endif // __APPLE__

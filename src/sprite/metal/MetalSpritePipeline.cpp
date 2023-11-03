@@ -1,3 +1,6 @@
+
+#ifdef __APPLE__
+
 #include "sprite/metal/MetalSpritePipeline.hpp"
 #include "FileLoader.hpp"
 #include "util/MetalUtil.hpp"
@@ -5,7 +8,6 @@
 
 namespace bns
 {
-
     MetalSpritePipeline::MetalSpritePipeline(MTL::RenderPipelineState *pipeline,
                                              MetalTexture2D *texture)
         : m_pipeline(pipeline), m_texture(texture)
@@ -84,3 +86,5 @@ namespace bns
         return new MetalSpritePipeline(pipeline, texture);
     }
 }
+
+#endif // __APPLE__

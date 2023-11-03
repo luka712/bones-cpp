@@ -1,3 +1,4 @@
+
 #include "effects/wgpu/WebGPUBlurEffect.hpp"
 #include "Framework.hpp"
 #include "util/WebGPUUtil.hpp"

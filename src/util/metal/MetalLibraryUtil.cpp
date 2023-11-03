@@ -1,3 +1,5 @@
+#ifdef __APPLE__ 
+
 #include "util/metal/MetalLibraryUtil.hpp"
 
 namespace bns
@@ -20,3 +22,5 @@ namespace bns
     }
 
 }
+
+#endif // __APPLE__

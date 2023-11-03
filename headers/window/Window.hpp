@@ -6,7 +6,7 @@
 #include "Vec2.hpp"
 #include <string>
 
-#include "Metal/Metal.hpp"
+#include "Metal.hpp"
 
 #include <webgpu/webgpu.h>
 
@@ -48,11 +48,11 @@ namespace bns
             return m_windowSize;
         }
 
-        /**
-         * @brief Initialize for Metal.
-         */
-        virtual CA::MetalLayer *InitializeForMetal(WindowParameters windowParameters) = 0;
 
+#ifdef __APPLE__
+        /// @brief Initialize for Metal.
+        virtual CA::MetalLayer *InitializeForMetal(WindowParameters windowParameters) = 0;
+#endif 
         /**
          * Gets the WGPU surface.
          */

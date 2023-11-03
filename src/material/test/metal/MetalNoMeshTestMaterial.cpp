@@ -1,3 +1,7 @@
+#ifdef __APPLE__ 
+
+
+
 #include "material/test/metal/MetalNoMeshTestMaterial.hpp"
 #include "Framework.hpp"
 #include "util/MetalUtil.hpp"
@@ -94,3 +98,6 @@ namespace bns
      */
     Material *MetalNoMeshTestMaterial::Copy() { return new MetalNoMeshTestMaterial(m_framework); }
 }
+
+
+#endif // __APPLE__ 

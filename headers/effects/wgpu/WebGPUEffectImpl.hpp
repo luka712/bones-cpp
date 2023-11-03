@@ -5,6 +5,7 @@
 #include "effects/Effect.hpp"
 #include "texture/WebGPUTexture2D.hpp"
 #include <string>
+#include <vector>
 
 /**
  * Each effects should at least have a vertex shader and a fragment shader
