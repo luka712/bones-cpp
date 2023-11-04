@@ -3,9 +3,6 @@
 
 #ifdef __APPLE__
 
-
-
-
 #ifndef BNS_RENDERER_METAL_HPP
 
 #define BNS_RENDERER_METAL_HPP
@@ -22,10 +19,11 @@ namespace bns
     class MetalRenderer final : public Renderer
     {
     private:
-        /**
-         * @brief MetalLayer is a class in Apple's Metal
-         * framework that enables seamless integration of Metal rendering capabilities into a Core Animation layer hierarchy.
-         */
+        /// @brief The framework.
+        Framework &m_framework;
+
+        /// @brief MetalLayer is a class in Apple's Metal
+        /// framework that enables seamless integration of Metal rendering capabilities into a Core Animation layer hierarchy.
         CA::MetalLayer *m_metalLayer;
 
         /**
@@ -33,12 +31,12 @@ namespace bns
          * It is similar to Adapter/Device in the WebGPU API.
          * It is similar to a physical device in Vulkan.
          * It is similar to an adapter in DirectX.
-        */
+         */
         MTL::Device *m_device;
-        
+
         /**
-          * @brief CommandQueue is a class in Apple's Metal framework that manages the scheduling and execution of command buffers.
-          * It is similar to a command queue in WebGPU.
+         * @brief CommandQueue is a class in Apple's Metal framework that manages the scheduling and execution of command buffers.
+         * It is similar to a command queue in WebGPU.
          */
         MTL::CommandQueue *m_queue;
 
@@ -67,11 +65,10 @@ namespace bns
         void EndDraw() override;
         void Destroy() override;
 
-
         /**
          * @brief Gets the view into swap chain texture.
          */
-        void* GetSwapChainTexture() override;
+        void *GetSwapChainTexture() override;
     };
 } // namespace BNS
 

@@ -1,13 +1,11 @@
 #include "renderer/Renderer.hpp"
-#include "Framework.hpp"
 
 namespace bns
 {
-    Renderer::Renderer(Framework &framework) : m_framework(framework), m_renderTexture(nullptr)
+    Renderer::Renderer() : m_renderTexture(nullptr),
+                           m_brightnessTexture(nullptr)
     {
         ClearColor = Color::LightPink();
-        m_brightnessTexture = nullptr;
-        m_renderTexture = nullptr;
     }
 
     void Renderer::SetRenderTexture(Texture2D *texture)

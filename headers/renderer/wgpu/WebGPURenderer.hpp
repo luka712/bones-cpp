@@ -13,10 +13,11 @@ namespace bns
     class WebGPURenderer final : public Renderer
     {
     private:
-        /**
-         * @brief The instance is a class in WebGPU. It is responsible for creating a surface.
-         * Instance in this context is a collection of adapters.
-         */
+        /// @brief The framework.
+        Framework &m_framework;
+
+        /// @brief The instance is a class in WebGPU. It is responsible for creating a surface.
+        /// Instance in this context is a collection of adapters.
         WGPUInstance m_instance;
 
         /**

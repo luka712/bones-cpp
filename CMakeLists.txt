@@ -8,8 +8,11 @@ project(
 include(FetchContent)
 include(utils.cmake)
 
-# If we are on Apple, we can use Metal or WebGPU.
+# BACKEND RENDERER FLIPS 
+# Apple specific
 set(USE_METAL 0)
+# Windows specific
+set(USE_D3D11 1)
 
 # LIGHTS 
 # Number of point lights available for sprite renderer when forward rendering is used 
@@ -56,7 +59,7 @@ set(CMAKE_CXX_STANDARD 17)
 # Set the compiler flags
 if(WIN32)
 # TODO: add windows flags   
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /EHsc")
 else() 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function")
 endif()
@@ -100,6 +103,11 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/metal-cpp
 )
 
+if(WIN32)
+    include_directories("C:/Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/um")
+endif()
+
+
 # Add the executable
 add_executable(App main.cpp ${SOURCES})
 
@@ -112,10 +120,16 @@ else()
 endif()
 
 # If we are on Apple, we can use Metal or WebGPU (Metal is the default)
-target_compile_options(App PRIVATE -DUSE_METAL=${USE_METAL})
+target_compile_options(App PRIVATE 
+-DUSE_METAL=${USE_METAL} -DUSE_D3D11=${USE_D3D11} 
+-DFORWARD_2D_NUM_OF_POINT_LIGHTS=${FORWARD_2D_NUM_OF_POINT_LIGHTS}
+) 
 
 
 
+# LINK LIBRARIES SECTION
+
+link_directories("C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/um/x64")
 
 if(WIN32)
     # SDL2::SDL2main may or may not be available. It is e.g. required by Windows GUI applications
@@ -128,12 +142,20 @@ endif()
 
 if(APPLE)
 # Link the libraries to the executable (SDL2, Metal, QuartzCore, Foundation) 
-target_link_libraries(App PRIVATE SDL2::SDL2 ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} glfw webgpu SDL2Extension 
+target_link_libraries(App PRIVATE SDL2::SDL2 ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} webgpu SDL2Extension 
 BnsLoaders 
 BnsMath 
 BnsTexture
 BnsRenderingBackend
 BnsMetalBackend
+BnsWebGPUBackend
+)
+elseif(WIN32)
+target_link_libraries(App PRIVATE SDL2::SDL2 d3d11 dxgi d3dcompiler webgpu SDL2Extension 
+BnsLoaders 
+BnsMath 
+BnsTexture
+BnsRenderingBackend
 BnsWebGPUBackend
 )
 else()
@@ -173,6 +195,11 @@ if(XCODE)
     set_target_properties(App PROPERTIES
         XCODE_GENERATE_SCHEME ON
         XCODE_SCHEME_ENABLE_GPU_FRAME_CAPTURE_MODE "Metal")
+elseif(WIN32)
+file(COPY ${CMAKE_SOURCE_DIR}/shaders DESTINATION ${CMAKE_BINARY_DIR}/)
+file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR}/)
+file(COPY ${CMAKE_SOURCE_DIR}/shaders DESTINATION ${CMAKE_BINARY_DIR}/Debug)
+file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR}/Debug)
 else()
 # Set the executable's properties for Cmake
 set_target_properties(App PROPERTIES CXX_STANDARD 17)

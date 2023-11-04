@@ -5,6 +5,8 @@
 #include "window/Window.hpp"
 #include <SDL2/SDL.h>
 
+#include "BNSDirectX.hpp"
+
 namespace bns
 {
     /**
@@ -25,6 +27,9 @@ namespace bns
 #ifdef __APPLE__
         CA::MetalLayer *InitializeForMetal(WindowParameters windowParameters) override;
 #endif // __APPLE__
+#ifdef WIN32
+        HWND InitializeForD3D11(WindowParameters windowParameters) override;
+#endif // WIN32
     };
 }
 

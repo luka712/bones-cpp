@@ -3,6 +3,10 @@
 #include "tinyxml2/tinyxml2.h"
 #include "Framework.hpp"
 
+#if WIN32  
+// Macro from windows is causing issue here, fix it like this for now.
+#define LoadImage LoadImage
+#endif
 namespace bns
 {
     BitmapSpriteFontLoader::BitmapSpriteFontLoader(const Framework &framework)

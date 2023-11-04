@@ -7,6 +7,7 @@
 #include <string>
 
 #include "Metal.hpp"
+#include "BnsDirectX.hpp"
 
 #include <webgpu/webgpu.h>
 
@@ -53,6 +54,11 @@ namespace bns
         /// @brief Initialize for Metal.
         virtual CA::MetalLayer *InitializeForMetal(WindowParameters windowParameters) = 0;
 #endif 
+
+#ifdef WIN32
+        /// @brief Initialize for D3D11.
+        virtual HWND InitializeForD3D11(WindowParameters windowParameters) = 0;
+#endif
         /**
          * Gets the WGPU surface.
          */

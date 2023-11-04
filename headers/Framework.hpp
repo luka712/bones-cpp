@@ -74,14 +74,19 @@ namespace bns
         TextureManager *m_textureFactory;
         EffectFactory *m_effectFactory;
 
+
+        /// @brief Initialize the framework with WebGPU as the backend.
+        void InitializeForWGPU(bns::WindowParameters windowParameters);
+
 #ifdef __APPLE__
         /// @brief Initialize the framework with Metal as the backend.
         void InitializeForMetal(bns::WindowParameters windowParameters);
 #endif 
 
-        
-        /// @brief Initialize the framework with WebGPU as the backend.
-        void InitializeForWGPU(bns::WindowParameters windowParameters);
+#ifdef WIN32
+        /// @brief Initialize the framework with D3D11 as the backend.
+        void InitializeForD3D11(bns::WindowParameters windowParameters);
+#endif 
 
     public:
         FrameworkContext Context;

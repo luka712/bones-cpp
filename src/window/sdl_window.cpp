@@ -2,6 +2,13 @@
 #include <iostream>
 #include "SDL2Extension/SDL2_Extension.h"
 
+// To get correct struct from <SDL2\SDL_syswm.h>, we must define.
+#if WIN32
+    #define SDL_VIDEO_DRIVER_WINDOWS 1 
+#endif // WIN32
+
+#include <SDL2\SDL_syswm.h>
+
 namespace bns
 {
     SDLWindowManager::SDLWindowManager()
@@ -68,14 +75,6 @@ namespace bns
         m_windowSize = Vec2u(width, height);
     }
 
-#ifdef __APPLE__
-    CA::MetalLayer *SDLWindowManager::InitializeForMetal(WindowParameters windowParameters)
-    {
-        CreateWindowAndRenderer(windowParameters);
-        return (CA::MetalLayer *)SDL_RenderGetMetalLayer(m_renderer);
-    }
-#endif // __APPLE__
-
     bool SDLWindowManager::InitializeForWGPU(WindowParameters windowParameters, WGPUInstance *outInstance, WGPUSurface *outSurface)
     {
         CreateWindowAndRenderer(windowParameters);
@@ -89,7 +88,30 @@ namespace bns
             return false;
         }
         *outSurface = GetWGPUSurface(*outInstance, m_window);
-        
+
         return true;
     }
+
+#ifdef __APPLE__
+    CA::MetalLayer *SDLWindowManager::InitializeForMetal(WindowParameters windowParameters)
+    {
+        CreateWindowAndRenderer(windowParameters);
+        return (CA::MetalLayer *)SDL_RenderGetMetalLayer(m_renderer);
+    }
+#endif // __APPLE__
+
+#ifdef WIN32
+    HWND SDLWindowManager::InitializeForD3D11(WindowParameters windowParameters)
+    {
+        CreateWindowAndRenderer(windowParameters);
+
+        SDL_SysWMinfo systemInfo;
+        SDL_VERSION(&systemInfo.version);
+        SDL_GetWindowWMInfo(m_window, &systemInfo);
+
+        HWND handle = systemInfo.info.win.window;
+        return handle;
+    }
+#endif // WIN32
+
 } // namespace BNS

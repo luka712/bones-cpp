@@ -2,6 +2,7 @@
 #include <vector>
 #include "renderer/metal/MetalRenderer.hpp"
 #include "renderer/wgpu/WebGPURenderer.hpp"
+#include "renderer/d3d11/D3D11Renderer.hpp"
 #include "window/sdl_window.hpp"
 #include "material/WebGPUMaterialFactory.hpp"
 #include "mesh/wgpu/WebGPUMeshFactory.hpp"
@@ -34,6 +35,11 @@ namespace bns
         // m_materialFactory = new MetalMaterialFactory(*this);
         m_meshFactory = new MetalMeshFactory(*this);
         m_spriteRenderer = new MetalSpriteRenderer(*this);
+#elif WIN32 && USE_D3D11
+        m_renderer = new D3D11Renderer(*this);
+        // m_materialFactory = new D3D11MaterialFactory(*this);
+        // m_meshFactory = new D3D11MeshFactory(*this);
+        // m_spriteRenderer = new D3D11SpriteRenderer(*this);
 #else
         m_renderer = new WebGPURenderer(*this);
         m_materialFactory = new WebGPUMaterialFactory(*this);
@@ -50,10 +56,14 @@ namespace bns
     {
 #if __APPLE__ && USE_METAL
         InitializeForMetal(windowParameters);
+        m_spriteRenderer->Initialize();
+#elif WIN32 && USE_D3D11
+        InitializeForD3D11(windowParameters);
 #else
         InitializeForWGPU(windowParameters);
-#endif
         m_spriteRenderer->Initialize();
+#endif
+
 
         callback();
     }
@@ -75,6 +85,14 @@ namespace bns
     }
 #endif // __APPLE__
 
+#ifdef WIN32
+    void Framework::InitializeForD3D11(WindowParameters windowParameters)
+    {
+        HWND hwnd = m_windowManager->InitializeForD3D11(windowParameters);
+        static_cast<D3D11Renderer *>(m_renderer)->Initialize(hwnd);
+    }
+#endif // WIN32
+
     void Framework::Draw(std::function<void()> callback)
     {
         bool quit = false;
@@ -95,15 +113,15 @@ namespace bns
             // Do nothing, this checks for ongoing asynchronous operations and call their callbacks
             // NOTE: this is specific to DAWN and is not part of WebGPU standard.
             // TODO: move to renderer of webgpu
-            wgpuDeviceTick(Context.WebGPUDevice);
+           //  wgpuDeviceTick(Context.WebGPUDevice);
 // #endif
            
             m_renderer->BeginDraw();
-            m_spriteRenderer->BeginFrame();
+            // m_spriteRenderer->BeginFrame();
 
             callback();
             
-            m_spriteRenderer->EndFrame();
+           //  m_spriteRenderer->EndFrame();
             m_renderer->EndDraw();
 
             SDL_Delay(16);

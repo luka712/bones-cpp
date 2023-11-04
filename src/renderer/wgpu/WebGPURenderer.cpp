@@ -8,7 +8,7 @@ namespace bns
 {
 
 	WebGPURenderer::WebGPURenderer(Framework& framework)
-		: Renderer(framework)
+		: Renderer(), m_framework(framework)
 	{
 	}
 
@@ -174,7 +174,7 @@ namespace bns
 		Resize(); // creates swap chain
 
 		m_brightnessTexture = m_framework.GetTextureManager().CreateEmpty(m_bufferSize.X, m_bufferSize.Y,
-			TextureUsage::RENDER_ATTACHMENT | TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_SRC,
+			TextureUsage::RENDER_ATTACHMENT | TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_SRC | TextureUsage::COPY_DST,
 			TextureFormat::BGRA_8_Unorm);
 	}
 

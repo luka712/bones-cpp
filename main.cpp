@@ -44,6 +44,9 @@ int main()
 
 void Initialize()
 {
+    // TODO: temporary return just for direct x testing
+    return;
+
     font = engine.GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
     testTexture = engine.GetTextureManager().LoadTexture2D("assets/uv_test.png");
 
@@ -52,7 +55,7 @@ void Initialize()
     bns::Renderer *renderer = engine.GetRenderer();
 
     renderer->SetRenderTexture(effect->GetSourceTexture());
-   renderer->SetBrightnessTexture(effect->GetBrightnessTexture());
+    renderer->SetBrightnessTexture(effect->GetBrightnessTexture());
 
     engine.GetSpriteRenderer()->PointLights[0].Intensity = 0.0;
     engine.GetSpriteRenderer()->PointLights[0].Position = bns::Vec3f(50.0f, 50.0f, 100.0f);
@@ -64,7 +67,9 @@ void Initialize()
 
 void Draw()
 {
-    bns::Renderer *renderer = engine.GetRenderer();
+    return; // TODO: temporary return just for direct x testing
+
+    bns::Renderer * renderer = engine.GetRenderer();
     bns::SpriteRenderer *spriteRenderer = engine.GetSpriteRenderer();
 
     bns::i32 hw = testTexture->GetWidth() / 2;
@@ -72,7 +77,6 @@ void Draw()
 
     rotation += 0.001;
     bns::Vec2f rotationOrigin = bns::Vec2f(0.5f, 0.5f);
-
 
     engine.GetSpriteRenderer()->PointLights[0].Intensity += 0.1f;
     spriteRenderer->DrawString(font, "Hello World!", bns::Vec2f(300, 300), bns::Color::White(), 1.0f);
@@ -92,5 +96,5 @@ void Draw()
     // bottom right quadrant
     spriteRenderer->Draw(testTexture, bns::Rect(200, 100, 100, 100), bns::Rect(hw, hh, hw, hh), bns::Color::White(), rotation, rotationOrigin);
 
-   effect->Draw(renderer->GetSwapChainTexture());
+    effect->Draw(renderer->GetSwapChainTexture());
 }

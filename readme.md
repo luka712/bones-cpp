@@ -1,9 +1,9 @@
 # About 
 
 Project is imagined as multiplatform project with 4 main renderers for learning purposes
-- WebGPU, Vulkan as main cross platform solutions
+- WebGPU, Vulkan, OpenGL, OpenGLES as main cross platform solutions
 - Metal as Mac solution 
-- DirectX 12 as Windows solution
+- DirectX12/DirectX11 as Windows solution
 Note: In future it will also consider mobile devices.
 
 Projects files are build with CMake, one can use it to generate following solutions:
@@ -39,6 +39,12 @@ then: navigate to product -> build
 
 ### Run
 do: Simply run project in xcode
+
+### GOALS 0.1 
+- DirectX/Mac/WebGPU initial game. Make sure it runs on Win/Mac/Linux with WebGPU, Metal, DirectX
+### GOALS 0.2
+- Emscripten go further with game using engine. Make sure it's compiled for web with WebGPU/OpenGLES using Emscripten.
+
 
 # Dependencies
 TODO: 
