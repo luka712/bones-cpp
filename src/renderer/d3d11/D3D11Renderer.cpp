@@ -1,17 +1,17 @@
 #include "renderer/d3d11/D3D11Renderer.hpp"
-#include "Framework.hpp"
+#include <stdexcept>
 
 namespace bns
 {
-    D3D11Renderer::D3D11Renderer(Framework &framework)
-        : Renderer(), m_framework(framework)
+    D3D11Renderer::D3D11Renderer(WindowManager& window)
+        : Renderer(), m_windowManager(window)
     {
+     
     }
 
     void *D3D11Renderer::GetSwapChainTexture()
     {
-        return nullptr;
-        //  return m_swapChainTexture;
+        return m_renderTargetView.p;
     }
 
     void D3D11Renderer::Resize()
@@ -20,7 +20,7 @@ namespace bns
 
     void D3D11Renderer::Initialize(HWND win32Handle)
     {
-        m_bufferSize = m_framework.GetWindowManager().GetWindowSize();
+        m_bufferSize = m_windowManager.GetWindowSize();
 
         // Create the device, device context, and swap chain
         // Define your swap chain and device creation parameters
@@ -148,14 +148,14 @@ namespace bns
 
     void D3D11Renderer::BeginDraw()
     {
-        // Raster state 
-		m_deviceContext->RSSetState(m_rasterizerState);
+        // Raster state
+        m_deviceContext->RSSetState(m_rasterizerState);
 
-		// CLEAR COLOR
-		m_deviceContext->ClearRenderTargetView(m_renderTargetView, &ClearColor.R);
+        // CLEAR COLOR
+        m_deviceContext->ClearRenderTargetView(m_renderTargetView, &ClearColor.R);
 
-		// CLEAR DEPTH STENCIL
-		m_deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+        // CLEAR DEPTH STENCIL
+        m_deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
     }
 
     void D3D11Renderer::EndDraw()

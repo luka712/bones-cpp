@@ -3,10 +3,10 @@
 #define BNS_ENGINE_H
 
 
-#include "Metal.hpp"
+#include "BnsMetal.hpp"
 
 
-#include "window/Window.hpp"
+#include "Window.hpp"
 #include "FileLoader.hpp"
 #include "ImageLoader.hpp"
 #include "loaders/BitmapSpriteFontLoader.hpp"

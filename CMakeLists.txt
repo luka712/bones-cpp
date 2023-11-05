@@ -31,12 +31,15 @@ add_subdirectory(vendor/webgpu)
 add_subdirectory(vendor/SDL2Extension)
 
 # project libraries
+add_subdirectory(lib/window)
 add_subdirectory(lib/loaders)
 add_subdirectory(lib/math)
 add_subdirectory(lib/texture)
 add_subdirectory(lib/rendering_backend)
 if(APPLE)
 add_subdirectory(lib/metal_backend)
+elseif(WIN32)
+add_subdirectory(lib/d3d11_backend)
 endif()
 add_subdirectory(lib/webgpu_backend)
 
@@ -92,7 +95,8 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/include
 
     # The lib dependencies
-    ${CMAKE_CURRENT_SOURCE_DIR}/lib/common/include()
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/window/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/common/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/loaders/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/math/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/texture/include
@@ -143,6 +147,7 @@ endif()
 if(APPLE)
 # Link the libraries to the executable (SDL2, Metal, QuartzCore, Foundation) 
 target_link_libraries(App PRIVATE SDL2::SDL2 ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} webgpu SDL2Extension 
+BnsWindow
 BnsLoaders 
 BnsMath 
 BnsTexture
@@ -152,6 +157,7 @@ BnsWebGPUBackend
 )
 elseif(WIN32)
 target_link_libraries(App PRIVATE SDL2::SDL2 d3d11 dxgi d3dcompiler webgpu SDL2Extension 
+BnsWindow
 BnsLoaders 
 BnsMath 
 BnsTexture
@@ -160,6 +166,7 @@ BnsWebGPUBackend
 )
 else()
 target_link_libraries(App PRIVATE SDL2::SDL2 webgpu SDL2Extension
+BnsWindow
 BnsLoaders 
 BnsMath 
 BnsTexture

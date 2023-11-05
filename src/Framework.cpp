@@ -36,7 +36,7 @@ namespace bns
         m_meshFactory = new MetalMeshFactory(*this);
         m_spriteRenderer = new MetalSpriteRenderer(*this);
 #elif WIN32 && USE_D3D11
-        m_renderer = new D3D11Renderer(*this);
+        m_renderer = new D3D11Renderer(*m_windowManager);
         // m_materialFactory = new D3D11MaterialFactory(*this);
         // m_meshFactory = new D3D11MeshFactory(*this);
         // m_spriteRenderer = new D3D11SpriteRenderer(*this);

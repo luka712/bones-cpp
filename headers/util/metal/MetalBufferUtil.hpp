@@ -4,7 +4,7 @@
 
 #define BNS_METAL_BUFFER_UTIL_HPP
 
-#include "Metal.hpp"
+#include "BnsMetal.hpp"
 #include <string>
 #include <vector>
 #include "Types.hpp"

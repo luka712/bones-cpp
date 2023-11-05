@@ -2,10 +2,8 @@
 
 #define BNS_SDL_WINDOW_H
 
-#include "window/Window.hpp"
+#include "Window.hpp"
 #include <SDL2/SDL.h>
-
-#include "BNSDirectX.hpp"
 
 namespace bns
 {

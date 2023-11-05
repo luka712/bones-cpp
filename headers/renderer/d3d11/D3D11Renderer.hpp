@@ -2,7 +2,8 @@
 
 #define BNS_RENDERER_D3D11_HPP
 
-#include "BNSDirectX.hpp"
+#include "BnsDirectX11.hpp"
+#include "Window.hpp"
 #include "Math.hpp"
 #include "renderer/Renderer.hpp"
 
@@ -13,8 +14,7 @@ namespace bns
     class D3D11Renderer final : public Renderer
     {
     private:
-        /// @brief The framework.
-        Framework &m_framework;
+        WindowManager& m_windowManager;
 
         /// @brief The device.
         CComPtr<ID3D11Device> m_device;
@@ -53,8 +53,21 @@ namespace bns
         void Resize();
 
     public:
-        D3D11Renderer(Framework &framework);
+        D3D11Renderer(WindowManager& window);
 
+        /// @brief Gets the device.
+        /// @return The device.
+        ID3D11Device* GetDevice() const 
+        {
+            return m_device.p;
+        }
+
+        /// @brief Gets the device context.
+        /// @return The device context.
+        ID3D11DeviceContext* GetDeviceContext() const 
+        {
+            return m_deviceContext.p;
+        }
 
         /**
          * @brief Gets the view into swap chain texture.

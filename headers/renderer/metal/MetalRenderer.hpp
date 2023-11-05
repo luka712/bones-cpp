@@ -8,7 +8,7 @@
 #define BNS_RENDERER_METAL_HPP
 
 #include "renderer/Renderer.hpp"
-#include "Metal.hpp"
+#include "BnsMetal.hpp"
 #include "Vec2.hpp"
 #include "Color.hpp"
 

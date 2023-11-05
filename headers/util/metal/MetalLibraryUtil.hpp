@@ -7,7 +7,7 @@
 
 #define BNS_METAL_LIBRARY_UTIL_HPP
 
-#include "Metal.hpp"
+#include "BnsMetal.hpp"
 #include <string>
 
 namespace bns

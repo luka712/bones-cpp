@@ -4,7 +4,7 @@
 
 #define BNS_METAL_MESH_HPP
 
-#include "Metal.hpp"
+#include "BnsMetal.hpp"
 #include "mesh/Mesh.hpp"
 #include "geometry/Geometry.hpp"
 

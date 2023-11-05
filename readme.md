@@ -41,15 +41,14 @@ then: navigate to product -> build
 do: Simply run project in xcode
 
 ### GOALS 0.1 
-- DirectX/Mac/WebGPU initial game. Make sure it runs on Win/Mac/Linux with WebGPU, Metal, DirectX
+- DirectX/Mac/WebGPU initial game. Make sure it runs on Win/Mac/Linux with WebGPU, Metal, DirectX, OpenGL, OpenGLES
 ### GOALS 0.2
 - Emscripten go further with game using engine. Make sure it's compiled for web with WebGPU/OpenGLES using Emscripten.
 
 
 # Dependencies
 TODO: 
-
-- in lib, create WebGPU backend, here move texture implementation similar to Metal backend
+- move SDL2 window implementation to lib 
 - Break project into smaller parts, start with loaders! 
 
 - FORWARD_2D_NUM_OF_POINT_LIGHTS make sure it's passed to shader as well

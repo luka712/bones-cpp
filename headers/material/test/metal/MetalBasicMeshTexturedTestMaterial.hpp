@@ -6,7 +6,7 @@
 
 #include "material/Material.hpp"
 #include "Texture2D.hpp"
-#include "Metal.hpp"
+#include "BnsMetal.hpp"
 namespace bns
 {
     class Framework;

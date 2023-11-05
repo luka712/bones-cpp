@@ -8,7 +8,7 @@
 #include "sprite/metal/MetalSpritePipeline.hpp"
 #include "sprite/SpriteRenderer.hpp"
 #include "font/SpriteFont.hpp"
-#include "Metal.hpp"
+#include "BnsMetal.hpp"
 #include <map>
 #include <stack>
 

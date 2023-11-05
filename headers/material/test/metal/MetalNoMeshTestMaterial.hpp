@@ -5,7 +5,7 @@
 #define METAL_NO_MESH_TEST_MATERIAL_HPP
 
 #include "material/Material.hpp"
-#include "Metal.hpp"
+#include "BnsMetal.hpp"
 
 namespace bns
 {

@@ -6,10 +6,11 @@
 #include "Vec2.hpp"
 #include <string>
 
-#include "Metal.hpp"
-#include "BnsDirectX.hpp"
+#include "BnsMetal.hpp"
+#include "BnsDirectX11.hpp"
+#include "BnsWebgpu.hpp"
 
-#include <webgpu/webgpu.h>
+
 
 namespace bns
 {

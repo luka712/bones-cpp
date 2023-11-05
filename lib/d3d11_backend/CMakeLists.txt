@@ -2,7 +2,7 @@
 
 set(CMAKE_CXX_STANDARD 17)
 
-ADD_LIBRARY(BnsD3D11Backend STATIC src/texture/MetalTexture2D.cpp)
+ADD_LIBRARY(BnsD3D11Backend STATIC src/main.cpp)
 
 # Find DirectX Libraries
 # Path to DirectX SDK
@@ -15,14 +15,13 @@ include_directories(
     # local 
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 
-    # lib 
+    # project libraries 
     ${CMAKE_CURRENT_SOURCE_DIR}/../common/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../loaders/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../rendering-backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../texture/include
 
     # vendor
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../vendor/Metal
 
     # system 
     "C:/Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/um"

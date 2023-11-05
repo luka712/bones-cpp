@@ -1,4 +1,4 @@
-#include "window/Window.hpp"
+#include "Window.hpp"
 
 namespace bns
 {
