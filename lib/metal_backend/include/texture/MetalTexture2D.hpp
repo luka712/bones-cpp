@@ -6,7 +6,7 @@
 
 #include "Texture2D.hpp"
 #include "ImageData.hpp"
-#include <Metal.hpp>
+#include "BnsMetal.hpp"
 
 namespace bns
 {

@@ -7,12 +7,12 @@
 namespace bns
 {
 
-	WebGPURenderer::WebGPURenderer(Framework& framework)
+	WebGPURenderer::WebGPURenderer(Framework &framework)
 		: Renderer(), m_framework(framework)
 	{
 	}
 
-	void* WebGPURenderer::GetSwapChainTexture()
+	void *WebGPURenderer::GetSwapChainTexture()
 	{
 		return wgpuSwapChainGetCurrentTexture(m_swapChain);
 	}
@@ -33,38 +33,36 @@ namespace bns
 		// is to convey what we want to capture through the pUserData pointer,
 		// provided as the last argument of wgpuInstanceRequestAdapter and received
 		// by the callback as its last argument.
-		auto onAdapterRequestEnded = [](WGPURequestAdapterStatus status, WGPUAdapter outAdapter, char const* message, void* pUserData)
+		auto onAdapterRequestEnded = [](WGPURequestAdapterStatus status, WGPUAdapter outAdapter, char const *message, void *pUserData)
+		{
+			UserData &userData = *reinterpret_cast<UserData *>(pUserData);
+			if (status == WGPURequestAdapterStatus_Success)
 			{
-				UserData& userData = *reinterpret_cast<UserData*>(pUserData);
-				if (status == WGPURequestAdapterStatus_Success)
-				{
-					userData.adapter = outAdapter;
-				}
-				else
-				{
-					std::cout << "Could not get WebGPU adapter: " << message << std::endl;
-				}
-				userData.isSuccess = true;
-			};
+				userData.adapter = outAdapter;
+			}
+			else
+			{
+				std::cout << "Could not get WebGPU adapter: " << message << std::endl;
+			}
+			userData.isSuccess = true;
+		};
 
 		WGPURequestAdapterOptions options = {};
 
 		WGPUDawnTogglesDescriptor togglesDesc;
 		togglesDesc.chain.sType = WGPUSType_DawnTogglesDescriptor;
-		const char* allowUnsafeApi = "allow_unsafe_apis";
-		togglesDesc.enabledToggles = { &allowUnsafeApi };
+		const char *allowUnsafeApi = "allow_unsafe_apis";
+		togglesDesc.enabledToggles = {&allowUnsafeApi};
 		togglesDesc.enabledTogglesCount = 1;
 		togglesDesc.disabledTogglesCount = 0;
-		options.nextInChain = reinterpret_cast<WGPUChainedStruct*>(&togglesDesc);
-
-
+		options.nextInChain = reinterpret_cast<WGPUChainedStruct *>(&togglesDesc);
 
 		// Call to the WebGPU request adapter procedure
 		wgpuInstanceRequestAdapter(
 			m_instance /* equivalent of navigator.gpu */,
 			&options,
 			onAdapterRequestEnded,
-			(void*)&outData);
+			(void *)&outData);
 
 		// In theory we should wait until onAdapterReady has been called, which
 		// could take some time (what the 'await' keyword does in the JavaScript
@@ -84,19 +82,19 @@ namespace bns
 			bool isSuccess = false;
 		} userData;
 
-		auto onDeviceRequestEnded = [](WGPURequestDeviceStatus status, WGPUDevice device, char const* message, void* pUserData)
+		auto onDeviceRequestEnded = [](WGPURequestDeviceStatus status, WGPUDevice device, char const *message, void *pUserData)
+		{
+			UserData &userData = *reinterpret_cast<UserData *>(pUserData);
+			if (status == WGPURequestDeviceStatus_Success)
 			{
-				UserData& userData = *reinterpret_cast<UserData*>(pUserData);
-				if (status == WGPURequestDeviceStatus_Success)
-				{
-					userData.device = device;
-				}
-				else
-				{
-					std::cout << "Could not get WebGPU adapter: " << message << std::endl;
-				}
-				userData.isSuccess = true;
-			};
+				userData.device = device;
+			}
+			else
+			{
+				std::cout << "Could not get WebGPU adapter: " << message << std::endl;
+			}
+			userData.isSuccess = true;
+		};
 
 		WGPUDeviceDescriptor deviceDescriptor = {};
 		deviceDescriptor.nextInChain = nullptr;
@@ -104,7 +102,7 @@ namespace bns
 			m_adapter,
 			&deviceDescriptor,
 			onDeviceRequestEnded,
-			(void*)&userData);
+			(void *)&userData);
 
 		assert(userData.isSuccess);
 
@@ -150,23 +148,23 @@ namespace bns
 		m_device = CreateDevice();
 		m_queue = wgpuDeviceGetQueue(m_device);
 
-		auto onQueueDone = [](WGPUQueueWorkDoneStatus status, void* userData)
-			{
-				std::cout << "Queued work finished with status: " << status << std::endl;
-			};
+		auto onQueueDone = [](WGPUQueueWorkDoneStatus status, void *userData)
+		{
+			std::cout << "Queued work finished with status: " << status << std::endl;
+		};
 		wgpuQueueOnSubmittedWorkDone(m_queue, 0, onQueueDone, nullptr);
 
 		m_framework.Context.WebGPUDevice = m_device;
 		m_framework.Context.WebGPUQueue = m_queue;
 
-		auto handleWebGPUError = [](WGPUErrorType type, const char* message, void* userData)
-			{
-				// Handle the error here, such as logging or displaying an error message
-				// You can access the error type and message to determine the cause of the error
+		auto handleWebGPUError = [](WGPUErrorType type, const char *message, void *userData)
+		{
+			// Handle the error here, such as logging or displaying an error message
+			// You can access the error type and message to determine the cause of the error
 
-				// Example: Printing the error message
-				printf("WebGPU Error: %s\n", message);
-			};
+			// Example: Printing the error message
+			printf("WebGPU Error: %s\n", message);
+		};
 
 		// Set the error callback
 		wgpuDeviceSetUncapturedErrorCallback(m_device, handleWebGPUError, nullptr);
@@ -174,12 +172,15 @@ namespace bns
 		Resize(); // creates swap chain
 
 		m_brightnessTexture = m_framework.GetTextureManager().CreateEmpty(m_bufferSize.X, m_bufferSize.Y,
-			TextureUsage::RENDER_ATTACHMENT | TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_SRC | TextureUsage::COPY_DST,
-			TextureFormat::BGRA_8_Unorm);
+																		  TextureUsage::RENDER_ATTACHMENT | TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_SRC | TextureUsage::COPY_DST,
+																		  TextureFormat::BGRA_8_Unorm);
 	}
 
 	void WebGPURenderer::BeginDraw()
 	{
+#if DEBUG
+		wgpuDeviceTick(m_device);
+#endif
 		m_drawCommandEncoder = wgpuDeviceCreateCommandEncoder(m_device, nullptr);
 
 		WGPURenderPassColorAttachment colorAttachment[2];
@@ -192,23 +193,23 @@ namespace bns
 		else
 		{
 			// if render texture is set, we render to it
-			WGPUTexture wgpuTexture = static_cast<WebGPUTexture2D*>(m_renderTexture)->Texture;
+			WGPUTexture wgpuTexture = static_cast<WebGPUTexture2D *>(m_renderTexture)->Texture;
 			m_currentTextureView = wgpuTextureCreateView(wgpuTexture, nullptr);
 		}
 		colorAttachment[0].nextInChain = nullptr;
 		colorAttachment[0].view = m_currentTextureView;
 		colorAttachment[0].resolveTarget = nullptr;
-		colorAttachment[0].clearValue = { ClearColor.R, ClearColor.G, ClearColor.B, ClearColor.A };
+		colorAttachment[0].clearValue = {ClearColor.R, ClearColor.G, ClearColor.B, ClearColor.A};
 		colorAttachment[0].loadOp = WGPULoadOp_Clear;
 		colorAttachment[0].storeOp = WGPUStoreOp_Store;
 
-		WGPUTexture wgpuTexture = static_cast<WebGPUTexture2D*>(m_brightnessTexture)->Texture;
+		WGPUTexture wgpuTexture = static_cast<WebGPUTexture2D *>(m_brightnessTexture)->Texture;
 		m_brightnessTextureView = wgpuTextureCreateView(wgpuTexture, nullptr);
 
 		colorAttachment[1].nextInChain = nullptr;
 		colorAttachment[1].view = m_brightnessTextureView;
 		colorAttachment[1].resolveTarget = nullptr;
-		colorAttachment[1].clearValue = { ClearColor.R, ClearColor.G, ClearColor.B, ClearColor.A };
+		colorAttachment[1].clearValue = {ClearColor.R, ClearColor.G, ClearColor.B, ClearColor.A};
 		colorAttachment[1].loadOp = WGPULoadOp_Clear;
 		colorAttachment[1].storeOp = WGPUStoreOp_Store;
 

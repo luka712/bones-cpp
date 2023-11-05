@@ -10,9 +10,14 @@ include(utils.cmake)
 
 # BACKEND RENDERER FLIPS 
 # Apple specific
-set(USE_METAL 0)
+set(USE_METAL 1)
 # Windows specific
 set(USE_D3D11 1)
+
+# DEBUG 
+# flips debug mode on/off
+# webgpu backend has a debug mode that breaks on errors
+set(DEBUG 1)
 
 # LIGHTS 
 # Number of point lights available for sprite renderer when forward rendering is used 
@@ -32,6 +37,7 @@ add_subdirectory(vendor/SDL2Extension)
 
 # project libraries
 add_subdirectory(lib/window)
+add_subdirectory(lib/sdl_window)
 add_subdirectory(lib/loaders)
 add_subdirectory(lib/math)
 add_subdirectory(lib/texture)
@@ -90,12 +96,12 @@ include_directories(
 
     # vendor 
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor
-    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/Metal
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/webgpu/include
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/include
 
     # The lib dependencies
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/window/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/sdl_window/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/common/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/loaders/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/math/include
@@ -125,6 +131,7 @@ endif()
 
 # If we are on Apple, we can use Metal or WebGPU (Metal is the default)
 target_compile_options(App PRIVATE 
+-DDEBUG=${DEBUG}
 -DUSE_METAL=${USE_METAL} -DUSE_D3D11=${USE_D3D11} 
 -DFORWARD_2D_NUM_OF_POINT_LIGHTS=${FORWARD_2D_NUM_OF_POINT_LIGHTS}
 ) 
@@ -148,6 +155,7 @@ if(APPLE)
 # Link the libraries to the executable (SDL2, Metal, QuartzCore, Foundation) 
 target_link_libraries(App PRIVATE SDL2::SDL2 ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} webgpu SDL2Extension 
 BnsWindow
+BnsSDLWindow
 BnsLoaders 
 BnsMath 
 BnsTexture
@@ -158,6 +166,7 @@ BnsWebGPUBackend
 elseif(WIN32)
 target_link_libraries(App PRIVATE SDL2::SDL2 d3d11 dxgi d3dcompiler webgpu SDL2Extension 
 BnsWindow
+BnsSDLWindow
 BnsLoaders 
 BnsMath 
 BnsTexture
@@ -167,6 +176,7 @@ BnsWebGPUBackend
 else()
 target_link_libraries(App PRIVATE SDL2::SDL2 webgpu SDL2Extension
 BnsWindow
+BnsSDLWindow
 BnsLoaders 
 BnsMath 
 BnsTexture

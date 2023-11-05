@@ -1,3 +1,5 @@
+#ifdef WIN32
+
 #ifndef BNS_RENDERER_D3D11_HPP
 
 #define BNS_RENDERER_D3D11_HPP
@@ -82,3 +84,5 @@ namespace bns
 } // namespace BNS
 
 #endif // !BNS_RENDERER_D3D11_HPP
+
+#endif 

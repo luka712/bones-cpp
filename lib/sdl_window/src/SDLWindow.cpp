@@ -1,13 +1,12 @@
-#include "window/sdl_window.hpp"
+#include "SDLWindow.hpp"
 #include <iostream>
 #include "SDL2Extension/SDL2_Extension.h"
 
 // To get correct struct from <SDL2\SDL_syswm.h>, we must define.
 #if WIN32
     #define SDL_VIDEO_DRIVER_WINDOWS 1 
+    #include <SDL2\SDL_syswm.h>
 #endif // WIN32
-
-#include <SDL2\SDL_syswm.h>
 
 namespace bns
 {

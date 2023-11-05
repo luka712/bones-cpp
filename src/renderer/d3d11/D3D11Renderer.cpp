@@ -1,3 +1,5 @@
+#ifdef WIN32
+
 #include "renderer/d3d11/D3D11Renderer.hpp"
 #include <stdexcept>
 
@@ -168,3 +170,5 @@ namespace bns
     {
     }
 }
+
+#endif 

@@ -3,7 +3,7 @@
 #include "renderer/metal/MetalRenderer.hpp"
 #include "renderer/wgpu/WebGPURenderer.hpp"
 #include "renderer/d3d11/D3D11Renderer.hpp"
-#include "window/sdl_window.hpp"
+#include "SDLWindow.hpp"
 #include "material/WebGPUMaterialFactory.hpp"
 #include "mesh/wgpu/WebGPUMeshFactory.hpp"
 #include "mesh/metal/MetalMeshFactory.hpp"
@@ -113,15 +113,14 @@ namespace bns
             // Do nothing, this checks for ongoing asynchronous operations and call their callbacks
             // NOTE: this is specific to DAWN and is not part of WebGPU standard.
             // TODO: move to renderer of webgpu
-           //  wgpuDeviceTick(Context.WebGPUDevice);
 // #endif
            
             m_renderer->BeginDraw();
-            // m_spriteRenderer->BeginFrame();
+            m_spriteRenderer->BeginFrame();
 
             callback();
             
-           //  m_spriteRenderer->EndFrame();
+            m_spriteRenderer->EndFrame();
             m_renderer->EndDraw();
 
             SDL_Delay(16);

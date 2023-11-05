@@ -44,9 +44,6 @@ int main()
 
 void Initialize()
 {
-    // TODO: temporary return just for direct x testing
-    return;
-
     font = engine.GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
     testTexture = engine.GetTextureManager().LoadTexture2D("assets/uv_test.png");
 
@@ -67,7 +64,6 @@ void Initialize()
 
 void Draw()
 {
-    return; // TODO: temporary return just for direct x testing
 
     bns::Renderer * renderer = engine.GetRenderer();
     bns::SpriteRenderer *spriteRenderer = engine.GetSpriteRenderer();

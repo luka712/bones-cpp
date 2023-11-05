@@ -10,7 +10,7 @@
 namespace bns
 {
 	MetalRenderer::MetalRenderer(Framework& framework)
-		: Renderer(framework), m_framework(framework)
+		: Renderer(), m_framework(framework)
 	{
 
 	}

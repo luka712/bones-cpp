@@ -41,7 +41,7 @@ then: navigate to product -> build
 do: Simply run project in xcode
 
 ### GOALS 0.1 
-- DirectX/Mac/WebGPU initial game. Make sure it runs on Win/Mac/Linux with WebGPU, Metal, DirectX, OpenGL, OpenGLES
+- DirectX11/Metal/WebGPU/OpenGL45/OpenGLES initial game. Make sure it runs on Win/Mac/Linux with WebGPU, Metal, DirectX, OpenGL, OpenGLES
 ### GOALS 0.2
 - Emscripten go further with game using engine. Make sure it's compiled for web with WebGPU/OpenGLES using Emscripten.
 
