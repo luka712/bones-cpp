@@ -2,6 +2,7 @@
 #include "Framework.hpp"
 
 #if __APPLE__ && USE_METAL
+#include "renderer/MetalRenderer.hpp"
 #include "texture/MetalTexture2D.hpp"
 #else
 #include "texture/WebGPUTexture2D.hpp"
@@ -17,7 +18,8 @@ namespace bns
     Texture2D *TextureManagerImpl::CreateBackendImplTexture(ImageData *imageData, i32 textureUsageFlags, TextureFormat format)
     {
 #if __APPLE__ && USE_METAL
-        return new MetalTexture2D(m_framework.Context.MetalDevice, imageData, textureUsageFlags, format);
+        MetalRenderer* renderer = static_cast<MetalRenderer*>(m_framework.GetRenderer());
+        return new MetalTexture2D(renderer->GetDevice(), imageData, textureUsageFlags, format);
 #else
         return new WebGPUTexture2D(m_framework.Context.WebGPUDevice, imageData, textureUsageFlags, format);
 #endif

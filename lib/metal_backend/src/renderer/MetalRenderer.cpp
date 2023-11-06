@@ -1,16 +1,14 @@
 #ifdef __APPLE__
 
-
-#include "renderer/metal/MetalRenderer.hpp"
+#include "renderer/MetalRenderer.hpp"
 #include <simd/simd.h>
-#include "util/MetalUtil.hpp"
-#include "Framework.hpp"
+#include "MetalUtil.hpp"
 #include "texture/MetalTexture2D.hpp"
 
 namespace bns
 {
-	MetalRenderer::MetalRenderer(Framework& framework)
-		: Renderer(), m_framework(framework)
+	MetalRenderer::MetalRenderer(WindowManager* windowManager)
+		: Renderer(), m_windowManager(windowManager)
 	{
 
 	}
@@ -27,15 +25,12 @@ namespace bns
 	{
 		m_metalLayer = metalLayer;
 
-		m_bufferSize = m_framework.GetWindowManager().GetWindowSize();
+		m_bufferSize = m_windowManager->GetWindowSize();
 
 		m_device = m_metalLayer->device();
 		m_queue = m_device->newCommandQueue();
 
 		Resize();
-
-		m_framework.Context.MetalDevice = m_device;
-		m_framework.Context.MetalCommandQueue = m_queue;
 	}
 
 	void MetalRenderer::Resize()
@@ -92,7 +87,6 @@ namespace bns
 
 		m_commandBuffer = m_queue->commandBuffer();
 		m_renderCommandEncoder = m_commandBuffer->renderCommandEncoder(pRenderPassDesc);
-		m_framework.Context.CurrentMetalRenderCommandEncoder = m_renderCommandEncoder;
 		// MTL::ResourceStateCommandEncoder *updateEncoder = m_commandBuffer->resourceStateCommandEncoder();
 
 		// viewport

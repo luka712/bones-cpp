@@ -1,7 +1,7 @@
 #ifdef __APPLE__
 
 #include "sprite/metal/MetalSpriteRenderer.hpp"
-#include "util/MetalUtil.hpp"
+#include "MetalUtil.hpp"
 #include "Constants.hpp"
 #include "Framework.hpp"
 #include "Constants.hpp"
@@ -9,8 +9,8 @@
 namespace bns
 {
 
-    MetalSpriteRenderer::MetalSpriteRenderer(Framework &framework)
-        : SpriteRenderer(framework)
+    MetalSpriteRenderer::MetalSpriteRenderer(Framework &framework, Renderer &renderer)
+        : SpriteRenderer(framework), m_renderer(static_cast<MetalRenderer &>(renderer))
     {
         BrightnessThreshold = 0.3f;
         AmbientLight.Intensity = 1.0f;
@@ -54,7 +54,7 @@ namespace bns
             }
 
             // if not found, we are sure that there is no pipeline, create one and push it to current draw pipelines.
-            MetalSpritePipeline *pipeline = MetalSpritePipeline::Create(m_framework, texture);
+            MetalSpritePipeline *pipeline = MetalSpritePipeline::Create(m_renderer, texture);
             m_currentDrawPipelines[textureId].push(pipeline);
             m_allocatedPipelines[textureId].push(pipeline);
             return *pipeline;
@@ -69,7 +69,7 @@ namespace bns
             // return then new pipeline.
             if (m_allocatedPipelines[textureId].empty())
             {
-                MetalSpritePipeline *pipeline = MetalSpritePipeline::Create(m_framework, texture);
+                MetalSpritePipeline *pipeline = MetalSpritePipeline::Create(m_renderer, texture);
                 m_currentDrawPipelines[textureId].push(pipeline);
                 m_allocatedPipelines[textureId].push(pipeline);
                 return *pipeline;
@@ -87,7 +87,7 @@ namespace bns
     void MetalSpriteRenderer::Initialize()
     {
         // setup camera buffer
-        m_device = m_framework.Context.MetalDevice;
+        m_device = m_renderer.GetDevice();
         m_projectionViewMatrixBuffer = MetalUtil::Buffer.Create<f32>(m_device, sizeof(Mat4x4f), "Sprite Renderer Camera Buffer");
 
         // setup brightness threshold buffer
@@ -292,7 +292,7 @@ namespace bns
 
     void MetalSpriteRenderer::EndFrame()
     {
-        MTL::RenderCommandEncoder *renderPass = m_framework.Context.CurrentMetalRenderCommandEncoder;
+        MTL::RenderCommandEncoder *renderPass = m_renderer.GetRenderCommandEncoder();
 
         std::stack<MTL::Buffer *> tempVertexBufferStack;
 
@@ -364,6 +364,5 @@ namespace bns
         }
     }
 }
-
 
 #endif // __APPLE__

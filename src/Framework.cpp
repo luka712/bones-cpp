@@ -1,6 +1,6 @@
 #include "Framework.hpp"
 #include <vector>
-#include "renderer/metal/MetalRenderer.hpp"
+#include "renderer/MetalRenderer.hpp"
 #include "renderer/wgpu/WebGPURenderer.hpp"
 #include "renderer/d3d11/D3D11Renderer.hpp"
 #include "SDLWindow.hpp"
@@ -31,10 +31,10 @@ namespace bns
         m_windowManager = new SDLWindowManager();
 
 #if __APPLE__ && USE_METAL
-        m_renderer = new MetalRenderer(*this);
+        m_renderer = new MetalRenderer(m_windowManager);
         // m_materialFactory = new MetalMaterialFactory(*this);
         m_meshFactory = new MetalMeshFactory(*this);
-        m_spriteRenderer = new MetalSpriteRenderer(*this);
+        m_spriteRenderer = new MetalSpriteRenderer(*this, *m_renderer);
 #elif WIN32 && USE_D3D11
         m_renderer = new D3D11Renderer(*m_windowManager);
         // m_materialFactory = new D3D11MaterialFactory(*this);
@@ -59,7 +59,7 @@ namespace bns
         m_spriteRenderer->Initialize();
 #elif WIN32 && USE_D3D11
         InitializeForD3D11(windowParameters);
-#else
+#elif USE_WEBGPU
         InitializeForWGPU(windowParameters);
         m_spriteRenderer->Initialize();
 #endif
@@ -68,6 +68,7 @@ namespace bns
         callback();
     }
 
+#ifdef USE_WEBGPU
     void Framework::InitializeForWGPU(WindowParameters windowParameters)
     {
         WGPUInstance instance;
@@ -76,6 +77,7 @@ namespace bns
 
         static_cast<WebGPURenderer *>(m_renderer)->Initialize(instance, surface);
     }
+#endif // USE_WEBGPU
 
 #ifdef __APPLE__
     void Framework::InitializeForMetal(WindowParameters windowParameters)

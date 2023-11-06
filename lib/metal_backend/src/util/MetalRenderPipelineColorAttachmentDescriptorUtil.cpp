@@ -1,6 +1,6 @@
 #ifdef __APPLE__
 
-#include "util/metal/MetalRenderPipelineColorAttachmentDescriptorUtil.hpp"
+#include "util/MetalRenderPipelineColorAttachmentDescriptorUtil.hpp"
 
 namespace bns
 {

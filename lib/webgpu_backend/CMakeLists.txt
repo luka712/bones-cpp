@@ -14,6 +14,9 @@ if(APPLE)
     find_library(APPLE_FWK_METAL Metal REQUIRED)
 endif()
 
+# COMPILE OPTIONS
+target_compile_options(BnsWebGPUBackend PRIVATE -DUSE_WEBGPU=1)
+
 if(APPLE)
     target_link_libraries(BnsWebGPUBackend PRIVATE ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} BnsTexture)
 else()

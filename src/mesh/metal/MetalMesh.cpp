@@ -3,7 +3,7 @@
 #include "mesh/metal/MetalMesh.hpp"
 #include "Framework.hpp"
 #include "Types.hpp"
-#include "util/MetalUtil.hpp"
+#include "MetalUtil.hpp"
 
 namespace bns
 {
@@ -11,6 +11,7 @@ namespace bns
     MetalMesh::MetalMesh(const Framework &framework, const Geometry &geometry)
         : Mesh(framework), m_geometry(geometry)
     {
+        m_renderer = static_cast<MetalRenderer *>(framework.GetRenderer());
         m_numOfVertices = geometry.NumOfVertices;
         IndicesCount = geometry.Indices.size();
         IndexBuffer = nullptr;
@@ -22,7 +23,7 @@ namespace bns
 
     void MetalMesh::Initialize()
     {
-        m_device = m_framework.Context.MetalDevice;
+        m_device = m_renderer->GetDevice();
 
         if (m_geometry.Indices.size() > 0)
         {
@@ -58,8 +59,7 @@ namespace bns
 
     void MetalMesh::InitializeVertexPositionsBuffer()
     {
-        MTL::Device *device = m_framework.Context.MetalDevice;
-        IndexBuffer = MetalBufferUtil::Create(device,
+        IndexBuffer = MetalBufferUtil::Create(m_device,
                                                     m_geometry.VertexPositions,
                                                     "VertexPositionsBuffer");
     }
@@ -80,9 +80,7 @@ namespace bns
             }
         }
 
-        MTL::Device *device = m_framework.Context.MetalDevice;
-
-        VertexColorsBuffer = MetalBufferUtil::Create(device,
+        VertexColorsBuffer = MetalBufferUtil::Create(m_device,
                                                            colors,
                                                            "VertexColorsBuffer");
     }
@@ -90,8 +88,7 @@ namespace bns
     void MetalMesh::InitializeTextureCoordinatesBuffer()
     {
         std::vector<f32> texCoords = m_geometry.TextureCoordinates;
-        MTL::Device *device = m_framework.Context.MetalDevice;
-        MTL::Buffer *buffer = MetalBufferUtil::Create(device,
+        MTL::Buffer *buffer = MetalBufferUtil::Create(m_device,
                                                             texCoords,
                                                             "TextureCoordinatesBuffer");
         TextureCoordsBuffer = buffer;

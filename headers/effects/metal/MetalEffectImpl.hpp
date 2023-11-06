@@ -7,6 +7,8 @@
 #include "effects/Effect.hpp"
 #include "texture/MetalTexture2D.hpp"
 #include <string>
+#include "renderer/MetalRenderer.hpp"
+
 
 /**
  * Each effects should at least have a vertex shader and a fragment shader
@@ -21,9 +23,10 @@ namespace bns
     class MetalEffectImpl : public Effect
     {
     protected:
-        /**
-         * The device. Fetched in initialize.
-         */
+        /// @brief The renderer.
+        MetalRenderer *m_renderer;
+
+        /// @brief The device.
         MTL::Device *m_device;
 
         MTL::RenderPipelineState *m_pipeline; // post process shaders pipeline

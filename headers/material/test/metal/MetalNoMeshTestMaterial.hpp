@@ -1,4 +1,4 @@
-#ifdef __APPLE__ 
+#ifdef __APPLE__
 
 #ifndef METAL_NO_MESH_TEST_MATERIAL_HPP
 
@@ -6,6 +6,7 @@
 
 #include "material/Material.hpp"
 #include "BnsMetal.hpp"
+#include "renderer/MetalRenderer.hpp"
 
 namespace bns
 {
@@ -20,7 +21,11 @@ namespace bns
     class MetalNoMeshTestMaterial final : public Material
     {
     private:
-        Framework &m_framework;
+        /// @brief The metal renderer.
+        MetalRenderer& m_renderer;
+
+        /// @brief The file loader
+        FileLoader& m_fileLoader;
 
         /**
          * @brief The pipeline for the material.
@@ -29,7 +34,7 @@ namespace bns
         MTL::RenderPipelineState *m_pipeline;
 
     public:
-        MetalNoMeshTestMaterial(Framework &framework);
+        MetalNoMeshTestMaterial(Renderer& renderer, FileLoader& fileLoader);
         ~MetalNoMeshTestMaterial();
 
         /**

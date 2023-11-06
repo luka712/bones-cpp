@@ -6,6 +6,7 @@
 
 #include "material/Material.hpp"
 #include "BnsMetal.hpp"
+#include "renderer/MetalRenderer.hpp"
 
 namespace bns
 {
@@ -21,6 +22,12 @@ namespace bns
     {
     private:
         Framework &m_framework;
+
+        /// @brief The renderer.
+        MetalRenderer *m_renderer;
+
+        /// @brief The device.
+        MTL::Device *m_device;
 
         /**
          * @brief The pipeline for the material.

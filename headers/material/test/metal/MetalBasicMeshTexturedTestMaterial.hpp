@@ -7,6 +7,8 @@
 #include "material/Material.hpp"
 #include "Texture2D.hpp"
 #include "BnsMetal.hpp"
+#include "renderer/MetalRenderer.hpp"
+
 namespace bns
 {
     class Framework;
@@ -20,6 +22,11 @@ namespace bns
     class MetalBasicMeshTexturedTestMaterial final : public Material
     {
     private:
+        MetalRenderer *m_renderer;
+
+        /// @brief The device.
+        MTL::Device* m_device;
+
         Framework &m_framework;
 
         /**

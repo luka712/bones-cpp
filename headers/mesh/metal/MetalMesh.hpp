@@ -7,6 +7,7 @@
 #include "BnsMetal.hpp"
 #include "mesh/Mesh.hpp"
 #include "geometry/Geometry.hpp"
+#include "renderer/MetalRenderer.hpp"
 
 namespace bns
 {
@@ -14,6 +15,8 @@ namespace bns
     {
 
     private:
+        MetalRenderer* m_renderer;
+
         MTL::Device *m_device;
 
         size_t m_numOfVertices;

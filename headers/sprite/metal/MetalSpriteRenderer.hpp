@@ -9,6 +9,7 @@
 #include "sprite/SpriteRenderer.hpp"
 #include "font/SpriteFont.hpp"
 #include "BnsMetal.hpp"
+#include "renderer/MetalRenderer.hpp"
 #include <map>
 #include <stack>
 
@@ -22,9 +23,10 @@ namespace bns
     class MetalSpriteRenderer final : public SpriteRenderer
     {
     private:
-        /**
-         * @brief The device.
-         */
+        /// @brief The metal renderer.
+        MetalRenderer& m_renderer;
+
+        /// @brief The device.
         MTL::Device *m_device;
 
         /**
@@ -75,7 +77,7 @@ namespace bns
 
     public:
         /// @brief The default constructor.
-        MetalSpriteRenderer(Framework &framework);
+        MetalSpriteRenderer(Framework &framework, Renderer& renderer);
 
         void Initialize() override;
 

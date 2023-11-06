@@ -2,7 +2,7 @@
 
 #include "effects/metal/MetalBloomEffect.hpp"
 #include "Framework.hpp"
-#include "util/MetalUtil.hpp"
+#include "MetalUtil.hpp"
 
 namespace bns
 {
@@ -17,7 +17,7 @@ namespace bns
 
     void MetalBloomEffectImpl::Initialize()
     {
-        MTL::Device *device = m_framework.Context.MetalDevice;
+        m_device = m_renderer->GetDevice();
 
         auto bufferSize = m_framework.GetRenderer()->GetBufferSize();
 
@@ -40,8 +40,7 @@ namespace bns
             m_blurEffect.Draw(m_brightnessTexture->Texture);
         }
 
-        MTL::Device *device = m_framework.Context.MetalDevice;
-        MTL::CommandQueue *queue = m_framework.Context.MetalCommandQueue;
+        MTL::CommandQueue *queue = m_renderer->GetCommandQueue();
 
         // Convert to Metal types
         MetalTexture2D *mtlTextureWrapper = static_cast<MetalTexture2D *>(m_sourceTexture);
@@ -81,6 +80,5 @@ namespace bns
 #pragma endregion
 
 } // namespace bns
-
 
 #endif //  __APPLE__

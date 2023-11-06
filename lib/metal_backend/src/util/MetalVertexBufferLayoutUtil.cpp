@@ -1,6 +1,6 @@
 #ifdef __APPLE__
 
-#include "util/metal/MetalVertexBufferLayoutUtil.hpp"
+#include "util/MetalVertexBufferLayoutUtil.hpp"
 
 namespace bns
 {

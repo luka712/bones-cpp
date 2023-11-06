@@ -4,8 +4,8 @@
 
 // To get correct struct from <SDL2\SDL_syswm.h>, we must define.
 #if WIN32
-    #define SDL_VIDEO_DRIVER_WINDOWS 1 
-    #include <SDL2\SDL_syswm.h>
+#define SDL_VIDEO_DRIVER_WINDOWS 1
+#include <SDL2\SDL_syswm.h>
 #endif // WIN32
 
 namespace bns
@@ -74,6 +74,7 @@ namespace bns
         m_windowSize = Vec2u(width, height);
     }
 
+#ifdef USE_WEBGPU
     bool SDLWindowManager::InitializeForWGPU(WindowParameters windowParameters, WGPUInstance *outInstance, WGPUSurface *outSurface)
     {
         CreateWindowAndRenderer(windowParameters);
@@ -90,6 +91,7 @@ namespace bns
 
         return true;
     }
+#endif // USE_WEBGPU
 
 #ifdef __APPLE__
     CA::MetalLayer *SDLWindowManager::InitializeForMetal(WindowParameters windowParameters)

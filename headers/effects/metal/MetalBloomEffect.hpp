@@ -6,12 +6,15 @@
 #include "effects/BloomEffect.hpp"
 #include "effects/metal/MetalBlurEffect.hpp"
 #include <math.h>
+#include "renderer/MetalRenderer.hpp"
 
 namespace bns
 {
     class MetalBloomEffectImpl final : public MetalEffectImpl
     {
     private:
+        MTL::Device* m_device;
+
         /// @brief The brightness texture.
         MetalTexture2D *m_brightnessTexture;
 

@@ -7,10 +7,14 @@
 #include <string>
 
 #include "BnsMetal.hpp"
+
+#if DIRECTX11
 #include "BnsDirectX11.hpp"
+#endif // WIN
+
+#ifdef USE_WEBGPU
 #include "BnsWebgpu.hpp"
-
-
+#endif 
 
 namespace bns
 {
@@ -60,10 +64,15 @@ namespace bns
         /// @brief Initialize for D3D11.
         virtual HWND InitializeForD3D11(WindowParameters windowParameters) = 0;
 #endif
-        /**
-         * Gets the WGPU surface.
-         */
+
+#ifdef USE_WEBGPU
+        /// @brief Initialize for WGPU.
+        /// @param windowParameters The window parameters.
+        /// @param outInstance The WGPU instance as out parameter.
+        /// @param outSurface The WGPU surface as out parameter.
+        /// @return True if initialization was successful, false otherwise.
         virtual bool InitializeForWGPU(WindowParameters windowParameters, WGPUInstance *outInstance, WGPUSurface *outSurface) = 0;
+#endif
     };
 
 } // namespace BNS

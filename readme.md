@@ -48,7 +48,8 @@ do: Simply run project in xcode
 
 # Dependencies
 TODO: 
-- move SDL2 window implementation to lib 
+- fix all errors regarding metal. Device, Queue, RenderCommandEncoder should be fetched from renderer
+- move renderer implementations to lib Metal, WebGPU, DirectX
 - Break project into smaller parts, start with loaders! 
 
 - FORWARD_2D_NUM_OF_POINT_LIGHTS make sure it's passed to shader as well

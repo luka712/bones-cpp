@@ -1,15 +1,13 @@
-#ifdef __APPLE__ 
-
-
+#ifdef __APPLE__
 
 #include "material/test/metal/MetalNoMeshTestMaterial.hpp"
 #include "Framework.hpp"
-#include "util/MetalUtil.hpp"
+#include "MetalUtil.hpp"
 
 namespace bns
 {
-    MetalNoMeshTestMaterial::MetalNoMeshTestMaterial(Framework &framework)
-        : m_framework(framework)
+    MetalNoMeshTestMaterial::MetalNoMeshTestMaterial(Renderer &renderer, FileLoader &fileLoader)
+        : m_renderer(static_cast<MetalRenderer &>(renderer)), m_fileLoader(fileLoader)
     {
     }
 
@@ -19,9 +17,9 @@ namespace bns
 
     void MetalNoMeshTestMaterial::Initialize()
     {
-        std::string shaderSource = m_framework.FileLoader.LoadFile("shaders/metal/no_mesh_test_shader.metal");
+        std::string shaderSource = m_fileLoader.LoadFile("shaders/metal/no_mesh_test_shader.metal");
 
-        MTL::Device *device = m_framework.Context.MetalDevice;
+        MTL::Device *device = m_renderer.GetDevice();
 
         NS::Error *pError = nullptr;
         MTL::Library *pLibrary = device->newLibrary(NS::String::string(shaderSource.c_str(), NS::StringEncoding::UTF8StringEncoding), nullptr, &pError);
@@ -57,7 +55,7 @@ namespace bns
      */
     void MetalNoMeshTestMaterial::Draw(const Camera &camera, Mesh *mesh)
     {
-        MTL::RenderCommandEncoder *renderCommandEncoder = m_framework.Context.CurrentMetalRenderCommandEncoder;
+        MTL::RenderCommandEncoder *renderCommandEncoder = m_renderer.GetRenderCommandEncoder();
         renderCommandEncoder->setRenderPipelineState(m_pipeline);
         renderCommandEncoder->drawPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle, NS::UInteger(0), NS::UInteger(3));
     }
@@ -72,7 +70,7 @@ namespace bns
      */
     void MetalNoMeshTestMaterial::Draw(const Camera &camera, const Mesh &mesh, std::vector<Mat4x4f> transforms)
     {
-        MTL::RenderCommandEncoder *renderCommandEncoder = m_framework.Context.CurrentMetalRenderCommandEncoder;
+        MTL::RenderCommandEncoder *renderCommandEncoder = m_renderer.GetRenderCommandEncoder();
         renderCommandEncoder->setRenderPipelineState(m_pipeline);
         renderCommandEncoder->drawPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle, NS::UInteger(0), NS::UInteger(3));
     }
@@ -88,7 +86,7 @@ namespace bns
      */
     void MetalNoMeshTestMaterial::DrawInstancedPrefilled(const Camera &camera, const Mesh &mesh, f32 *flatTransformsArray, i32 nOfInstances)
     {
-        MTL::RenderCommandEncoder *renderCommandEncoder = m_framework.Context.CurrentMetalRenderCommandEncoder;
+        MTL::RenderCommandEncoder *renderCommandEncoder = m_renderer.GetRenderCommandEncoder();
         renderCommandEncoder->setRenderPipelineState(m_pipeline);
         renderCommandEncoder->drawPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle, NS::UInteger(0), NS::UInteger(3));
     }
@@ -96,8 +94,7 @@ namespace bns
     /**
      * @brief Create a new copy of material
      */
-    Material *MetalNoMeshTestMaterial::Copy() { return new MetalNoMeshTestMaterial(m_framework); }
+    Material *MetalNoMeshTestMaterial::Copy() { return new MetalNoMeshTestMaterial(m_renderer, m_fileLoader); }
 }
 
-
-#endif // __APPLE__ 
+#endif // __APPLE__

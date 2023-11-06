@@ -3,13 +3,14 @@
 #include "Framework.hpp"
 #include "mesh/metal/MetalMesh.hpp"
 #include "material/test/metal/MetalBasicMeshTestMaterial.hpp"
-#include "util/MetalUtil.hpp"
+#include "MetalUtil.hpp"
 
 namespace bns
 {
     MetalBasicMeshTestMaterial::MetalBasicMeshTestMaterial(Framework &framework)
         : m_framework(framework)
     {
+        m_renderer = static_cast<MetalRenderer *>(framework.GetRenderer());
     }
 
     MetalBasicMeshTestMaterial::~MetalBasicMeshTestMaterial()
@@ -18,13 +19,13 @@ namespace bns
 
     void MetalBasicMeshTestMaterial::Initialize()
     {
-        std::string shaderSource = m_framework.FileLoader.LoadFile("shaders/metal/basic_mesh_test_shader.metal");
+        m_device = m_renderer->GetDevice();
 
-        MTL::Device *device = m_framework.Context.MetalDevice;
+        std::string shaderSource = m_framework.FileLoader.LoadFile("shaders/metal/basic_mesh_test_shader.metal");
 
         NS::Error *pError = nullptr;
         NS::String *pSource = NS::String::string(shaderSource.c_str(), NS::StringEncoding::UTF8StringEncoding);
-        MTL::Library *pLibrary = device->newLibrary(pSource, nullptr, &pError);
+        MTL::Library *pLibrary = m_device->newLibrary(pSource, nullptr, &pError);
         if (!pLibrary)
         {
             printf("%s", pError->localizedDescription()->utf8String());
@@ -72,7 +73,7 @@ namespace bns
 
     
 
-        m_pipeline = device->newRenderPipelineState(pDesc, &pError);
+        m_pipeline = m_device->newRenderPipelineState(pDesc, &pError);
         if (!m_pipeline)
         {
             printf("%s", pError->localizedDescription()->utf8String());
@@ -99,7 +100,7 @@ namespace bns
     {
         MetalMesh *metalMesh = static_cast<MetalMesh *>(mesh);
 
-        MTL::RenderCommandEncoder *renderCommandEncoder = m_framework.Context.CurrentMetalRenderCommandEncoder;
+        MTL::RenderCommandEncoder *renderCommandEncoder = m_renderer->GetRenderCommandEncoder();
         renderCommandEncoder->setRenderPipelineState(m_pipeline);
         renderCommandEncoder->setVertexBuffer(metalMesh->VertexPositionsBuffer, NS::UInteger(0), NS::UInteger(0));
         renderCommandEncoder->setVertexBuffer(metalMesh->VertexColorsBuffer, NS::UInteger(0), NS::UInteger(1));
@@ -116,7 +117,7 @@ namespace bns
      */
     void MetalBasicMeshTestMaterial::Draw(const Camera &camera, const Mesh &mesh, std::vector<Mat4x4f> transforms)
     {
-        MTL::RenderCommandEncoder *renderCommandEncoder = m_framework.Context.CurrentMetalRenderCommandEncoder;
+        MTL::RenderCommandEncoder *renderCommandEncoder = m_renderer->GetRenderCommandEncoder();
         renderCommandEncoder->setRenderPipelineState(m_pipeline);
         renderCommandEncoder->drawPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle, NS::UInteger(0), NS::UInteger(3));
     }
@@ -132,7 +133,7 @@ namespace bns
      */
     void MetalBasicMeshTestMaterial::DrawInstancedPrefilled(const Camera &camera, const Mesh &mesh, f32 *flatTransformsArray, i32 nOfInstances)
     {
-        MTL::RenderCommandEncoder *renderCommandEncoder = m_framework.Context.CurrentMetalRenderCommandEncoder;
+        MTL::RenderCommandEncoder *renderCommandEncoder = m_renderer->GetRenderCommandEncoder();
         renderCommandEncoder->setRenderPipelineState(m_pipeline);
         renderCommandEncoder->drawPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle, NS::UInteger(0), NS::UInteger(3));
     }

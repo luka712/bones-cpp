@@ -3,7 +3,7 @@
 
 #include "sprite/metal/MetalSpritePipeline.hpp"
 #include "FileLoader.hpp"
-#include "util/MetalUtil.hpp"
+#include "MetalUtil.hpp"
 #include "Framework.hpp"
 
 namespace bns
@@ -17,10 +17,10 @@ namespace bns
 
     // NOTE: STATIC FUNCTION
     MetalSpritePipeline *MetalSpritePipeline::Create(
-        Framework &framework, 
+        MetalRenderer& renderer,
         MetalTexture2D *texture)
     {
-        MTL::Device *device = framework.Context.MetalDevice;
+        MTL::Device *device = renderer.GetDevice();
 
         FileLoader fileLoader;
         std::string shaderSource = fileLoader.LoadFile("shaders/metal/sprite/sprite.metal", { 
@@ -65,7 +65,7 @@ namespace bns
         MetalUtil::RenderPipelineColorAttachmentDescriptor.SetDefault(*colorAttachment);
 
         // set 2nd color attachment, for bloom/brightness
-        if (framework.GetRenderer()->GetBrightnessTexture() != nullptr)
+        if (renderer.GetBrightnessTexture() != nullptr)
         {
             MTL::RenderPipelineColorAttachmentDescriptor *colorAttachment2 = pDesc->colorAttachments()->object(NS::UInteger(1));
             MetalUtil::RenderPipelineColorAttachmentDescriptor.SetDefault(*colorAttachment2);

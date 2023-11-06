@@ -9,17 +9,15 @@
 #include "texture/MetalTexture2D.hpp"
 #include <vector>
 #include "BnsMetal.hpp"
+#include "renderer/MetalRenderer.hpp"
 
 #define FLOATS_PER_VERTEX 9
 #define FLOATS_PER_INSTANCE (4 * FLOATS_PER_VERTEX)
 
 namespace bns
 {
-    class Framework;
-
     class MetalSpritePipeline final
     {
-
     private:
         MTL::RenderPipelineState *m_pipeline;
         MetalTexture2D *m_texture;
@@ -42,7 +40,7 @@ namespace bns
         /// @param texture The texture to be used
         /// @return The sprite pipeline
         static MetalSpritePipeline *Create(
-            Framework &framework,
+            MetalRenderer& renderer,
             MetalTexture2D *texture);
 
         /**

@@ -1,6 +1,6 @@
 #ifdef __APPLE__ 
 
-#include "util/metal/MetalLibraryUtil.hpp"
+#include "util/MetalLibraryUtil.hpp"
 
 namespace bns
 {

@@ -4,7 +4,7 @@
 
 #include "effects/metal/MetalTextureCombineEffect.hpp"
 #include "Framework.hpp"
-#include "util/MetalUtil.hpp"
+#include "MetalUtil.hpp"
 
 namespace bns
 {
@@ -19,7 +19,7 @@ namespace bns
 
     void MetalTextureCombineEffectImpl::Initialize()
     {
-        MTL::Device* device = m_framework.Context.MetalDevice;
+        MTL::Device* device = m_renderer->GetDevice();
         
         MetalEffectImpl::Initialize();
         
@@ -28,8 +28,7 @@ namespace bns
 
     void MetalTextureCombineEffectImpl::Draw(void *destinationTexture)
     {
-        MTL::Device *device = m_framework.Context.MetalDevice;
-        MTL::CommandQueue *queue = m_framework.Context.MetalCommandQueue;
+        MTL::CommandQueue *queue = m_renderer->GetCommandQueue();
 
         // Convert to Metal types
         MetalTexture2D* mtlTextureWrapper = static_cast<MetalTexture2D*>(m_sourceTexture);

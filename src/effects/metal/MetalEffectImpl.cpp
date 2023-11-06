@@ -5,7 +5,7 @@
 
 #include "effects/metal/MetalEffectImpl.hpp"
 #include "texture/MetalTexture2D.hpp"
-#include "util/MetalUtil.hpp"
+#include "MetalUtil.hpp"
 #include "Framework.hpp"
 #include "buffer-layout/BufferLayoutData.hpp"
 
@@ -14,6 +14,7 @@ namespace bns
     MetalEffectImpl::MetalEffectImpl(const Framework &framework)
         : Effect(framework)
     {
+        m_renderer = static_cast<MetalRenderer *>(framework.GetRenderer());
     }
 
     MTL::Buffer *MetalEffectImpl::CreateVertexBuffer()
@@ -117,7 +118,7 @@ namespace bns
 
      void MetalEffectImpl::Initialize()
     {
-        m_device = m_framework.Context.MetalDevice;
+        m_device = m_renderer->GetDevice();
 
         Vec2u bufferSize = m_framework.GetRenderer()->GetBufferSize();
         Texture2D *texture = m_framework.GetTextureManager()
@@ -132,8 +133,7 @@ namespace bns
 
     void MetalEffectImpl::Draw(void *destinationTexture)
     {
-        MTL::Device *device = m_framework.Context.MetalDevice;
-        MTL::CommandQueue *queue = m_framework.Context.MetalCommandQueue;
+        MTL::CommandQueue *queue = m_renderer->GetCommandQueue();
 
         // Convert to Metal types
         MetalTexture2D *mtlTextureWrapper = static_cast<MetalTexture2D *>(m_sourceTexture);

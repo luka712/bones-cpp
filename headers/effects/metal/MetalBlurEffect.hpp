@@ -7,6 +7,7 @@
 #include "effects/metal/MetalEffectImpl.hpp"
 #include "effects/BlurEffect.hpp"
 #include <string>
+#include "renderer/MetalRenderer.hpp"
 
 namespace bns
 {

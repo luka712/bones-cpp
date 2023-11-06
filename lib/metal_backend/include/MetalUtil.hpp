@@ -2,11 +2,11 @@
 
 #define BNS_METAL_UTIL_HPP
 
-#include "util/metal/MetalBufferUtil.hpp"
-#include "util/metal/MetalLibraryUtil.hpp"
-#include "util/metal/MetalVertexBufferLayoutUtil.hpp"
-#include "util/metal/MetalRenderPipelineDescriptorUtil.hpp"
-#include "util/metal/MetalRenderPipelineColorAttachmentDescriptorUtil.hpp"
+#include "util/MetalBufferUtil.hpp"
+#include "util/MetalLibraryUtil.hpp"
+#include "util/MetalVertexBufferLayoutUtil.hpp"
+#include "util/MetalRenderPipelineDescriptorUtil.hpp"
+#include "util/MetalRenderPipelineColorAttachmentDescriptorUtil.hpp"
 
 
 namespace bns

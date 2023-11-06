@@ -1,7 +1,7 @@
 #ifdef __APPLE__ 
 
 #include "effects/metal/MetalBlurEffect.hpp"
-#include "util/MetalUtil.hpp"
+#include "MetalUtil.hpp"
 #include "Framework.hpp"
 
 namespace bns
@@ -25,7 +25,7 @@ namespace bns
 
     void MetalBlurEffectImpl::Initialize()
     {
-        m_device = m_framework.Context.MetalDevice;
+        m_device = m_renderer->GetDevice();
         Vec2u bufferSize = m_framework.GetRenderer()->GetBufferSize();
 
         // Textures
@@ -56,10 +56,7 @@ namespace bns
 
     void MetalBlurEffectImpl::Draw(void *destinationTexture)
     {
-        MTL::Device *device = m_framework.Context.MetalDevice;
-        MTL::CommandQueue *queue = m_framework.Context.MetalCommandQueue;
-
-        // 
+        MTL::CommandQueue *queue = m_renderer->GetCommandQueue();
 
         // Convert to Metal types
         MTL::Texture *mtlDestTexture = static_cast<MTL::Texture *>(destinationTexture);

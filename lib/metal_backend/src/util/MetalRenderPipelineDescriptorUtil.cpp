@@ -1,6 +1,6 @@
 #ifdef __APPLE__
 
-#include "util/metal/MetalRenderPipelineDescriptorUtil.hpp"
+#include "util/MetalRenderPipelineDescriptorUtil.hpp"
 
 namespace bns
 {

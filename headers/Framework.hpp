@@ -40,21 +40,6 @@ namespace bns
          * @brief The current render pass encoder.
          */
         WGPURenderPassEncoder CurrentWebGPURenderPassEncoder;
-
-#ifdef __APPLE__
-        /// @brief The metal device.
-        MTL::Device *MetalDevice;
-
-        /**
-         * @brief The metal command queue.
-        */
-        MTL::CommandQueue *MetalCommandQueue;
-
-        /**
-         * @brief The current render command encoder.
-         */
-        MTL::RenderCommandEncoder *CurrentMetalRenderCommandEncoder;
-#endif 
     };
 
     /**
@@ -168,6 +153,13 @@ namespace bns
         inline EffectFactory& GetEffectFactory() const
         {
             return *m_effectFactory;
+        }
+
+        /// @brief Gets the file loader.
+        /// @return The file loader.
+        inline FileLoader& GetFileLoader() 
+        {
+            return FileLoader;
         }
 
         FileLoader FileLoader;
