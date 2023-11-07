@@ -1,4 +1,4 @@
-#include "util/wgpu/WebGPUFragmentStateUtil.hpp"
+#include "util/WebGPUFragmentStateUtil.hpp"
 
 namespace bns
 {

@@ -8,14 +8,14 @@ namespace bns
         Format = TextureFormat::RGBA_8_Unorm;
     }
 
-    TextureManager::TextureManager(ImageLoader &imageLoader)
+    TextureManager::TextureManager(ImageLoader *imageLoader)
         : m_imageLoader(imageLoader)
     {
     }
 
     Texture2D *TextureManager::LoadTexture2D(std::string path, std::string key, TextureOptions *textureOptions)
     {
-        ImageData *imageData = m_imageLoader.LoadImage(path);
+        ImageData *imageData = m_imageLoader->LoadImage(path);
 
         TextureOptions options;
         if (textureOptions != nullptr)

@@ -26,7 +26,7 @@ namespace bns
         m_geometryBuilder = new GeometryBuilder();
         m_imageLoader = new ImageLoader();
         m_bitmapSpriteFontLoader = new BitmapSpriteFontLoader(*this);
-        m_textureFactory = new TextureManagerImpl(*this);
+
         m_effectFactory = new EffectFactory(*this);
         m_windowManager = new SDLWindowManager();
 
@@ -46,6 +46,8 @@ namespace bns
         m_meshFactory = new WebGPUMeshFactory(*this);
         m_spriteRenderer = new WebGPUSpriteRenderer(*this);
 #endif
+
+        m_textureFactory = new TextureManagerImpl(m_renderer, m_imageLoader);
     }
 
     Framework::~Framework()
@@ -63,7 +65,6 @@ namespace bns
         InitializeForWGPU(windowParameters);
         m_spriteRenderer->Initialize();
 #endif
-
 
         callback();
     }
@@ -111,17 +112,17 @@ namespace bns
                 }
             }
 
-// #if __USE_WEBGPU__
+            // #if __USE_WEBGPU__
             // Do nothing, this checks for ongoing asynchronous operations and call their callbacks
             // NOTE: this is specific to DAWN and is not part of WebGPU standard.
             // TODO: move to renderer of webgpu
-// #endif
-           
+            // #endif
+
             m_renderer->BeginDraw();
             m_spriteRenderer->BeginFrame();
 
             callback();
-            
+
             m_spriteRenderer->EndFrame();
             m_renderer->EndDraw();
 

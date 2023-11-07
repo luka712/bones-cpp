@@ -1,4 +1,4 @@
-#include "util/wgpu/WebGPUPipelineLayoutDescriptorUtil.hpp"
+#include "util/WebGPUPipelineLayoutDescriptorUtil.hpp"
 
 namespace bns
 {

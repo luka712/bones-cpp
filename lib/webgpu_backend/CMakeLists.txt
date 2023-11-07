@@ -2,9 +2,10 @@
 
 set(CMAKE_CXX_STANDARD 17)
 
-ADD_LIBRARY(BnsWebGPUBackend STATIC 
-            src/texture/WebGPUTexture2D.cpp
-            src/util/WebGPUTextureViewDescriptorUtil.cpp)
+file(GLOB WEBGPU_BACKEND_SOURCES src/*.cpp src/**/*.cpp)
+
+# USE_WEBGPU is required for window
+ADD_LIBRARY(BnsWebGPUBackend STATIC ${WEBGPU_BACKEND_SOURCES})
 
 # Set the target architecture to arm64 for Apple Silicon
 if(APPLE)
@@ -18,9 +19,9 @@ endif()
 target_compile_options(BnsWebGPUBackend PRIVATE -DUSE_WEBGPU=1)
 
 if(APPLE)
-    target_link_libraries(BnsWebGPUBackend PRIVATE ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} BnsTexture)
+    target_link_libraries(BnsWebGPUBackend  PRIVATE ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} BnsTexture BnsRenderingBackend)
 else()
-    target_link_libraries(BnsWebGPUBackend PRIVATE BnsTexture)
+    target_link_libraries(BnsWebGPUBackend  PRIVATE BnsTexture BnsRenderingBackend)
 endif()
 
 include_directories(
@@ -29,7 +30,7 @@ include_directories(
     # lib 
     ${CMAKE_CURRENT_SOURCE_DIR}/../common/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../loaders/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../rendering-backend/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../rendering_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../texture/include
 
     # vendor

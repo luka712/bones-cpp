@@ -91,7 +91,7 @@ namespace bns
 
         return true;
     }
-#endif // USE_WEBGPU
+#endif
 
 #ifdef __APPLE__
     CA::MetalLayer *SDLWindowManager::InitializeForMetal(WindowParameters windowParameters)

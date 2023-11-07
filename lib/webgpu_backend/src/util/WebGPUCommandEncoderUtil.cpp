@@ -1,4 +1,4 @@
-#include "util/wgpu/WebGPUCommandEncoderUtil.hpp"
+#include "util/WebGPUCommandEncoderUtil.hpp"
 
 namespace bns
 {

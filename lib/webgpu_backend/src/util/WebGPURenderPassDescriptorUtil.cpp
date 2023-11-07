@@ -1,4 +1,4 @@
-#include "util/wgpu/WebGPURenderPassDescriptorUtil.hpp"
+#include "util/WebGPURenderPassDescriptorUtil.hpp"
 
 namespace bns
 {

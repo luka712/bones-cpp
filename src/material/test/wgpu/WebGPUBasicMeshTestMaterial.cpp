@@ -1,6 +1,6 @@
 #include "material/test/wgpu/WebGPUBasicMeshTestMaterial.hpp"
 #include "renderer/common/WebGPURenderPipelineUtil.hpp"
-#include "util/wgpu/WebGPUShaderModuleUtil.hpp"
+#include "util/WebGPUShaderModuleUtil.hpp"
 #include "mesh/wgpu/WebGPUMesh.hpp"
 #include "Framework.hpp"
 

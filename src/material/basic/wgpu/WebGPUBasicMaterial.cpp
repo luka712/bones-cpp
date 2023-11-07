@@ -1,7 +1,7 @@
 
 #include "Framework.hpp"
 #include "material/basic/wgpu/WebGPUBasicMaterial.hpp"
-#include "util/wgpu/WebGPUShaderModuleUtil.hpp"
+#include "util/WebGPUShaderModuleUtil.hpp"
 #include "renderer/common/WebGPURenderPipelineUtil.hpp"
 #include "mesh/wgpu/WebGPUMesh.hpp"
 #include <iostream>

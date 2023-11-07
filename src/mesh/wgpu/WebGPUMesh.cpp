@@ -1,5 +1,5 @@
 #include "mesh/wgpu/WebGPUMesh.hpp"
-#include "util/wgpu/WebGPUBufferUtil.hpp"
+#include "WebGPUUtil.hpp"
 #include "Framework.hpp"
 
 namespace bns
@@ -63,7 +63,7 @@ namespace bns
         {
             elementSize = sizeof(m_geometry.Indices[0]);
 
-            IndexBuffer = WebGPUBufferUtil::CreateIndexBuffer(m_device, m_geometry.Indices, "index_buffer");
+            IndexBuffer = WebGPUUtil::Buffer.CreateIndexBuffer(m_device, m_geometry.Indices, "index_buffer");
 
             IndexFormat = WGPUIndexFormat_Uint32;
             if (elementSize == 2)
@@ -80,7 +80,7 @@ namespace bns
 
         size_t byteSize = m_geometry.Data.size() * sizeof(f32);
 
-        VertexBuffer = WebGPUBufferUtil::CreateVertexBuffer(m_device, m_geometry.Data, "vertex_buffer");
+        VertexBuffer = WebGPUUtil::Buffer.CreateVertexBuffer(m_device, m_geometry.Data, "vertex_buffer");
         VertexBufferSize = byteSize;
     }
 
@@ -92,7 +92,7 @@ namespace bns
         }
 
         size_t byteSize = m_geometry.VertexPositions.size() * sizeof(f32);
-        VertexPositionsBuffer = WebGPUBufferUtil::CreateVertexBuffer(m_device, m_geometry.VertexPositions, "vertex_positions_buffer");
+        VertexPositionsBuffer = WebGPUUtil::Buffer.CreateVertexBuffer(m_device, m_geometry.VertexPositions, "vertex_positions_buffer");
         VertexPositionsBufferSize = byteSize;
     }
 
@@ -104,7 +104,7 @@ namespace bns
         }
 
         size_t byteSize = m_geometry.TextureCoordinates.size() * sizeof(f32);
-        TextureCoordinatesBuffer = WebGPUBufferUtil::CreateVertexBuffer(m_device, m_geometry.TextureCoordinates, "texture_coordinates_buffer");
+        TextureCoordinatesBuffer = WebGPUUtil::Buffer.CreateVertexBuffer(m_device, m_geometry.TextureCoordinates, "texture_coordinates_buffer");
         TextureCoordinatesBufferSize = byteSize;
     }
 
@@ -132,7 +132,7 @@ namespace bns
         }
 
         size_t byteSize = colors.size() * sizeof(f32);
-        VertexColorsBuffer = WebGPUBufferUtil::CreateVertexBuffer(m_device, colors, "vertex_colors_buffer");
+        VertexColorsBuffer = WebGPUUtil::Buffer.CreateVertexBuffer(m_device, colors, "vertex_colors_buffer");
         VertexColorsBufferSize = byteSize;
     }
 

@@ -1,10 +1,9 @@
 #include "sprite/wgpu/WebGPUSpritePipeline.hpp"
-#include "util/wgpu/WebGPUBufferUtil.hpp"
 #include "renderer/common/WebGPURenderPipelineUtil.hpp"
-#include "util/WebGPUUtil.hpp"
-#include "util/wgpu/WebGPUVertexBufferLayoutUtil.hpp"
+#include "WebGPUUtil.hpp"
+#include "util/WebGPUVertexBufferLayoutUtil.hpp"
 #include "FileLoader.hpp"
-#include "util/wgpu/WebGPUShaderModuleUtil.hpp"
+#include "util/WebGPUShaderModuleUtil.hpp"
 #include "lights/AmbientLight.hpp"
 #include "lights/PointLight.hpp"
 
@@ -87,43 +86,43 @@ namespace bns
         WGPUColorTargetState colorTargetsStates[2];
         colorTargetsStates[0] = colorTarget;
         colorTargetsStates[1] = colorTarget;
-        WGPUFragmentState fragmentState = WebGPUUtilDeprecated::FragmentState.Create(shaderModule, &colorTargetsStates[0], 2, fragFn);
+        WGPUFragmentState fragmentState = WebGPUUtil::FragmentState.Create(shaderModule, &colorTargetsStates[0], 2, fragFn);
         renderPipelineDescriptor.fragment = &fragmentState;
 
         // Bind group layout for projection view matrix
-        WGPUBindGroupLayoutEntry projectionViewBufferLayoutEntry = WebGPUUtilDeprecated::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(0, WGPUShaderStage_Vertex);
-        WGPUBindGroupLayoutDescriptor projectionViewBufferLayoutDescriptor = WebGPUUtilDeprecated::BindGroupLayoutDescriptor.Create(&projectionViewBufferLayoutEntry, 1);
+        WGPUBindGroupLayoutEntry projectionViewBufferLayoutEntry = WebGPUUtil::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(0, WGPUShaderStage_Vertex);
+        WGPUBindGroupLayoutDescriptor projectionViewBufferLayoutDescriptor = WebGPUUtil::BindGroupLayoutDescriptor.Create(&projectionViewBufferLayoutEntry, 1);
         WGPUBindGroupLayout projectionViewBufferBindGroupLayout = wgpuDeviceCreateBindGroupLayout(device, &projectionViewBufferLayoutDescriptor);
 
         // Bind group layout for texture
         // Sampler
         WGPUSamplerBindingLayout samplerBindingLayout = {};
         samplerBindingLayout.type = WGPUSamplerBindingType_Filtering;
-        WGPUBindGroupLayoutEntry samplerLayoutEntry = WebGPUUtilDeprecated::BindGroupLayoutEntry.CreateBindGroupLayoutEntry(0, WGPUShaderStage_Fragment, samplerBindingLayout);
+        WGPUBindGroupLayoutEntry samplerLayoutEntry = WebGPUUtil::BindGroupLayoutEntry.CreateBindGroupLayoutEntry(0, WGPUShaderStage_Fragment, samplerBindingLayout);
 
         // texture layout
         WGPUTextureBindingLayout textureBindingLayout = {};
         textureBindingLayout.sampleType = WGPUTextureSampleType_Float;
         textureBindingLayout.viewDimension = WGPUTextureViewDimension_2D;
-        WGPUBindGroupLayoutEntry textureLayoutEntry = WebGPUUtilDeprecated::BindGroupLayoutEntry.CreateBindGroupLayoutEntry(1, WGPUShaderStage_Fragment, textureBindingLayout);
+        WGPUBindGroupLayoutEntry textureLayoutEntry = WebGPUUtil::BindGroupLayoutEntry.CreateBindGroupLayoutEntry(1, WGPUShaderStage_Fragment, textureBindingLayout);
 
         // bind group layout descriptor
         WGPUBindGroupLayoutEntry bindGroupLayoutEntries[3] = {
             samplerLayoutEntry,
             textureLayoutEntry,
         };
-        WGPUBindGroupLayoutDescriptor textureBindGroupLayoutDescriptor = WebGPUUtilDeprecated::BindGroupLayoutDescriptor.Create(bindGroupLayoutEntries, 2);
+        WGPUBindGroupLayoutDescriptor textureBindGroupLayoutDescriptor = WebGPUUtil::BindGroupLayoutDescriptor.Create(bindGroupLayoutEntries, 2);
         WGPUBindGroupLayout textureBindGroupLayout = wgpuDeviceCreateBindGroupLayout(device, &textureBindGroupLayoutDescriptor);
 
         // brightness threshold layout
         WGPUBindGroupLayoutEntry brightnessLightsBindGroupLayoutEntries[3] = {
-            WebGPUUtilDeprecated::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(0, WGPUShaderStage_Fragment), // brightness threshold
-            WebGPUUtilDeprecated::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(1, WGPUShaderStage_Fragment), // ambient light
-            WebGPUUtilDeprecated::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(2, WGPUShaderStage_Fragment)  // point light
+            WebGPUUtil::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(0, WGPUShaderStage_Fragment), // brightness threshold
+            WebGPUUtil::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(1, WGPUShaderStage_Fragment), // ambient light
+            WebGPUUtil::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(2, WGPUShaderStage_Fragment)  // point light
         };
 
         std::string brightnessLightsBindGroupLayoutLabel = "Brightness Lights Bind Group Layout";
-        WGPUBindGroupLayoutDescriptor brightnessLightsBindGroupLayoutDescriptor = WebGPUUtilDeprecated::BindGroupLayoutDescriptor.Create(
+        WGPUBindGroupLayoutDescriptor brightnessLightsBindGroupLayoutDescriptor = WebGPUUtil::BindGroupLayoutDescriptor.Create(
             &brightnessLightsBindGroupLayoutEntries[0],
             3,
             brightnessLightsBindGroupLayoutLabel);
@@ -136,7 +135,7 @@ namespace bns
             brightnessLightsBindGroupLayout};
 
         // TODO: move to util
-        WGPUPipelineLayoutDescriptor pipelineLayoutDescriptor = WebGPUUtilDeprecated::PipelineLayoutDescriptor.Create(&bindGroupLayouts[0], 3);
+        WGPUPipelineLayoutDescriptor pipelineLayoutDescriptor = WebGPUUtil::PipelineLayoutDescriptor.Create(&bindGroupLayouts[0], 3);
         renderPipelineDescriptor.layout = wgpuDeviceCreatePipelineLayout(device, &pipelineLayoutDescriptor);
 
         renderPipelineDescriptor.depthStencil = nullptr;
@@ -156,8 +155,8 @@ namespace bns
 
         // Projection view uniform buffer
         WGPUBindGroupEntry projectionViewBindGroupEntry =
-            WebGPUUtilDeprecated::BindGroupEntry.Create(0, projectionViewBuffer, sizeof(f32) * 16);
-        WGPUBindGroupDescriptor projectionViewBindGroupDescriptor = WebGPUUtilDeprecated::BindGroupDescriptor.Create(projectionViewBufferBindGroupLayout, &projectionViewBindGroupEntry, 1);
+            WebGPUUtil::BindGroupEntry.Create(0, projectionViewBuffer, sizeof(f32) * 16);
+        WGPUBindGroupDescriptor projectionViewBindGroupDescriptor = WebGPUUtil::BindGroupDescriptor.Create(projectionViewBufferBindGroupLayout, &projectionViewBindGroupEntry, 1);
         WGPUBindGroup projectionViewBindGroup = wgpuDeviceCreateBindGroup(device, &projectionViewBindGroupDescriptor);
 
         // Sampler/Texture bind group
@@ -165,18 +164,18 @@ namespace bns
         WGPUTextureView textureView = wgpuTextureCreateView(texture->Texture, &textureViewDescriptor);
 
         WGPUBindGroupEntry textureBindGroupEntries[2];
-        textureBindGroupEntries[0] = WebGPUUtilDeprecated::BindGroupEntry.Create(0, texture->Sampler);
-        textureBindGroupEntries[1] = WebGPUUtilDeprecated::BindGroupEntry.Create(1, textureView);
-        WGPUBindGroupDescriptor textureBindGroupDescriptor = WebGPUUtilDeprecated::BindGroupDescriptor.Create(textureBindGroupLayout, textureBindGroupEntries, 2);
+        textureBindGroupEntries[0] = WebGPUUtil::BindGroupEntry.Create(0, texture->Sampler);
+        textureBindGroupEntries[1] = WebGPUUtil::BindGroupEntry.Create(1, textureView);
+        WGPUBindGroupDescriptor textureBindGroupDescriptor = WebGPUUtil::BindGroupDescriptor.Create(textureBindGroupLayout, textureBindGroupEntries, 2);
         WGPUBindGroup textureBindGroup = wgpuDeviceCreateBindGroup(device, &textureBindGroupDescriptor);
 
         // Brightness threshold bind group
         WGPUBindGroupEntry brightnessThresholdBindGroupEntries[3] = {
-            WebGPUUtilDeprecated::BindGroupEntry.Create(0, brightnessThresholdBuffer, sizeof(f32)),
-            WebGPUUtilDeprecated::BindGroupEntry.Create(1, ambientLightBuffer, sizeof(AmbientLight)),
-            WebGPUUtilDeprecated::BindGroupEntry.Create(2, pointLightBuffer, sizeof(PointLight) * FORWARD_2D_NUM_OF_POINT_LIGHTS)};
+            WebGPUUtil::BindGroupEntry.Create(0, brightnessThresholdBuffer, sizeof(f32)),
+            WebGPUUtil::BindGroupEntry.Create(1, ambientLightBuffer, sizeof(AmbientLight)),
+            WebGPUUtil::BindGroupEntry.Create(2, pointLightBuffer, sizeof(PointLight) * FORWARD_2D_NUM_OF_POINT_LIGHTS)};
 
-        auto brightnessThresholdBindGroupDescriptor = WebGPUUtilDeprecated::BindGroupDescriptor.Create(
+        auto brightnessThresholdBindGroupDescriptor = WebGPUUtil::BindGroupDescriptor.Create(
             brightnessLightsBindGroupLayout,
             &brightnessThresholdBindGroupEntries[0],
             3);

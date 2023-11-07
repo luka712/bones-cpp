@@ -13,8 +13,8 @@
 #endif // WIN
 
 #ifdef USE_WEBGPU
-#include "BnsWebgpu.hpp"
-#endif 
+#include "BnsWebGPU.hpp"
+#endif
 
 namespace bns
 {
@@ -54,11 +54,10 @@ namespace bns
             return m_windowSize;
         }
 
-
 #ifdef __APPLE__
         /// @brief Initialize for Metal.
         virtual CA::MetalLayer *InitializeForMetal(WindowParameters windowParameters) = 0;
-#endif 
+#endif
 
 #ifdef WIN32
         /// @brief Initialize for D3D11.

@@ -1,5 +1,5 @@
 #include "effects/wgpu/WebGPUBloomEffect.hpp"
-#include "util/WebGPUUtil.hpp"
+#include "WebGPUUtil.hpp"
 #include "Framework.hpp"
 
 namespace bns
@@ -47,15 +47,15 @@ namespace bns
 
         // sampler entry
         WebGPUTexture2D *webGPUTexture2D = static_cast<WebGPUTexture2D *>(m_brightnessTexture);
-        bindGroupEntries[0] = WebGPUUtilDeprecated::BindGroupEntry.Create(0, webGPUTexture2D->Sampler);
+        bindGroupEntries[0] = WebGPUUtil::BindGroupEntry.Create(0, webGPUTexture2D->Sampler);
 
         // texture entry
         WGPUTextureView view = webGPUTexture2D->CreateView();
-        bindGroupEntries[1] = WebGPUUtilDeprecated::BindGroupEntry.Create(1, view);
+        bindGroupEntries[1] = WebGPUUtil::BindGroupEntry.Create(1, view);
 
         // Create bind group
         std::string bindGroupName = "Brightness Texture Bind Group";
-        WGPUBindGroupDescriptor bindGroupDesc = WebGPUUtilDeprecated::BindGroupDescriptor.Create(m_sourceTextureBindGroupLayout,
+        WGPUBindGroupDescriptor bindGroupDesc = WebGPUUtil::BindGroupDescriptor.Create(m_sourceTextureBindGroupLayout,
                                                                                        bindGroupEntries,
                                                                                        2,
                                                                                        bindGroupName);
@@ -91,7 +91,7 @@ WGPURenderPipeline WebGPUBloomEffectImpl::CreateRenderPipeline(std::vector<WGPUB
 {
     FileLoader fileLoader;
     std::string shaderSource = fileLoader.LoadFile(GetShaderPath());
-    WGPUShaderModule shaderModule = WebGPUUtilDeprecated::ShaderModule.Create(m_device, shaderSource);
+    WGPUShaderModule shaderModule = WebGPUUtil::ShaderModule.Create(m_device, shaderSource);
 
     // Create pipeline layout. Here the global bind group layout is assigned.
     std::vector<WGPUBindGroupLayout> _layouts = {
@@ -111,7 +111,7 @@ WGPURenderPipeline WebGPUBloomEffectImpl::CreateRenderPipeline(std::vector<WGPUB
     std::vector<BufferLayoutDescriptor> vertexBufferLayouts;
     vertexBufferLayouts.push_back(bufferLayoutDescriptor);
 
-    WGPUVertexBufferLayout *vertexBuffersLayout = WebGPUUtilDeprecated::VertexBufferLayout.Create(vertexBufferLayouts);
+    WGPUVertexBufferLayout *vertexBuffersLayout = WebGPUUtil::VertexBufferLayout.Create(vertexBufferLayouts);
 
     // TODO: move to util
     WGPUVertexState vertexState;
@@ -123,7 +123,7 @@ WGPURenderPipeline WebGPUBloomEffectImpl::CreateRenderPipeline(std::vector<WGPUB
     vertexState.constantCount = 0;
 
     // Fragment state
-    WGPUBlendState blend = WebGPUUtilDeprecated::BlendState.Create();
+    WGPUBlendState blend = WebGPUUtil::BlendState.Create();
 
     // default color target state
     // TODO: move to util
@@ -133,7 +133,7 @@ WGPURenderPipeline WebGPUBloomEffectImpl::CreateRenderPipeline(std::vector<WGPUB
     colorTarget.blend = &blend;
     colorTarget.writeMask = WGPUColorWriteMask_All;
     std::string fragFn = "fs_main";
-    WGPUFragmentState fragmentState = WebGPUUtilDeprecated::FragmentState.Create(shaderModule, colorTarget, fragFn);
+    WGPUFragmentState fragmentState = WebGPUUtil::FragmentState.Create(shaderModule, colorTarget, fragFn);
 
     // WGPUDepthStencilState depthStencilState = WebGPUDepthStencilStateUtil::Create();
 
@@ -176,8 +176,8 @@ WGPURenderPipeline WebGPUBloomEffectImpl::CreateRenderPipeline(std::vector<WGPUB
         WGPUTexture wgpuTexture = static_cast<WGPUTexture>(texture);
         WGPUTextureView wgpuTextureView = wgpuTextureCreateView(wgpuTexture, nullptr);
 
-        WGPURenderPassColorAttachment colorAttachment = WebGPUUtilDeprecated::RenderPassColorAttachment.Create(wgpuTextureView);
-        WGPURenderPassDescriptor renderPassDesc = WebGPUUtilDeprecated::RenderPassDescriptor.Create(colorAttachment);
+        WGPURenderPassColorAttachment colorAttachment = WebGPUUtil::RenderPassColorAttachment.Create(wgpuTextureView);
+        WGPURenderPassDescriptor renderPassDesc = WebGPUUtil::RenderPassDescriptor.Create(colorAttachment);
         WGPURenderPassEncoder renderPass = wgpuCommandEncoderBeginRenderPass(encoder, &renderPassDesc);
 
         // Set the pipeline that will be used for this render pass.

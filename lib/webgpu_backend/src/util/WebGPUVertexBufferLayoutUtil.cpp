@@ -1,4 +1,4 @@
-#include "util/wgpu/WebGPUVertexBufferLayoutUtil.hpp"
+#include "util/WebGPUVertexBufferLayoutUtil.hpp"
 
 namespace bns
 {

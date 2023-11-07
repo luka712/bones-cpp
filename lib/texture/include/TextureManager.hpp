@@ -24,7 +24,7 @@ namespace bns
     class TextureManager 
     {
     protected:
-        ImageLoader &m_imageLoader;
+        ImageLoader *m_imageLoader;
 
         /// @brief The texture cache.
         std::map<std::string, Texture2D *> m_textureCache;
@@ -40,7 +40,7 @@ namespace bns
 
     public:
         /// @brief Construct a new TextureManager object
-        TextureManager(ImageLoader& imageLoader);
+        TextureManager(ImageLoader* imageLoader);
 
         /// @brief Load a texture.
         /// @param path The path to the texture.

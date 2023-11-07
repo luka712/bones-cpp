@@ -4,16 +4,18 @@
 
 #include "Texture2D.hpp"
 #include "TextureManager.hpp"
+#include "ImageLoader.hpp"
+#include "renderer/Renderer.hpp"
 #include <map>
 
 namespace bns
 {
-    class Framework;
 
     class TextureManagerImpl final : public TextureManager
     {
-    private:
-        Framework &m_framework;
+private:
+        /// @brief The renderer.
+        Renderer *m_renderer;
 
     protected:
         /// @brief The implementation of this should just create a texture instance according to the backend renderer being used.
@@ -25,7 +27,7 @@ namespace bns
         Texture2D *CreateBackendImplTexture(ImageData *imageData, i32 textureUsageFlags, TextureFormat format) override;
 
     public:
-        TextureManagerImpl(Framework &framework);
+        TextureManagerImpl(Renderer* renderer,  ImageLoader* imageLoader);
     };
 }
 

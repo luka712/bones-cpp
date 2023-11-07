@@ -1,4 +1,4 @@
-#include "util/wgpu/WebGPURenderPassColorAttachmentUtil.hpp"
+#include "util/WebGPURenderPassColorAttachmentUtil.hpp"
 
 namespace bns
 {

@@ -8,11 +8,13 @@ project(
 include(FetchContent)
 include(utils.cmake)
 
-# BACKEND RENDERER FLIPS 
+# BACKEND RENDERER FLIPS, also used by /lib
+# Multiplatform
+set(USE_WEBGPU 1) 
 # Apple specific
-set(USE_METAL 1)
+set(USE_METAL 0)
 # Windows specific
-set(USE_D3D11 1)
+set(USE_D3D11 0)
 
 # DEBUG 
 # flips debug mode on/off
@@ -132,7 +134,7 @@ endif()
 # If we are on Apple, we can use Metal or WebGPU (Metal is the default)
 target_compile_options(App PRIVATE 
 -DDEBUG=${DEBUG}
--DUSE_METAL=${USE_METAL} -DUSE_D3D11=${USE_D3D11} 
+-DUSE_METAL=${USE_METAL} -DUSE_D3D11=${USE_D3D11} -DUSE_WEBGPU=${USE_WEBGPU}
 -DFORWARD_2D_NUM_OF_POINT_LIGHTS=${FORWARD_2D_NUM_OF_POINT_LIGHTS}
 ) 
 

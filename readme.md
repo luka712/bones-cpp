@@ -48,8 +48,7 @@ do: Simply run project in xcode
 
 # Dependencies
 TODO: 
-- fix all errors regarding metal. Device, Queue, RenderCommandEncoder should be fetched from renderer
-- move renderer implementations to lib Metal, WebGPU, DirectX
+- move renderer implementations to lib  WebGPU, DirectX ( Metal is done ) # check webgpu lock reason
 - Break project into smaller parts, start with loaders! 
 
 - FORWARD_2D_NUM_OF_POINT_LIGHTS make sure it's passed to shader as well

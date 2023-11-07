@@ -1,5 +1,5 @@
 #include "effects/wgpu/WebGPUTextureCombineEffect.hpp"
-#include "util/WebGPUUtil.hpp"
+#include "WebGPUUtil.hpp"
 #include "Framework.hpp"
 
 namespace bns
@@ -22,12 +22,12 @@ namespace bns
 
         // Bind group layout for texture
         // Sampler
-        combineTextureBindGroupLayoutEntries[0] = WebGPUUtilDeprecated::BindGroupLayoutEntry.CreateSamplerLayoutEntry(0, WGPUShaderStage_Fragment);
+        combineTextureBindGroupLayoutEntries[0] = WebGPUUtil::BindGroupLayoutEntry.CreateSamplerLayoutEntry(0, WGPUShaderStage_Fragment);
         // Texture
-        combineTextureBindGroupLayoutEntries[1] = WebGPUUtilDeprecated::BindGroupLayoutEntry.CreateTextureLayoutEntry(1, WGPUShaderStage_Fragment);
+        combineTextureBindGroupLayoutEntries[1] = WebGPUUtil::BindGroupLayoutEntry.CreateTextureLayoutEntry(1, WGPUShaderStage_Fragment);
 
         // Create layout
-        WGPUBindGroupLayoutDescriptor bindGroupLayoutDesc = WebGPUUtilDeprecated::BindGroupLayoutDescriptor.Create(combineTextureBindGroupLayoutEntries, 2);
+        WGPUBindGroupLayoutDescriptor bindGroupLayoutDesc = WebGPUUtil::BindGroupLayoutDescriptor.Create(combineTextureBindGroupLayoutEntries, 2);
         WGPUBindGroupLayout bindGroupLayout = wgpuDeviceCreateBindGroupLayout(m_device, &bindGroupLayoutDesc);
 
         // pust bind group layout to result
@@ -42,10 +42,10 @@ namespace bns
 
         // Bind group layout for mix value
         // Uniform
-        mixValueBindGroupLayoutEntries[0] = WebGPUUtilDeprecated::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(0, WGPUShaderStage_Fragment);
+        mixValueBindGroupLayoutEntries[0] = WebGPUUtil::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(0, WGPUShaderStage_Fragment);
 
         // Create layout
-        bindGroupLayoutDesc = WebGPUUtilDeprecated::BindGroupLayoutDescriptor.Create(mixValueBindGroupLayoutEntries, 1);
+        bindGroupLayoutDesc = WebGPUUtil::BindGroupLayoutDescriptor.Create(mixValueBindGroupLayoutEntries, 1);
         bindGroupLayout = wgpuDeviceCreateBindGroupLayout(m_device, &bindGroupLayoutDesc);
 
         // pust bind group layout to result
@@ -75,14 +75,14 @@ namespace bns
 
         // sampler entry
         WebGPUTexture2D *webGPUTexture2D = static_cast<WebGPUTexture2D *>(m_combineTexture);
-        bindGroupEntries[0] = WebGPUUtilDeprecated::BindGroupEntry.Create(0, webGPUTexture2D->Sampler);
+        bindGroupEntries[0] = WebGPUUtil::BindGroupEntry.Create(0, webGPUTexture2D->Sampler);
 
         // texture entry
         WGPUTextureView view = webGPUTexture2D->CreateView();
-        bindGroupEntries[1] = WebGPUUtilDeprecated::BindGroupEntry.Create(1, view);
+        bindGroupEntries[1] = WebGPUUtil::BindGroupEntry.Create(1, view);
 
         // Create bind group
-        WGPUBindGroupDescriptor bindGroupDesc = WebGPUUtilDeprecated::BindGroupDescriptor.Create(m_combineTextureBindGroupLayout, bindGroupEntries, 2);
+        WGPUBindGroupDescriptor bindGroupDesc = WebGPUUtil::BindGroupDescriptor.Create(m_combineTextureBindGroupLayout, bindGroupEntries, 2);
         WGPUBindGroup bindGroup = wgpuDeviceCreateBindGroup(m_device, &bindGroupDesc);
 
         m_combineTextureBindGroup = bindGroup;
@@ -112,11 +112,11 @@ namespace bns
         WGPUBindGroupEntry bindGroupEntries[1];
 
         // uniform entry
-        m_mixValueBuffer = WebGPUUtilDeprecated::Buffer.CreateUniformBuffer(m_device, sizeof(float), "combine_texture_mix_value_buffer");
-        bindGroupEntries[0] = WebGPUUtilDeprecated::BindGroupEntry.Create(0, m_mixValueBuffer, sizeof(float));
+        m_mixValueBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device, sizeof(float), "combine_texture_mix_value_buffer");
+        bindGroupEntries[0] = WebGPUUtil::BindGroupEntry.Create(0, m_mixValueBuffer, sizeof(float));
 
         // create bind group
-        WGPUBindGroupDescriptor bindGroupDesc = WebGPUUtilDeprecated::BindGroupDescriptor.Create(m_mixValueBindGroupLayout, bindGroupEntries, 1);
+        WGPUBindGroupDescriptor bindGroupDesc = WebGPUUtil::BindGroupDescriptor.Create(m_mixValueBindGroupLayout, bindGroupEntries, 1);
         WGPUBindGroup bindGroup = wgpuDeviceCreateBindGroup(m_device, &bindGroupDesc);
 
         result.push_back(bindGroup);
@@ -141,8 +141,8 @@ namespace bns
         WGPUTexture wgpuTexture = static_cast<WGPUTexture>(texture);
         WGPUTextureView wgpuTextureView = wgpuTextureCreateView(wgpuTexture, nullptr);
 
-        WGPURenderPassColorAttachment colorAttachment = WebGPUUtilDeprecated::RenderPassColorAttachment.Create(wgpuTextureView);
-        WGPURenderPassDescriptor renderPassDesc = WebGPUUtilDeprecated::RenderPassDescriptor.Create(colorAttachment);
+        WGPURenderPassColorAttachment colorAttachment = WebGPUUtil::RenderPassColorAttachment.Create(wgpuTextureView);
+        WGPURenderPassDescriptor renderPassDesc = WebGPUUtil::RenderPassDescriptor.Create(colorAttachment);
         WGPURenderPassEncoder renderPass = wgpuCommandEncoderBeginRenderPass(encoder, &renderPassDesc);
 
         // TODO: this can be written when value is set! (not every frame)

@@ -10,9 +10,6 @@
 #define WEBGPU_CPP_IMPLEMENTATION
 #include <webgpu/webgpu.hpp>
 
-// for our use
-#define USE_WEBGPU
-
 #include <iostream>
 #include <SDL2/SDL.h>
 

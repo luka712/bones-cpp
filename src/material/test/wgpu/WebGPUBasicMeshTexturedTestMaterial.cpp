@@ -3,10 +3,10 @@
 #include "mesh/wgpu/WebGPUMesh.hpp"
 #include "Framework.hpp"
 #include "texture/WebGPUTexture2D.hpp"
-#include "util/wgpu/WebGPUShaderModuleUtil.hpp"
+#include "util/WebGPUShaderModuleUtil.hpp"
 
-#include "util/wgpu/WebGPUVertexBufferLayoutUtil.hpp"
-#include "util/WebGPUUtil.hpp"
+#include "util/WebGPUVertexBufferLayoutUtil.hpp"
+#include "WebGPUUtil.hpp"
 
 namespace bns
 {
@@ -60,7 +60,7 @@ namespace bns
         colorTarget.blend = &blend;
         colorTarget.writeMask = WGPUColorWriteMask_All;
         std::string fragFn = "fs_main";
-        WGPUFragmentState fragment = WebGPUUtilDeprecated::FragmentState.Create(shaderModule, colorTarget, fragFn);
+        WGPUFragmentState fragment = WebGPUUtil::FragmentState.Create(shaderModule, colorTarget, fragFn);
         descriptor.fragment = &fragment;
 
         // Other state

@@ -1,4 +1,4 @@
-#include "util/wgpu/WebGPUDepthStencilStateUtil.hpp"
+#include "util/WebGPUDepthStencilStateUtil.hpp"
 
 namespace bns 
 {

@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 ADD_LIBRARY(BnsRenderingBackend STATIC 
     src/renderer/Renderer.cpp
-    src/buffer-layout/BufferLayoutData.cpp
+    src/buffer_layout/BufferLayoutData.cpp
     )
 
 # INCLUDE DIRECTORIES

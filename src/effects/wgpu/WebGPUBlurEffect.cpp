@@ -1,8 +1,8 @@
 
 #include "effects/wgpu/WebGPUBlurEffect.hpp"
 #include "Framework.hpp"
-#include "util/WebGPUUtil.hpp"
-#include "buffer-layout/BufferLayoutData.hpp"
+#include "WebGPUUtil.hpp"
+#include "buffer_layout/BufferLayoutData.hpp"
 
 namespace bns
 {
@@ -79,7 +79,7 @@ namespace bns
         std::vector<BufferLayoutDescriptor> vertexBufferLayouts;
         vertexBufferLayouts.push_back(bufferLayoutDescriptor);
 
-        WGPUVertexBufferLayout *vertexBuffersLayout = WebGPUUtilDeprecated::VertexBufferLayout.Create(vertexBufferLayouts);
+        WGPUVertexBufferLayout *vertexBuffersLayout = WebGPUUtil::VertexBufferLayout.Create(vertexBufferLayouts);
 
         // TODO: move to util
         WGPUVertexState vertexState;
@@ -91,7 +91,7 @@ namespace bns
         vertexState.constantCount = 0;
 
         // Fragment state
-        WGPUBlendState blend = WebGPUUtilDeprecated::BlendState.Create();
+        WGPUBlendState blend = WebGPUUtil::BlendState.Create();
 
         // default color target state
         // TODO: move to util
@@ -104,7 +104,7 @@ namespace bns
 
         // WGPUDepthStencilState depthStencilState = WebGPUDepthStencilStateUtil::Create();
 
-        WGPURenderPipelineDescriptor renderPipelineDescriptor = WebGPUUtilDeprecated::RenderPipelineDescriptor.Create(
+        WGPURenderPipelineDescriptor renderPipelineDescriptor = WebGPUUtil::RenderPipelineDescriptor.Create(
             layout,
             vertexState,
             fragmentState,
@@ -116,7 +116,7 @@ namespace bns
         WGPURenderPipeline pipeline = wgpuDeviceCreateRenderPipeline(m_device, &renderPipelineDescriptor);
 
         wgpuPipelineLayoutRelease(layout);
-        WebGPUUtilDeprecated::VertexBufferLayout.Delete(vertexBuffersLayout, 1);
+        WebGPUUtil::VertexBufferLayout.Delete(vertexBuffersLayout, 1);
 
         return pipeline;
     }
@@ -125,7 +125,7 @@ namespace bns
     {
         FileLoader fileLoader;
         std::string shaderSource = fileLoader.LoadFile(GetShaderPath());
-        WGPUShaderModule shaderModule = WebGPUUtilDeprecated::ShaderModule.Create(m_device, shaderSource, "blur_effect_sm");
+        WGPUShaderModule shaderModule = WebGPUUtil::ShaderModule.Create(m_device, shaderSource, "blur_effect_sm");
 
         // Create pipeline layout. Here the global bind group layout is assigned.
         std::string fragFn = "fs_main_horizontal_pass";
@@ -151,14 +151,14 @@ namespace bns
         // RENDER TO VERTICAL PASS TEXTURE
 
         // Create a command encoder which can be used to submit GPU operations.
-        WGPUCommandEncoder horizontalPassEncoder = WebGPUUtilDeprecated::CommandEncoder.Create(device, "blur horizontal pass ce");
+        WGPUCommandEncoder horizontalPassEncoder = WebGPUUtil::CommandEncoder.Create(device, "blur horizontal pass ce");
 
         // Create a render pass for the encoder.
         WGPUTextureView viewIntoVerticalPassTexture = m_midStepTexture->CreateView();
 
         // Horizontal pass render into texture binding of vertical pass
-        WGPURenderPassColorAttachment horizontalPassColorAttachment = WebGPUUtilDeprecated::RenderPassColorAttachment.Create(viewIntoVerticalPassTexture);
-        WGPURenderPassDescriptor horizontalRenderPassDesc = WebGPUUtilDeprecated::RenderPassDescriptor.Create(horizontalPassColorAttachment);
+        WGPURenderPassColorAttachment horizontalPassColorAttachment = WebGPUUtil::RenderPassColorAttachment.Create(viewIntoVerticalPassTexture);
+        WGPURenderPassDescriptor horizontalRenderPassDesc = WebGPUUtil::RenderPassDescriptor.Create(horizontalPassColorAttachment);
         WGPURenderPassEncoder horizontalRenderPass = wgpuCommandEncoderBeginRenderPass(horizontalPassEncoder, &horizontalRenderPassDesc);
 
         // Set the pipeline that will be used for this render pass.
@@ -180,10 +180,10 @@ namespace bns
         wgpuCommandEncoderRelease(horizontalPassEncoder);
 
         // Create a command encoder which can be used to submit GPU operations.
-        WGPUCommandEncoder verticalPassEncoder = WebGPUUtilDeprecated::CommandEncoder.Create(device, "blur vertical pass ce");
+        WGPUCommandEncoder verticalPassEncoder = WebGPUUtil::CommandEncoder.Create(device, "blur vertical pass ce");
 
-        WGPURenderPassColorAttachment verticalPassColorAttachment = WebGPUUtilDeprecated::RenderPassColorAttachment.Create(viewIntoDestinationTexture);
-        WGPURenderPassDescriptor renderPassDesc = WebGPUUtilDeprecated::RenderPassDescriptor.Create(verticalPassColorAttachment);
+        WGPURenderPassColorAttachment verticalPassColorAttachment = WebGPUUtil::RenderPassColorAttachment.Create(viewIntoDestinationTexture);
+        WGPURenderPassDescriptor renderPassDesc = WebGPUUtil::RenderPassDescriptor.Create(verticalPassColorAttachment);
         WGPURenderPassEncoder verticalRenderPass = wgpuCommandEncoderBeginRenderPass(verticalPassEncoder, &renderPassDesc);
 
         // Set the pipeline that will be used for this render pass.

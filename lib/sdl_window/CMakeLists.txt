@@ -4,6 +4,9 @@ set(CMAKE_CXX_STANDARD 17)
 
 ADD_LIBRARY(BnsSDLWindow STATIC src/SDLWindow.cpp)
 
+# USE_WEBGPU is defined in the root CMakeLists.txt
+target_compile_options(BnsSDLWindow PRIVATE -DUSE_WEBGPU=${USE_WEBGPU})
+
 # Custom extension for WebGPU and SDL2
 if(APPLE)
     target_compile_options(SDL2Extension PRIVATE -x objective-c)

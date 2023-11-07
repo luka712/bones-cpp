@@ -4,6 +4,7 @@
 
 #include "Window.hpp"
 #include <SDL2/SDL.h>
+#include "BnsWebGPU.hpp"
 
 namespace bns
 {
@@ -21,10 +22,9 @@ namespace bns
     public:
         SDLWindowManager();
         ~SDLWindowManager();
-
 #ifdef USE_WEBGPU
         bool InitializeForWGPU(WindowParameters windowParameters, WGPUInstance *outInstance, WGPUSurface *outSurface) override;
-#endif
+#endif 
 
 #ifdef __APPLE__
         CA::MetalLayer *InitializeForMetal(WindowParameters windowParameters) override;

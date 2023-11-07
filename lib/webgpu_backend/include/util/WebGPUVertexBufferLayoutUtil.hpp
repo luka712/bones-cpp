@@ -5,7 +5,7 @@
 #include <webgpu/webgpu.h>
 #include <vector>
 #include <map>
-#include "buffer-layout/BufferLayoutData.hpp"
+#include "buffer_layout/BufferLayoutData.hpp"
 
 namespace bns
 {

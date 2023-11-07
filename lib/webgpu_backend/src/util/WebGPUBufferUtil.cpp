@@ -1,4 +1,4 @@
-#include "util/wgpu/WebGPUBufferUtil.hpp"
+#include "util/WebGPUBufferUtil.hpp"
 
 namespace bns
 {

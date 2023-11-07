@@ -1,4 +1,4 @@
-#include "util/wgpu/WebGPURenderPipelineDescriptorUtil.hpp"
+#include "util/WebGPURenderPipelineDescriptorUtil.hpp"
 
 namespace bns
 {

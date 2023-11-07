@@ -1,4 +1,4 @@
-#include "util/wgpu/WebGPUBlendStateUtil.hpp"
+#include "util/WebGPUBlendStateUtil.hpp"
 
 namespace bns
 {

@@ -7,7 +7,7 @@
 #include "texture/MetalTexture2D.hpp"
 #include "MetalUtil.hpp"
 #include "Framework.hpp"
-#include "buffer-layout/BufferLayoutData.hpp"
+#include "buffer_layout/BufferLayoutData.hpp"
 
 namespace bns
 {

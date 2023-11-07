@@ -1,4 +1,4 @@
-#include "util/wgpu/WebGPUBindGroupEntryUtil.hpp"
+#include "util/WebGPUBindGroupEntryUtil.hpp"
 
 namespace bns
 {
