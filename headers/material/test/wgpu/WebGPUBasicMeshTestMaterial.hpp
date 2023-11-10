@@ -4,6 +4,8 @@
 
 #include "material/Material.hpp"
 #include <webgpu/webgpu.h>
+#include "renderer/WebGPURenderer.hpp"
+#include "FileLoader.hpp"
 
 namespace bns
 {
@@ -18,7 +20,11 @@ namespace bns
     class WebGPUBasicMeshTestMaterial final : public Material
     {
     private:
-        Framework &m_framework;
+        /// @brief The renderer.
+        WebGPURenderer *m_renderer;
+
+        /// @brief The file loader.
+        FileLoader *m_fileLoader;
 
         /**
          * @brief The pipeline for the material.
@@ -27,7 +33,7 @@ namespace bns
         WGPURenderPipeline m_pipeline;
 
     public:
-        WebGPUBasicMeshTestMaterial(Framework &framework);
+        WebGPUBasicMeshTestMaterial(Renderer *renderer, FileLoader *fileLoader);
         ~WebGPUBasicMeshTestMaterial();
 
         /**

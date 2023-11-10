@@ -4,6 +4,8 @@
 
 #include <webgpu/webgpu.h>
 #include "material/basic/BasicMaterial.hpp"
+#include "renderer/WebGPURenderer.hpp"
+#include "FileLoader.hpp"
 
 namespace bns
 {
@@ -12,10 +14,11 @@ namespace bns
     class WebGPUBasicMaterial final : public BasicMaterial
     {
     private:
-        /**
-         * @brief The framework reference.
-         */
-        Framework *m_framework;
+        /// @brief The renderer.
+        WebGPURenderer* m_renderer;
+
+        /// @brief The file loader.
+        FileLoader* m_fileLoader;
 
         /**
          * Max instances that can be created for this material if instanced drawing is used.

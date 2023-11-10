@@ -7,7 +7,7 @@ namespace bns
     WebGPUMesh::WebGPUMesh(const Framework &framework, const Geometry &geometry)
         : Mesh(framework), m_geometry(geometry)
     {
-
+        m_renderer = static_cast<WebGPURenderer *>(m_framework.GetRenderer());
         m_numOfVertices = geometry.NumOfVertices;
         IndicesCount = geometry.Indices.size();
 
@@ -20,7 +20,7 @@ namespace bns
 
     void WebGPUMesh::Initialize()
     {
-        m_device = m_framework.Context.WebGPUDevice;
+        m_device = m_renderer->GetDevice();
 
         InitializeIndicesBuffer();
         InitializeVertexBuffer();

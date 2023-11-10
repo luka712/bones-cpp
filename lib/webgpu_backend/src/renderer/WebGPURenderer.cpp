@@ -1,14 +1,12 @@
-#include "Framework.hpp"
-#include "renderer/wgpu/WebGPURenderer.hpp"
+#include "renderer/WebGPURenderer.hpp"
 #include <iostream>
-#include <webgpu/webgpu.hpp>
 #include "texture/WebGPUTexture2D.hpp"
 
 namespace bns
 {
 
-	WebGPURenderer::WebGPURenderer(Framework &framework)
-		: Renderer(), m_framework(framework)
+	WebGPURenderer::WebGPURenderer(WindowManager *windowManager)
+		: Renderer(), m_windowManager(windowManager)
 	{
 	}
 
@@ -139,7 +137,9 @@ namespace bns
 			std::cout << "WebGPU surface is null" << std::endl;
 		}
 
-		m_bufferSize = m_framework.GetWindowManager().GetWindowSize();
+		Vec2i windowSize = m_windowManager->GetWindowSize();
+		m_bufferSize.X = windowSize.X;
+		m_bufferSize.Y = windowSize.Y;
 
 		m_instance = instance;
 		m_surface = surface;
@@ -153,9 +153,6 @@ namespace bns
 			std::cout << "Queued work finished with status: " << status << std::endl;
 		};
 		wgpuQueueOnSubmittedWorkDone(m_queue, 0, onQueueDone, nullptr);
-
-		m_framework.Context.WebGPUDevice = m_device;
-		m_framework.Context.WebGPUQueue = m_queue;
 
 		auto handleWebGPUError = [](WGPUErrorType type, const char *message, void *userData)
 		{
@@ -171,16 +168,21 @@ namespace bns
 
 		Resize(); // creates swap chain
 
-		m_brightnessTexture = m_framework.GetTextureManager().CreateEmpty(m_bufferSize.X, m_bufferSize.Y,
-																		  TextureUsage::RENDER_ATTACHMENT | TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_SRC | TextureUsage::COPY_DST,
-																		  TextureFormat::BGRA_8_Unorm);
+
+		// move to create empty texture method
+		ImageData imageData;
+		imageData.Width = m_bufferSize.X;
+		imageData.Height = m_bufferSize.Y;
+		imageData.Data = new u8[m_bufferSize.X * m_bufferSize.Y * 4];
+		i32 usageFlags = TextureUsage::RENDER_ATTACHMENT | TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_SRC | TextureUsage::COPY_DST;
+		TextureFormat format = TextureFormat::BGRA_8_Unorm;
+		m_brightnessTexture = new WebGPUTexture2D(m_device, &imageData, usageFlags, format);
+		m_brightnessTexture->Initialize();
 	}
 
 	void WebGPURenderer::BeginDraw()
 	{
-#if DEBUG
 		wgpuDeviceTick(m_device);
-#endif
 		m_drawCommandEncoder = wgpuDeviceCreateCommandEncoder(m_device, nullptr);
 
 		WGPURenderPassColorAttachment colorAttachment[2];
@@ -239,8 +241,6 @@ namespace bns
 		// m_currentPassEncoder = wgpuCommandEncoderBeginRenderPass(m_drawCommandEncoder, &renderpassInfo);
 		// // wgpuRenderPassEncoderSetViewport(m_currentPassEncoder, 0.0f, 0.0f, m_bufferSize.X, m_bufferSize.Y, 0.0f, 1.0f);
 		// //  wgpuRenderPassEncoderSetScissorRect(m_currentPassEncoder, 0, 0, m_bufferSize.X, m_bufferSize.Y);
-
-		m_framework.Context.CurrentWebGPURenderPassEncoder = m_currentPassEncoder;
 	}
 
 	void WebGPURenderer::EndDraw()

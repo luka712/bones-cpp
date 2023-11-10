@@ -1,6 +1,7 @@
 #include "effects/wgpu/WebGPUBloomEffect.hpp"
 #include "WebGPUUtil.hpp"
 #include "Framework.hpp"
+#include "renderer/WebGPURenderer.hpp"
 
 namespace bns
 {
@@ -14,7 +15,7 @@ namespace bns
 
     void WebGPUBloomEffectImpl::Initialize()
     {
-        Vec2u bufferSize = m_framework.GetRenderer()->GetBufferSize();
+        Vec2i bufferSize = m_framework.GetRenderer()->GetBufferSize();
         Texture2D *texture = m_framework
                                     .GetTextureManager()
                                     .CreateEmpty(bufferSize.X, bufferSize.Y,
@@ -163,8 +164,9 @@ WGPURenderPipeline WebGPUBloomEffectImpl::CreateRenderPipeline(std::vector<WGPUB
             m_blurEffect.Draw(m_brightnessTexture->Texture);
         }
 
-        WGPUDevice device = m_framework.Context.WebGPUDevice;
-        WGPUQueue queue = m_framework.Context.WebGPUQueue;
+        WebGPURenderer* renderer = static_cast<WebGPURenderer*>(m_framework.GetRenderer());
+        WGPUDevice device = renderer->GetDevice();
+        WGPUQueue queue = renderer->GetQueue();
 
         // Create a command encoder which can be used to submit GPU operations.
         WGPUCommandEncoderDescriptor desc;

@@ -48,7 +48,7 @@ do: Simply run project in xcode
 
 # Dependencies
 TODO: 
-- move renderer implementations to lib  WebGPU, DirectX ( Metal is done ) # check webgpu lock reason
+- move renderer implementations to lib DirectX ( Metal/WebGPU is done ) 
 - Break project into smaller parts, start with loaders! 
 
 - FORWARD_2D_NUM_OF_POINT_LIGHTS make sure it's passed to shader as well

@@ -23,28 +23,7 @@
 
 namespace bns
 {
-    struct FrameworkContext
-    {
-        /**
-         * @brief The webgpu device.
-         * This is global interface of the device.
-         */
-        WGPUDevice WebGPUDevice;
-
-        /**
-         * @brief The webgpu queue.
-        */
-        WGPUQueue WebGPUQueue;
-
-        /**
-         * @brief The current render pass encoder.
-         */
-        WGPURenderPassEncoder CurrentWebGPURenderPassEncoder;
-    };
-
-    /**
-     * @brief The Framework class
-     */
+    /// @brief The framework context.
     class Framework
     {
     private:
@@ -74,11 +53,8 @@ namespace bns
 #endif 
 
     public:
-        FrameworkContext Context;
-
-        /**
-         * @brief Get the window manager.
-         */
+        /// @brief Gets the window manager.
+        /// @return The window manager.
         inline WindowManager &GetWindowManager() const
         {
             return *m_windowManager;

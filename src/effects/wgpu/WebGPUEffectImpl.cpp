@@ -8,6 +8,7 @@ namespace bns
     WebGPUEffectImpl::WebGPUEffectImpl(const Framework &framework)
         : Effect(framework)
     {
+        m_renderer = static_cast<WebGPURenderer *>(framework.GetRenderer());
     }
 
     WebGPUEffectImpl::~WebGPUEffectImpl()
@@ -179,9 +180,9 @@ namespace bns
 
     void WebGPUEffectImpl::Initialize()
     {
-        m_device = m_framework.Context.WebGPUDevice;
+        m_device = m_renderer->GetDevice();
 
-        Vec2u bufferSize = m_framework.GetRenderer()->GetBufferSize();
+        Vec2i bufferSize = m_framework.GetRenderer()->GetBufferSize();
         Texture2D *texture = m_framework.GetTextureManager()
                                  .CreateEmpty(bufferSize.X, bufferSize.Y,
                                               TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
@@ -198,13 +199,13 @@ namespace bns
 
     void WebGPUEffectImpl::Draw(void *destinationTexture)
     {
-        WGPUDevice device = m_framework.Context.WebGPUDevice;
+        WGPUQueue queue = m_renderer->GetQueue();
 
         // Create a command encoder which can be used to submit GPU operations.
         WGPUCommandEncoderDescriptor desc;
         desc.nextInChain = nullptr;
         desc.label = "Effect";
-        WGPUCommandEncoder encoder = wgpuDeviceCreateCommandEncoder(device, &desc);
+        WGPUCommandEncoder encoder = wgpuDeviceCreateCommandEncoder(m_device, &desc);
 
         // Create a render pass for the encoder.
         WGPUTexture wgpuTexture = static_cast<WGPUTexture>(destinationTexture);
@@ -226,7 +227,7 @@ namespace bns
         commandBufferDesc.label = "Effect";
         WGPUCommandBuffer commandBuffer = wgpuCommandEncoderFinish(encoder, &commandBufferDesc);
 
-        wgpuQueueSubmit(m_framework.Context.WebGPUQueue, 1, &commandBuffer);
+        wgpuQueueSubmit(queue, 1, &commandBuffer);
 
         // release created resources
         wgpuTextureViewRelease(wgpuTextureView);

@@ -4,11 +4,11 @@
 
 #include "material/Material.hpp"
 #include <webgpu/webgpu.h>
+#include "renderer/WebGPURenderer.hpp"
+#include "FileLoader.hpp"
 
 namespace bns
 {
-    class Framework;
-
     /**
      * Material where mesh is embedded in shader.
      * This is test material to see if shader can be compiled and set up.
@@ -18,7 +18,11 @@ namespace bns
     class WebGPUNoMeshTestMaterial final : public Material
     {
     private:
-        Framework &m_framework;
+        /// @brief The renderer.
+        WebGPURenderer *m_renderer;
+
+        /// @brief The file loader.
+        FileLoader *m_fileLoader;
 
         /**
          * @brief The pipeline for the material.
@@ -27,7 +31,7 @@ namespace bns
         WGPURenderPipeline m_pipeline;
 
     public:
-        WebGPUNoMeshTestMaterial(Framework &framework);
+        WebGPUNoMeshTestMaterial(Renderer *renderer, FileLoader *fileLoader);
         ~WebGPUNoMeshTestMaterial();
 
         /**

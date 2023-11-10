@@ -128,8 +128,8 @@ namespace bns
 
     void WebGPUTextureCombineEffectImpl::Draw(void *texture)
     {
-        WGPUDevice device = m_framework.Context.WebGPUDevice;
-        WGPUQueue queue = m_framework.Context.WebGPUQueue;
+        WGPUDevice device = m_renderer->GetDevice();
+        WGPUQueue queue = m_renderer->GetQueue();
 
         // Create a command encoder which can be used to submit GPU operations.
         WGPUCommandEncoderDescriptor desc;

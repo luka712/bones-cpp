@@ -5,8 +5,8 @@
 
 namespace bns
 {
-    WebGPUSpriteRenderer::WebGPUSpriteRenderer(Framework &framework)
-        : SpriteRenderer(framework)
+    WebGPUSpriteRenderer::WebGPUSpriteRenderer(Renderer *m_renderer)
+        : SpriteRenderer(), m_renderer(static_cast<WebGPURenderer*>(m_renderer))
     {
         BrightnessThreshold = 0.3f;
         AmbientLight.Intensity = 1.0f;
@@ -92,12 +92,12 @@ namespace bns
 
     void WebGPUSpriteRenderer::Initialize()
     {
-        auto size = m_framework.GetWindowManager().GetWindowSize();
+        auto size = m_renderer->GetBufferSize();
         m_camera.Initialize(size.X, size.Y);
 
         // GLOBLA BUFFERS
         // setup camera buffer
-        m_device = m_framework.Context.WebGPUDevice;
+        m_device = m_renderer->GetDevice();
         m_projectionViewMatrixBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device,
                                                                               sizeof(Mat4x4f),
                                                                               "Sprite Renderer Camera Buffer");
@@ -313,7 +313,7 @@ namespace bns
 
     void WebGPUSpriteRenderer::EndFrame()
     {
-        WGPURenderPassEncoder renderPass = m_framework.Context.CurrentWebGPURenderPassEncoder;
+        WGPURenderPassEncoder renderPass = m_renderer->GetCurrentPassEncoder();
         WGPUQueue queue = wgpuDeviceGetQueue(m_device);
 
         std::stack<WGPUBuffer> tempVertexBufferStack;

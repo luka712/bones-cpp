@@ -7,17 +7,19 @@
 #include <webgpu/webgpu.h>
 #include <map>
 #include <stack>
+#include "renderer/WebGPURenderer.hpp"
 
 namespace bns
 {
-    class Framework;
-
     /**
      * @brief The WebGPU implementation of sprite renderer.
      */
     class WebGPUSpriteRenderer final : public SpriteRenderer
     {
     private:
+        /// @brief The renderer.
+        WebGPURenderer *m_renderer;
+
         /// @brief The device.
         WGPUDevice m_device;
 
@@ -68,7 +70,7 @@ namespace bns
 
     public:
         /// @brief The default constructor.
-        WebGPUSpriteRenderer(Framework &framework);
+        WebGPUSpriteRenderer(Renderer *m_renderer);
 
         void Initialize() override;
 

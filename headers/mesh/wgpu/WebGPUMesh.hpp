@@ -5,6 +5,7 @@
 #include "mesh/Mesh.hpp"
 #include <webgpu/webgpu.h>
 #include "geometry/Geometry.hpp"
+#include "renderer/WebGPURenderer.hpp"
 
 namespace bns
 {
@@ -23,6 +24,9 @@ namespace bns
     {
 
     private:
+        /// @brief The renderer
+        WebGPURenderer *m_renderer;
+
         WGPUDevice m_device;
 
         size_t m_numOfVertices;

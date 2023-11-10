@@ -11,7 +11,8 @@ namespace bns
     WebGPUBasicMaterial::WebGPUBasicMaterial(Framework &framework)
         : BasicMaterial()
     {
-        m_framework = &framework;
+        m_renderer = static_cast<WebGPURenderer *>(framework.GetRenderer());
+        m_fileLoader = &framework.FileLoader;
         m_maxInstances = 1;
         DiffuseColor = Color::LightGray();
     }
@@ -19,7 +20,8 @@ namespace bns
     WebGPUBasicMaterial::WebGPUBasicMaterial(Framework &framework, i32 maxInstances)
         : BasicMaterial(), m_maxInstances(maxInstances)
     {
-        m_framework = &framework;
+        m_renderer = static_cast<WebGPURenderer *>(framework.GetRenderer());
+        m_fileLoader = &framework.FileLoader;
         DiffuseColor = Color::LightGray();
     }
 
@@ -28,7 +30,7 @@ namespace bns
         auto states = InitializeStates();
         InitializeBuffersResult buffers = InitializeBuffers();
 
-        WGPUDevice device = m_framework->Context.WebGPUDevice;
+        WGPUDevice device = m_renderer->GetDevice();
 
         WGPUPipelineLayoutDescriptor pipelineLayoutDesc;
         pipelineLayoutDesc.label = "Basic Material Pipeline Layout";
@@ -44,8 +46,8 @@ namespace bns
             states.FragmentState);
 
         // release shader modules
-      //   wgpuShaderModuleRelease(states.VertexState.module);
-     //   wgpuShaderModuleRelease(states.FragmentState.module);
+        //   wgpuShaderModuleRelease(states.VertexState.module);
+        //   wgpuShaderModuleRelease(states.FragmentState.module);
 
         WGPURenderPipeline pipeline = wgpuDeviceCreateRenderPipeline(device, &pipelineDesc);
         m_pipeline = pipeline;
@@ -53,9 +55,9 @@ namespace bns
 
     WebGPUBasicMaterial::InitializeStatesResult WebGPUBasicMaterial::InitializeStates()
     {
-        WGPUDevice device = static_cast<WGPUDevice>(m_framework->Context.WebGPUDevice);
+        WGPUDevice device = m_renderer->GetDevice();
 
-        std::string shaderSource = m_framework->FileLoader.LoadFile("shaders/webgpu/basic_material_shader.wgsl");
+        std::string shaderSource = m_fileLoader->LoadFile("shaders/webgpu/basic_material_shader.wgsl");
 
         std::cout << shaderSource << std::endl;
 
@@ -121,7 +123,7 @@ namespace bns
 
     WebGPUBasicMaterial::InitializeBuffersResult WebGPUBasicMaterial::InitializeBuffers()
     {
-        WGPUDevice device = static_cast<WGPUDevice>(m_framework->Context.WebGPUDevice);
+        WGPUDevice device = m_renderer->GetDevice();
 
         // global uniform group(0) binding(0) projectionViewMatrix, diffuseColor
         WGPUBindGroupLayoutEntry bindingLayouts[2];
@@ -190,9 +192,9 @@ namespace bns
      */
     void WebGPUBasicMaterial::Draw(const Camera &camera, Mesh *mesh)
     {
-        WGPUDevice device = m_framework->Context.WebGPUDevice;
+        WGPUDevice device = m_renderer->GetDevice();
         WGPUQueue queue = wgpuDeviceGetQueue(device);
-        WGPURenderPassEncoder pass = m_framework->Context.CurrentWebGPURenderPassEncoder;
+        WGPURenderPassEncoder pass = m_renderer->GetCurrentPassEncoder();
 
         WebGPUMesh webGPUMesh = *static_cast<WebGPUMesh *>(mesh);
 
@@ -213,7 +215,6 @@ namespace bns
         wgpuRenderPassEncoderSetIndexBuffer(pass, webGPUMesh.IndexBuffer, webGPUMesh.IndexFormat, 0, webGPUMesh.IndicesCount * sizeof(u32));
 
         wgpuRenderPassEncoderDrawIndexed(pass, (uint32_t)webGPUMesh.IndicesCount, 1, 0, 0, 0);
-
     }
 
     /**

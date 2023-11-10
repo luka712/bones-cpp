@@ -5,7 +5,7 @@
 #include "renderer/MetalRenderer.hpp"
 #include "texture/MetalTexture2D.hpp"
 #else
-#include "renderer/wgpu/WebGPURenderer.hpp" 
+#include "renderer/WebGPURenderer.hpp" 
 #include "texture/WebGPUTexture2D.hpp"
 #endif
 

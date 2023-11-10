@@ -6,7 +6,9 @@
 #include "Vec2.hpp"
 #include <string>
 
+#ifdef USE_METAL
 #include "BnsMetal.hpp"
+#endif // USE_METAL
 
 #if DIRECTX11
 #include "BnsDirectX11.hpp"
@@ -42,19 +44,11 @@ namespace bns
 
     class WindowManager
     {
-    protected:
-        Vec2u m_windowSize;
+    public: 
+        /// @brief Get the window size.
+        virtual Vec2i GetWindowSize() = 0;
 
-    public:
-        /**
-         * @brief Get the window size.
-         */
-        inline Vec2u GetWindowSize() const
-        {
-            return m_windowSize;
-        }
-
-#ifdef __APPLE__
+#ifdef USE_METAL
         /// @brief Initialize for Metal.
         virtual CA::MetalLayer *InitializeForMetal(WindowParameters windowParameters) = 0;
 #endif

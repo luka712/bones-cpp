@@ -6,8 +6,8 @@
 
 namespace bns
 {
-    WebGPUNoMeshTestMaterial::WebGPUNoMeshTestMaterial(Framework &framework)
-        : m_framework(framework)
+    WebGPUNoMeshTestMaterial::WebGPUNoMeshTestMaterial(Renderer *renderer, FileLoader *fileLoader)
+        : m_renderer(static_cast<WebGPURenderer *>(renderer)), m_fileLoader(fileLoader)
     {
     }
 
@@ -17,8 +17,8 @@ namespace bns
 
     void WebGPUNoMeshTestMaterial::Initialize()
     {
-        std::string shaderSource = m_framework.FileLoader.LoadFile("shaders/webgpu/no_mesh_test_shader.wgsl");
-        WGPUShaderModule shaderModule = WebGPUShaderModuleUtil::Create(m_framework.Context.WebGPUDevice, shaderSource);
+        std::string shaderSource = m_fileLoader->LoadFile("shaders/webgpu/no_mesh_test_shader.wgsl");
+        WGPUShaderModule shaderModule = WebGPUShaderModuleUtil::Create(m_renderer->GetDevice(), shaderSource);
 
         WGPURenderPipelineDescriptor descriptor = {};
 
@@ -63,7 +63,7 @@ namespace bns
         descriptor.primitive.topology = WGPUPrimitiveTopology_TriangleList;
         descriptor.primitive.stripIndexFormat = WGPUIndexFormat_Undefined;
 
-        m_pipeline = wgpuDeviceCreateRenderPipeline(m_framework.Context.WebGPUDevice, &descriptor);
+        m_pipeline = wgpuDeviceCreateRenderPipeline(m_renderer->GetDevice(), &descriptor);
     }
 
     /**
@@ -74,8 +74,9 @@ namespace bns
      */
     void WebGPUNoMeshTestMaterial::Draw(const Camera &camera, Mesh *mesh)
     {
-        wgpuRenderPassEncoderSetPipeline(m_framework.Context.CurrentWebGPURenderPassEncoder, m_pipeline);
-        wgpuRenderPassEncoderDraw(m_framework.Context.CurrentWebGPURenderPassEncoder, 3, 1, 0, 0);
+        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentPassEncoder();
+        wgpuRenderPassEncoderSetPipeline(passEncoder, m_pipeline);
+        wgpuRenderPassEncoderDraw(passEncoder, 3, 1, 0, 0);
     }
 
     /**
@@ -88,8 +89,9 @@ namespace bns
      */
     void WebGPUNoMeshTestMaterial::Draw(const Camera &camera, const Mesh &mesh, std::vector<Mat4x4f> transforms)
     {
-        wgpuRenderPassEncoderSetPipeline(m_framework.Context.CurrentWebGPURenderPassEncoder, m_pipeline);
-        wgpuRenderPassEncoderDraw(m_framework.Context.CurrentWebGPURenderPassEncoder, 3, 1, 0, 0);
+        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentPassEncoder();
+        wgpuRenderPassEncoderSetPipeline(passEncoder, m_pipeline);
+        wgpuRenderPassEncoderDraw(passEncoder, 3, 1, 0, 0);
     }
 
     /**
@@ -103,13 +105,14 @@ namespace bns
      */
     void WebGPUNoMeshTestMaterial::DrawInstancedPrefilled(const Camera &camera, const Mesh &mesh, f32 *flatTransformsArray, i32 nOfInstances)
     {
-        wgpuRenderPassEncoderSetPipeline(m_framework.Context.CurrentWebGPURenderPassEncoder, m_pipeline);
-        wgpuRenderPassEncoderDraw(m_framework.Context.CurrentWebGPURenderPassEncoder, 3, 1, 0, 0);
+        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentPassEncoder();
+        wgpuRenderPassEncoderSetPipeline(passEncoder, m_pipeline);
+        wgpuRenderPassEncoderDraw(passEncoder, 3, 1, 0, 0);
     }
 
     /**
      * @brief Create a new copy of material
      */
-    Material *WebGPUNoMeshTestMaterial::Copy() { return new WebGPUNoMeshTestMaterial(m_framework); }
+    Material *WebGPUNoMeshTestMaterial::Copy() { return new WebGPUNoMeshTestMaterial(m_renderer, m_fileLoader); }
 
 }

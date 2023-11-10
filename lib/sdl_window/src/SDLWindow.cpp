@@ -11,6 +11,7 @@
 namespace bns
 {
     SDLWindowManager::SDLWindowManager()
+        : WindowManager()
     {
         m_window = nullptr;
         m_renderer = nullptr;
@@ -23,6 +24,13 @@ namespace bns
         if (m_window != nullptr)
             SDL_DestroyWindow(m_window);
         SDL_Quit();
+    }
+
+    Vec2i SDLWindowManager::GetWindowSize()
+    {
+        int width, height;
+        SDL_GetWindowSize(m_window, &width, &height);
+        return Vec2i(width, height);
     }
 
     void SDLWindowManager::CreateWindowAndRenderer(WindowParameters windowParameters)
@@ -66,12 +74,6 @@ namespace bns
             SDL_Quit();
             throw std::runtime_error("Failed to create SDL renderer");
         }
-
-        // query the window size
-        int width;
-        int height;
-        SDL_GetWindowSize(m_window, &width, &height);
-        m_windowSize = Vec2u(width, height);
     }
 
 #ifdef USE_WEBGPU
@@ -93,7 +95,7 @@ namespace bns
     }
 #endif
 
-#ifdef __APPLE__
+#ifdef USE_METAL
     CA::MetalLayer *SDLWindowManager::InitializeForMetal(WindowParameters windowParameters)
     {
         CreateWindowAndRenderer(windowParameters);

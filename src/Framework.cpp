@@ -1,7 +1,7 @@
 #include "Framework.hpp"
 #include <vector>
 #include "renderer/MetalRenderer.hpp"
-#include "renderer/wgpu/WebGPURenderer.hpp"
+#include "renderer/WebGPURenderer.hpp"
 #include "renderer/d3d11/D3D11Renderer.hpp"
 #include "SDLWindow.hpp"
 #include "material/WebGPUMaterialFactory.hpp"
@@ -40,11 +40,11 @@ namespace bns
         // m_materialFactory = new D3D11MaterialFactory(*this);
         // m_meshFactory = new D3D11MeshFactory(*this);
         // m_spriteRenderer = new D3D11SpriteRenderer(*this);
-#else
-        m_renderer = new WebGPURenderer(*this);
+#elif USE_WEBGPU
+        m_renderer = new WebGPURenderer(m_windowManager);
         m_materialFactory = new WebGPUMaterialFactory(*this);
         m_meshFactory = new WebGPUMeshFactory(*this);
-        m_spriteRenderer = new WebGPUSpriteRenderer(*this);
+        m_spriteRenderer = new WebGPUSpriteRenderer(m_renderer);
 #endif
 
         m_textureFactory = new TextureManagerImpl(m_renderer, m_imageLoader);
@@ -76,11 +76,12 @@ namespace bns
         WGPUSurface surface;
         m_windowManager->InitializeForWGPU(windowParameters, &instance, &surface);
 
-        static_cast<WebGPURenderer *>(m_renderer)->Initialize(instance, surface);
+        WebGPURenderer* webGPURenderer = static_cast<WebGPURenderer*>(m_renderer);
+        webGPURenderer->Initialize(instance, surface);
     }
 #endif // USE_WEBGPU
 
-#ifdef __APPLE__
+#ifdef USE_METAL
     void Framework::InitializeForMetal(WindowParameters windowParameters)
     {
         CA::MetalLayer *swapchain = m_windowManager->InitializeForMetal(windowParameters);

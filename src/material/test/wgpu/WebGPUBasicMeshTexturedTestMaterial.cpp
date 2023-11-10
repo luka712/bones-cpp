@@ -10,8 +10,8 @@
 
 namespace bns
 {
-    WebGPUBasicMeshTexturedTestMaterial::WebGPUBasicMeshTexturedTestMaterial(Framework &framework, Texture2D *texture)
-        : m_framework(framework), m_texture(texture)
+    WebGPUBasicMeshTexturedTestMaterial::WebGPUBasicMeshTexturedTestMaterial(Renderer *renderer, FileLoader *fileLoader, Texture2D *texture)
+        : m_renderer(static_cast<WebGPURenderer *>(renderer)), m_fileLoader(fileLoader), m_texture(texture)
     {
     }
 
@@ -21,8 +21,8 @@ namespace bns
 
     void WebGPUBasicMeshTexturedTestMaterial::Initialize()
     {
-        std::string shaderSource = m_framework.FileLoader.LoadFile("shaders/webgpu/basic_mesh_textured_test_shader.wgsl");
-        WGPUShaderModule shaderModule = WebGPUShaderModuleUtil::Create(m_framework.Context.WebGPUDevice, shaderSource);
+        std::string shaderSource = m_fileLoader->LoadFile("shaders/webgpu/basic_mesh_textured_test_shader.wgsl");
+        WGPUShaderModule shaderModule = WebGPUShaderModuleUtil::Create(m_renderer->GetDevice(), shaderSource);
 
         WGPURenderPipelineDescriptor descriptor = {};
 
@@ -44,7 +44,7 @@ namespace bns
         descriptor.vertex.buffers = &wgpuVertexBufferLayouts[0];
 
         // Fragment state
-             // Fragment state
+        // Fragment state
         WGPUBlendState blend = {};
         blend.color.operation = WGPUBlendOperation_Add;
         blend.color.srcFactor = WGPUBlendFactor_One;
@@ -93,13 +93,13 @@ namespace bns
         bindGroupLayoutDescriptor.entries = &bindGroupLayoutEntry[0];
 
         m_sourceTextureBindGroupLayout =
-            wgpuDeviceCreateBindGroupLayout(m_framework.Context.WebGPUDevice, &bindGroupLayoutDescriptor);
+            wgpuDeviceCreateBindGroupLayout(m_renderer->GetDevice(), &bindGroupLayoutDescriptor);
 
         WGPUPipelineLayoutDescriptor pipelineLayoutDescriptor = {};
         pipelineLayoutDescriptor.nextInChain = nullptr;
         pipelineLayoutDescriptor.bindGroupLayoutCount = 1;
         pipelineLayoutDescriptor.bindGroupLayouts = &m_sourceTextureBindGroupLayout;
-        descriptor.layout = wgpuDeviceCreatePipelineLayout(m_framework.Context.WebGPUDevice, &pipelineLayoutDescriptor);
+        descriptor.layout = wgpuDeviceCreatePipelineLayout(m_renderer->GetDevice(), &pipelineLayoutDescriptor);
 
         descriptor.depthStencil = nullptr;
 
@@ -112,7 +112,7 @@ namespace bns
         descriptor.primitive.topology = WGPUPrimitiveTopology_TriangleList;
         descriptor.primitive.stripIndexFormat = WGPUIndexFormat_Undefined;
 
-        m_pipeline = wgpuDeviceCreateRenderPipeline(m_framework.Context.WebGPUDevice, &descriptor);
+        m_pipeline = wgpuDeviceCreateRenderPipeline(m_renderer->GetDevice(), &descriptor);
 
         WebGPUTexture2D *texture = static_cast<WebGPUTexture2D *>(m_texture);
 
@@ -144,8 +144,7 @@ namespace bns
         bindGroupEntries[1].textureView = textureView;
         bindGroupDescriptor.entries = &bindGroupEntries[0];
 
-        m_sourceTextureBindGroup = wgpuDeviceCreateBindGroup(
-            m_framework.Context.WebGPUDevice, &bindGroupDescriptor);
+        m_sourceTextureBindGroup = wgpuDeviceCreateBindGroup(m_renderer->GetDevice(), &bindGroupDescriptor);
 
         WebGPUVertexBufferLayoutUtil::Delete(wgpuVertexBufferLayouts, 1);
     }
@@ -159,13 +158,13 @@ namespace bns
     void WebGPUBasicMeshTexturedTestMaterial::Draw(const Camera &camera, Mesh *mesh)
     {
         WebGPUMesh webGPUMesh = *static_cast<WebGPUMesh *>(mesh);
-        WGPURenderPassEncoder passEncoder = m_framework.Context.CurrentWebGPURenderPassEncoder;
+        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentPassEncoder();
 
         wgpuRenderPassEncoderSetPipeline(passEncoder, m_pipeline);
         wgpuRenderPassEncoderSetIndexBuffer(passEncoder, webGPUMesh.IndexBuffer, webGPUMesh.IndexFormat, 0, 6 * sizeof(u32));
         wgpuRenderPassEncoderSetVertexBuffer(passEncoder, 0, webGPUMesh.VertexBuffer, 0, webGPUMesh.VertexBufferSize);
         wgpuRenderPassEncoderSetBindGroup(passEncoder, 0, m_sourceTextureBindGroup, 0, 0);
-        wgpuRenderPassEncoderDrawIndexed(m_framework.Context.CurrentWebGPURenderPassEncoder, 6, 1, 0, 0, 0);
+        wgpuRenderPassEncoderDrawIndexed(passEncoder, 6, 1, 0, 0, 0);
     }
 
     /**
@@ -178,8 +177,9 @@ namespace bns
      */
     void WebGPUBasicMeshTexturedTestMaterial::Draw(const Camera &camera, const Mesh &mesh, std::vector<Mat4x4f> transforms)
     {
-        wgpuRenderPassEncoderSetPipeline(m_framework.Context.CurrentWebGPURenderPassEncoder, m_pipeline);
-        wgpuRenderPassEncoderDraw(m_framework.Context.CurrentWebGPURenderPassEncoder, 3, 1, 0, 0);
+        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentPassEncoder();
+        wgpuRenderPassEncoderSetPipeline(passEncoder, m_pipeline);
+        wgpuRenderPassEncoderDraw(passEncoder, 3, 1, 0, 0);
     }
 
     /**
@@ -193,13 +193,14 @@ namespace bns
      */
     void WebGPUBasicMeshTexturedTestMaterial::DrawInstancedPrefilled(const Camera &camera, const Mesh &mesh, f32 *flatTransformsArray, i32 nOfInstances)
     {
-        wgpuRenderPassEncoderSetPipeline(m_framework.Context.CurrentWebGPURenderPassEncoder, m_pipeline);
-        wgpuRenderPassEncoderDraw(m_framework.Context.CurrentWebGPURenderPassEncoder, 3, 1, 0, 0);
+        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentPassEncoder();
+        wgpuRenderPassEncoderSetPipeline(passEncoder, m_pipeline);
+        wgpuRenderPassEncoderDraw(passEncoder, 3, 1, 0, 0);
     }
 
     /**
      * @brief Create a new copy of material
      */
-    Material *WebGPUBasicMeshTexturedTestMaterial::Copy() { return new WebGPUBasicMeshTexturedTestMaterial(m_framework, m_texture); }
+    Material *WebGPUBasicMeshTexturedTestMaterial::Copy() { return new WebGPUBasicMeshTexturedTestMaterial(m_renderer, m_fileLoader, m_texture); }
 
 }

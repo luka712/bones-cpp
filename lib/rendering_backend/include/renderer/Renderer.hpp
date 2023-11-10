@@ -21,7 +21,7 @@ namespace bns
         Texture2D *m_brightnessTexture = nullptr;
 
         /// @brief The size of the render buffer.
-        Vec2u m_bufferSize;
+        Vec2i m_bufferSize;
 
     public:
         Color ClearColor;
@@ -31,7 +31,7 @@ namespace bns
         /**
          * @brief Get the buffer size.
          */
-        const Vec2u &GetBufferSize() const
+        const Vec2i &GetBufferSize() const
         {
             return m_bufferSize;
         }

@@ -19,9 +19,9 @@ endif()
 target_compile_options(BnsWebGPUBackend PRIVATE -DUSE_WEBGPU=1)
 
 if(APPLE)
-    target_link_libraries(BnsWebGPUBackend  PRIVATE ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} BnsTexture BnsRenderingBackend)
+    target_link_libraries(BnsWebGPUBackend  PRIVATE ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} BnsTexture BnsRenderingBackend BnsWindow)
 else()
-    target_link_libraries(BnsWebGPUBackend  PRIVATE BnsTexture BnsRenderingBackend)
+    target_link_libraries(BnsWebGPUBackend  PRIVATE BnsTexture BnsRenderingBackend BnsWindow)
 endif()
 
 include_directories(
@@ -32,6 +32,8 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../loaders/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../rendering_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../texture/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../math/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../window/include
 
     # vendor
     ${CMAKE_BINARY_DIR}/_deps/dawn-src/include

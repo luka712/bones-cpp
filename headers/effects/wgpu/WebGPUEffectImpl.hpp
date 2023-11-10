@@ -6,6 +6,7 @@
 #include "texture/WebGPUTexture2D.hpp"
 #include <string>
 #include <vector>
+#include "renderer/WebGPURenderer.hpp"
 
 /**
  * Each effects should at least have a vertex shader and a fragment shader
@@ -20,6 +21,8 @@ namespace bns
     class WebGPUEffectImpl : public Effect
     {
     protected:
+        WebGPURenderer *m_renderer;
+
         /**
          * The device. Fetched in initialize.
          */

@@ -2,19 +2,19 @@
 
 #define BNS_RENDERER_WGPU_HPP
 
-#include <webgpu/webgpu.h>
+#include "BnsWebGPU.hpp"
 #include "Math.hpp"
 #include "renderer/Renderer.hpp"
+#include "TextureManager.hpp"
+#include "Window.hpp"
 
 namespace bns
 {
-    class Framework;
-
     class WebGPURenderer final : public Renderer
     {
     private:
         /// @brief The framework.
-        Framework &m_framework;
+        WindowManager *m_windowManager;
 
         /// @brief The instance is a class in WebGPU. It is responsible for creating a surface.
         /// Instance in this context is a collection of adapters.
@@ -106,10 +106,19 @@ namespace bns
         void Resize();
 
     public:
-        WebGPURenderer(Framework &framework);
+        /// @brief The constructor.
+        /// @param windowManager The window manager.
+        WebGPURenderer(WindowManager *windowManager);
 
         WGPUSwapChain GetSwapChain() const { return m_swapChain; }
+
+        /// @brief Gets the device.
+        /// @return The device.
         WGPUDevice GetDevice() const { return m_device; }
+
+        /// @brief Gets the queue.
+        /// @return The queue.
+        WGPUQueue GetQueue() const { return m_queue; }
         WGPUCommandEncoder GetDrawCommandEncoder() const { return m_drawCommandEncoder; }
         WGPURenderPassEncoder GetCurrentPassEncoder() const { return m_currentPassEncoder; }
 

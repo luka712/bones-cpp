@@ -13,4 +13,5 @@ namespace bns
         FullScreen = false;
         Resizable = false;
     }
+
 }

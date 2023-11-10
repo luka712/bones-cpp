@@ -3,6 +3,7 @@
 #include "Framework.hpp"
 #include "WebGPUUtil.hpp"
 #include "buffer_layout/BufferLayoutData.hpp"
+#include "renderer/WebGPURenderer.hpp"
 
 namespace bns
 {
@@ -13,10 +14,11 @@ namespace bns
 
     void WebGPUBlurEffectImpl::Initialize()
     {
-        m_device = m_framework.Context.WebGPUDevice;
+        WebGPURenderer *renderer = static_cast<WebGPURenderer *>(m_framework.GetRenderer());
+        m_device = renderer->GetDevice();
         m_vertexBuffer = CreateVertexBuffer();
 
-        Vec2u bufferSize = m_framework.GetRenderer()->GetBufferSize();
+        Vec2i bufferSize = m_framework.GetRenderer()->GetBufferSize();
 
         // since there is no parent call, create the source texture as well
         m_sourceTexture = m_framework
@@ -142,7 +144,9 @@ namespace bns
 
     void WebGPUBlurEffectImpl::Draw(void *destinationTexture)
     {
-        WGPUDevice device = m_framework.Context.WebGPUDevice;
+        WebGPURenderer *renderer = static_cast<WebGPURenderer *>(m_framework.GetRenderer());
+        WGPUDevice device = renderer->GetDevice();
+        WGPUQueue queue = renderer->GetQueue();
 
         // Create a render pass for the encoder.
         WGPUTexture wgpuDestTexture = static_cast<WGPUTexture>(destinationTexture);
@@ -173,7 +177,7 @@ namespace bns
         horizontalPassCommandBufferDesc.label = "blur horizontal pass";
         WGPUCommandBuffer horizontalPassCommandBuffer = wgpuCommandEncoderFinish(horizontalPassEncoder, &horizontalPassCommandBufferDesc);
 
-        wgpuQueueSubmit(m_framework.Context.WebGPUQueue, 1, &horizontalPassCommandBuffer);
+        wgpuQueueSubmit(queue, 1, &horizontalPassCommandBuffer);
 
         // release created resources
         wgpuTextureViewRelease(viewIntoVerticalPassTexture);
@@ -197,7 +201,7 @@ namespace bns
         verticalPassCommandBufferDesc.label = "Effect";
         WGPUCommandBuffer verticalPassCommandBuffer = wgpuCommandEncoderFinish(verticalPassEncoder, &verticalPassCommandBufferDesc);
 
-        wgpuQueueSubmit(m_framework.Context.WebGPUQueue, 1, &verticalPassCommandBuffer);
+        wgpuQueueSubmit(queue, 1, &verticalPassCommandBuffer);
 
         // release created resources
         wgpuTextureViewRelease(viewIntoDestinationTexture);

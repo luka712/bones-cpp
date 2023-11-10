@@ -3,8 +3,7 @@
 
 namespace bns
 {
-    SpriteRenderer::SpriteRenderer(Framework &framework)
-        : m_framework(framework)
+    SpriteRenderer::SpriteRenderer()
     {
         for(size_t i = 0; i < FORWARD_2D_NUM_OF_POINT_LIGHTS; i++)
         {

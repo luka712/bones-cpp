@@ -22,13 +22,16 @@ namespace bns
     public:
         SDLWindowManager();
         ~SDLWindowManager();
+
+         Vec2i GetWindowSize() override;
+
 #ifdef USE_WEBGPU
         bool InitializeForWGPU(WindowParameters windowParameters, WGPUInstance *outInstance, WGPUSurface *outSurface) override;
 #endif 
 
-#ifdef __APPLE__
+#ifdef USE_METAL
         CA::MetalLayer *InitializeForMetal(WindowParameters windowParameters) override;
-#endif // __APPLE__
+#endif // USE_METAL
 
 #ifdef WIN32
         HWND InitializeForD3D11(WindowParameters windowParameters) override;

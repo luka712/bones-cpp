@@ -24,7 +24,7 @@ namespace bns
     {
     private:
         /// @brief The metal renderer.
-        MetalRenderer& m_renderer;
+        MetalRenderer* m_renderer;
 
         /// @brief The device.
         MTL::Device *m_device;
@@ -77,7 +77,7 @@ namespace bns
 
     public:
         /// @brief The default constructor.
-        MetalSpriteRenderer(Framework &framework, Renderer& renderer);
+        MetalSpriteRenderer( Renderer* renderer);
 
         void Initialize() override;
 

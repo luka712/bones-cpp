@@ -120,7 +120,7 @@ namespace bns
     {
         m_device = m_renderer->GetDevice();
 
-        Vec2u bufferSize = m_framework.GetRenderer()->GetBufferSize();
+        Vec2i bufferSize = m_framework.GetRenderer()->GetBufferSize();
         Texture2D *texture = m_framework.GetTextureManager()
                                  .CreateEmpty(bufferSize.X, bufferSize.Y,
                                               TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,

@@ -23,8 +23,6 @@ namespace bns
     class SpriteRenderer
     {
     protected:
-        /// @brief The framework.
-        Framework &m_framework;
 
         /// @brief The camera.
         SpriteRendererCamera m_camera;
@@ -45,8 +43,7 @@ namespace bns
         PointLight PointLights[FORWARD_2D_NUM_OF_POINT_LIGHTS];
 
         /// @brief The default constructor.
-        /// @param framework The framework.
-        SpriteRenderer(Framework& framework);
+        SpriteRenderer();
 
         /**
          * @brief Initialize the sprite renderer.

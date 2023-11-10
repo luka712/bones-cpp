@@ -44,12 +44,12 @@ void Initialize()
     font = engine.GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
     testTexture = engine.GetTextureManager().LoadTexture2D("assets/uv_test.png");
 
-    effect = engine.GetEffectFactory().CreateBloomEffect();
+    // effect = engine.GetEffectFactory().CreateBloomEffect();
 
     bns::Renderer *renderer = engine.GetRenderer();
 
-    renderer->SetRenderTexture(effect->GetSourceTexture());
-    renderer->SetBrightnessTexture(effect->GetBrightnessTexture());
+  //  renderer->SetRenderTexture(effect->GetSourceTexture());
+  //  renderer->SetBrightnessTexture(effect->GetBrightnessTexture());
 
     engine.GetSpriteRenderer()->PointLights[0].Intensity = 0.0;
     engine.GetSpriteRenderer()->PointLights[0].Position = bns::Vec3f(50.0f, 50.0f, 100.0f);
@@ -89,5 +89,5 @@ void Draw()
     // bottom right quadrant
     spriteRenderer->Draw(testTexture, bns::Rect(200, 100, 100, 100), bns::Rect(hw, hh, hw, hh), bns::Color::White(), rotation, rotationOrigin);
 
-    effect->Draw(renderer->GetSwapChainTexture());
+    // effect->Draw(renderer->GetSwapChainTexture());
 }

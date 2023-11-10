@@ -11,7 +11,7 @@
                 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/QuartzCore.framework/headers",
                 "${workspaceFolder}/vendor/glfw3webgpu"
             ],
-            "defines": [],
+            "defines": ["USE_WEBGPU=1"],
             "macFrameworkPath": [
                 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/**"
             ],

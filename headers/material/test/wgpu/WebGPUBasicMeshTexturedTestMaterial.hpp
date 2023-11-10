@@ -5,6 +5,8 @@
 #include "material/Material.hpp"
 #include <webgpu/webgpu.h>
 #include "Texture2D.hpp"
+#include "renderer/WebGPURenderer.hpp"
+#include "FileLoader.hpp"
 
 namespace bns
 {
@@ -19,7 +21,11 @@ namespace bns
     class WebGPUBasicMeshTexturedTestMaterial final : public Material
     {
     private:
-        Framework &m_framework;
+        /// @brief The renderer.
+        WebGPURenderer* m_renderer;
+
+        /// @brief The file loader.
+        FileLoader* m_fileLoader;
 
         /**
          * @brief The pipeline for the material.
@@ -45,7 +51,7 @@ namespace bns
         Texture2D *m_texture;
 
     public:
-        WebGPUBasicMeshTexturedTestMaterial(Framework &framework, Texture2D *texture);
+        WebGPUBasicMeshTexturedTestMaterial(Renderer *renderer, FileLoader* fileLoader, Texture2D *texture);
         ~WebGPUBasicMeshTexturedTestMaterial();
 
         /**
