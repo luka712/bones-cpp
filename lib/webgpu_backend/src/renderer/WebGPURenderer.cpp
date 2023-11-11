@@ -1,6 +1,7 @@
 #include "renderer/WebGPURenderer.hpp"
 #include <iostream>
 #include "texture/WebGPUTexture2D.hpp"
+#include <assert.h>
 
 namespace bns
 {

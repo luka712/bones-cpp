@@ -10,11 +10,11 @@ include(utils.cmake)
 
 # BACKEND RENDERER FLIPS, also used by /lib
 # Multiplatform
-set(USE_WEBGPU 1) 
+set(USE_WEBGPU 0) 
 # Apple specific
 set(USE_METAL 0)
 # Windows specific
-set(USE_D3D11 0)
+set(USE_D3D11 1)
 
 # DEBUG 
 # flips debug mode on/off
@@ -111,6 +111,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/rendering_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/metal_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/webgpu_backend/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/d3d11_backend/include
     SYSTEM PUBLIC
     ${CMAKE_SOURCE_DIR}/metal-cpp
 )

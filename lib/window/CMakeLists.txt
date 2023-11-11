@@ -8,6 +8,7 @@ ADD_LIBRARY(BnsWindow STATIC src/Window.cpp)
 target_compile_options(BnsWindow PRIVATE 
     -DUSE_WEBGPU=${USE_WEBGPU} 
     -DUSE_METAL=${USE_METAL}
+    -DUSE_D3D11=${USE_D3D11}
 ) 
 
 

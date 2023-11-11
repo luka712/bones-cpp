@@ -8,6 +8,7 @@ ADD_LIBRARY(BnsSDLWindow STATIC src/SDLWindow.cpp)
 target_compile_options(BnsSDLWindow PRIVATE 
     -DUSE_WEBGPU=${USE_WEBGPU} 
     -DUSE_METAL=${USE_METAL}
+    -DUSE_D3D11=${USE_D3D11}
 )
 
 # Custom extension for WebGPU and SDL2

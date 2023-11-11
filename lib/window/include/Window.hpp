@@ -10,9 +10,9 @@
 #include "BnsMetal.hpp"
 #endif // USE_METAL
 
-#if DIRECTX11
+#if USE_D3D11
 #include "BnsDirectX11.hpp"
-#endif // WIN
+#endif // USE_D3D11
 
 #ifdef USE_WEBGPU
 #include "BnsWebGPU.hpp"
@@ -48,17 +48,17 @@ namespace bns
         /// @brief Get the window size.
         virtual Vec2i GetWindowSize() = 0;
 
-#ifdef USE_METAL
+#if USE_METAL
         /// @brief Initialize for Metal.
         virtual CA::MetalLayer *InitializeForMetal(WindowParameters windowParameters) = 0;
 #endif
 
-#ifdef WIN32
+#if USE_D3D11
         /// @brief Initialize for D3D11.
         virtual HWND InitializeForD3D11(WindowParameters windowParameters) = 0;
 #endif
 
-#ifdef USE_WEBGPU
+#if USE_WEBGPU
         /// @brief Initialize for WGPU.
         /// @param windowParameters The window parameters.
         /// @param outInstance The WGPU instance as out parameter.

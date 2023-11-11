@@ -41,6 +41,7 @@ int main()
 
 void Initialize()
 {
+    return;
     font = engine.GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
     testTexture = engine.GetTextureManager().LoadTexture2D("assets/uv_test.png");
 
@@ -61,7 +62,7 @@ void Initialize()
 
 void Draw()
 {
-
+    return;
     bns::Renderer * renderer = engine.GetRenderer();
     bns::SpriteRenderer *spriteRenderer = engine.GetSpriteRenderer();
 

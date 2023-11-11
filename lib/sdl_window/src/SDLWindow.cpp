@@ -76,7 +76,7 @@ namespace bns
         }
     }
 
-#ifdef USE_WEBGPU
+#if USE_WEBGPU
     bool SDLWindowManager::InitializeForWGPU(WindowParameters windowParameters, WGPUInstance *outInstance, WGPUSurface *outSurface)
     {
         CreateWindowAndRenderer(windowParameters);
@@ -95,7 +95,7 @@ namespace bns
     }
 #endif
 
-#ifdef USE_METAL
+#if USE_METAL
     CA::MetalLayer *SDLWindowManager::InitializeForMetal(WindowParameters windowParameters)
     {
         CreateWindowAndRenderer(windowParameters);
@@ -103,7 +103,7 @@ namespace bns
     }
 #endif // __APPLE__
 
-#ifdef WIN32
+#if USE_D3D11
     HWND SDLWindowManager::InitializeForD3D11(WindowParameters windowParameters)
     {
         CreateWindowAndRenderer(windowParameters);

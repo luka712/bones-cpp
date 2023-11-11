@@ -2,7 +2,9 @@
 
 set(CMAKE_CXX_STANDARD 17)
 
-ADD_LIBRARY(BnsD3D11Backend STATIC src/main.cpp)
+file(GLOB D3D11_BACKEND_SOURCES src/*.cpp src/**/*.cpp)
+
+ADD_LIBRARY(BnsD3D11Backend STATIC ${D3D11_BACKEND_SOURCES})
 
 # Find DirectX Libraries
 # Path to DirectX SDK
@@ -18,8 +20,10 @@ include_directories(
     # project libraries 
     ${CMAKE_CURRENT_SOURCE_DIR}/../common/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../loaders/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../rendering-backend/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../rendering_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../texture/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../window/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../math/include
 
     # vendor
 
