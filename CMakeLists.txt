@@ -42,7 +42,6 @@ add_subdirectory(lib/window)
 add_subdirectory(lib/sdl_window)
 add_subdirectory(lib/loaders)
 add_subdirectory(lib/math)
-add_subdirectory(lib/texture)
 add_subdirectory(lib/rendering_backend)
 if(APPLE)
 add_subdirectory(lib/metal_backend)
@@ -107,7 +106,6 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/common/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/loaders/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/math/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/lib/texture/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/rendering_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/metal_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/webgpu_backend/include
@@ -161,7 +159,6 @@ BnsWindow
 BnsSDLWindow
 BnsLoaders 
 BnsMath 
-BnsTexture
 BnsRenderingBackend
 BnsMetalBackend
 BnsWebGPUBackend
@@ -172,9 +169,9 @@ BnsWindow
 BnsSDLWindow
 BnsLoaders 
 BnsMath 
-BnsTexture
 BnsRenderingBackend
 BnsWebGPUBackend
+BnsD3D11Backend
 )
 else()
 target_link_libraries(App PRIVATE SDL2::SDL2 webgpu SDL2Extension
@@ -182,7 +179,6 @@ BnsWindow
 BnsSDLWindow
 BnsLoaders 
 BnsMath 
-BnsTexture
 BnsRenderingBackend
 BnsWebGPUBackend
 )

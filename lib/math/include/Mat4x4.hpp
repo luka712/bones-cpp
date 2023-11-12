@@ -312,6 +312,17 @@ namespace bns
 				matrix.R2C0, matrix.R2C1, matrix.R2C2, 0,
 				0, 0, 0, 1);
 		}
+
+		/// @brief Transpose the matrix.
+		/// @return Transposed matrix.
+		static Mat4x4<T> Transpose(Mat4x4<T>& other)
+		{
+			return Mat4x4<T>(
+				other.R0C0, other.R1C0, other.R2C0, other.R3C0,
+				other.R0C1, other.R1C1, other.R2C1, other.R3C1,
+				other.R0C2, other.R1C2, other.R2C2, other.R3C2,
+				other.R0C3, other.R1C3, other.R2C3, other.R3C3);
+		}
 	};
 
 	template <typename T>

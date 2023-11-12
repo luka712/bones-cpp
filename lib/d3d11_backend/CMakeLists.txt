@@ -6,12 +6,15 @@ file(GLOB D3D11_BACKEND_SOURCES src/*.cpp src/**/*.cpp)
 
 ADD_LIBRARY(BnsD3D11Backend STATIC ${D3D11_BACKEND_SOURCES})
 
+# USE_WEBGPU is defined in the root CMakeLists.txt
+target_compile_options(BnsD3D11Backend PRIVATE -DUSE_D3D11=${USE_D3D11})
+
 # Find DirectX Libraries
 # Path to DirectX SDK
 # system 
 link_directories("C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/um/x64") 
 
-target_link_libraries(BnsD3D11Backend PRIVATE d3d11 dxgi d3dcompiler BnsTexture)
+target_link_libraries(BnsD3D11Backend PRIVATE d3d11 dxgi d3dcompiler)
 
 include_directories(
     # local 

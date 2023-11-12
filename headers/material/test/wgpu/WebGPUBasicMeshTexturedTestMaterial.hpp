@@ -4,7 +4,7 @@
 
 #include "material/Material.hpp"
 #include <webgpu/webgpu.h>
-#include "Texture2D.hpp"
+#include "texture/Texture2D.hpp"
 #include "renderer/WebGPURenderer.hpp"
 #include "FileLoader.hpp"
 

@@ -2,8 +2,8 @@
 
 #define BNS_TEXTURE_FACTORY_IMPL_HPP
 
-#include "Texture2D.hpp"
-#include "TextureManager.hpp"
+#include "texture/Texture2D.hpp"
+#include "texture/TextureManager.hpp"
 #include "ImageLoader.hpp"
 #include "renderer/Renderer.hpp"
 #include <map>

@@ -1,4 +1,4 @@
-#include "TextureManager.hpp"
+#include "texture/TextureManager.hpp"
 
 namespace bns
 {

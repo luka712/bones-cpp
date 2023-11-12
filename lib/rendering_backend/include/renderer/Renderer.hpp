@@ -4,7 +4,7 @@
 
 #include "Types.hpp"
 #include "Math.hpp"
-#include "Texture2D.hpp"
+#include "texture/Texture2D.hpp"
 #include "Vec2.hpp"
 
 namespace bns

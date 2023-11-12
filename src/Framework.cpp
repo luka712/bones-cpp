@@ -8,6 +8,7 @@
 #endif
 #if USE_D3D11
 #include "renderer/D3D11Renderer.hpp"
+#include "sprite/D3D11UnlitSpriteRenderer.hpp"
 #endif
 #include "SDLWindow.hpp"
 #include "material/WebGPUMaterialFactory.hpp"
@@ -42,10 +43,10 @@ namespace bns
         m_meshFactory = new MetalMeshFactory(*this);
         m_spriteRenderer = new MetalSpriteRenderer(*this, *m_renderer);
 #elif USE_D3D11
-        m_renderer = new D3D11Renderer(*m_windowManager);
+        m_renderer = new D3D11Renderer(m_windowManager);
         // m_materialFactory = new D3D11MaterialFactory(*this);
         // m_meshFactory = new D3D11MeshFactory(*this);
-        // m_spriteRenderer = new D3D11SpriteRenderer(*this);
+        m_spriteRenderer = new D3D11UnlitSpriteRenderer(m_renderer);
 #elif USE_WEBGPU
         m_renderer = new WebGPURenderer(m_windowManager);
         m_materialFactory = new WebGPUMaterialFactory(*this);
@@ -64,13 +65,12 @@ namespace bns
     {
 #if USE_METAL
         InitializeForMetal(windowParameters);
-        m_spriteRenderer->Initialize();
 #elif USE_D3D11
         InitializeForD3D11(windowParameters);
 #elif USE_WEBGPU
         InitializeForWGPU(windowParameters);
-        m_spriteRenderer->Initialize();
 #endif
+        m_spriteRenderer->Initialize();
 
         callback();
     }

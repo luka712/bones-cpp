@@ -2,7 +2,7 @@
 
 #define BNS_WEBGPU_TEXTURE_2D_HPP
 
-#include "Texture2D.hpp"
+#include "texture/Texture2D.hpp"
 #include "ImageData.hpp"
 #include <webgpu/webgpu.h>
 #include "WebGPUUtil.hpp"

@@ -1,4 +1,4 @@
-#include "Texture2D.hpp"
+#include "texture/Texture2D.hpp"
 #include "iostream"
 
 namespace bns

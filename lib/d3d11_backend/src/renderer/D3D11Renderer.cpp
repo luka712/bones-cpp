@@ -1,11 +1,11 @@
-#ifdef WIN32
+#if USE_D3D11
 
 #include "renderer/D3D11Renderer.hpp"
 #include <stdexcept>
 
 namespace bns
 {
-    D3D11Renderer::D3D11Renderer(WindowManager& window)
+    D3D11Renderer::D3D11Renderer(WindowManager* window)
         : Renderer(), m_windowManager(window)
     {
      
@@ -22,7 +22,7 @@ namespace bns
 
     void D3D11Renderer::Initialize(HWND win32Handle)
     {
-        m_bufferSize = m_windowManager.GetWindowSize();
+        m_bufferSize = m_windowManager->GetWindowSize();
 
         // Create the device, device context, and swap chain
         // Define your swap chain and device creation parameters
@@ -74,10 +74,10 @@ namespace bns
             throw std::exception("D3D11::Initialize: Failed to create render target view");
         }
 
-        if (!ConfigureDepthStencil(m_bufferSize.X, m_bufferSize.Y))
+      /*  if (!ConfigureDepthStencil(m_bufferSize.X, m_bufferSize.Y))
         {
             throw std::exception("D3D11::Initialize: Failed to configure depth stencil");
-        }
+        }*/
 
         // Set the render target view as the current render target
         ID3D11RenderTargetView *renderTargetViewPtr = m_renderTargetView.p;
@@ -94,7 +94,7 @@ namespace bns
 
         D3D11_RASTERIZER_DESC raster_desc;
         raster_desc.FillMode = D3D11_FILL_SOLID;
-        raster_desc.CullMode = D3D11_CULL_BACK;
+        raster_desc.CullMode = D3D11_CULL_FRONT;
         raster_desc.FrontCounterClockwise = true;
         raster_desc.DepthBias = 0;
         raster_desc.DepthBiasClamp = 0.0f;
@@ -157,7 +157,12 @@ namespace bns
         m_deviceContext->ClearRenderTargetView(m_renderTargetView, &ClearColor.R);
 
         // CLEAR DEPTH STENCIL
-        m_deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+        // m_deviceContext->ClearDepthStencilView(m_depthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+        // DRAW TO SCREEN TEXTURE
+        ID3D11RenderTargetView* renderTargetViewPtr = m_renderTargetView.p;
+        ID3D11DepthStencilView* depthStencilViewPtr = m_depthStencilView.p;
+        m_deviceContext->OMSetRenderTargets(1, &renderTargetViewPtr, depthStencilViewPtr);
     }
 
     void D3D11Renderer::EndDraw()

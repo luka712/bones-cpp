@@ -14,7 +14,7 @@
 #include "geometry/GeometryBuilder.hpp"
 #include "mesh/MeshFactory.hpp"
 #include "sprite/SpriteRenderer.hpp"
-#include "TextureManager.hpp"
+#include "texture/TextureManager.hpp"
 #include <webgpu/webgpu.h>
 #include "Vec2.hpp"
 #include "renderer/Renderer.hpp"

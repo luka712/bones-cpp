@@ -41,7 +41,6 @@ int main()
 
 void Initialize()
 {
-    return;
     font = engine.GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
     testTexture = engine.GetTextureManager().LoadTexture2D("assets/uv_test.png");
 
@@ -52,17 +51,16 @@ void Initialize()
   //  renderer->SetRenderTexture(effect->GetSourceTexture());
   //  renderer->SetBrightnessTexture(effect->GetBrightnessTexture());
 
-    engine.GetSpriteRenderer()->PointLights[0].Intensity = 0.0;
-    engine.GetSpriteRenderer()->PointLights[0].Position = bns::Vec3f(50.0f, 50.0f, 100.0f);
-    engine.GetSpriteRenderer()->PointLights[0].Color = bns::Color::Red();
-    engine.GetSpriteRenderer()->PointLights[0].Attenuation.Unit = 100.0f;
-    engine.GetSpriteRenderer()->AmbientLight.Intensity = 0.0f;
-    engine.GetSpriteRenderer()->AmbientLight.Color = bns::Color::Black();
+    //engine.GetSpriteRenderer()->PointLights[0].Intensity = 0.0;
+    //engine.GetSpriteRenderer()->PointLights[0].Position = bns::Vec3f(50.0f, 50.0f, 100.0f);
+    //engine.GetSpriteRenderer()->PointLights[0].Color = bns::Color::Red();
+    //engine.GetSpriteRenderer()->PointLights[0].Attenuation.Unit = 100.0f;
+    //engine.GetSpriteRenderer()->AmbientLight.Intensity = 0.0f;
+    //engine.GetSpriteRenderer()->AmbientLight.Color = bns::Color::Black();
 }
 
 void Draw()
 {
-    return;
     bns::Renderer * renderer = engine.GetRenderer();
     bns::SpriteRenderer *spriteRenderer = engine.GetSpriteRenderer();
 

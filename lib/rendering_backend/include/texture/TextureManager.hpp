@@ -2,7 +2,7 @@
 
 #define BNS_TEXTURE_FACTORY_INTERFACE_HPP
 
-#include "Texture2D.hpp"
+#include "texture/Texture2D.hpp"
 #include "ImageLoader.hpp"
 #include <map>
 

@@ -2,10 +2,9 @@
 
 set(CMAKE_CXX_STANDARD 17)
 
-ADD_LIBRARY(BnsRenderingBackend STATIC 
-    src/renderer/Renderer.cpp
-    src/buffer_layout/BufferLayoutData.cpp
-    )
+file(GLOB RENDERING_BACKEND_SOURCES src/*.cpp src/**/*.cpp)
+
+ADD_LIBRARY(BnsRenderingBackend STATIC ${RENDERING_BACKEND_SOURCES})
 
 # INCLUDE DIRECTORIES
 include_directories(
@@ -15,7 +14,8 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../common/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../math/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../texture/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../loaders/include
 )
 
 # LINK LIBRARIES
-target_link_libraries(BnsRenderingBackend PRIVATE BnsTexture)
+target_link_libraries(BnsRenderingBackend PRIVATE BnsLoaders)
