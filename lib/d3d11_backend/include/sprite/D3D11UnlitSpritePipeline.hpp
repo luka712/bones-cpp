@@ -20,6 +20,7 @@ namespace bns
         CComPtr<ID3D11VertexShader> m_vertexShader;
         CComPtr<ID3D11PixelShader> m_pixelShader;
         CComPtr<ID3D11InputLayout> m_inputLayout;
+        CComPtr<ID3D11BlendState> m_blendState;
 
         D3D11Texture2D *m_texture;
 
@@ -27,6 +28,7 @@ namespace bns
         D3D11UnlitSpritePipeline(CComPtr<ID3D11VertexShader> vertexShader,
                                  CComPtr<ID3D11PixelShader> pixelShader,
                                  CComPtr<ID3D11InputLayout> inputLayout,
+                                 CComPtr<ID3D11BlendState> blendState,
                                  D3D11Texture2D *texture);
 
         ~D3D11UnlitSpritePipeline();
@@ -54,6 +56,10 @@ namespace bns
         /// @brief Gets the input layout
         /// @return The input layout
         inline const CComPtr<ID3D11InputLayout> &GetInputLayout() const { return m_inputLayout; }
+
+        /// @brief Gets the blend state
+        /// @return The blend state
+        inline const CComPtr<ID3D11BlendState> &GetBlendState() const { return m_blendState; }
 
         /// @brief Gets the texture
         /// @return The texture

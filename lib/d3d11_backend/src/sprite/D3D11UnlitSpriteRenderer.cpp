@@ -328,6 +328,9 @@ namespace bns
                 m_deviceContext->VSSetShader(vertexShader, nullptr, 0);
                 m_deviceContext->PSSetShader(pixelShader, nullptr, 0);
 
+                // set blend state
+                m_deviceContext->OMSetBlendState(spritePipeline->GetBlendState(), nullptr, 0xffffffff);
+
                 // set input layout
                 m_deviceContext->IASetInputLayout(inputLayout);
 

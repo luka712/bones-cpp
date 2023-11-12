@@ -7,11 +7,15 @@
 #include "util/D3D11BufferUtil.hpp"
 #include "util/D3D11BlobUtil.hpp"
 #include "util/D3D11ShaderUtil.hpp"
+#include "util/D3D11BlendStateUtil.hpp"
 
 namespace bns
 {
     struct D3D11Util final
     {
+        /// @brief The blend state util.
+        static D3D11BlendStateUtil BlendState;
+
         /// @brief The buffer util.
         static D3D11BufferUtil Buffer;
 

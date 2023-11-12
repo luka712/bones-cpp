@@ -9,8 +9,9 @@ namespace bns
         CComPtr<ID3D11VertexShader> vertexShader,
         CComPtr<ID3D11PixelShader> pixelShader,
         CComPtr<ID3D11InputLayout> inputLayout,
+         CComPtr<ID3D11BlendState> blendState,
         D3D11Texture2D *texture)
-        : m_vertexShader(vertexShader), m_pixelShader(pixelShader), m_inputLayout(inputLayout), m_texture(texture)
+        : m_vertexShader(vertexShader), m_pixelShader(pixelShader), m_inputLayout(inputLayout), m_blendState(blendState), m_texture(texture)
     {
         InstanceIndex = 0;
     }
@@ -52,7 +53,10 @@ namespace bns
             throw std::exception("D3D11UnlitSpritePipeline::Create: Failed to create input layout.");
         }
 
-        return new D3D11UnlitSpritePipeline(vertexShader, pixelShader, inputLayout, texture);
+        // BLENDSTATE
+        CComPtr<ID3D11BlendState> blendState = D3D11Util::BlendState.Create(device);
+
+        return new D3D11UnlitSpritePipeline(vertexShader, pixelShader, inputLayout, blendState, texture);
     }
 
     void D3D11UnlitSpritePipeline::Release()
