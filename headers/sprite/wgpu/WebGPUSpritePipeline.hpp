@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #ifndef BNS_WEBGPU_SPRITE_PIPELINE
 
 #define BNS_WEBGPU_SPRITE_PIPELINE
@@ -71,3 +73,5 @@ namespace bns
 }
 
 #endif
+
+#endif 

@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #include "mesh/wgpu/WebGPUMesh.hpp"
 #include "WebGPUUtil.hpp"
 #include "Framework.hpp"
@@ -137,3 +139,5 @@ namespace bns
     }
 
 }
+
+#endif 

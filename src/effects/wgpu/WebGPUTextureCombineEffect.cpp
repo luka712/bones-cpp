@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #include "effects/wgpu/WebGPUTextureCombineEffect.hpp"
 #include "WebGPUUtil.hpp"
 #include "Framework.hpp"
@@ -176,3 +178,6 @@ namespace bns
     }
 
 } // namespace bns
+
+
+#endif 

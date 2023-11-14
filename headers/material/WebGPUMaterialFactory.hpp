@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #ifndef BNS_WEBGPU_MATERIAL_FACTORY_HPP
 
 #define BNS_WEBGPU_MATERIAL_FACTORY_HPP
@@ -32,3 +34,5 @@ namespace bns
 }
 
 #endif
+
+#endif 

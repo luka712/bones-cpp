@@ -18,6 +18,10 @@
 #include "BnsWebGPU.hpp"
 #endif
 
+#ifdef USE_OPENGL
+#include "BnsOpenGL.hpp"
+#endif // USE_OPENGL
+
 namespace bns
 {
     struct WindowParameters
@@ -58,6 +62,12 @@ namespace bns
         virtual HWND InitializeForD3D11(WindowParameters windowParameters) = 0;
 #endif
 
+#if USE_OPENGL
+        /// @brief Initialize for OpenGL.
+        /// @param windowParameters The window parameters.
+        virtual void InitializeForOpenGL(WindowParameters windowParameters) = 0;
+#endif 
+
 #if USE_WEBGPU
         /// @brief Initialize for WGPU.
         /// @param windowParameters The window parameters.
@@ -66,6 +76,12 @@ namespace bns
         /// @return True if initialization was successful, false otherwise.
         virtual bool InitializeForWGPU(WindowParameters windowParameters, WGPUInstance *outInstance, WGPUSurface *outSurface) = 0;
 #endif
+
+        /// @brief Swap buffers.
+        virtual void SwapBuffers() = 0;
+
+        /// @brief Destroy the window.
+        virtual void Destroy() = 0;
     };
 
 } // namespace BNS

@@ -32,19 +32,13 @@ namespace bns
 
         BufferLayoutAttributeDescriptor(VertexFormat format, size_t shaderLocation, size_t offset);
 
-        /**
-         * The format of the buffer layout.
-         */
+        /// @brief  The format of the buffer layout.
         VertexFormat Format;
 
-        /**
-         * The shader location.
-         */
+        /// @brief The shader location.
         size_t ShaderLocation;
 
-        /**
-         * The offset compared to previous attribute.
-         */
+        /// @brief The offset compared to previous attribute.
         size_t Offset;
     };
 
@@ -54,16 +48,18 @@ namespace bns
 
         std::vector<BufferLayoutAttributeDescriptor> Attributes;
 
-        /**
-         * The offset compared to previous attribute.
-         */
+        /// @brief The size of the buffer layout. Describes the size of single vertex.
         size_t Stride;
 
-        /**
-         * The step mode of the buffer layout.
-         */
+        /// @brief The step mode of the buffer layout.
         StepMode Step;
+
+        /// @brief The byte size of the buffer. The total buffer size.
+        size_t ByteSize;
+
+        /// @brief The pointer to the data.
+        void* Data;
     };
 }
 
-#endif // !BNS_BUFFER_LAYOUT_DATA_HPP 
+#endif // !BNS_BUFFER_LAYOUT_DATA_HPP

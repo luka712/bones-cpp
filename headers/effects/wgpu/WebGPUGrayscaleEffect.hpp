@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #ifndef BNS_WEBGPU_POST_PROCESS_GRAYSCALE_EFFECT_HPP
 
 #define BNS_WEBGPU_POST_PROCESS_GRAYSCALE_EFFECT_HPP
@@ -71,3 +73,5 @@ namespace bns
 } // namespace bns
 
 #endif // !BNS_WEBGPU_POST_PROCESS_GRAYSCALE_EFFECT_HPP
+
+#endif 

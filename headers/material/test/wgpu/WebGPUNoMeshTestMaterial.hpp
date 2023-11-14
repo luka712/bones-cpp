@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #ifndef WEBGPU_NO_MESH_TEST_MATERIAL_HPP
 
 #define WEBGPU_NO_MESH_TEST_MATERIAL_HPP
@@ -76,3 +78,5 @@ namespace bns
 }
 
 #endif // !WEBGPU_NO_MESH_TEST_MATERIAL_HPP
+
+#endif // !USE_WEBGPU

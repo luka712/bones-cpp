@@ -4,6 +4,23 @@
 
 #include <stdint.h>
 
+#if LOGGING_ENABLED
+#include <stdio.h>
+/// @brief Log if LOGGING_ENABLED is true
+#define LOG(...) printf(__VA_ARGS__)
+#else 
+/// @brief Log if LOGGING_ENABLED is true
+#define LOG(...)
+#endif 
+
+#if DEBUG_BREAKPOINT_ENABLED
+/// @brief Breakpoint if DEBUG_BREAKPOINT_ENABLED is true
+#define BREAKPOINT() __debugbreak()
+#else
+/// @brief Breakpoint if DEBUG_BREAKPOINT_ENABLED is true
+#define BREAKPOINT()
+#endif
+
 #define PI 3.14159265358979323846f
 
 enum class LifecycleState

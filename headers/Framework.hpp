@@ -2,9 +2,7 @@
 
 #define BNS_ENGINE_H
 
-
 #include "BnsMetal.hpp"
-
 
 #include "Window.hpp"
 #include "FileLoader.hpp"
@@ -28,16 +26,15 @@ namespace bns
     {
     private:
         WindowManager *m_windowManager;
-        Renderer* m_renderer;
+        Renderer *m_renderer;
         GeometryBuilder *m_geometryBuilder;
         MeshFactory *m_meshFactory;
         MaterialFactory *m_materialFactory;
         ImageLoader *m_imageLoader;
         SpriteRenderer *m_spriteRenderer;
-        BitmapSpriteFontLoader* m_bitmapSpriteFontLoader;
+        BitmapSpriteFontLoader *m_bitmapSpriteFontLoader;
         TextureManager *m_textureFactory;
         EffectFactory *m_effectFactory;
-
 
         /// @brief Initialize the framework with WebGPU as the backend.
         void InitializeForWGPU(bns::WindowParameters windowParameters);
@@ -45,13 +42,17 @@ namespace bns
 #ifdef __APPLE__
         /// @brief Initialize the framework with Metal as the backend.
         void InitializeForMetal(bns::WindowParameters windowParameters);
-#endif 
+#endif
 
 #ifdef WIN32
         /// @brief Initialize the framework with D3D11 as the backend.
         void InitializeForD3D11(bns::WindowParameters windowParameters);
-#endif 
+#endif
 
+#if USE_OPENGL
+        /// @brief Initialize the framework with OpenGL as the backend.
+        void InitializeForOpenGL(WindowParameters windowParameters);
+#endif
     public:
         /// @brief Gets the window manager.
         /// @return The window manager.
@@ -63,7 +64,7 @@ namespace bns
         /**
          * @brief Get the renderer.
          */
-        inline Renderer* GetRenderer() const
+        inline Renderer *GetRenderer() const
         {
             return m_renderer;
         }
@@ -110,7 +111,7 @@ namespace bns
         /**
          * @brief Get the bitmap sprite font loader.
          */
-        inline BitmapSpriteFontLoader& GetBitmapSpriteFontLoader() const
+        inline BitmapSpriteFontLoader &GetBitmapSpriteFontLoader() const
         {
             return *m_bitmapSpriteFontLoader;
         }
@@ -118,7 +119,7 @@ namespace bns
         /**
          * @brief Get the texture factory.
          */
-        inline TextureManager& GetTextureManager() const
+        inline TextureManager &GetTextureManager() const
         {
             return *m_textureFactory;
         }
@@ -126,14 +127,14 @@ namespace bns
         /**
          * @brief Get the post process effect factory.
          */
-        inline EffectFactory& GetEffectFactory() const
+        inline EffectFactory &GetEffectFactory() const
         {
             return *m_effectFactory;
         }
 
         /// @brief Gets the file loader.
         /// @return The file loader.
-        inline FileLoader& GetFileLoader() 
+        inline FileLoader &GetFileLoader()
         {
             return FileLoader;
         }

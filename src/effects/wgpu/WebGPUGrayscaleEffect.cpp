@@ -1,3 +1,6 @@
+#if USE_WEBGPU 
+
+
 #include "effects/wgpu/WebGPUGrayscaleEffect.hpp"
 
 namespace bns
@@ -7,3 +10,5 @@ namespace bns
     {
     }
 } // namespace bns
+
+#endif 

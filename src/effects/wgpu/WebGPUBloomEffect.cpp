@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #include "effects/wgpu/WebGPUBloomEffect.hpp"
 #include "WebGPUUtil.hpp"
 #include "Framework.hpp"
@@ -208,3 +210,6 @@ WGPURenderPipeline WebGPUBloomEffectImpl::CreateRenderPipeline(std::vector<WGPUB
     }
 
 } // namespace bns
+
+
+#endif 

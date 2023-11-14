@@ -1,3 +1,6 @@
+#if USE_WEBGPU
+
+
 #ifndef BNS_WEBGPU_TEXTURE_2D_HPP
 
 #define BNS_WEBGPU_TEXTURE_2D_HPP
@@ -74,3 +77,5 @@ namespace bns
 }
 
 #endif // !BNS_WEBGPU_TEXTURE_2D_HPP
+
+#endif // USE_WEBGPU

@@ -1,3 +1,6 @@
+#if USE_WEBGPU 
+
+
 #include "effects/wgpu/WebGPUEffectImpl.hpp"
 #include "Framework.hpp"
 #include "WebGPUUtil.hpp"
@@ -234,3 +237,6 @@ namespace bns
         wgpuCommandEncoderRelease(encoder);
     }
 }
+
+
+#endif 

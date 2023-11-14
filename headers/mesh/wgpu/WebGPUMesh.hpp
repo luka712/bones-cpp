@@ -1,3 +1,5 @@
+#if USE_WEBGPU 
+
 #ifndef BNS_WEBGPU_MESH_HPP
 
 #define BNS_WEBGPU_MESH_HPP
@@ -90,3 +92,5 @@ namespace bns
 }
 
 #endif
+
+#endif 

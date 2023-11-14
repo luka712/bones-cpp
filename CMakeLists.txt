@@ -10,16 +10,22 @@ include(utils.cmake)
 
 # BACKEND RENDERER FLIPS, also used by /lib
 # Multiplatform
-set(USE_WEBGPU 0) 
+set(USE_WEBGPU 0)
+set(USE_OPENGL 1) 
 # Apple specific
 set(USE_METAL 0)
 # Windows specific
-set(USE_D3D11 1)
+set(USE_D3D11 0)
+
 
 # DEBUG 
 # flips debug mode on/off
 # webgpu backend has a debug mode that breaks on errors
 set(DEBUG 1)
+# flips debug breakpoint on/off. It is used throught the project to break on validation errors
+set(DEBUG_BREAKPOINT_ENABLED 1)
+# flips logging on/off. It is used throught the project to log errors and other info.
+set(LOGGING_ENABLED 1)
 
 # LIGHTS 
 # Number of point lights available for sprite renderer when forward rendering is used 
@@ -32,23 +38,36 @@ FetchContent_Declare(
     GIT_TAG release-2.28.3)
 FetchContent_MakeAvailable(SDL2)
 
+# If OpenGL is used, we need to find it
+if(USE_OPENGL)
+find_package(OpenGL REQUIRED)
+endif()
 
 
+
+# VENDOR LIBRARIES
 add_subdirectory(vendor/webgpu)
 add_subdirectory(vendor/SDL2Extension)
+add_subdirectory(vendor/glad EXCLUDE_FROM_ALL)
 
-# project libraries
+# PROJECT LIBRARIES
 add_subdirectory(lib/window)
 add_subdirectory(lib/sdl_window)
 add_subdirectory(lib/loaders)
 add_subdirectory(lib/math)
 add_subdirectory(lib/rendering_backend)
-if(APPLE)
+if(USE_METAL)
 add_subdirectory(lib/metal_backend)
-elseif(WIN32)
+endif()
+if(USE_D3D11)
 add_subdirectory(lib/d3d11_backend)
 endif()
+if(USE_WEBGPU)
 add_subdirectory(lib/webgpu_backend)
+endif()
+if(USE_OPENGL)
+add_subdirectory(lib/opengl_backend)
+endif()
 
 # Set the target architecture to arm64
 if(APPLE)
@@ -99,6 +118,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/webgpu/include
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad
 
     # The lib dependencies
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/window/include
@@ -110,6 +130,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/metal_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/webgpu_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/d3d11_backend/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/opengl_backend/include
     SYSTEM PUBLIC
     ${CMAKE_SOURCE_DIR}/metal-cpp
 )
@@ -130,17 +151,20 @@ else()
     target_compile_options(SDL2Extension PRIVATE)
 endif()
 
+target_compile_options(Glad PRIVATE)
+
 # If we are on Apple, we can use Metal or WebGPU (Metal is the default)
 target_compile_options(App PRIVATE 
 -DDEBUG=${DEBUG}
--DUSE_METAL=${USE_METAL} -DUSE_D3D11=${USE_D3D11} -DUSE_WEBGPU=${USE_WEBGPU}
+-DUSE_METAL=${USE_METAL} -DUSE_D3D11=${USE_D3D11} -DUSE_WEBGPU=${USE_WEBGPU} -DUSE_OPENGL=${USE_OPENGL}
 -DFORWARD_2D_NUM_OF_POINT_LIGHTS=${FORWARD_2D_NUM_OF_POINT_LIGHTS}
+-DDEBUG_BREAKPOINT_ENABLED=${DEBUG_BREAKPOINT_ENABLED}
+-DLOGGING_ENABLED=${LOGGING_ENABLED}
 ) 
 
 
 
 # LINK LIBRARIES SECTION
-
 link_directories("C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/um/x64")
 
 if(WIN32)
@@ -154,34 +178,43 @@ endif()
 
 if(APPLE)
 # Link the libraries to the executable (SDL2, Metal, QuartzCore, Foundation) 
-target_link_libraries(App PRIVATE SDL2::SDL2 ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} webgpu SDL2Extension 
+target_link_libraries(App PRIVATE SDL2::SDL2 ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} SDL2Extension 
 BnsWindow
 BnsSDLWindow
 BnsLoaders 
 BnsMath 
 BnsRenderingBackend
-BnsMetalBackend
-BnsWebGPUBackend
 )
 elseif(WIN32)
-target_link_libraries(App PRIVATE SDL2::SDL2 d3d11 dxgi d3dcompiler webgpu SDL2Extension 
+target_link_libraries(App PRIVATE SDL2::SDL2 d3d11 dxgi d3dcompiler Glad SDL2Extension 
 BnsWindow
 BnsSDLWindow
 BnsLoaders 
 BnsMath 
 BnsRenderingBackend
-BnsWebGPUBackend
-BnsD3D11Backend
 )
 else()
-target_link_libraries(App PRIVATE SDL2::SDL2 webgpu SDL2Extension
+target_link_libraries(App PRIVATE SDL2::SDL2 SDL2Extension
 BnsWindow
 BnsSDLWindow
 BnsLoaders 
 BnsMath 
 BnsRenderingBackend
-BnsWebGPUBackend
 )
+endif()
+
+# glad must be linked if OpenGL is used as it provides headers
+if(USE_OPENGL)
+target_link_libraries(App PRIVATE BnsOpenGLBackend)
+endif()
+if(USE_WEBGPU)
+target_link_libraries(App PRIVATE webgpu BnsWebGPUBackend)
+endif()
+if(USE_D3D11)
+target_link_libraries(App PRIVATE BnsD3D11Backend)
+endif()
+if(USE_METAL)
+target_link_libraries(App PRIVATE BnsMetalBackend)
 endif()
 
 

@@ -8,6 +8,8 @@
 #include <SDL2\SDL_syswm.h>
 #endif // WIN32
 
+#include <exception>
+
 namespace bns
 {
     SDLWindowManager::SDLWindowManager()
@@ -61,18 +63,20 @@ namespace bns
         m_window = SDL_CreateWindow(windowParameters.Title.c_str(), x_pos, y_pos, windowParameters.Width, windowParameters.Height, flags);
         if (m_window == nullptr)
         {
-            SDL_Log("Failed to create SDL window: %s", SDL_GetError());
+            std::string msg = "SDLWindowManager::CreateWindowAndRenderer: Failed to create SDL window: " + std::string(SDL_GetError());
+            SDL_Log(msg.c_str());
             SDL_Quit();
-            throw std::runtime_error("Failed to create SDL window");
+            throw std::exception(msg.c_str());
         }
 
         // create renderer
         m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
         if (m_renderer == nullptr)
         {
-            SDL_Log("Failed to create SDL renderer: %s", SDL_GetError());
+            std::string msg = "SDLWindowManager::CreateWindowAndRenderer: Failed to create SDL renderer: " + std::string(SDL_GetError());
+            SDL_Log(msg.c_str());
             SDL_Quit();
-            throw std::runtime_error("Failed to create SDL renderer");
+            throw std::exception(msg.c_str());
         }
     }
 
@@ -86,8 +90,9 @@ namespace bns
         *outInstance = wgpuCreateInstance(&desc);
         if (!outInstance)
         {
-            std::cerr << "Could not initialize WebGPU!" << std::endl;
-            return false;
+            std::string msg = "SDLWindowManager::InitializeForWGPU: Failed to create WGPU instance";
+            SDL_Log(msg.c_str());
+            throw std::exception(msg.c_str());
         }
         *outSurface = GetWGPUSurface(*outInstance, m_window);
 
@@ -115,6 +120,42 @@ namespace bns
         HWND handle = systemInfo.info.win.window;
         return handle;
     }
-#endif // WIN32
+#endif // USE_D3D11
+
+#if USE_OPENGL
+    void SDLWindowManager::InitializeForOpenGL(WindowParameters windowParameters)
+    {
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); // OpenGL core profile
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);                          // OpenGL 4+
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);                          // OpenGL 4.5
+
+        CreateWindowAndRenderer(windowParameters);
+        SDL_GLContext glContext = SDL_GL_CreateContext(m_window);
+
+        // Initialize Glad (after creating an OpenGL context)
+        if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
+        {
+            std::string msg = "SDLWindowManager::InitializeForOpenGL: Failed to create SDL renderer: " + std::string(SDL_GetError());
+            SDL_Log(msg.c_str());
+            throw std::exception(msg.c_str());
+        }
+    }
+#endif // USE_OPENGL
+
+    void SDLWindowManager::SwapBuffers()
+    {
+#if USE_OPENGL
+        SDL_GL_SwapWindow(m_window);
+#endif
+    }
+
+    void SDLWindowManager::Destroy()
+    {
+        if (m_renderer != nullptr)
+            SDL_DestroyRenderer(m_renderer);
+        if (m_window != nullptr)
+            SDL_DestroyWindow(m_window);
+        SDL_Quit();
+    }
 
 } // namespace BNS

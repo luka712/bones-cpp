@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #ifndef BNS_WEBGPU_TEXTURE_VIEW_DESCRIPTOR_HPP
 #define BNS_WEBGPU_TEXTURE_VIEW_DESCRIPTOR_HPP
 
@@ -18,3 +20,5 @@ namespace bns
 }
 
 #endif
+
+#endif // USE_WEBGPU

@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #ifndef BNS_WEBGPU_BIND_GROUP_DESCRIPTOR_UTIL_HPP
 
 #define BNS_WEBGPU_BIND_GROUP_DESCRIPTOR_UTIL_HPP
@@ -62,3 +64,6 @@ namespace bns
 }
 
 #endif
+
+#endif // USE_WEBGPU
+          

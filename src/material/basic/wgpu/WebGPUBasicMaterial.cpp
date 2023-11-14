@@ -1,3 +1,4 @@
+#if USE_WEBGPU
 
 #include "Framework.hpp"
 #include "material/basic/wgpu/WebGPUBasicMaterial.hpp"
@@ -243,3 +244,5 @@ namespace bns
      */
     Material *WebGPUBasicMaterial::Copy() { return nullptr; }
 }
+
+#endif 

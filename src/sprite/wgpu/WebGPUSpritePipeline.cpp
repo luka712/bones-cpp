@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #include "sprite/wgpu/WebGPUSpritePipeline.hpp"
 #include "renderer/common/WebGPURenderPipelineUtil.hpp"
 #include "WebGPUUtil.hpp"
@@ -193,3 +195,5 @@ namespace bns
         return new WebGPUSpritePipeline(pipeline, projectionViewBindGroup, textureBindGroup, brightnessThresholdBindGroup);
     }
 }
+
+#endif 

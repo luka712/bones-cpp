@@ -1,4 +1,7 @@
 
+#if USE_WEBGPU 
+
+
 #include "effects/wgpu/WebGPUBlurEffect.hpp"
 #include "Framework.hpp"
 #include "WebGPUUtil.hpp"
@@ -209,3 +212,5 @@ namespace bns
     }
 
 } // namespace bns
+
+#endif 

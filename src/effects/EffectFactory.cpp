@@ -5,7 +5,9 @@
 #include "effects/metal/MetalTextureCombineEffect.hpp"
 #include "effects/metal/MetalBlurEffect.hpp"
 #include "effects/metal/MetalBloomEffect.hpp"
-#else
+#endif 
+
+#if USE_WEBGPU
 #include "effects/wgpu/WebGPUGrayscaleEffect.hpp"
 #include "effects/wgpu/WebGPUTextureCombineEffect.hpp"
 #include "effects/wgpu/WebGPUBlurEffect.hpp"
@@ -23,7 +25,7 @@ namespace bns
                 GrayscaleEffect *effect = nullptr;
 #if __APPLE__ && USE_METAL
                 effect = new MetalGrayscaleEffect(m_framework);
-#else
+#elif USE_WEBGPU
                 effect = new WebGPUGrayscaleEffect(m_framework);
 #endif
 
@@ -36,7 +38,7 @@ namespace bns
                 TextureCombineEffect *effect = nullptr;
 #if __APPLE__ && USE_METAL
                 effect = new MetalTextureCombineEffect(m_framework);
-#else
+#elif USE_WEBGPU
                 effect = new WebGPUTextureCombineEffect(m_framework);
 #endif
 
@@ -49,7 +51,7 @@ namespace bns
                 BlurEffect *effect = nullptr;
 #if __APPLE__ && USE_METAL
                 effect = new MetalBlurEffect(m_framework);
-#else
+#elif USE_WEBGPU
                 effect = new WebGPUBlurEffect(m_framework);
 #endif
 
@@ -61,9 +63,8 @@ namespace bns
         {
                 BloomEffect *effect = nullptr;
 #if __APPLE__ && USE_METAL
-
                 effect = new MetalBloomEffect(m_framework);
-#else
+#elif USE_WEBGPU
                 effect = new WebGPUBloomEffect(m_framework);
 #endif
 

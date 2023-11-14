@@ -10,6 +10,11 @@
 #include "renderer/D3D11Renderer.hpp"
 #include "sprite/D3D11UnlitSpriteRenderer.hpp"
 #endif
+#if USE_OPENGL
+#include "renderer/OpenGLRenderer.hpp"
+#include "sprite/OpenGLUnlitSpriteRenderer.hpp"
+#endif
+
 #include "SDLWindow.hpp"
 #include "material/WebGPUMaterialFactory.hpp"
 #include "mesh/wgpu/WebGPUMeshFactory.hpp"
@@ -52,6 +57,11 @@ namespace bns
         m_materialFactory = new WebGPUMaterialFactory(*this);
         m_meshFactory = new WebGPUMeshFactory(*this);
         m_spriteRenderer = new WebGPUSpriteRenderer(m_renderer);
+#elif USE_OPENGL
+        m_renderer = new OpenGLRenderer(m_windowManager);
+        // m_materialFactory = new OpenGLMaterialFactory(*this);
+        // m_meshFactory = new OpenGLMeshFactory(*this);
+        m_spriteRenderer = new OpenGLUnlitSpriteRenderer(m_renderer);
 #endif
 
         m_textureFactory = new TextureManagerImpl(m_renderer, m_imageLoader);
@@ -69,6 +79,8 @@ namespace bns
         InitializeForD3D11(windowParameters);
 #elif USE_WEBGPU
         InitializeForWGPU(windowParameters);
+#elif USE_OPENGL
+        InitializeForOpenGL(windowParameters);
 #endif
         m_spriteRenderer->Initialize();
 
@@ -103,6 +115,13 @@ namespace bns
     }
 #endif // WIN32
 
+#if USE_OPENGL
+    void Framework::InitializeForOpenGL(WindowParameters windowParameters)
+    {
+        m_windowManager->InitializeForOpenGL(windowParameters);
+        static_cast<OpenGLRenderer *>(m_renderer)->Initialize();
+    }
+#endif
     void Framework::Draw(std::function<void()> callback)
     {
         bool quit = false;

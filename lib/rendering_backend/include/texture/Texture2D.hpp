@@ -87,7 +87,7 @@ namespace bns
         static u32 GenerateID();
 
     public:
-        Texture2D(i32 width, i32 height, int textureUsageFlags, TextureFormat format);
+        Texture2D(i32 width, i32 height, i32 textureUsageFlags, TextureFormat format);
 
         virtual ~Texture2D();
 

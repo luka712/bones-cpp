@@ -48,7 +48,10 @@ do: Simply run project in xcode
 
 # Dependencies
 TODO: 
-- move renderer implementations to lib DirectX ( Metal/WebGPU is done ) 
+- create OpenGL/OpenGLES renderer similar to DX11Renderer (finish sprite renderer opengl, pay attention to buffer usages)
+- create WebGPU unlit sprite renderer, move it to lib. Then do same for metal
+- create guards for renderers
+
 - Break project into smaller parts, start with loaders! 
 
 - FORWARD_2D_NUM_OF_POINT_LIGHTS make sure it's passed to shader as well

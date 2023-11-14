@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #ifndef BNS_WEBGPU_SPRITE_RENDERER_HPP
 
 #define BNS_WEBGPU_SPRITE_RENDERER_HPP
@@ -93,3 +95,5 @@ namespace bns
 }
 
 #endif
+
+#endif 

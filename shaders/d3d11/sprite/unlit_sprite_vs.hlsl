@@ -1,14 +1,13 @@
-
-cbuffer CameraConstantBuffer : register(b0)
-{
-    matrix c_projectionViewMatrix;
-};
-
 struct VS_INPUT
 {
     float3 position : POSITION;
     float2 texCoords : TEXCOORD0;
     float4 tintColor : COLOR0;
+};
+
+cbuffer CameraConstantBuffer : register(b0)
+{
+    matrix c_projectionViewMatrix;
 };
 
 struct PS_INPUT

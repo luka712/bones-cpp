@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #include "renderer/common/WebGPURenderPipelineUtil.hpp"
 
 namespace bns
@@ -33,3 +35,5 @@ namespace bns
         return pipelineDesc;
     }
 }
+
+#endif 

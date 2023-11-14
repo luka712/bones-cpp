@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #include "material/test/wgpu/WebGPUBasicMeshTexturedTestMaterial.hpp"
 #include "renderer/common/WebGPURenderPipelineUtil.hpp"
 #include "mesh/wgpu/WebGPUMesh.hpp"
@@ -204,3 +206,5 @@ namespace bns
     Material *WebGPUBasicMeshTexturedTestMaterial::Copy() { return new WebGPUBasicMeshTexturedTestMaterial(m_renderer, m_fileLoader, m_texture); }
 
 }
+
+#endif 

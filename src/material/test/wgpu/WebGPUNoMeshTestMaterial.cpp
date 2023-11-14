@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #include "material/test/wgpu/WebGPUNoMeshTestMaterial.hpp"
 #include "renderer/common/WebGPURenderPipelineUtil.hpp"
 #include "util/WebGPUShaderModuleUtil.hpp"
@@ -116,3 +118,5 @@ namespace bns
     Material *WebGPUNoMeshTestMaterial::Copy() { return new WebGPUNoMeshTestMaterial(m_renderer, m_fileLoader); }
 
 }
+
+#endif 

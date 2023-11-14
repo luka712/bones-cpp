@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #include "util/WebGPUTextureViewDescriptorUtil.hpp"
 
 namespace bns
@@ -17,3 +19,5 @@ namespace bns
         return descriptor;
     }
 }
+
+#endif // USE_WEBGPU

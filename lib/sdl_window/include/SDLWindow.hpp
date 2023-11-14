@@ -23,11 +23,11 @@ namespace bns
         SDLWindowManager();
         ~SDLWindowManager();
 
-         Vec2i GetWindowSize() override;
+        Vec2i GetWindowSize() override;
 
 #if USE_WEBGPU
         bool InitializeForWGPU(WindowParameters windowParameters, WGPUInstance *outInstance, WGPUSurface *outSurface) override;
-#endif 
+#endif
 
 #if USE_METAL
         CA::MetalLayer *InitializeForMetal(WindowParameters windowParameters) override;
@@ -36,6 +36,14 @@ namespace bns
 #if USE_D3D11
         HWND InitializeForD3D11(WindowParameters windowParameters) override;
 #endif // WIN32
+
+#if USE_OPENGL
+        void InitializeForOpenGL(WindowParameters windowParameters) override;
+#endif
+
+        void SwapBuffers() override;
+
+        void Destroy() override;
     };
 }
 

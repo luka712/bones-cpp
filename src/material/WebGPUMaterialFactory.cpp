@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #include "material/WebGPUMaterialFactory.hpp"
 #include "material/basic/wgpu/WebGPUBasicMaterial.hpp"
 
@@ -21,3 +23,5 @@ namespace bns
         return material;
     }
 }
+
+#endif 

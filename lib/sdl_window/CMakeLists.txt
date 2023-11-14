@@ -9,6 +9,7 @@ target_compile_options(BnsSDLWindow PRIVATE
     -DUSE_WEBGPU=${USE_WEBGPU} 
     -DUSE_METAL=${USE_METAL}
     -DUSE_D3D11=${USE_D3D11}
+    -DUSE_OPENGL=${USE_OPENGL}
 )
 
 # Custom extension for WebGPU and SDL2
@@ -20,11 +21,22 @@ endif()
 
 
 # LIBRARIES
-target_link_libraries(BnsSDLWindow SDL2Extension BnsWindow BnsWebGPUBackend)
-if(WIN32)
-    target_link_libraries(BnsSDLWindow BnsD3D11Backend)
-elseif(APPLE)
-    target_link_libraries(BnsSDLWindow BnsMetalBackend)
+target_link_libraries(BnsSDLWindow BnsWindow)
+
+if(USE_WEBGPU)
+target_link_libraries(BnsWindow SDL2Extension BnsWebGPUBackend)
+endif()
+
+if(USE_OPENGL)
+target_link_libraries(BnsWindow BnsOpenGLBackend)
+endif()
+
+if(USE_D3D11)
+    target_link_libraries(BnsWindow BnsD3D11Backend)
+endif()
+
+if(USE_METAL)
+    target_link_libraries(BnsWindow BnsMetalBackend)
 endif()
 
 
@@ -39,11 +51,13 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../webgpu_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../d3d11_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../metal_backend/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../opengl_backend/include
 
     # vendor
     ${CMAKE_BINARY_DIR}/_deps/dawn-src/include
     ${CMAKE_BINARY_DIR}/_deps/dawn-build/gen/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../vendor
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../vendor/glad
   
 )
 

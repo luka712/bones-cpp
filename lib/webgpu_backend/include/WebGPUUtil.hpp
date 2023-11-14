@@ -1,3 +1,5 @@
+#if USE_WEBGPU 
+
 #ifndef BNS_WEBGPU_UTIL
 
 #define BNS_WEBGPU_UTIL
@@ -57,3 +59,5 @@ namespace bns
 }
 
 #endif
+
+#endif // USE_WEBGPU

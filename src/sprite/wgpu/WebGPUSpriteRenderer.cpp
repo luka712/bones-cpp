@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #include "sprite/wgpu/WebGPUSpriteRenderer.hpp"
 #include "WebGPUUtil.hpp"
 #include "Constants.hpp"
@@ -386,3 +388,5 @@ namespace bns
         }
     }
 }
+
+#endif 

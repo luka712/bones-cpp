@@ -1,3 +1,5 @@
+#if USE_WEBGPU
+
 #ifndef BNS_RENDERER_WGPU_HPP
 
 #define BNS_RENDERER_WGPU_HPP
@@ -135,3 +137,5 @@ namespace bns
 } // namespace BNS
 
 #endif // !BNS_RENDERER_WGPU_HPP
+
+#endif // USE_WEBGPU

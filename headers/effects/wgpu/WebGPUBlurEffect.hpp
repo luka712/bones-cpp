@@ -1,3 +1,6 @@
+#if USE_WEBGPU 
+
+
 #ifndef BNS_WEBGPU_BLUR_EFFECT_HPP
 
 #define BNS_WEBGPU_BLUR_EFFECT_HPP
@@ -101,3 +104,5 @@ namespace bns
 }
 
 #endif
+
+#endif // USE_WEBGPU
