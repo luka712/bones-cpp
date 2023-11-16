@@ -10,6 +10,7 @@ target_compile_options(BnsWindow PRIVATE
     -DUSE_METAL=${USE_METAL}
     -DUSE_D3D11=${USE_D3D11}
     -DUSE_OPENGL=${USE_OPENGL}
+    -DUSE_OPENGLES=${USE_OPENGLES}
 ) 
 
 # LIBRARIES
@@ -19,6 +20,10 @@ endif()
 
 if(USE_OPENGL)
 target_link_libraries(BnsWindow BnsOpenGLBackend)
+endif()
+
+if(USE_OPENGLES)
+target_link_libraries(BnsWindow BnsOpenGLESBackend)
 endif()
 
 if(USE_D3D11)
@@ -40,13 +45,30 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../webgpu_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../d3d11_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../metal_backend/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../opengl_backend/include
 
     # vendor
     ${CMAKE_BINARY_DIR}/_deps/dawn-src/include
     ${CMAKE_BINARY_DIR}/_deps/dawn-build/gen/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../vendor
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../vendor/glad 
-  
 )
+
+if(USE_OPENGL)
+    include_directories(
+        # project 
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opengl_backend/include
+
+        # vendor
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../vendor/glad
+    )
+endif()
+
+if(USE_OPENGLES)
+    include_directories(
+        # project
+        ${CMAKE_CURRENT_SOURCE_DIR}/../opengles_backend/include
+        
+        # vendor
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../vendor/glad_es
+    )
+endif()
 

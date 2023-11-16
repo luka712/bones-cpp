@@ -11,11 +11,13 @@ include(utils.cmake)
 # BACKEND RENDERER FLIPS, also used by /lib
 # Multiplatform
 set(USE_WEBGPU 0)
-set(USE_OPENGL 1) 
+set(USE_OPENGL 0) 
+set(USE_OPENGLES 1)
 # Apple specific
 set(USE_METAL 0)
 # Windows specific
 set(USE_D3D11 0)
+
 
 
 # DEBUG 
@@ -39,7 +41,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(SDL2)
 
 # If OpenGL is used, we need to find it
-if(USE_OPENGL)
+if(USE_OPENGL OR USE_OPENGLES)
 find_package(OpenGL REQUIRED)
 endif()
 
@@ -48,7 +50,12 @@ endif()
 # VENDOR LIBRARIES
 add_subdirectory(vendor/webgpu)
 add_subdirectory(vendor/SDL2Extension)
+if(USE_OPENGL)
 add_subdirectory(vendor/glad EXCLUDE_FROM_ALL)
+endif()
+if(USE_OPENGLES)
+add_subdirectory(vendor/glad_es EXCLUDE_FROM_ALL)
+endif()
 
 # PROJECT LIBRARIES
 add_subdirectory(lib/window)
@@ -67,6 +74,9 @@ add_subdirectory(lib/webgpu_backend)
 endif()
 if(USE_OPENGL)
 add_subdirectory(lib/opengl_backend)
+endif()
+if(USE_OPENGLES)
+add_subdirectory(lib/opengles_backend)
 endif()
 
 # Set the target architecture to arm64
@@ -109,16 +119,31 @@ file(COPY assets DESTINATION ${CMAKE_BINARY_DIR}/assets)
 include_guard(GLOBAL)
 
 
-include_directories(${SDL2_INCLUDE_DIRS})
+if(USE_OPENGL)
+include_directories(
+        # vendor     
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad
+        # The lib dependencies
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/opengl_backend/include
+    )
+endif()
+if(USE_OPENGLES)
+include_directories(
+        # vendor     
+        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad_es
+        # The lib dependencies
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/opengles_backend/include
+    )
+endif()
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/headers
 
     # vendor 
+    ${SDL2_INCLUDE_DIRS}
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/webgpu/include
     ${CMAKE_CURRENT_SOURCE_DIR}/vendor/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad
 
     # The lib dependencies
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/window/include
@@ -130,7 +155,6 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/metal_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/webgpu_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/d3d11_backend/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/lib/opengl_backend/include
     SYSTEM PUBLIC
     ${CMAKE_SOURCE_DIR}/metal-cpp
 )
@@ -151,12 +175,18 @@ else()
     target_compile_options(SDL2Extension PRIVATE)
 endif()
 
-target_compile_options(Glad PRIVATE)
+if(USE_OPENGL)
+target_compile_options(glad PRIVATE)
+endif()
+
+if(USE_OPENGLES)
+target_compile_options(glad_es PRIVATE)
+endif()
 
 # If we are on Apple, we can use Metal or WebGPU (Metal is the default)
 target_compile_options(App PRIVATE 
 -DDEBUG=${DEBUG}
--DUSE_METAL=${USE_METAL} -DUSE_D3D11=${USE_D3D11} -DUSE_WEBGPU=${USE_WEBGPU} -DUSE_OPENGL=${USE_OPENGL}
+-DUSE_METAL=${USE_METAL} -DUSE_D3D11=${USE_D3D11} -DUSE_WEBGPU=${USE_WEBGPU} -DUSE_OPENGL=${USE_OPENGL} -DUSE_OPENGLES=${USE_OPENGLES}
 -DFORWARD_2D_NUM_OF_POINT_LIGHTS=${FORWARD_2D_NUM_OF_POINT_LIGHTS}
 -DDEBUG_BREAKPOINT_ENABLED=${DEBUG_BREAKPOINT_ENABLED}
 -DLOGGING_ENABLED=${LOGGING_ENABLED}
@@ -186,7 +216,7 @@ BnsMath
 BnsRenderingBackend
 )
 elseif(WIN32)
-target_link_libraries(App PRIVATE SDL2::SDL2 d3d11 dxgi d3dcompiler Glad SDL2Extension 
+target_link_libraries(App PRIVATE SDL2::SDL2 d3d11 dxgi d3dcompiler SDL2Extension 
 BnsWindow
 BnsSDLWindow
 BnsLoaders 
@@ -205,7 +235,10 @@ endif()
 
 # glad must be linked if OpenGL is used as it provides headers
 if(USE_OPENGL)
-target_link_libraries(App PRIVATE BnsOpenGLBackend)
+target_link_libraries(App PRIVATE glad BnsOpenGLBackend)
+endif()
+if(USE_OPENGLES)
+target_link_libraries(App PRIVATE glad_es BnsOpenGLESBackend)
 endif()
 if(USE_WEBGPU)
 target_link_libraries(App PRIVATE webgpu BnsWebGPUBackend)

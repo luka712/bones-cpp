@@ -6,7 +6,7 @@
 #include "Vec2.hpp"
 #include <string>
 
-#ifdef USE_METAL
+#if USE_METAL
 #include "BnsMetal.hpp"
 #endif // USE_METAL
 
@@ -14,13 +14,17 @@
 #include "BnsDirectX11.hpp"
 #endif // USE_D3D11
 
-#ifdef USE_WEBGPU
+#if USE_WEBGPU
 #include "BnsWebGPU.hpp"
 #endif
 
-#ifdef USE_OPENGL
+#if USE_OPENGL
 #include "BnsOpenGL.hpp"
 #endif // USE_OPENGL
+
+#if USE_OPENGLES
+#include "BnsOpenGLES.hpp"
+#endif // USE_OPENGLES
 
 namespace bns
 {
@@ -65,7 +69,13 @@ namespace bns
 #if USE_OPENGL
         /// @brief Initialize for OpenGL.
         /// @param windowParameters The window parameters.
-        virtual void InitializeForOpenGL(WindowParameters windowParameters) = 0;
+        virtual void InitializeForOpenGL(WindowParameters windowParameters, i32 majorVersion = 4, i32 minorVersion = 5) = 0;
+#endif 
+
+#if USE_OPENGLES
+        /// @brief Initialize for OpenGLES.
+        /// @param windowParameters The window parameters.
+        virtual void InitializeForOpenGLES(WindowParameters windowParameters, i32 majorVersion = 3, i32 minorVersion = 2) = 0;
 #endif 
 
 #if USE_WEBGPU

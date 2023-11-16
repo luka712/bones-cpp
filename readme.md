@@ -48,8 +48,10 @@ do: Simply run project in xcode
 
 # Dependencies
 TODO: 
-- create OpenGL/OpenGLES renderer similar to DX11Renderer (finish sprite renderer opengl, pay attention to buffer usages)
+- create DX12/Vulkan renderer similar to DX11Renderer/OpenGL/OpenGLES (finish sprite renderer opengl, pay attention to buffer usages)
 - create WebGPU unlit sprite renderer, move it to lib. Then do same for metal
+- make sure that project can use multiple renderer, recompile and switch
+
 - create guards for renderers
 
 - Break project into smaller parts, start with loaders! 

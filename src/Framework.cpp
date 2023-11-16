@@ -14,6 +14,10 @@
 #include "renderer/OpenGLRenderer.hpp"
 #include "sprite/OpenGLUnlitSpriteRenderer.hpp"
 #endif
+#if USE_OPENGLES
+#include "renderer/OpenGLESRenderer.hpp"
+#include "sprite/OpenGLESUnlitSpriteRenderer.hpp"
+#endif
 
 #include "SDLWindow.hpp"
 #include "material/WebGPUMaterialFactory.hpp"
@@ -62,8 +66,12 @@ namespace bns
         // m_materialFactory = new OpenGLMaterialFactory(*this);
         // m_meshFactory = new OpenGLMeshFactory(*this);
         m_spriteRenderer = new OpenGLUnlitSpriteRenderer(m_renderer);
+#elif USE_OPENGLES
+        m_renderer = new OpenGLESRenderer(m_windowManager);
+        // m_materialFactory = new OpenGLESMaterialFactory(*this);
+        // m_meshFactory = new OpenGLESMeshFactory(*this);
+        m_spriteRenderer = new OpenGLESUnlitSpriteRenderer(m_renderer);
 #endif
-
         m_textureFactory = new TextureManagerImpl(m_renderer, m_imageLoader);
     }
 
@@ -81,6 +89,8 @@ namespace bns
         InitializeForWGPU(windowParameters);
 #elif USE_OPENGL
         InitializeForOpenGL(windowParameters);
+#elif USE_OPENGLES
+        InitializeForOpenGLES(windowParameters);
 #endif
         m_spriteRenderer->Initialize();
 
@@ -122,6 +132,15 @@ namespace bns
         static_cast<OpenGLRenderer *>(m_renderer)->Initialize();
     }
 #endif
+
+#if USE_OPENGLES
+    void Framework::InitializeForOpenGLES(WindowParameters windowParameters)
+    {
+        m_windowManager->InitializeForOpenGLES(windowParameters);
+        static_cast<OpenGLESRenderer *>(m_renderer)->Initialize();
+    }
+#endif
+
     void Framework::Draw(std::function<void()> callback)
     {
         bool quit = false;

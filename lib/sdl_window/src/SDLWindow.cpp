@@ -123,11 +123,11 @@ namespace bns
 #endif // USE_D3D11
 
 #if USE_OPENGL
-    void SDLWindowManager::InitializeForOpenGL(WindowParameters windowParameters)
+    void SDLWindowManager::InitializeForOpenGL(WindowParameters windowParameters, i32 majorVersion, i32 minorVersion)
     {
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); // OpenGL core profile
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);                          // OpenGL 4+
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);                          // OpenGL 4.5
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, majorVersion);                          
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minorVersion);                         
 
         CreateWindowAndRenderer(windowParameters);
         SDL_GLContext glContext = SDL_GL_CreateContext(m_window);
@@ -142,9 +142,29 @@ namespace bns
     }
 #endif // USE_OPENGL
 
+#if USE_OPENGLES
+    void SDLWindowManager::InitializeForOpenGLES(WindowParameters windowParameters, i32 majorVersion, i32 minorVersion)
+    {
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES); // OpenGLES core profile
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, majorVersion);                         
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minorVersion);                          
+
+        CreateWindowAndRenderer(windowParameters);
+        SDL_GLContext glContext = SDL_GL_CreateContext(m_window);
+
+        // Initialize Glad (after creating an OpenGL context)
+        if (!gladLoadGLES2Loader((GLADloadproc)SDL_GL_GetProcAddress))
+        {
+            std::string msg = "SDLWindowManager::InitializeForOpenGL: Failed to create SDL renderer: " + std::string(SDL_GetError());
+            SDL_Log(msg.c_str());
+            throw std::exception(msg.c_str());
+        }
+    }
+#endif // USE_OPENGLES
+
     void SDLWindowManager::SwapBuffers()
     {
-#if USE_OPENGL
+#if USE_OPENGL | USE_OPENGLES
         SDL_GL_SwapWindow(m_window);
 #endif
     }

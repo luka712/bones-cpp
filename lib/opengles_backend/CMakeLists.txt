@@ -2,18 +2,18 @@
 
 set(CMAKE_CXX_STANDARD 17)
 
-file(GLOB OpenGL_BACKEND_SOURCES src/*.cpp src/**/*.cpp)
+file(GLOB OpenGLES_BACKEND_SOURCES src/*.cpp src/**/*.cpp)
 
-ADD_LIBRARY(BnsOpenGLBackend STATIC ${OpenGL_BACKEND_SOURCES})
+ADD_LIBRARY(BnsOpenGLESBackend STATIC ${OpenGLES_BACKEND_SOURCES})
 
 # USE_WEBGPU is defined in the root CMakeLists.txt
-target_compile_options(BnsOpenGLBackend PRIVATE 
-    -DUSE_OPENGL=${USE_OPENGL}
+target_compile_options(BnsOpenGLESBackend PRIVATE 
+    -DUSE_OPENGLES=${USE_OPENGLES}
     -DDEBUG_BREAKPOINT_ENABLED=${DEBUG_BREAKPOINT_ENABLED}
     -DLOGGING_ENABLED=${LOGGING_ENABLED}
 )
 
-target_link_libraries(BnsOpenGLBackend PRIVATE glad)
+target_link_libraries(BnsOpenGLESBackend PRIVATE glad_es)
 
 include_directories(
     # local 
@@ -28,7 +28,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../math/include
 
     # vendor
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../vendor/glad
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../vendor/glad_es
 
     # system 
 

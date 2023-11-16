@@ -38,9 +38,12 @@ namespace bns
 #endif // WIN32
 
 #if USE_OPENGL
-        void InitializeForOpenGL(WindowParameters windowParameters) override;
+        void InitializeForOpenGL(WindowParameters windowParameters, i32 majorVersion = 4, i32 minorVersion = 5) override;
 #endif
 
+#if USE_OPENGLES
+        void InitializeForOpenGLES(WindowParameters windowParameters, i32 majorVersion = 3, i32 minorVersion = 2) override;
+#endif
         void SwapBuffers() override;
 
         void Destroy() override;

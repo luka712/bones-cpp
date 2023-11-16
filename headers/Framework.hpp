@@ -53,6 +53,12 @@ namespace bns
         /// @brief Initialize the framework with OpenGL as the backend.
         void InitializeForOpenGL(WindowParameters windowParameters);
 #endif
+
+#if USE_OPENGLES
+        /// @brief Initialize the framework with OpenGL ES as the backend.
+        void InitializeForOpenGLES(WindowParameters windowParameters);
+#endif
+
     public:
         /// @brief Gets the window manager.
         /// @return The window manager.
