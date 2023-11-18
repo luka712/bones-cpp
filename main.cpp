@@ -15,7 +15,7 @@
 
 #include "Framework.hpp"
 
-bns::Framework engine;
+bns::Framework *engine;
 
 // Scene data
 bns::SpriteFont *font;
@@ -29,40 +29,55 @@ void Draw();
 
 int main()
 {
+    engine = new bns::Framework();
 
     bns::WindowParameters parameters;
+    engine->DrawCallback = [&]()
+    { Draw(); };
 
-    engine.Initialize(parameters, Initialize);
-
-    engine.Draw(Draw);
+    engine->Initialize(parameters, Initialize);
 
     return 0;
 }
 
 void Initialize()
 {
-    font = engine.GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
-    testTexture = engine.GetTextureManager().LoadTexture2D("assets/uv_test.png");
+    font = engine->GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
+    testTexture = engine->GetTextureManager().LoadTexture2D("assets/uv_test.png");
 
-    // effect = engine.GetEffectFactory().CreateBloomEffect();
+    // effect = engine->GetEffectFactory().CreateBloomEffect();
 
-    bns::Renderer *renderer = engine.GetRenderer();
+    bns::Renderer *renderer = engine->GetRenderer();
 
-  //  renderer->SetRenderTexture(effect->GetSourceTexture());
-  //  renderer->SetBrightnessTexture(effect->GetBrightnessTexture());
+    //  renderer->SetRenderTexture(effect->GetSourceTexture());
+    //  renderer->SetBrightnessTexture(effect->GetBrightnessTexture());
 
-    //engine.GetSpriteRenderer()->PointLights[0].Intensity = 0.0;
-    //engine.GetSpriteRenderer()->PointLights[0].Position = bns::Vec3f(50.0f, 50.0f, 100.0f);
-    //engine.GetSpriteRenderer()->PointLights[0].Color = bns::Color::Red();
-    //engine.GetSpriteRenderer()->PointLights[0].Attenuation.Unit = 100.0f;
-    //engine.GetSpriteRenderer()->AmbientLight.Intensity = 0.0f;
-    //engine.GetSpriteRenderer()->AmbientLight.Color = bns::Color::Black();
+    // engine->GetSpriteRenderer()->PointLights[0].Intensity = 0.0;
+    // engine->GetSpriteRenderer()->PointLights[0].Position = bns::Vec3f(50.0f, 50.0f, 100.0f);
+    // engine->GetSpriteRenderer()->PointLights[0].Color = bns::Color::Red();
+    // engine->GetSpriteRenderer()->PointLights[0].Attenuation.Unit = 100.0f;
+    // engine->GetSpriteRenderer()->AmbientLight.Intensity = 0.0f;
+    // engine->GetSpriteRenderer()->AmbientLight.Color = bns::Color::Black();
 }
 
 void Draw()
 {
-    bns::Renderer * renderer = engine.GetRenderer();
-    bns::SpriteRenderer *spriteRenderer = engine.GetSpriteRenderer();
+    bns::Event event;
+    if (engine->GetEvents().HasEvent(bns::EventType::KeyDown, &event))
+    {
+        if (engine->GetCurrentRenderer() == bns::RendererType::Metal)
+        {
+            engine->SwitchRenderer(bns::RendererType::WebGPU);
+        }
+        else if (engine->GetCurrentRenderer() == bns::RendererType::WebGPU)
+        {
+            engine->SwitchRenderer(bns::RendererType::Metal);
+        }
+    
+    }
+
+    bns::Renderer *renderer = engine->GetRenderer();
+    bns::SpriteRenderer *spriteRenderer = engine->GetSpriteRenderer();
 
     bns::i32 hw = testTexture->GetWidth() / 2;
     bns::i32 hh = testTexture->GetHeight() / 2;
@@ -70,7 +85,7 @@ void Draw()
     rotation += 0.001;
     bns::Vec2f rotationOrigin = bns::Vec2f(0.5f, 0.5f);
 
-    engine.GetSpriteRenderer()->PointLights[0].Intensity += 0.1f;
+    engine->GetSpriteRenderer()->PointLights[0].Intensity += 0.1f;
     spriteRenderer->DrawString(font, "Hello World!", bns::Vec2f(300, 300), bns::Color::White(), 1.0f);
 
     // whole texture

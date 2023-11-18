@@ -1,4 +1,4 @@
-#ifdef __APPLE__
+#if USE_METAL
 
 #include "sprite/metal/MetalSpriteRenderer.hpp"
 #include "MetalUtil.hpp"

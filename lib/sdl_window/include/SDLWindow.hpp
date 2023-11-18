@@ -20,10 +20,19 @@ namespace bns
         void CreateWindowAndRenderer(WindowParameters windowParameters);
 
     public:
-        SDLWindowManager();
+        /// @brief The constructor.
+        /// @param events The framework events.
+        /// @param updateCallback The update callback.
+        /// @param drawCallback The draw callback.
+        SDLWindowManager(Events* events, std::function<void()> updateCallback, std::function<void()> drawCallback);
         ~SDLWindowManager();
 
         Vec2i GetWindowSize() override;
+
+        /// @brief If set to true, window will be closed.
+        /// @note Settings this will quit the game. 
+        /// @note Will be set to true on window close event, such as ALT+F4 or clicking X button.
+        bool Quit;
 
 #if USE_WEBGPU
         bool InitializeForWGPU(WindowParameters windowParameters, WGPUInstance *outInstance, WGPUSurface *outSurface) override;
@@ -45,6 +54,8 @@ namespace bns
         void InitializeForOpenGLES(WindowParameters windowParameters, i32 majorVersion = 3, i32 minorVersion = 2) override;
 #endif
         void SwapBuffers() override;
+
+        void RunEventLoop() override;
 
         void Destroy() override;
     };

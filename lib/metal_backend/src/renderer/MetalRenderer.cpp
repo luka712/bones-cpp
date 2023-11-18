@@ -1,4 +1,4 @@
-#ifdef __APPLE__
+#if USE_METAL
 
 #include "renderer/MetalRenderer.hpp"
 #include <simd/simd.h>

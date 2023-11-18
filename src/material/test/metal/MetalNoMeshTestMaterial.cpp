@@ -1,4 +1,4 @@
-#ifdef __APPLE__
+#if USE_METAL
 
 #include "material/test/metal/MetalNoMeshTestMaterial.hpp"
 #include "Framework.hpp"

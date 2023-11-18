@@ -14,4 +14,9 @@ namespace bns
         Resizable = false;
     }
 
+    WindowManager::WindowManager(Events *events, std::function<void()> updateCallback, std::function<void()> drawCallback)
+        : m_events(events), m_updateCallback(updateCallback), m_drawCallback(drawCallback)
+    {
+    }
+
 }

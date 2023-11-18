@@ -1,4 +1,4 @@
-#ifdef __APPLE__
+#if USE_METAL
 
 #ifndef METAL_NO_MESH_TEST_MATERIAL_HPP
 

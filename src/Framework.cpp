@@ -2,9 +2,11 @@
 #include <vector>
 #if USE_METAL
 #include "renderer/MetalRenderer.hpp"
+#include "sprite/MetalUnlitSpriteRenderer.hpp"
 #endif
 #if USE_WEBGPU
 #include "renderer/WebGPURenderer.hpp"
+#include "sprite/WebGPUUnlitSpriteRenderer.hpp"
 #endif
 #if USE_D3D11
 #include "renderer/D3D11Renderer.hpp"
@@ -32,35 +34,70 @@
 #include "material/test/metal/MetalBasicMeshTexturedTestMaterial.hpp"
 #include "texture/MetalTexture2D.hpp"
 #include "sprite/wgpu/WebGPUSpriteRenderer.hpp"
-#include "sprite/metal/MetalSpriteRenderer.hpp"
+
 #include "textures/TextureManagerImpl.hpp"
 
 namespace bns
 {
-    Framework::Framework()
+    FrameworkDescription::FrameworkDescription()
     {
+        RendererType = RendererType::None;
+    }
+
+    Framework::Framework(FrameworkDescription desc)
+    {
+        m_lifecycleState = LifecycleState::Created;
+        UpdateCallback = []() {};
+        DrawCallback = []() {};
+        m_currentRendererType = desc.RendererType;
+
+        m_events = new Events();
         m_geometryBuilder = new GeometryBuilder();
         m_imageLoader = new ImageLoader();
         m_bitmapSpriteFontLoader = new BitmapSpriteFontLoader(*this);
 
         m_effectFactory = new EffectFactory(*this);
-        m_windowManager = new SDLWindowManager();
+        m_windowManager = new SDLWindowManager(m_events, std::bind(&Framework::OnUpdate, this), std::bind(&Framework::OnDraw, this));
+
+        CreateRenderObjects();
+    }
+
+    void Framework::CreateRenderObjects()
+    {
+        if (m_currentRendererType == RendererType::None)
+        {
+            // if apple machine and metal is available use metal
+#if USE_METAL
+            m_currentRendererType = RendererType::Metal;
+#else
+// MULTIPLATFORM HERE
+#if USE_WEBGPU
+            m_currentRendererType = RendererType::WebGPU;
+#endif
+#endif
+        }
 
 #if USE_METAL
-        m_renderer = new MetalRenderer(m_windowManager);
-        // m_materialFactory = new MetalMaterialFactory(*this);
-        m_meshFactory = new MetalMeshFactory(*this);
-        m_spriteRenderer = new MetalSpriteRenderer(*this, *m_renderer);
+        if (m_currentRendererType == RendererType::Metal)
+        {
+            m_renderer = new MetalRenderer(m_windowManager);
+            // m_materialFactory = new MetalMaterialFactory(*this);
+            m_meshFactory = new MetalMeshFactory(*this);
+            m_spriteRenderer = new MetalUnlitSpriteRenderer(m_renderer);
+        }
 #elif USE_D3D11
         m_renderer = new D3D11Renderer(m_windowManager);
         // m_materialFactory = new D3D11MaterialFactory(*this);
         // m_meshFactory = new D3D11MeshFactory(*this);
         m_spriteRenderer = new D3D11UnlitSpriteRenderer(m_renderer);
 #elif USE_WEBGPU
-        m_renderer = new WebGPURenderer(m_windowManager);
-        m_materialFactory = new WebGPUMaterialFactory(*this);
-        m_meshFactory = new WebGPUMeshFactory(*this);
-        m_spriteRenderer = new WebGPUSpriteRenderer(m_renderer);
+        if (m_currentRendererType == RendererType::WebGPU)
+        {
+            m_renderer = new WebGPURenderer(m_windowManager);
+            m_materialFactory = new WebGPUMaterialFactory(*this);
+            m_meshFactory = new WebGPUMeshFactory(*this);
+            m_spriteRenderer = new WebGPUUnlitSpriteRenderer(m_renderer);
+        }
 #elif USE_OPENGL
         m_renderer = new OpenGLRenderer(m_windowManager);
         // m_materialFactory = new OpenGLMaterialFactory(*this);
@@ -75,26 +112,59 @@ namespace bns
         m_textureFactory = new TextureManagerImpl(m_renderer, m_imageLoader);
     }
 
+    void Framework::DestroyRenderObjects()
+    {
+        // TODO:
+        // m_textureFactory->Destroy();
+        // m_spriteRenderer->Destroy();
+        // m_meshFactory->Destroy();
+        // m_materialFactory->Destroy();
+        m_renderer->Destroy();
+
+        // TODO:
+        // delete m_textureFactory;
+        // delete m_spriteRenderer;
+        //  delete m_meshFactory;
+        //  delete m_materialFactory;
+        // delete m_renderer;
+    }
+
     Framework::~Framework()
     {
     }
 
     void Framework::Initialize(WindowParameters windowParameters, std::function<void()> callback)
     {
+        m_windowParameters = windowParameters;
+        m_initializeCallback = callback;
+
 #if USE_METAL
-        InitializeForMetal(windowParameters);
+        if (m_currentRendererType == RendererType::Metal)
+        {
+            InitializeForMetal(windowParameters);
+        }
 #elif USE_D3D11
         InitializeForD3D11(windowParameters);
-#elif USE_WEBGPU
-        InitializeForWGPU(windowParameters);
 #elif USE_OPENGL
         InitializeForOpenGL(windowParameters);
 #elif USE_OPENGLES
         InitializeForOpenGLES(windowParameters);
+#elif USE_WEBGPU
+        if (m_currentRendererType == RendererType::WebGPU)
+        {
+            InitializeForWGPU(windowParameters);
+        }
 #endif
         m_spriteRenderer->Initialize();
 
-        callback();
+        m_initializeCallback();
+
+        if (m_lifecycleState == LifecycleState::Created)
+        {
+            // Loop only needs to be run once
+            m_windowManager->RunEventLoop();
+            m_lifecycleState = LifecycleState::Initialized;
+        }
     }
 
 #if USE_WEBGPU
@@ -141,37 +211,33 @@ namespace bns
     }
 #endif
 
-    void Framework::Draw(std::function<void()> callback)
+    void Framework::OnUpdate()
     {
-        bool quit = false;
-        SDL_Event event;
+        UpdateCallback();
+    }
 
-        while (!quit)
+    void Framework::OnDraw()
+    {
+        m_renderer->BeginDraw();
+        m_spriteRenderer->BeginFrame();
+
+        DrawCallback();
+
+        m_spriteRenderer->EndFrame();
+        m_renderer->EndDraw();
+    }
+
+    void Framework::SwitchRenderer(RendererType rendererType)
+    {
+        if (m_currentRendererType == rendererType)
         {
-            // Process events
-            while (SDL_PollEvent(&event))
-            {
-                if (event.type == SDL_QUIT)
-                {
-                    quit = true;
-                }
-            }
-
-            // #if __USE_WEBGPU__
-            // Do nothing, this checks for ongoing asynchronous operations and call their callbacks
-            // NOTE: this is specific to DAWN and is not part of WebGPU standard.
-            // TODO: move to renderer of webgpu
-            // #endif
-
-            m_renderer->BeginDraw();
-            m_spriteRenderer->BeginFrame();
-
-            callback();
-
-            m_spriteRenderer->EndFrame();
-            m_renderer->EndDraw();
-
-            SDL_Delay(16);
+            return;
         }
+
+        m_currentRendererType = rendererType;
+
+        DestroyRenderObjects();
+        CreateRenderObjects();
+        Initialize(m_windowParameters, m_initializeCallback);
     }
 } // namespace BNS

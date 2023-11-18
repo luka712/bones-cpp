@@ -1,4 +1,5 @@
 #include "effects/EffectFactory.hpp"
+#include "Framework.hpp"
 
 #if __APPLE__ && USE_METAL
 #include "effects/metal/MetalGrayscaleEffect.hpp"
@@ -28,7 +29,7 @@ namespace bns
 #elif USE_WEBGPU
                 effect = new WebGPUGrayscaleEffect(m_framework);
 #endif
-
+            m_framework.GetFileLoader();
                 effect->Initialize();
                 return effect;
         }

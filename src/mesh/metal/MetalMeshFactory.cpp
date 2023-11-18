@@ -1,4 +1,4 @@
-#ifdef __APPLE__
+#if USE_METAL
 
 #include "mesh/metal/MetalMeshFactory.hpp"
 #include "mesh/metal/MetalMesh.hpp"

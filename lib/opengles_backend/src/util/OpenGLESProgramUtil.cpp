@@ -2,7 +2,7 @@
 
 #include "util/OpenGLESProgramUtil.hpp"
 #include "Types.hpp"
-#include <exception>
+#include <stdexcept>
 #include <string>
 
 namespace bns
@@ -25,7 +25,7 @@ namespace bns
             glDeleteProgram(program);
 
             LOG(msg.c_str());
-            throw std::exception(msg.c_str());
+            throw std::runtime_error(msg.c_str());
         }
 
         glDeleteShader(vertexShader);
@@ -43,7 +43,7 @@ namespace bns
             std::string msg = "OpenGLESProgramUtil::GetUniformLocation: Failed to get uniform location: " + name;
             LOG(msg.c_str());
             BREAKPOINT();
-            throw std::exception(msg.c_str());
+            throw std::runtime_error(msg.c_str());
         }
     }
 }

@@ -1,7 +1,7 @@
 
 #pragma once
 
-#ifdef __APPLE__
+#if USE_METAL
 
 #ifndef BNS_RENDERER_METAL_HPP
 
@@ -59,6 +59,10 @@ namespace bns
         void Resize();
 
     public:
+        /// @brief Gets the renderer type.
+        /// @return The renderer type.
+        RendererType GetRendererType() const override { return RendererType::Metal; }
+
         /// @brief Gets the device.
         /// @return The device object.
         MTL::Device* GetDevice() const { return m_device; }

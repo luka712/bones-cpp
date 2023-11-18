@@ -97,17 +97,17 @@ namespace bns
          */
         WGPUAdapter CreateAdapter();
 
-        /**
-         * Creates the webgpu device.
-         */
+        /// @brief Creates the webgpu device.
         WGPUDevice CreateDevice();
 
-        /**
-         * @brief Resizes the swap chain.
-         */
+        /// @brief Resizes the swap chain.
         void Resize();
 
     public:
+        /// @brief Gets the renderer type.
+        /// @return The renderer type.
+        RendererType GetRendererType() const override { return RendererType::WebGPU; }
+
         /// @brief The constructor.
         /// @param windowManager The window manager.
         WebGPURenderer(WindowManager *windowManager);

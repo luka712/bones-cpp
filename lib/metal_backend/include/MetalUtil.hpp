@@ -1,3 +1,5 @@
+#if USE_METAL
+
 #ifndef BNS_METAL_UTIL_HPP
 
 #define BNS_METAL_UTIL_HPP
@@ -22,3 +24,5 @@ namespace bns
 }
 
 #endif // BNS_METAL_UTIL_HPP
+
+#endif // USE_METAL

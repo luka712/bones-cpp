@@ -6,7 +6,7 @@ file(GLOB D3D11_BACKEND_SOURCES src/*.cpp src/**/*.cpp)
 
 ADD_LIBRARY(BnsD3D11Backend STATIC ${D3D11_BACKEND_SOURCES})
 
-# USE_WEBGPU is defined in the root CMakeLists.txt
+# USE_D3D11 is defined in the root CMakeLists.txt
 target_compile_options(BnsD3D11Backend PRIVATE -DUSE_D3D11=${USE_D3D11})
 
 # Find DirectX Libraries

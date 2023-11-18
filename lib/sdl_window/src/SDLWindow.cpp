@@ -12,8 +12,8 @@
 
 namespace bns
 {
-    SDLWindowManager::SDLWindowManager()
-        : WindowManager()
+    SDLWindowManager::SDLWindowManager(Events *events, std::function<void()> updateCallback, std::function<void()> drawCallback)
+        : WindowManager(events, updateCallback, drawCallback), Quit(false)
     {
         m_window = nullptr;
         m_renderer = nullptr;
@@ -64,9 +64,9 @@ namespace bns
         if (m_window == nullptr)
         {
             std::string msg = "SDLWindowManager::CreateWindowAndRenderer: Failed to create SDL window: " + std::string(SDL_GetError());
-            SDL_Log(msg.c_str());
+            LOG(msg.c_str());
             SDL_Quit();
-            throw std::exception(msg.c_str());
+            throw std::runtime_error(msg);
         }
 
         // create renderer
@@ -74,9 +74,9 @@ namespace bns
         if (m_renderer == nullptr)
         {
             std::string msg = "SDLWindowManager::CreateWindowAndRenderer: Failed to create SDL renderer: " + std::string(SDL_GetError());
-            SDL_Log(msg.c_str());
+            LOG(msg.c_str());
             SDL_Quit();
-            throw std::exception(msg.c_str());
+            throw std::runtime_error(msg.c_str());
         }
     }
 
@@ -91,8 +91,8 @@ namespace bns
         if (!outInstance)
         {
             std::string msg = "SDLWindowManager::InitializeForWGPU: Failed to create WGPU instance";
-            SDL_Log(msg.c_str());
-            throw std::exception(msg.c_str());
+            LOG(msg.c_str());
+            throw std::runtime_error(msg.c_str());
         }
         *outSurface = GetWGPUSurface(*outInstance, m_window);
 
@@ -126,8 +126,8 @@ namespace bns
     void SDLWindowManager::InitializeForOpenGL(WindowParameters windowParameters, i32 majorVersion, i32 minorVersion)
     {
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); // OpenGL core profile
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, majorVersion);                          
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minorVersion);                         
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, majorVersion);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minorVersion);
 
         CreateWindowAndRenderer(windowParameters);
         SDL_GLContext glContext = SDL_GL_CreateContext(m_window);
@@ -136,8 +136,8 @@ namespace bns
         if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
         {
             std::string msg = "SDLWindowManager::InitializeForOpenGL: Failed to create SDL renderer: " + std::string(SDL_GetError());
-            SDL_Log(msg.c_str());
-            throw std::exception(msg.c_str());
+            LOG(msg.c_str());
+            throw std::runtime_error(msg.c_str());
         }
     }
 #endif // USE_OPENGL
@@ -146,8 +146,8 @@ namespace bns
     void SDLWindowManager::InitializeForOpenGLES(WindowParameters windowParameters, i32 majorVersion, i32 minorVersion)
     {
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES); // OpenGLES core profile
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, majorVersion);                         
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minorVersion);                          
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, majorVersion);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minorVersion);
 
         CreateWindowAndRenderer(windowParameters);
         SDL_GLContext glContext = SDL_GL_CreateContext(m_window);
@@ -155,12 +155,42 @@ namespace bns
         // Initialize Glad (after creating an OpenGL context)
         if (!gladLoadGLES2Loader((GLADloadproc)SDL_GL_GetProcAddress))
         {
-            std::string msg = "SDLWindowManager::InitializeForOpenGL: Failed to create SDL renderer: " + std::string(SDL_GetError());
-            SDL_Log(msg.c_str());
-            throw std::exception(msg.c_str());
+            std::string msg = "SDLWindowManager::InitializeForOpenGLES: Failed to create SDL renderer: " + std::string(SDL_GetError());
+            LOG(msg.c_str());
+            throw std::runtime_error(msg.c_str());
         }
     }
 #endif // USE_OPENGLES
+
+    void SDLWindowManager::RunEventLoop()
+    {
+        m_events->ClearEvents();
+        SDL_Event event;
+        while (!Quit)
+        {
+            // Process events
+            while (SDL_PollEvent(&event))
+            {
+                if (event.type == SDL_QUIT)
+                {
+                    m_events->AddEvent(EventType::WindowClose);
+                    Quit = true;
+                }
+                else if(event.type == SDL_KEYDOWN)
+                {
+                    EventData data;
+                    data.I32 = event.key.keysym.sym;
+                    m_events->AddEvent(EventType::KeyDown, data);
+                }
+            }
+
+            // TODO: update 60 times per second, for draw allow drop frames
+            m_updateCallback();
+            m_drawCallback();
+
+            SDL_Delay(16);
+        }
+    }
 
     void SDLWindowManager::SwapBuffers()
     {

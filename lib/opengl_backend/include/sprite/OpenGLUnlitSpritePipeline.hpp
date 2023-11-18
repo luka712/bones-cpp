@@ -43,7 +43,7 @@ namespace bns
 
         /// @brief Gets the program
         /// @return The program
-        inline const GLuint GetProgram() const { return m_program; }
+        inline GLuint GetProgram() const { return m_program; }
 
         /// @brief Gets the texture
         /// @return The texture
@@ -51,7 +51,7 @@ namespace bns
 
         /// @brief Gets the texture location
         /// @return The texture location
-        inline const GLint GetTextureLocation() const { return m_textureLocation; }
+        inline GLint GetTextureLocation() const { return m_textureLocation; }
 
         /// @brief Release the pipeline
         void Release();

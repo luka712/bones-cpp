@@ -1,7 +1,7 @@
 #if USE_OPENGL
 
 #include "util/OpenGLBufferUtil.hpp"
-#include <exception>
+#include <stdexcept>
 #include "OpenGLUtil.hpp"
 
 namespace bns
@@ -58,7 +58,7 @@ namespace bns
         default:
             std::string msg = "OpenGLVAOUtil::Convert: Invalid vertex format " + std::to_string((int)vertexFormat) + ".";
             LOG(msg.c_str());
-            throw std::exception(msg.c_str());
+            throw std::runtime_error(msg.c_str());
         }
     }
 
@@ -72,7 +72,7 @@ namespace bns
                 std::string msg = "OpenGLVAOUtil::CreateVertexBuffers: Invalid byte size " + std::to_string(desc.ByteSize) + ".";
                 LOG(msg.c_str());
                 BREAKPOINT();
-                throw std::exception(msg.c_str());
+                throw std::runtime_error(msg.c_str());
             }
         }
 

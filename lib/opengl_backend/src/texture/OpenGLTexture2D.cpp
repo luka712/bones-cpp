@@ -1,7 +1,9 @@
-#ifdef USE_OPENGL
+#if USE_OPENGL
 
+#include <stdexcept>
 #include "texture/OpenGLTexture2D.hpp"
-#include <exception>
+
+
 namespace bns
 {
     OpenGLTexture2D::OpenGLTexture2D(ImageData *imageData, i32 textureUsageFlags, TextureFormat format)
@@ -43,7 +45,7 @@ namespace bns
         case TextureFormat::BGRA_8_Unorm:
             return GL_BGRA;
         default:
-            throw std::exception("OpenGLTexture2D::Convert: Unknown texture format.");
+            throw std::runtime_error("OpenGLTexture2D::Convert: Unknown texture format.");
         }
     }
 }

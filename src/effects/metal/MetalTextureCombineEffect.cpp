@@ -1,6 +1,4 @@
-#ifdef  __APPLE__
-
-
+#if USE_METAL
 
 #include "effects/metal/MetalTextureCombineEffect.hpp"
 #include "Framework.hpp"

@@ -1,5 +1,5 @@
 
-#ifdef __APPLE__
+#if USE_METAL
 
 #include "sprite/metal/MetalSpritePipeline.hpp"
 #include "FileLoader.hpp"

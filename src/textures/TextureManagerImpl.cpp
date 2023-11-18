@@ -36,8 +36,11 @@ namespace bns
 	Texture2D *TextureManagerImpl::CreateBackendImplTexture(ImageData *imageData, i32 textureUsageFlags, TextureFormat format)
 	{
 #if USE_METAL
-		MetalRenderer *renderer = static_cast<MetalRenderer *>(m_renderer);
-		return new MetalTexture2D(renderer->GetDevice(), imageData, textureUsageFlags, format);
+		if (m_renderer->GetRendererType() == RendererType::Metal)
+		{
+			MetalRenderer *renderer = static_cast<MetalRenderer *>(m_renderer);
+			return new MetalTexture2D(renderer->GetDevice(), imageData, textureUsageFlags, format);
+		}
 #endif
 
 #if USE_D3D11
@@ -46,8 +49,11 @@ namespace bns
 #endif
 
 #if USE_WEBGPU
-		WebGPURenderer *renderer = static_cast<WebGPURenderer *>(m_renderer);
-		return new WebGPUTexture2D(renderer->GetDevice(), imageData, textureUsageFlags, format);
+		if (m_renderer->GetRendererType() == RendererType::WebGPU)
+		{
+			WebGPURenderer *renderer = static_cast<WebGPURenderer *>(m_renderer);
+			return new WebGPUTexture2D(renderer->GetDevice(), imageData, textureUsageFlags, format);
+		}
 #endif
 
 #if USE_OPENGL

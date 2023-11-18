@@ -109,7 +109,7 @@ typedef void *GLeglClientBufferEXT;
 typedef void *GLeglImageOES;
 typedef char GLchar;
 typedef char GLcharARB;
-#ifdef __APPLE__
+#if USE_METAL
 typedef void *GLhandleARB;
 #else
 typedef unsigned int GLhandleARB;

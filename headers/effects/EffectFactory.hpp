@@ -16,9 +16,8 @@ namespace bns
      */
     class EffectFactory final
     {
-    private:
+        private:
         Framework &m_framework;
-
     public:
         /**
          * @brief Construct a new post process effect factory.

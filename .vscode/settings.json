@@ -114,7 +114,8 @@
         "xloctime": "cpp",
         "xmemory": "cpp",
         "xtr1common": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "sdl2_extension.h": "c"
     },
     "cmake.configureOnOpen": true
 }

@@ -1,4 +1,4 @@
-#ifdef __APPLE__
+#if USE_METAL
 
 #ifndef BNS_METAL_VERTEX_BUFFER_LAYOUT_UTIL_HPP
 

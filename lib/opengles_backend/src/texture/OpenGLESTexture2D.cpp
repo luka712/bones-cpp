@@ -1,7 +1,7 @@
 #ifdef USE_OPENGLES
 
 #include "texture/OpenGLESTexture2D.hpp"
-#include <exception>
+#include <stdexcept>
 namespace bns
 {
     OpenGLESTexture2D::OpenGLESTexture2D(ImageData *imageData, i32 textureUsageFlags, TextureFormat format)
@@ -41,7 +41,7 @@ namespace bns
         case TextureFormat::RGBA_8_Unorm:
             return GL_RGBA;
         default:
-            throw std::exception("OpenGLESTexture2D::Convert: Unknown texture format.");
+            throw std::runtime_error("OpenGLESTexture2D::Convert: Unknown texture format.");
         }
     }
 }

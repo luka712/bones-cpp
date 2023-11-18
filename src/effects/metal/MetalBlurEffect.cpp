@@ -1,4 +1,4 @@
-#ifdef __APPLE__ 
+#if USE_METAL 
 
 #include "effects/metal/MetalBlurEffect.hpp"
 #include "MetalUtil.hpp"

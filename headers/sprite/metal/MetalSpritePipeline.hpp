@@ -1,5 +1,4 @@
-#ifdef __APPLE__
-
+#if USE_METAL
 
 #ifndef BNS_METAL_SPRITE_PIPELINE_HPP
 
@@ -57,4 +56,4 @@ namespace bns
 
 #endif
 
-#endif // __APPLE_
+#endif // USE_METAL

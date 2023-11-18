@@ -9,6 +9,20 @@
 
 namespace bns
 {
+    /// @brief The renderer type.
+    enum class RendererType
+    {
+        /// @brief Default option. If none is set the framework will try to use the best available renderer.
+        None,
+        Metal,
+        D3D11,
+        D3D12,
+        OpenGL,
+        OpenGLES,
+        WebGPU,
+        Vulkan
+    };
+
     class Renderer
     {
     protected:
@@ -28,13 +42,12 @@ namespace bns
 
         Renderer();
 
-        /**
-         * @brief Get the buffer size.
-         */
-        const Vec2i &GetBufferSize() const
-        {
-            return m_bufferSize;
-        }
+        /// @brief Get the buffer size.
+        const Vec2i &GetBufferSize() const { return m_bufferSize; }
+
+        /// @brief Gets the renderer type.
+        /// @return The renderer type.
+        virtual RendererType GetRendererType() const = 0;
 
         /// @brief Gets the view into swap chain texture.
         virtual void *GetSwapChainTexture() = 0;

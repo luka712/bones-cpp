@@ -1,3 +1,5 @@
+#if USE_METAL
+
 #include "texture/MetalTexture2D.hpp"
 
 namespace bns
@@ -98,3 +100,5 @@ namespace bns
     }
 
 }
+
+#endif // USE_METAL

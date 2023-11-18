@@ -14,8 +14,13 @@
 #endif 
 
 #if DEBUG_BREAKPOINT_ENABLED
-/// @brief Breakpoint if DEBUG_BREAKPOINT_ENABLED is true
-#define BREAKPOINT() __debugbreak()
+    #if WIN32
+        /// @brief Breakpoint if DEBUG_BREAKPOINT_ENABLED is true
+        #define BREAKPOINT() __debugbreak()
+    #else
+        /// @brief Breakpoint if DEBUG_BREAKPOINT_ENABLED is true
+        #define BREAKPOINT() __builtin_trap()
+    #endif
 #else
 /// @brief Breakpoint if DEBUG_BREAKPOINT_ENABLED is true
 #define BREAKPOINT()

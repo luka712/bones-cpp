@@ -1,7 +1,4 @@
-#ifdef __APPLE__
-
-
-
+#if USE_METAL
 
 #ifndef BNS_METAL_LIBRARY_UTIL_HPP
 
@@ -29,4 +26,4 @@ namespace bns
 
 #endif
 
-#endif // __APPLE__
+#endif // USE_METAL

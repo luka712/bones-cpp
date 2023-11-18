@@ -10,11 +10,14 @@ include(utils.cmake)
 
 # BACKEND RENDERER FLIPS, also used by /lib
 # Multiplatform
-set(USE_WEBGPU 0)
+set(USE_WEBGPU 1)
+
+# Windows/Mac
 set(USE_OPENGL 0) 
-set(USE_OPENGLES 1)
-# Apple specific
-set(USE_METAL 0)
+set(USE_OPENGLES 0)
+
+# Mac specific
+set(USE_METAL 1)
 # Windows specific
 set(USE_D3D11 0)
 
@@ -58,6 +61,7 @@ add_subdirectory(vendor/glad_es EXCLUDE_FROM_ALL)
 endif()
 
 # PROJECT LIBRARIES
+add_subdirectory(lib/common)
 add_subdirectory(lib/window)
 add_subdirectory(lib/sdl_window)
 add_subdirectory(lib/loaders)
@@ -205,6 +209,8 @@ if(WIN32)
     endif()
 endif()
 
+# Link libraries which are shared between different targets
+target_link_libraries(App PRIVATE BnsCommon)
 
 if(APPLE)
 # Link the libraries to the executable (SDL2, Metal, QuartzCore, Foundation) 

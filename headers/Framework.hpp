@@ -21,10 +21,24 @@
 
 namespace bns
 {
+    struct FrameworkDescription
+    {
+        FrameworkDescription();
+        RendererType RendererType;
+    };
+
     /// @brief The framework context.
     class Framework
     {
     private:
+        LifecycleState m_lifecycleState;
+        RendererType m_currentRendererType;
+
+        // Cache the window parameters and initialize callback so we can reinitialize the framework.
+        WindowParameters m_windowParameters;
+        std::function<void()> m_initializeCallback;
+
+        Events *m_events;
         WindowManager *m_windowManager;
         Renderer *m_renderer;
         GeometryBuilder *m_geometryBuilder;
@@ -36,10 +50,16 @@ namespace bns
         TextureManager *m_textureFactory;
         EffectFactory *m_effectFactory;
 
+        /// @brief Setup the framework render objects. OpenGL, WebGPU, Metal etc...
+        void CreateRenderObjects();
+
+        /// @brief Destroys the framework render objects. OpenGL, WebGPU, Metal etc...
+        void DestroyRenderObjects();
+
         /// @brief Initialize the framework with WebGPU as the backend.
         void InitializeForWGPU(bns::WindowParameters windowParameters);
 
-#ifdef __APPLE__
+#if USE_METAL
         /// @brief Initialize the framework with Metal as the backend.
         void InitializeForMetal(bns::WindowParameters windowParameters);
 #endif
@@ -59,7 +79,29 @@ namespace bns
         void InitializeForOpenGLES(WindowParameters windowParameters);
 #endif
 
+        void OnUpdate();
+        void OnDraw();
+
     public:
+        /// @brief The update callback.
+        std::function<void()> UpdateCallback;
+        /// @brief The draw callback.
+        std::function<void()> DrawCallback;
+
+        /// @brief Gets the events.
+        /// @return The events.
+        inline Events &GetEvents() const
+        {
+            return *m_events;
+        }
+
+        /// @brief Gets the type of the current renderer.
+        /// @return The type of the current renderer.
+        inline RendererType GetCurrentRenderer() const
+        {
+            return m_currentRendererType;
+        }
+
         /// @brief Gets the window manager.
         /// @return The window manager.
         inline WindowManager &GetWindowManager() const
@@ -67,13 +109,8 @@ namespace bns
             return *m_windowManager;
         }
 
-        /**
-         * @brief Get the renderer.
-         */
-        inline Renderer *GetRenderer() const
-        {
-            return m_renderer;
-        }
+        /// @brief Get the renderer.
+        inline Renderer *GetRenderer() const {    return m_renderer;  }
 
         /**
          * @brief Get the geometry builder.
@@ -122,32 +159,23 @@ namespace bns
             return *m_bitmapSpriteFontLoader;
         }
 
-        /**
-         * @brief Get the texture factory.
-         */
-        inline TextureManager &GetTextureManager() const
-        {
-            return *m_textureFactory;
-        }
+        /// @brief Get the texture factory.
+        inline TextureManager &GetTextureManager() const { return *m_textureFactory; }
 
-        /**
-         * @brief Get the post process effect factory.
-         */
-        inline EffectFactory &GetEffectFactory() const
-        {
-            return *m_effectFactory;
-        }
+        /// @brief Get the post process effect factory.
+        inline EffectFactory &GetEffectFactory() const { return *m_effectFactory; }
 
         /// @brief Gets the file loader.
         /// @return The file loader.
-        inline FileLoader &GetFileLoader()
-        {
-            return FileLoader;
-        }
+        inline FileLoader &GetFileLoader() { return FileLoader; }
 
         FileLoader FileLoader;
 
-        Framework();
+        /// @brief The constructor
+        /// @param desc The parameters.
+        Framework(FrameworkDescription desc = FrameworkDescription());
+
+        /// @brief The destructor.
         ~Framework();
 
         /// @brief Initialize the framework.
@@ -155,9 +183,9 @@ namespace bns
         /// @param callback The callback to be called after initialization.
         void Initialize(bns::WindowParameters windowParameters, std::function<void()> callback);
 
-        /// @brief Draw callback for the framework.
-        /// @param updateCallback The callback to be called on each frame when scene is ready to be drawn.
-        void Draw(std::function<void()> updateCallback);
+        /// @brief Switches the renderer.
+        /// @param rendererType The renderer type.
+        void SwitchRenderer(RendererType rendererType);
     };
 }
 #endif

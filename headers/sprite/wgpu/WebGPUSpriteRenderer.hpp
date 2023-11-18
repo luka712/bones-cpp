@@ -1,8 +1,8 @@
 #if USE_WEBGPU
 
-#ifndef BNS_WEBGPU_SPRITE_RENDERER_HPP
+#ifndef BNS_WEBGPU_UNLIT_SPRITE_RENDERER_HPP
 
-#define BNS_WEBGPU_SPRITE_RENDERER_HPP
+#define BNS_WEBGPU_UNLIT_SPRITE_RENDERER_HPP
 
 #include "sprite/SpriteRenderer.hpp"
 #include "sprite/wgpu/WebGPUSpritePipeline.hpp"

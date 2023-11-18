@@ -6,6 +6,9 @@ file(GLOB METAL_BACKEND_SOURCES src/*.cpp src/**/*.cpp)
 
 ADD_LIBRARY(BnsMetalBackend STATIC ${METAL_BACKEND_SOURCES})
 
+# USE_METAL is defined in the root CMakeLists.txt
+target_compile_options(BnsMetalBackend PRIVATE -DUSE_METAL=${USE_METAL})
+
 # Set the target architecture to arm64 for Apple Silicon
 set(CMAKE_OSX_ARCHITECTURES "arm64")
 find_library(APPLE_FWK_FOUNDATION Foundation REQUIRED)

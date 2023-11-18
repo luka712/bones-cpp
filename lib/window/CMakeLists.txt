@@ -34,6 +34,8 @@ if(USE_METAL)
     target_link_libraries(BnsWindow BnsMetalBackend)
 endif()
 
+target_link_libraries(BnsWindow BnsCommon)
+
 # INCLUDES
 include_directories(
     # local 
