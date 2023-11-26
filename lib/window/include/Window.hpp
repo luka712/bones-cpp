@@ -28,6 +28,10 @@
 #include "BnsOpenGLES.hpp"
 #endif // USE_OPENGLES
 
+#if USE_VULKAN
+#include "BnsVulkan.hpp"
+#endif // USE_VULKAN
+
 namespace bns
 {
         struct WindowParameters
@@ -70,7 +74,6 @@ namespace bns
                 /// @param drawCallback The draw callback.
                 WindowManager(Events *events, std::function<void()> updateCallback, std::function<void()> drawCallback);
 
-
                 /// @brief Get the window size.
                 virtual Vec2i GetWindowSize() = 0;
 
@@ -103,6 +106,18 @@ namespace bns
                 /// @param outSurface The WGPU surface as out parameter.
                 /// @return True if initialization was successful, false otherwise.
                 virtual bool InitializeForWGPU(WindowParameters windowParameters, WGPUInstance *outInstance, WGPUSurface *outSurface) = 0;
+#endif
+
+#if USE_VULKAN
+                /// @brief Initialize for Vulkan.
+                /// @param windowParameters The window parameters.
+                /// @param outExtensions The Vulkan extensions which are required to work with Vulkan and Window. This is out result.
+                virtual void InitializeForVulkan(WindowParameters windowParameters, std::vector<std::string> *outExtensions) = 0;
+
+                /// @brief Creates the vulkan surface.
+                /// @param instance The vulkan instance.
+                /// @return The vulkan surface.
+                virtual VkSurfaceKHR CreateVulkanSurface(VkInstance instance) = 0;
 #endif
 
                 /// @brief Starts the window event loop and calls the update and draw callbacks.

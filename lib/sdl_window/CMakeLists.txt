@@ -11,6 +11,10 @@ target_compile_options(BnsSDLWindow PRIVATE
     -DUSE_D3D11=${USE_D3D11}
     -DUSE_OPENGL=${USE_OPENGL}
     -DUSE_OPENGLES=${USE_OPENGLES}
+    -DUSE_VULKAN=${USE_VULKAN}
+
+    # Debug options
+    -DDEBUG=${DEBUG} 
 )
 
 # Custom extension for WebGPU and SDL2
@@ -20,6 +24,11 @@ else()
     target_compile_options(SDL2Extension PRIVATE)
 endif()
 
+# LINK DIRECTORIES
+if(USE_VULKAN)
+    # VULKAN_LIB is defined in the root CMakeLists.txt
+    link_directories(${VULKAN_LIB})
+endif()
 
 # LIBRARIES
 target_link_libraries(BnsSDLWindow BnsWindow)
@@ -44,6 +53,10 @@ if(USE_METAL)
     target_link_libraries(BnsWindow BnsMetalBackend)
 endif()
 
+if(USE_VULKAN)
+    target_link_libraries(BnsWindow BnsVulkanBackend)
+endif()
+
 
 include_directories(
     # local 
@@ -56,6 +69,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../webgpu_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../d3d11_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../metal_backend/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../vulkan_backend/include
 
     # vendor
     ${CMAKE_BINARY_DIR}/_deps/dawn-src/include
@@ -84,3 +98,7 @@ if(USE_OPENGLES)
     )
 endif()
 
+if(USE_VULKAN)
+    # VULKAN_INCLUDE is defined in the root CMakeLists.txt
+    include_directories(${VULKAN_INCLUDE})
+endif() 

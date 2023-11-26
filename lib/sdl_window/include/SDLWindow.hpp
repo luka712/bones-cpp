@@ -17,7 +17,7 @@ namespace bns
         SDL_Window *m_window;
         SDL_Renderer *m_renderer;
 
-        void CreateWindowAndRenderer(WindowParameters windowParameters);
+        void CreateWindowAndRenderer(WindowParameters windowParameters, Uint32 flags);
 
     public:
         /// @brief The constructor.
@@ -53,6 +53,14 @@ namespace bns
 #if USE_OPENGLES
         void InitializeForOpenGLES(WindowParameters windowParameters, i32 majorVersion = 3, i32 minorVersion = 2) override;
 #endif
+
+#if USE_VULKAN
+        /// @brief Initializes the window for Vulkan.
+        /// @param windowParameters The window parameters.
+        /// @param extensions The required extensions to work with Vulkan and SDL. This will be written to and is an out parameter.
+        void InitializeForVulkan(WindowParameters windowParameters, std::vector<std::string> *outExtensions) override;
+        VkSurfaceKHR  CreateVulkanSurface(VkInstance instance) override;
+#endif 
         void SwapBuffers() override;
 
         void RunEventLoop() override;

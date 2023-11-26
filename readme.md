@@ -49,7 +49,7 @@ do: Simply run project in xcode
 # Dependencies
 TODO: 
 - create DX12/Vulkan renderer similar to DX11Renderer/OpenGL/OpenGLES (finish sprite renderer opengl, pay attention to buffer usages)
-- create WebGPU unlit sprite renderer, move it to lib. Then do same for metal
+- change directx 3d hard coded folders similar to vulkan
 - make sure that project can use multiple renderer, recompile and switch
 
 - create guards for renderers

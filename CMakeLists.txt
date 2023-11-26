@@ -8,20 +8,28 @@ project(
 include(FetchContent)
 include(utils.cmake)
 
+set(VULKAN_SDK_PATH )
+set(VULKAN_INCLUDE "D:/VulkanSDK/1.3.268.0/Include")
+set(VULKAN_LIB_DIR "D:/VulkanSDK/1.3.268.0/Lib")
+
+# there are set specific for my machine, please change according to machine
+if(WIN32)
+    set(WINDOWS_SDK "C:/Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/um")
+endif()
+
 # BACKEND RENDERER FLIPS, also used by /lib
 # Multiplatform
-set(USE_WEBGPU 1)
+set(USE_WEBGPU 0)
 
-# Windows/Mac
+# Windows/Linux
 set(USE_OPENGL 0) 
 set(USE_OPENGLES 0)
+set(USE_VULKAN 1)
 
 # Mac specific
-set(USE_METAL 1)
+set(USE_METAL 0)
 # Windows specific
 set(USE_D3D11 0)
-
-
 
 # DEBUG 
 # flips debug mode on/off
@@ -48,8 +56,6 @@ if(USE_OPENGL OR USE_OPENGLES)
 find_package(OpenGL REQUIRED)
 endif()
 
-
-
 # VENDOR LIBRARIES
 add_subdirectory(vendor/webgpu)
 add_subdirectory(vendor/SDL2Extension)
@@ -68,19 +74,22 @@ add_subdirectory(lib/loaders)
 add_subdirectory(lib/math)
 add_subdirectory(lib/rendering_backend)
 if(USE_METAL)
-add_subdirectory(lib/metal_backend)
+    add_subdirectory(lib/metal_backend)
 endif()
 if(USE_D3D11)
-add_subdirectory(lib/d3d11_backend)
+    add_subdirectory(lib/d3d11_backend)
 endif()
 if(USE_WEBGPU)
-add_subdirectory(lib/webgpu_backend)
+    add_subdirectory(lib/webgpu_backend)
 endif()
 if(USE_OPENGL)
-add_subdirectory(lib/opengl_backend)
+    add_subdirectory(lib/opengl_backend)
 endif()
 if(USE_OPENGLES)
-add_subdirectory(lib/opengles_backend)
+    add_subdirectory(lib/opengles_backend)
+endif()
+if(USE_VULKAN)
+    add_subdirectory(lib/vulkan_backend)
 endif()
 
 # Set the target architecture to arm64
@@ -118,10 +127,8 @@ vendor/tinyxml2/tinyxml2.cpp
 # copy assets to build/assets
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR}/assets)
 
-
 # include it only once
 include_guard(GLOBAL)
-
 
 if(USE_OPENGL)
 include_directories(
@@ -139,6 +146,20 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/lib/opengles_backend/include
     )
 endif()
+if(USE_VULKAN)
+include_directories(
+        # the lib dependencies
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/vulkan_backend/include
+
+        # The machine dependencies
+        ${VULKAN_INCLUDE}
+)
+endif()
+
+if(WIN32)
+    include_directories(${WINDOWS_SDK})
+endif()
+
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/headers
@@ -163,9 +184,6 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/metal-cpp
 )
 
-if(WIN32)
-    include_directories("C:/Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/um")
-endif()
 
 
 # Add the executable
@@ -189,17 +207,18 @@ endif()
 
 # If we are on Apple, we can use Metal or WebGPU (Metal is the default)
 target_compile_options(App PRIVATE 
--DDEBUG=${DEBUG}
--DUSE_METAL=${USE_METAL} -DUSE_D3D11=${USE_D3D11} -DUSE_WEBGPU=${USE_WEBGPU} -DUSE_OPENGL=${USE_OPENGL} -DUSE_OPENGLES=${USE_OPENGLES}
+-DDEBUG=${DEBUG} -DDEBUG_BREAKPOINT_ENABLED=${DEBUG_BREAKPOINT_ENABLED} -DLOGGING_ENABLED=${LOGGING_ENABLED}
+-DUSE_METAL=${USE_METAL} -DUSE_D3D11=${USE_D3D11} -DUSE_WEBGPU=${USE_WEBGPU} -DUSE_OPENGL=${USE_OPENGL} -DUSE_OPENGLES=${USE_OPENGLES} -DUSE_VULKAN=${USE_VULKAN}
 -DFORWARD_2D_NUM_OF_POINT_LIGHTS=${FORWARD_2D_NUM_OF_POINT_LIGHTS}
--DDEBUG_BREAKPOINT_ENABLED=${DEBUG_BREAKPOINT_ENABLED}
--DLOGGING_ENABLED=${LOGGING_ENABLED}
 ) 
 
 
-
 # LINK LIBRARIES SECTION
-link_directories("C:/Program Files (x86)/Windows Kits/10/Lib/10.0.22621.0/um/x64")
+
+# ADDITIONAL LINK DIRECTORIES
+link_directories({WINDOWS_SDK})
+
+target_link_directories(App PRIVATE ${VULKAN_LIB_DIR})
 
 if(WIN32)
     # SDL2::SDL2main may or may not be available. It is e.g. required by Windows GUI applications
@@ -241,19 +260,22 @@ endif()
 
 # glad must be linked if OpenGL is used as it provides headers
 if(USE_OPENGL)
-target_link_libraries(App PRIVATE glad BnsOpenGLBackend)
+    target_link_libraries(App PRIVATE glad BnsOpenGLBackend)
 endif()
 if(USE_OPENGLES)
-target_link_libraries(App PRIVATE glad_es BnsOpenGLESBackend)
+    target_link_libraries(App PRIVATE glad_es BnsOpenGLESBackend)
 endif()
 if(USE_WEBGPU)
-target_link_libraries(App PRIVATE webgpu BnsWebGPUBackend)
+    target_link_libraries(App PRIVATE webgpu BnsWebGPUBackend)
 endif()
 if(USE_D3D11)
-target_link_libraries(App PRIVATE BnsD3D11Backend)
+    target_link_libraries(App PRIVATE BnsD3D11Backend)
 endif()
 if(USE_METAL)
-target_link_libraries(App PRIVATE BnsMetalBackend)
+    target_link_libraries(App PRIVATE BnsMetalBackend)
+endif()
+if(USE_VULKAN)
+    target_link_libraries(App PRIVATE vulkan-1 BnsVulkanBackend)
 endif()
 
 

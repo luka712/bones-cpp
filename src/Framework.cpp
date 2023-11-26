@@ -20,6 +20,9 @@
 #include "renderer/OpenGLESRenderer.hpp"
 #include "sprite/OpenGLESUnlitSpriteRenderer.hpp"
 #endif
+#if USE_VULKAN
+#include "renderer/VulkanRenderer.hpp"
+#endif
 
 #include "SDLWindow.hpp"
 #include "material/WebGPUMaterialFactory.hpp"
@@ -69,11 +72,15 @@ namespace bns
             // if apple machine and metal is available use metal
 #if USE_METAL
             m_currentRendererType = RendererType::Metal;
-#else
+#elif USE_D3D11
+            m_currentRendererType = RendererType::D3D11;
 // MULTIPLATFORM HERE
-#if USE_WEBGPU
+#elif USE_VULKAN
+            m_currentRendererType = RendererType::Vulkan;
+#elif USE_OPENGL
+            m_currentRendererType = RendererType::OpenGL;
+#elif USE_WEBGPU
             m_currentRendererType = RendererType::WebGPU;
-#endif
 #endif
         }
 
@@ -85,12 +92,19 @@ namespace bns
             m_meshFactory = new MetalMeshFactory(*this);
             m_spriteRenderer = new MetalUnlitSpriteRenderer(m_renderer);
         }
-#elif USE_D3D11
-        m_renderer = new D3D11Renderer(m_windowManager);
-        // m_materialFactory = new D3D11MaterialFactory(*this);
-        // m_meshFactory = new D3D11MeshFactory(*this);
-        m_spriteRenderer = new D3D11UnlitSpriteRenderer(m_renderer);
-#elif USE_WEBGPU
+#endif
+
+#if USE_D3D11
+        if (m_currentRendererType == RendererType::D3D11)
+        {
+            m_renderer = new D3D11Renderer(m_windowManager);
+            // m_materialFactory = new D3D11MaterialFactory(*this);
+            // m_meshFactory = new D3D11MeshFactory(*this);
+            m_spriteRenderer = new D3D11UnlitSpriteRenderer(m_renderer);
+        }
+#endif
+
+#if USE_WEBGPU
         if (m_currentRendererType == RendererType::WebGPU)
         {
             m_renderer = new WebGPURenderer(m_windowManager);
@@ -98,17 +112,34 @@ namespace bns
             m_meshFactory = new WebGPUMeshFactory(*this);
             m_spriteRenderer = new WebGPUUnlitSpriteRenderer(m_renderer);
         }
-#elif USE_OPENGL
-        m_renderer = new OpenGLRenderer(m_windowManager);
-        // m_materialFactory = new OpenGLMaterialFactory(*this);
-        // m_meshFactory = new OpenGLMeshFactory(*this);
-        m_spriteRenderer = new OpenGLUnlitSpriteRenderer(m_renderer);
-#elif USE_OPENGLES
-        m_renderer = new OpenGLESRenderer(m_windowManager);
-        // m_materialFactory = new OpenGLESMaterialFactory(*this);
-        // m_meshFactory = new OpenGLESMeshFactory(*this);
-        m_spriteRenderer = new OpenGLESUnlitSpriteRenderer(m_renderer);
 #endif
+#if USE_OPENGL
+        if (m_currentRendererType == RendererType::OpenGL)
+        {
+            m_renderer = new OpenGLRenderer(m_windowManager);
+            // m_materialFactory = new OpenGLMaterialFactory(*this);
+            // m_meshFactory = new OpenGLMeshFactory(*this);
+            m_spriteRenderer = new OpenGLUnlitSpriteRenderer(m_renderer);
+        }
+#endif
+
+#if USE_OPENGLES
+        if (m_currentRendererType == RendererType::OpenGLES)
+        {
+            m_renderer = new OpenGLESRenderer(m_windowManager);
+            // m_materialFactory = new OpenGLESMaterialFactory(*this);
+            // m_meshFactory = new OpenGLESMeshFactory(*this);
+            m_spriteRenderer = new OpenGLESUnlitSpriteRenderer(m_renderer);
+        }
+#endif
+
+#if USE_VULKAN
+        if (m_currentRendererType == RendererType::Vulkan)
+        {
+            m_renderer = new VulkanRenderer(m_windowManager);
+        }
+#endif
+
         m_textureFactory = new TextureManagerImpl(m_renderer, m_imageLoader);
     }
 
@@ -140,22 +171,29 @@ namespace bns
 
 #if USE_METAL
         if (m_currentRendererType == RendererType::Metal)
-        {
             InitializeForMetal(windowParameters);
-        }
-#elif USE_D3D11
-        InitializeForD3D11(windowParameters);
-#elif USE_OPENGL
-        InitializeForOpenGL(windowParameters);
-#elif USE_OPENGLES
-        InitializeForOpenGLES(windowParameters);
-#elif USE_WEBGPU
-        if (m_currentRendererType == RendererType::WebGPU)
-        {
-            InitializeForWGPU(windowParameters);
-        }
 #endif
-        m_spriteRenderer->Initialize();
+#if USE_D3D11
+        if (m_currentRendererType == RendererType::D3D11)
+            InitializeForD3D11(windowParameters);
+#endif
+#if USE_OPENGL
+        if (m_currentRendererType == RendererType::OpenGL)
+            InitializeForOpenGL(windowParameters);
+#endif
+#if USE_OPENGLES
+        if (m_currentRendererType == RendererType::OpenGLES)
+            InitializeForOpenGLES(windowParameters);
+#endif
+#if USE_WEBGPU
+        if (m_currentRendererType == RendererType::WebGPU)
+            InitializeForWGPU(windowParameters);
+#endif
+#if USE_VULKAN
+        if (m_currentRendererType == RendererType::Vulkan)
+            InitializeForVulkan(windowParameters);
+#endif
+       //  m_spriteRenderer->Initialize();
 
         m_initializeCallback();
 
@@ -208,6 +246,15 @@ namespace bns
     {
         m_windowManager->InitializeForOpenGLES(windowParameters);
         static_cast<OpenGLESRenderer *>(m_renderer)->Initialize();
+    }
+#endif
+
+#if USE_VULKAN
+    void Framework::InitializeForVulkan(WindowParameters windowParameters)
+    {
+        std::vector<std::string> requiredExtensions;
+        m_windowManager->InitializeForVulkan(windowParameters, &requiredExtensions);
+        static_cast<VulkanRenderer *>(m_renderer)->Initialize(requiredExtensions);
     }
 #endif
 

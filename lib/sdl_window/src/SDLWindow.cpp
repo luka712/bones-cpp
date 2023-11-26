@@ -10,6 +10,10 @@
 
 #include <exception>
 
+#if USE_VULKAN
+#include <SDL2/SDL_vulkan.h>
+#endif
+
 namespace bns
 {
     SDLWindowManager::SDLWindowManager(Events *events, std::function<void()> updateCallback, std::function<void()> drawCallback)
@@ -35,7 +39,7 @@ namespace bns
         return Vec2i(width, height);
     }
 
-    void SDLWindowManager::CreateWindowAndRenderer(WindowParameters windowParameters)
+    void SDLWindowManager::CreateWindowAndRenderer(WindowParameters windowParameters, Uint32 flags)
     {
         // Last parameters is for SDL flags, such as window size etc...
         int x_pos = windowParameters.PosX;
@@ -46,7 +50,7 @@ namespace bns
             y_pos = SDL_WINDOWPOS_CENTERED;
         }
 
-        Uint32 flags = SDL_WINDOW_OPENGL | SDL_WINDOW_ALLOW_HIGHDPI;
+        flags |= SDL_WINDOW_ALLOW_HIGHDPI;
         if (windowParameters.FullScreen)
         {
             flags |= SDL_WINDOW_FULLSCREEN;
@@ -83,7 +87,7 @@ namespace bns
 #if USE_WEBGPU
     bool SDLWindowManager::InitializeForWGPU(WindowParameters windowParameters, WGPUInstance *outInstance, WGPUSurface *outSurface)
     {
-        CreateWindowAndRenderer(windowParameters);
+        CreateWindowAndRenderer(windowParameters, 0);
 
         WGPUInstanceDescriptor desc = {};
         desc.nextInChain = nullptr;
@@ -111,7 +115,7 @@ namespace bns
 #if USE_D3D11
     HWND SDLWindowManager::InitializeForD3D11(WindowParameters windowParameters)
     {
-        CreateWindowAndRenderer(windowParameters);
+        CreateWindowAndRenderer(windowParameters, 0);
 
         SDL_SysWMinfo systemInfo;
         SDL_VERSION(&systemInfo.version);
@@ -129,7 +133,7 @@ namespace bns
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, majorVersion);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minorVersion);
 
-        CreateWindowAndRenderer(windowParameters);
+        CreateWindowAndRenderer(windowParameters, SDL_WINDOW_OPENGL);
         SDL_GLContext glContext = SDL_GL_CreateContext(m_window);
 
         // Initialize Glad (after creating an OpenGL context)
@@ -149,7 +153,7 @@ namespace bns
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, majorVersion);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minorVersion);
 
-        CreateWindowAndRenderer(windowParameters);
+        CreateWindowAndRenderer(windowParameters, SDL_WINDOW_OPENGL);
         SDL_GLContext glContext = SDL_GL_CreateContext(m_window);
 
         // Initialize Glad (after creating an OpenGL context)
@@ -161,6 +165,59 @@ namespace bns
         }
     }
 #endif // USE_OPENGLES
+
+#if USE_VULKAN
+
+    void SDLWindowManager::InitializeForVulkan(WindowParameters windowParameters, std::vector<std::string> *outRequiredExtensions)
+    {
+        CreateWindowAndRenderer(windowParameters, SDL_WINDOW_VULKAN);
+
+        // Get the extensions count. We need the count to allocate the array of extensions.
+        u32 extensionCount = 0;
+        if(!SDL_Vulkan_GetInstanceExtensions(m_window, &extensionCount, nullptr))
+        {
+            std::string msg = "SDLWindowManager::InitializeForVulkan: Failed to get Vulkan extensions count: " + std::string(SDL_GetError());
+            LOG(msg.c_str());
+            BREAKPOINT();
+            throw std::runtime_error(msg.c_str());
+        }
+        
+        // allocate the array of extensions
+        std::vector<const char *> pExtensions(extensionCount);
+
+        // Get the extensions
+        if(!SDL_Vulkan_GetInstanceExtensions(m_window, &extensionCount, pExtensions.data()))
+        {
+            std::string msg = "SDLWindowManager::InitializeForVulkan: Failed to get Vulkan extensions: " + std::string(SDL_GetError());
+            LOG(msg.c_str());
+            BREAKPOINT();
+            throw std::runtime_error(msg.c_str());
+        }
+
+        for(u32 i = 0; i < extensionCount; ++i)
+		{
+            LOG("SDLWindowManager::InitializeForVulkan: Available Vulkan Extension: %s", pExtensions[i])
+
+            outRequiredExtensions->push_back(pExtensions[i]);
+		}
+    };
+
+    VkSurfaceKHR SDLWindowManager::CreateVulkanSurface(VkInstance instance)
+    {
+        VkSurfaceKHR surface;
+        if (!SDL_Vulkan_CreateSurface(m_window, instance, &surface))
+        {
+            std::string msg = "SDLWindowManager::CreateVulkanSurface: Failed to create Vulkan surface: " + std::string(SDL_GetError());
+            LOG(msg.c_str());
+            throw std::runtime_error(msg.c_str());
+        }
+
+        surface = surface;
+
+        return surface;
+    }
+
+#endif
 
     void SDLWindowManager::RunEventLoop()
     {
@@ -176,7 +233,7 @@ namespace bns
                     m_events->AddEvent(EventType::WindowClose);
                     Quit = true;
                 }
-                else if(event.type == SDL_KEYDOWN)
+                else if (event.type == SDL_KEYDOWN)
                 {
                     EventData data;
                     data.I32 = event.key.keysym.sym;

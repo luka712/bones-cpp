@@ -79,6 +79,11 @@ namespace bns
         void InitializeForOpenGLES(WindowParameters windowParameters);
 #endif
 
+#if USE_VULKAN
+        /// @brief Initialize the framework with Vulkan as the backend.
+        void InitializeForVulkan(WindowParameters windowParameters);
+#endif
+
         void OnUpdate();
         void OnDraw();
 

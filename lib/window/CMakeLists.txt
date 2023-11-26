@@ -11,6 +11,7 @@ target_compile_options(BnsWindow PRIVATE
     -DUSE_D3D11=${USE_D3D11}
     -DUSE_OPENGL=${USE_OPENGL}
     -DUSE_OPENGLES=${USE_OPENGLES}
+    -DUSE_VULKAN=${USE_VULKAN}
 ) 
 
 # LIBRARIES
@@ -32,6 +33,10 @@ endif()
 
 if(USE_METAL)
     target_link_libraries(BnsWindow BnsMetalBackend)
+endif()
+
+if(USE_VULKAN)
+    target_link_libraries(BnsWindow BnsVulkanBackend)
 endif()
 
 target_link_libraries(BnsWindow BnsCommon)
@@ -74,3 +79,12 @@ if(USE_OPENGLES)
     )
 endif()
 
+if(USE_VULKAN)
+    include_directories(
+        # project
+        ${CMAKE_CURRENT_SOURCE_DIR}/../vulkan_backend/include
+
+        #machine
+        ${VULKAN_INCLUDE}
+    )
+endif()

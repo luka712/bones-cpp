@@ -21,6 +21,10 @@ namespace bns
     public:
         OpenGLRenderer(WindowManager *window);
 
+        /// @brief Gets the renderer type.
+        /// @return The renderer type.
+        RendererType GetRendererType() const override { return RendererType::OpenGL; }
+
         void *GetSwapChainTexture() override;
 
         void SetRenderTexture(Texture2D *texture) override;

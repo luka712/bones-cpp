@@ -53,19 +53,17 @@ namespace bns
     public:
         D3D11Renderer(WindowManager *window);
 
+        /// @brief Gets the renderer type.
+        /// @return The renderer type.
+        RendererType GetRendererType() const override { return RendererType::D3D11; }
+
         /// @brief Gets the device.
         /// @return The device.
-        ID3D11Device *GetDevice() const
-        {
-            return m_device.p;
-        }
+        ID3D11Device *GetDevice() const { return m_device.p; }
 
         /// @brief Gets the device context.
         /// @return The device context.
-        ID3D11DeviceContext *GetDeviceContext() const
-        {
-            return m_deviceContext.p;
-        }
+        ID3D11DeviceContext *GetDeviceContext() const { return m_deviceContext.p; }
 
         /**
          * @brief Gets the view into swap chain texture.
