@@ -16,11 +16,14 @@ namespace bns
         /// @brief The graphics queue family index.
         std::optional<u32> GraphicsFamily;
 
+        /// @brief The present queue family index.
+        std::optional<u32> PresentFamily;
+
         /// @brief Checks if the queue family indices are valid.
         /// @return True if the queue family indices are valid, false otherwise.
         inline bool IsValid() const
         {
-            return GraphicsFamily.has_value();
+            return GraphicsFamily.has_value() && PresentFamily.has_value();
         }
     };
 
@@ -34,6 +37,13 @@ namespace bns
 
         /// @brief The present modes.
         std::vector<VkPresentModeKHR> PresentModes;
+
+        /// @brief Checks if the swap chain support details are valid.
+        /// @return True if the swap chain support details are valid, false otherwise.
+        inline bool IsValid() const
+        {
+            return !Formats.empty() && !PresentModes.empty();
+        }
     };
 
     class VulkanRenderer final : public Renderer
@@ -42,8 +52,23 @@ namespace bns
         /// @brief The window manager.
         WindowManager *m_windowManager;
 
+/// The validation layers
+#if DEBUG
+        const std::vector<const char *> m_validationLayers = {
+            "VK_LAYER_KHRONOS_validation"};
+#else
+        const std::vector<const char *> m_validationLayers = {};
+#endif
+
+        /// @brief The required device extensions.
+        const std::vector<const char *> m_deviceExtensions = {
+            VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+
         /// @brief The Vulkan instance.
         VkInstance m_instance;
+
+        /// @brief The Vulkan surface.
+        VkSurfaceKHR m_surface;
 
         /// @brief The Vulkan debug messenger.
         VkDebugUtilsMessengerEXT m_debugMessenger;
@@ -54,15 +79,39 @@ namespace bns
         /// @brief The current Vulkan physical device.
         VkPhysicalDevice m_physicalDevice;
 
-        /// @brief The Vulkan physical device.
+        /// @brief The Vulkan queue family indices.
+        VulkanQueueFamilyIndices m_queueFamilyIndices;
+
+        /// @brief The Vulkan logical device.
         VkDevice m_device;
 
-        /// @brief The Vulkan queue family indices.
-        VulkanQueueFamilyIndices m_queueFamilyIndices;     
+        /// @brief The Vulkan graphics queue.
+        VkQueue m_graphicsQueue;
+
+        /// @brief The Vulkan present queue.
+        VkQueue m_presentQueue;
+
+        /// @brief The Vulkan swap chain.
+        VkSwapchainKHR m_swapChain;
+
+        /// @brief The Vulkan swap chain image format.
+        VkFormat m_swapChainImageFormat;
+
+        /// @brief The Vulkan swap chain extent.
+        VkExtent2D m_swapChainExtent;
+
+        /// @brief The Vulkan swap chain images.
+        std::vector<VkImage> m_swapChainImages;
+
+        /// @brief The Vulkan swap chain image views.
+        std::vector<VkImageView> m_swapChainImageViews;
 
         /// @brief Setups and create an instance internally.
         /// @param requiredWindowExtensions The required window extensions. This should be provided by the window manager.
         void SetupInstance(const std::vector<std::string> &requiredWindowExtensions);
+
+        /// @brief Sets up the surface.
+        void SetupSurface();
 
         /// @brief Checks if the layer is supported.
         /// @param layer The layer to check.
@@ -86,14 +135,45 @@ namespace bns
         /// @brief Finds the available devices and selects the best one.
         void SetupPhysicalDevice();
 
-
-        /// @brief Finds the queue family indices.
-        /// @param device The physical device.
-        /// @return The queue family indices.
-        VulkanQueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
-
         /// @brief Sets up the queue family indices.
-        void SetupQueueFamilyIndices();
+        /// @param device The physical device.
+        /// @param outQueueFamilyIndices The queue family indices to set.
+        /// @return True if the queue family indices are valid, false otherwise.
+        bool FindValidQueueFamilyIndices(VkPhysicalDevice device, VulkanQueueFamilyIndices *outQueueFamilyIndices);
+
+        /// @brief Sets up the logical device.
+        void SetupLogicalDevice();
+
+        /// @brief Checks if the device extension is supported.
+        /// @param device The physical device.
+        /// @return True if the device extension is supported, false otherwise.
+        bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
+
+        /// @brief Gets the swap chain support details.
+        /// @param device The physical device.
+        /// @return The swap chain support details.
+        VulkanSwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
+
+        /// @brief Chooses the swap surface format.
+        /// @param availableFormats The available formats.
+        /// @return The swap surface format.
+        VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats);
+
+        /// @brief Chooses the swap present mode.
+        /// @param availablePresentModes The available present modes.
+        /// @return The swap present mode.
+        VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
+
+        /// @brief Chooses the swap extent.
+        /// @param capabilities The capabilities.
+        /// @return The swap extent.
+        VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
+
+        /// @brief Sets up the swap chain.
+        void SetupSwapChain();
+
+        /// @brief Sets up the swap chain image views.
+        void SetupSwapChainImageViews();
 
         void Resize();
 
