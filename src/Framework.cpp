@@ -169,6 +169,8 @@ namespace bns
         m_windowParameters = windowParameters;
         m_initializeCallback = callback;
 
+        m_windowManager->CreateWindow(windowParameters);
+
 #if USE_METAL
         if (m_currentRendererType == RendererType::Metal)
             InitializeForMetal(windowParameters);

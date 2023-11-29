@@ -27,6 +27,10 @@ namespace bns
         SDLWindowManager(Events* events, std::function<void()> updateCallback, std::function<void()> drawCallback);
         ~SDLWindowManager();
 
+        /// @brief Creates a window. If there is already existing window, this will destroy it.
+        /// @param windowParameters The window parameters.
+        void CreateWindow(WindowParameters windowParameters) override;
+
         Vec2i GetWindowSize() override;
 
         /// @brief If set to true, window will be closed.

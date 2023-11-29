@@ -41,6 +41,12 @@ namespace bns
 
     void SDLWindowManager::CreateWindowAndRenderer(WindowParameters windowParameters, Uint32 flags)
     {
+        // Destroy window and renderer if they exist
+        if(m_renderer != nullptr)
+            SDL_DestroyRenderer(m_renderer);
+        if(m_window != nullptr)
+            SDL_DestroyWindow(m_window);
+
         // Last parameters is for SDL flags, such as window size etc...
         int x_pos = windowParameters.PosX;
         int y_pos = windowParameters.PosY;
@@ -107,7 +113,6 @@ namespace bns
 #if USE_METAL
     CA::MetalLayer *SDLWindowManager::InitializeForMetal(WindowParameters windowParameters)
     {
-        CreateWindowAndRenderer(windowParameters);
         return (CA::MetalLayer *)SDL_RenderGetMetalLayer(m_renderer);
     }
 #endif // __APPLE__
