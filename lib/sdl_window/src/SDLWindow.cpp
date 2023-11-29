@@ -39,6 +39,11 @@ namespace bns
         return Vec2i(width, height);
     }
 
+    void SDLWindowManager::CreateWindow(WindowParameters windowParameters)
+    {
+        CreateWindowAndRenderer(windowParameters, 0);
+    }
+
     void SDLWindowManager::CreateWindowAndRenderer(WindowParameters windowParameters, Uint32 flags)
     {
         // Destroy window and renderer if they exist

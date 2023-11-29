@@ -77,6 +77,10 @@ namespace bns
                 /// @brief Get the window size.
                 virtual Vec2i GetWindowSize() = 0;
 
+                /// @brief Creates a window.
+                /// @param windowParameters The window parameters.
+                virtual void CreateWindow(WindowParameters windowParameters) = 0;
+
 #if USE_METAL
                 /// @brief Initialize for Metal.
                 virtual CA::MetalLayer *InitializeForMetal(WindowParameters windowParameters) = 0;

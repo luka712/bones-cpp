@@ -42,7 +42,6 @@ int main()
 
 void Initialize()
 {
-    return;
     font = engine->GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
     testTexture = engine->GetTextureManager().LoadTexture2D("assets/uv_test.png");
 
@@ -75,8 +74,6 @@ void Draw()
             engine->SwitchRenderer(bns::RendererType::Metal);
         }
     }
-
-    return;
 
     bns::Renderer *renderer = engine->GetRenderer();
     bns::SpriteRenderer *spriteRenderer = engine->GetSpriteRenderer();
