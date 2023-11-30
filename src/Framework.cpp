@@ -14,8 +14,13 @@
 #endif
 #if USE_OPENGL
 #include "renderer/OpenGLRenderer.hpp"
-#include "sprite/OpenGLUnlitSpriteRenderer.hpp"
-#endif
+    // for apple machine use 400 version, since 450 is not available/supported
+    #if __APPLE__
+        #include "sprite/400/OpenGL400UnlitSpriteRenderer.hpp"
+    #else
+        #include "sprite/OpenGLUnlitSpriteRenderer.hpp"
+    #endif
+#endif  // USE_OPENGL
 #if USE_OPENGLES
 #include "renderer/OpenGLESRenderer.hpp"
 #include "sprite/OpenGLESUnlitSpriteRenderer.hpp"
@@ -81,6 +86,8 @@ namespace bns
             m_currentRendererType = RendererType::OpenGL;
 #elif USE_WEBGPU
             m_currentRendererType = RendererType::WebGPU;
+#elif USE_OPENGLES
+            m_currentRendererType = RendererType::OpenGLES;
 #endif
         }
 
@@ -119,7 +126,12 @@ namespace bns
             m_renderer = new OpenGLRenderer(m_windowManager);
             // m_materialFactory = new OpenGLMaterialFactory(*this);
             // m_meshFactory = new OpenGLMeshFactory(*this);
+
+#if __APPLE__
+            m_spriteRenderer = new OpenGL400UnlitSpriteRenderer(m_renderer);
+#else
             m_spriteRenderer = new OpenGLUnlitSpriteRenderer(m_renderer);
+#endif // __APPLE__
         }
 #endif
 
@@ -168,8 +180,6 @@ namespace bns
     {
         m_windowParameters = windowParameters;
         m_initializeCallback = callback;
-
-        m_windowManager->CreateWindow(windowParameters);
 
 #if USE_METAL
         if (m_currentRendererType == RendererType::Metal)
@@ -238,7 +248,6 @@ namespace bns
 #if USE_OPENGL
     void Framework::InitializeForOpenGL(WindowParameters windowParameters)
     {
-        m_windowManager->InitializeForOpenGL(windowParameters);
         static_cast<OpenGLRenderer *>(m_renderer)->Initialize();
     }
 #endif
@@ -246,7 +255,6 @@ namespace bns
 #if USE_OPENGLES
     void Framework::InitializeForOpenGLES(WindowParameters windowParameters)
     {
-        m_windowManager->InitializeForOpenGLES(windowParameters);
         static_cast<OpenGLESRenderer *>(m_renderer)->Initialize();
     }
 #endif

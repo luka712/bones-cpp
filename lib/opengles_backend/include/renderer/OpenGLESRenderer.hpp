@@ -15,6 +15,12 @@ namespace bns
     private:
         WindowManager *m_windowManager;
 
+        /// @brief The major version of OpenGL.
+        i32 m_majorVersion;
+
+        /// @brief The minor version of OpenGL.
+        i32 m_minorVersion;
+
         /// @brief Resizes the swap chain.
         void Resize();
 
@@ -35,6 +41,7 @@ namespace bns
 
         void UnsetBrightnessTexture() override;
 
+        /// @brief Initializes the renderer.
         void Initialize();
         void BeginDraw() override;
         void EndDraw() override;

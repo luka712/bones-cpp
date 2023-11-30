@@ -14,6 +14,8 @@
 #include <SDL2/SDL_vulkan.h>
 #endif
 
+#define GL_ES_VERSION_3_0 1
+
 namespace bns
 {
     SDLWindowManager::SDLWindowManager(Events *events, std::function<void()> updateCallback, std::function<void()> drawCallback)
@@ -39,17 +41,12 @@ namespace bns
         return Vec2i(width, height);
     }
 
-    void SDLWindowManager::CreateWindow(WindowParameters windowParameters)
-    {
-        CreateWindowAndRenderer(windowParameters, 0);
-    }
-
-    void SDLWindowManager::CreateWindowAndRenderer(WindowParameters windowParameters, Uint32 flags)
+    void SDLWindowManager::CreateWindow(WindowParameters windowParameters, Uint32 flags)
     {
         // Destroy window and renderer if they exist
-        if(m_renderer != nullptr)
+        if (m_renderer != nullptr)
             SDL_DestroyRenderer(m_renderer);
-        if(m_window != nullptr)
+        if (m_window != nullptr)
             SDL_DestroyWindow(m_window);
 
         // Last parameters is for SDL flags, such as window size etc...
@@ -71,9 +68,6 @@ namespace bns
             flags |= SDL_WINDOW_RESIZABLE;
         }
 
-        // Set metal hint
-        SDL_SetHint(SDL_HINT_RENDER_DRIVER, "metal");
-
         // create window
         m_window = SDL_CreateWindow(windowParameters.Title.c_str(), x_pos, y_pos, windowParameters.Width, windowParameters.Height, flags);
         if (m_window == nullptr)
@@ -83,9 +77,16 @@ namespace bns
             SDL_Quit();
             throw std::runtime_error(msg);
         }
+        LOG("SDLWindowManager::CreateWindowAndRenderer: Created SDL window: %s", windowParameters.Title.c_str());
+    }
+
+    void SDLWindowManager::CreateWindowAndRenderer(WindowParameters windowParameters, Uint32 flags)
+    {
+        CreateWindow(windowParameters, flags);
 
         // create renderer
         m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
         if (m_renderer == nullptr)
         {
             std::string msg = "SDLWindowManager::CreateWindowAndRenderer: Failed to create SDL renderer: " + std::string(SDL_GetError());
@@ -93,6 +94,7 @@ namespace bns
             SDL_Quit();
             throw std::runtime_error(msg.c_str());
         }
+        LOG("SDLWindowManager::CreateWindowAndRenderer: Created SDL renderer: %s", windowParameters.Title.c_str());
     }
 
 #if USE_WEBGPU
@@ -118,7 +120,23 @@ namespace bns
 #if USE_METAL
     CA::MetalLayer *SDLWindowManager::InitializeForMetal(WindowParameters windowParameters)
     {
-        return (CA::MetalLayer *)SDL_RenderGetMetalLayer(m_renderer);
+        CreateWindowAndRenderer(windowParameters, SDL_WINDOW_METAL);
+
+        CA::MetalLayer *metalLayer = (CA::MetalLayer *)SDL_RenderGetMetalLayer(m_renderer);
+
+        if (metalLayer == nullptr)
+        {
+            std::string msg = "SDLWindowManager::InitializeForMetal: Failed to create SDL renderer: " + std::string(SDL_GetError());
+            LOG("%s", msg.c_str());
+            BREAKPOINT();
+            throw std::runtime_error(msg.c_str());
+        }
+
+        NS::String *nsDeviceName = metalLayer->device()->name();
+        std::string deviceName = std::string(nsDeviceName->cString(NS::StringEncoding::ASCIIStringEncoding));
+        LOG("SDLWindowManager::InitializeForMetal: Metal Enabled. Metal Device: %s", deviceName.c_str());
+
+        return metalLayer;
     }
 #endif // __APPLE__
 
@@ -137,42 +155,75 @@ namespace bns
 #endif // USE_D3D11
 
 #if USE_OPENGL
-    void SDLWindowManager::InitializeForOpenGL(WindowParameters windowParameters, i32 majorVersion, i32 minorVersion)
+    void SDLWindowManager::InitializeForOpenGL(WindowParameters windowParameters, i32 *outMajorVersion, i32 *outMinorVersion)
     {
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); // OpenGL core profile
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, majorVersion);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minorVersion);
+        CreateWindow(windowParameters, SDL_WINDOW_OPENGL);
 
-        CreateWindowAndRenderer(windowParameters, SDL_WINDOW_OPENGL);
+        // engine automatically tries the highest version of OpenGL, but it not guaranteed to work.
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); // OpenGL core profile
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);                          // we want OpenGL 4.6
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+
         SDL_GLContext glContext = SDL_GL_CreateContext(m_window);
+
+        if (glContext == nullptr)
+        {
+            std::string msg = "SDLWindowManager::InitializeForOpenGL: Failed to create SDL renderer: " + std::string(SDL_GetError());
+            LOG("%s", msg.c_str());
+            BREAKPOINT();
+            throw std::runtime_error(msg.c_str());
+        }
 
         // Initialize Glad (after creating an OpenGL context)
         if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
         {
             std::string msg = "SDLWindowManager::InitializeForOpenGL: Failed to create SDL renderer: " + std::string(SDL_GetError());
-            LOG(msg.c_str());
+            LOG("%s", msg.c_str());
+            BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
+
+        // GLAD is now loaded, we can use OpenGL functions. Get the version of OpenGL we are using.
+        *outMajorVersion = GLVersion.major;
+        *outMinorVersion = GLVersion.minor;
+
+        LOG("SDLWindowManager::InitializeForOpenGL: OpenGL Version: %s", glGetString(GL_VERSION));
     }
 #endif // USE_OPENGL
 
 #if USE_OPENGLES
-    void SDLWindowManager::InitializeForOpenGLES(WindowParameters windowParameters, i32 majorVersion, i32 minorVersion)
+    void SDLWindowManager::InitializeForOpenGLES(WindowParameters windowParameters, i32 *outMajorVersion, i32 *outMinorVersion)
     {
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES); // OpenGLES core profile
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, majorVersion);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minorVersion);
+        CreateWindow(windowParameters, SDL_WINDOW_OPENGL);
 
-        CreateWindowAndRenderer(windowParameters, SDL_WINDOW_OPENGL);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); // OpenGLES profile
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);                          // we want OpenGLES 3.2
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+
         SDL_GLContext glContext = SDL_GL_CreateContext(m_window);
+
+        if (glContext == nullptr)
+        {
+            std::string msg = "SDLWindowManager::InitializeForOpenGLES: Failed to create SDL renderer: " + std::string(SDL_GetError());
+            LOG("%s", msg.c_str());
+            BREAKPOINT();
+            throw std::runtime_error(msg.c_str());
+        }
 
         // Initialize Glad (after creating an OpenGL context)
         if (!gladLoadGLES2Loader((GLADloadproc)SDL_GL_GetProcAddress))
         {
             std::string msg = "SDLWindowManager::InitializeForOpenGLES: Failed to create SDL renderer: " + std::string(SDL_GetError());
-            LOG(msg.c_str());
+            LOG("%s", msg.c_str());
+            BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
+
+        // GLAD is now loaded, we can use OpenGL functions. Get the version of OpenGLES we are using.
+        *outMajorVersion = GLVersion.major;
+        *outMinorVersion = GLVersion.minor;
+
+        LOG("SDLWindowManager::InitializeForOpenGLES: OpenGLES Version: %s", glGetString(GL_VERSION));
     }
 #endif // USE_OPENGLES
 
@@ -184,19 +235,19 @@ namespace bns
 
         // Get the extensions count. We need the count to allocate the array of extensions.
         u32 extensionCount = 0;
-        if(!SDL_Vulkan_GetInstanceExtensions(m_window, &extensionCount, nullptr))
+        if (!SDL_Vulkan_GetInstanceExtensions(m_window, &extensionCount, nullptr))
         {
             std::string msg = "SDLWindowManager::InitializeForVulkan: Failed to get Vulkan extensions count: " + std::string(SDL_GetError());
             LOG(msg.c_str());
             BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
-        
+
         // allocate the array of extensions
         std::vector<const char *> pExtensions(extensionCount);
 
         // Get the extensions
-        if(!SDL_Vulkan_GetInstanceExtensions(m_window, &extensionCount, pExtensions.data()))
+        if (!SDL_Vulkan_GetInstanceExtensions(m_window, &extensionCount, pExtensions.data()))
         {
             std::string msg = "SDLWindowManager::InitializeForVulkan: Failed to get Vulkan extensions: " + std::string(SDL_GetError());
             LOG(msg.c_str());
@@ -204,12 +255,12 @@ namespace bns
             throw std::runtime_error(msg.c_str());
         }
 
-        for(u32 i = 0; i < extensionCount; ++i)
-		{
+        for (u32 i = 0; i < extensionCount; ++i)
+        {
             LOG("SDLWindowManager::InitializeForVulkan: Available Vulkan Extension: %s", pExtensions[i])
 
             outRequiredExtensions->push_back(pExtensions[i]);
-		}
+        }
     };
 
     VkSurfaceKHR SDLWindowManager::CreateVulkanSurface(VkInstance instance)

@@ -11,6 +11,7 @@ namespace bns
 
     void OpenGLRenderer::Initialize()
     {
+        m_windowManager->InitializeForOpenGL(WindowParameters(), &m_majorVersion, &m_minorVersion);
         m_bufferSize = m_windowManager->GetWindowSize();
 
     }

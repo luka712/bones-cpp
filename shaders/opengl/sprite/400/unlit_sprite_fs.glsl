@@ -1,4 +1,4 @@
-#version 300 es
+#version 400 core
 
 in vec2 v_texCoords;
 in vec4 v_tintColor;

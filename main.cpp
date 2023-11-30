@@ -29,7 +29,9 @@ void Draw();
 
 int main()
 {
-    engine = new bns::Framework();
+    bns::FrameworkDescription desc;
+    desc.RendererType = bns::RendererType::OpenGL;
+    engine = new bns::Framework(desc);
 
     bns::WindowParameters parameters;
     engine->DrawCallback = [&]()
@@ -67,11 +69,11 @@ void Draw()
     {
         if (engine->GetCurrentRenderer() == bns::RendererType::Metal)
         {
-            engine->SwitchRenderer(bns::RendererType::WebGPU);
+            // engine->SwitchRenderer(bns::RendererType::OpenGL);
         }
-        else if (engine->GetCurrentRenderer() == bns::RendererType::WebGPU)
+        else if (engine->GetCurrentRenderer() == bns::RendererType::OpenGL)
         {
-            engine->SwitchRenderer(bns::RendererType::Metal);
+           // engine->SwitchRenderer(bns::RendererType::Metal);
         }
     }
 

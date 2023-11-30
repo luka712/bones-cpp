@@ -27,7 +27,7 @@ namespace bns
 
             glDeleteShader(shader);
 
-            LOG(msg.c_str());
+            LOG("%s", msg.c_str());
             throw std::runtime_error(msg.c_str());
         }
 
