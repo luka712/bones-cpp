@@ -106,6 +106,9 @@ namespace bns
         /// @brief The Vulkan swap chain image views.
         std::vector<VkImageView> m_swapChainImageViews;
 
+        /// @brief The Vulkan render pass.
+        VkRenderPass m_renderPass;
+
         /// @brief Setups and create an instance internally.
         /// @param requiredWindowExtensions The required window extensions. This should be provided by the window manager.
         void SetupInstance(const std::vector<std::string> &requiredWindowExtensions);
@@ -174,6 +177,9 @@ namespace bns
 
         /// @brief Sets up the swap chain image views.
         void SetupSwapChainImageViews();
+
+        /// @brief Sets up the render pass.
+        void SetupRenderPass();
 
         void Resize();
 

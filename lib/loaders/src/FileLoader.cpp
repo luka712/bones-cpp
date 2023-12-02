@@ -1,7 +1,9 @@
+#include "Types.hpp"
 #include "FileLoader.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 
 namespace bns
 {
@@ -10,8 +12,10 @@ namespace bns
         std::ifstream input_file(path);
         if (!input_file.is_open())
         {
-            std::cerr << "Could not open the file - '" << path << "'" << std::endl;
-            return "";
+            std::string msg = "FileLoader::LoadFile: File not found: " + path;
+            LOG("%s", msg.c_str());
+            BREAKPOINT();
+            throw std::runtime_error(msg);
         }
         std::string text = std::string((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
 
@@ -32,6 +36,29 @@ namespace bns
         }
 
         return text;
+    }
+
+    std::vector<char> FileLoader::LoadFileAsBinary(std::string path)
+    {
+        std::ifstream file(path, std::ios::ate | std::ios::binary);
+
+        if (!file.is_open())
+        {
+            std::string msg = "FileLoader::LoadFileAsBinary: File not found: " + path;
+            LOG("%s", msg.c_str());
+            BREAKPOINT();
+            throw std::runtime_error(msg);
+        }
+
+        size_t fileSize = (size_t)file.tellg();
+        std::vector<char> buffer(fileSize);
+
+        file.seekg(0);
+        file.read(buffer.data(), fileSize);
+
+        file.close();
+
+        return buffer;
     }
 
     std::string FileLoader::CreateOrOpenFile(std::string path)

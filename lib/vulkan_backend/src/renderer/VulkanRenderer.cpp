@@ -5,6 +5,7 @@
 #include "CharUtil.hpp"
 #include <set>
 #include <algorithm>
+#include "VulkanUtil.hpp"
 
 namespace bns
 {
@@ -499,7 +500,7 @@ namespace bns
 		m_swapChainImageFormat = surfaceFormat.format;
 		m_swapChainExtent = extent;
 
-		LOG("VulkanRenderer::SetupSwapChain: Swap chain created.");
+		LOG("VulkanRenderer::SetupSwapChain: Swap chain created.\n");
 	}
 
 	void VulkanRenderer::SetupSwapChainImageViews()
@@ -536,6 +537,26 @@ namespace bns
 		}
 	}
 
+	void VulkanRenderer::SetupRenderPass()
+	{
+		// Create the color attachment
+		VkAttachmentDescription colorAttachment = VulkanUtil::AttachmentDescription.CreateColorAttachment(m_swapChainImageFormat);
+
+		// Create the color attachment for location 0
+		VkAttachmentReference colorAttachmentRef = VulkanUtil::AttachmentReference.CreateColorAttachmentRef(0);
+
+		// Create the subpass description
+		std::vector<VkAttachmentReference> colorAttachmentRefs = {colorAttachmentRef};
+		VkSubpassDescription subpass = VulkanUtil::SubpassDescription.Create(colorAttachmentRefs);
+
+		// Create the render pass
+		std::vector<VkAttachmentDescription> attachments = {colorAttachment};
+		std::vector<VkSubpassDescription> subpasses = {subpass};
+		m_renderPass = VulkanUtil::RenderPass.Create(m_device, attachments, subpasses);
+
+		LOG("VulkanRenderer::SetupRenderPass: Render pass created.\n");
+	}
+
 	void VulkanRenderer::Initialize(const std::vector<std::string> &requiredExtensions)
 	{
 		SetupInstance(requiredExtensions);
@@ -547,6 +568,7 @@ namespace bns
 		SetupLogicalDevice();
 		SetupSwapChain();
 		SetupSwapChainImageViews();
+		SetupRenderPass();
 
 		return;
 	}
