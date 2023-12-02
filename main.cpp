@@ -29,7 +29,9 @@ void Draw();
 
 int main()
 {
-    engine = new bns::Framework();
+    bns::FrameworkDescription desc;
+    desc.RendererType = bns::RendererType::OpenGL;
+    engine = new bns::Framework(desc);
 
     bns::WindowParameters parameters;
     engine->DrawCallback = [&]()
@@ -42,7 +44,6 @@ int main()
 
 void Initialize()
 {
-    return;
     font = engine->GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
     testTexture = engine->GetTextureManager().LoadTexture2D("assets/uv_test.png");
 
@@ -68,15 +69,13 @@ void Draw()
     {
         if (engine->GetCurrentRenderer() == bns::RendererType::Metal)
         {
-            engine->SwitchRenderer(bns::RendererType::WebGPU);
+            // engine->SwitchRenderer(bns::RendererType::OpenGL);
         }
-        else if (engine->GetCurrentRenderer() == bns::RendererType::WebGPU)
+        else if (engine->GetCurrentRenderer() == bns::RendererType::OpenGL)
         {
-            engine->SwitchRenderer(bns::RendererType::Metal);
+           // engine->SwitchRenderer(bns::RendererType::Metal);
         }
     }
-
-    return;
 
     bns::Renderer *renderer = engine->GetRenderer();
     bns::SpriteRenderer *spriteRenderer = engine->GetSpriteRenderer();

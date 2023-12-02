@@ -15,6 +15,8 @@ target_compile_options(BnsSDLWindow PRIVATE
 
     # Debug options
     -DDEBUG=${DEBUG} 
+    -DLOGGING_ENABLED=${LOGGING_ENABLED}
+    -DDEBUG_BREAKPOINT_ENABLED=${DEBUG_BREAKPOINT_ENABLED}
 )
 
 # Custom extension for WebGPU and SDL2

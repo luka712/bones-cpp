@@ -90,13 +90,17 @@ namespace bns
 #if USE_OPENGL
                 /// @brief Initialize for OpenGL.
                 /// @param windowParameters The window parameters.
-                virtual void InitializeForOpenGL(WindowParameters windowParameters, i32 majorVersion = 4, i32 minorVersion = 5) = 0;
+                /// @param majorVersion The major version of OpenGL that will be used.
+                /// @param minorVersion The minor version of OpenGL that will be used.
+                virtual void InitializeForOpenGL(WindowParameters windowParameters, i32 *outMajorVersion, i32 *outMinorVersion) = 0;
 #endif
 
 #if USE_OPENGLES
                 /// @brief Initialize for OpenGLES.
                 /// @param windowParameters The window parameters.
-                virtual void InitializeForOpenGLES(WindowParameters windowParameters, i32 majorVersion = 3, i32 minorVersion = 2) = 0;
+                /// @param majorVersion The major version of OpenGL that will be used.
+                /// @param minorVersion The minor version of OpenGL that will be used.
+                virtual void InitializeForOpenGLES(WindowParameters windowParameters, i32 *outMajorVersion, i32 *outMinorVersion) = 0;
 #endif
 
 #if USE_WEBGPU

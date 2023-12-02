@@ -2,7 +2,7 @@
 
 set(CMAKE_CXX_STANDARD 17)
 
-file(GLOB OpenGL_BACKEND_SOURCES src/*.cpp src/**/*.cpp)
+file(GLOB OpenGL_BACKEND_SOURCES src/*.cpp src/**/*.cpp src/**/**/*.cpp)
 
 ADD_LIBRARY(BnsOpenGLBackend STATIC ${OpenGL_BACKEND_SOURCES})
 

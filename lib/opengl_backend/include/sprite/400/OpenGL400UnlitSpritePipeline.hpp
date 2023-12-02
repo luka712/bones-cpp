@@ -1,8 +1,8 @@
 #if USE_OPENGL
 
-#ifndef BNS_UNLIT_SPRITE_PIPELINE_OPENGL
+#ifndef BNS_UNLIT_SPRITE_PIPELINE_OPENGL400
 
-#define BNS_UNLIT_SPRITE_PIPELINE_OPENGL
+#define BNS_UNLIT_SPRITE_PIPELINE_OPENGL400
 
 #include "Constants.hpp"
 #include <vector>
@@ -15,20 +15,24 @@
 
 namespace bns
 {
-    class OpenGLUnlitSpritePipeline final
+    /// @brief The OpenGL 4.0 unlit sprite pipeline. To not be used with regular OpenGL 450 renderer.
+    /// @note This is fallback for OpenGL 4.0 in case if 4.5 is not available on the system (e.g. macOS)
+    class OpenGL400UnlitSpritePipeline final
     {
     private:
         GLuint m_program;
         GLint m_textureLocation;
+        GLint m_projectionViewLocation;
         OpenGLTexture2D *m_texture;
 
     public:
         /// @brief The constructor.
-        OpenGLUnlitSpritePipeline(GLuint program,
+        OpenGL400UnlitSpritePipeline(GLuint program,
                                   GLint textureLocation,
+                                  GLint projectionViewLocation,
                                   OpenGLTexture2D *texture);
 
-        ~OpenGLUnlitSpritePipeline();
+        ~OpenGL400UnlitSpritePipeline();
 
         /// @brief The instance index which is used to tell how many instances are in buffer and to be drawn.
         u32 InstanceIndex;
@@ -39,7 +43,7 @@ namespace bns
         /// @brief Create a sprite pipeline
         /// @param texture The texture
         /// @return The sprite pipeline
-        static OpenGLUnlitSpritePipeline *Create(OpenGLTexture2D *texture);
+        static OpenGL400UnlitSpritePipeline *Create( OpenGLTexture2D *texture);
 
         /// @brief Gets the program
         /// @return The program
@@ -52,6 +56,10 @@ namespace bns
         /// @brief Gets the texture location
         /// @return The texture location
         inline GLint GetTextureLocation() const { return m_textureLocation; }
+
+        /// @brief Gets the projection view location
+        /// @return The projection view location
+        inline GLint GetProjectionViewLocation() const { return m_projectionViewLocation; }
 
         /// @brief Release the pipeline
         void Release();

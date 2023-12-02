@@ -11,6 +11,7 @@ namespace bns
 
     void OpenGLESRenderer::Initialize()
     {
+        m_windowManager->InitializeForOpenGLES(WindowParameters(), &m_majorVersion, &m_minorVersion);
         m_bufferSize = m_windowManager->GetWindowSize();
 
     }

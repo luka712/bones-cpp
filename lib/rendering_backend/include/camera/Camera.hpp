@@ -21,9 +21,7 @@ namespace bns
          */
         Mat4x4f ViewMatrix;
 
-        /**
-         * @brief The projection view matrix.
-         */
+        /// @brief The projection view matrix.
         Mat4x4f ProjectionViewMatrix;
 
         virtual void Update(f32 deltaTime) = 0;
