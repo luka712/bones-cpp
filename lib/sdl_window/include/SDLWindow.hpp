@@ -20,12 +20,14 @@ namespace bns
                 /// @brief Creates a window. Sometimes renderer is not needed (OpenGL, Vulkan, etc.)
                 /// @param windowParameters The window parameters.
                 /// @param flags The flags.
-                void CreateWindow(WindowParameters windowParameters, Uint32 flags);
+                /// @note Named CreateSDLWindow to avoid confusion with CreateWindow from WinUser.h of Windows.
+                void CreateSDLWindow(WindowParameters windowParameters, Uint32 flags);
 
                 /// @brief Creates a window and renderer.
                 /// @param windowParameters The window parameters.
                 /// @param flags The flags.
-                void CreateWindowAndRenderer(WindowParameters windowParameters, Uint32 flags);
+                /// @note Named CreateSDLWindowAndRenderer to to keep it consistent with @ref CreateSDLWindow.
+                void CreateSDLWindowAndRenderer(WindowParameters windowParameters, Uint32 flags);
 
         public:
                 /// @brief The constructor.

@@ -557,6 +557,72 @@ namespace bns
 		LOG("VulkanRenderer::SetupRenderPass: Render pass created.\n");
 	}
 
+	void VulkanRenderer::SetupFramebuffers()
+	{
+		m_framebuffers = VulkanUtil::Framebuffer.Create(m_device, m_renderPass, m_swapChainImageViews, m_swapChainExtent);
+	}
+
+	void VulkanRenderer::SetupCommandPool()
+	{
+		m_commandPool = VulkanUtil::CommandPool.Create(m_device, m_queueFamilyIndices.GraphicsFamily.value());
+	}
+
+	void VulkanRenderer::SetupCommandBuffer()
+	{
+		m_commandBuffer = VulkanUtil::CommandBuffer.Create(m_device, m_commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+	}
+
+	void VulkanRenderer::RecordCommandBuffer(VkCommandBuffer commandBuffer, u32 imageIndex)
+	{
+		VkCommandBufferBeginInfo beginInfo = VulkanUtil::CommandBufferBeginInfo.Create();
+		if (vkBeginCommandBuffer(commandBuffer, &beginInfo) != VK_SUCCESS)
+		{
+			std::string msg = "VulkanRenderer::RecordCommandBuffer: Failed to begin recording command buffer!";
+			LOG(msg.c_str());
+			BREAKPOINT();
+			throw std::runtime_error(msg);
+		}
+
+		// Clear color
+		VkClearValue clearColor = {ClearColor.R, ClearColor.G, ClearColor.B, ClearColor.A};
+
+		VkRenderPassBeginInfo renderPassInfo = VulkanUtil::RenderPassBeginInfo.Create(m_renderPass, m_framebuffers[imageIndex], m_swapChainExtent, clearColor);
+
+		// start render pass
+		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+		// Viewport
+		VkViewport viewport = VulkanUtil::Viewport.Create(m_swapChainExtent);
+		vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+		// Scissor
+		VkRect2D scissor{};
+		scissor.offset = {0, 0};
+		scissor.extent = m_swapChainExtent;
+		vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+
+		// DRAW
+
+		// end render pass
+		vkCmdEndRenderPass(commandBuffer);
+
+		// end recording
+		if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS)
+		{
+			std::string msg = "VulkanRenderer::RecordCommandBuffer: Failed to record command buffer!";
+			LOG(msg.c_str());
+			BREAKPOINT();
+			throw std::runtime_error(msg);
+		}
+	}
+
+	void VulkanRenderer::SetupSyncObjects()
+	{
+		m_imageAvailableSemaphore = VulkanUtil::Semaphore.Create(m_device);
+		m_renderFinishedSemaphore = VulkanUtil::Semaphore.Create(m_device);
+		m_inFlightFence = VulkanUtil::Fence.Create(m_device);
+	}
+
 	void VulkanRenderer::Initialize(const std::vector<std::string> &requiredExtensions)
 	{
 		SetupInstance(requiredExtensions);
@@ -569,24 +635,84 @@ namespace bns
 		SetupSwapChain();
 		SetupSwapChainImageViews();
 		SetupRenderPass();
+		SetupFramebuffers();
+		SetupCommandPool();
+		SetupCommandBuffer();
+		SetupSyncObjects();
 
 		return;
 	}
 
 	void VulkanRenderer::BeginDraw()
 	{
+		vkAcquireNextImageKHR(m_device, m_swapChain, UINT64_MAX, m_imageAvailableSemaphore, VK_NULL_HANDLE, &m_currentFrameIndex);
+		if (vkResetCommandBuffer(m_commandBuffer, 0) != VK_SUCCESS)
+		{
+			std::string msg = "VulkanRenderer::BeginDraw: Failed to reset command buffer!";
+			LOG(msg.c_str());
+			BREAKPOINT();
+			throw std::runtime_error(msg);
+		}
+		RecordCommandBuffer(m_commandBuffer, m_currentFrameIndex);
 	}
 
 	void VulkanRenderer::EndDraw()
 	{
+
+		VkPipelineStageFlags waitStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+		VkSubmitInfo submitInfo = VulkanUtil::SubmitInfo.CreateGraphicsSubmitInfo(m_imageAvailableSemaphore,
+																				  waitStage,
+																				  m_commandBuffer,
+																				  m_renderFinishedSemaphore);
+
+		// submit command buffer
+		if (vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, m_inFlightFence) != VK_SUCCESS)
+		{
+			std::string msg = "VuekanRenderer::EndDraw: Failed to submit draw command buffer!";
+			LOG("%s", msg.c_str());
+			BREAKPOINT();
+			throw std::runtime_error(msg);
+		}
+
+		//// present
+		VkPresentInfoKHR presentInfo{};
+		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+
+		// Wait on these semaphores before presenting. This waits until the render is finished.
+		presentInfo.waitSemaphoreCount = 1;
+		presentInfo.pWaitSemaphores = &m_renderFinishedSemaphore;
+
+		presentInfo.swapchainCount = 1;
+		presentInfo.pSwapchains = &m_swapChain;
+		presentInfo.pImageIndices = &m_currentFrameIndex;
+
+		presentInfo.pResults = nullptr; // Optional
+
+		//// present
+		vkQueuePresentKHR(m_presentQueue, &presentInfo);
+
+		// wait for fence. This waits until the render is finished. It syncs the CPU and GPU.
+		vkWaitForFences(m_device, 1, &m_inFlightFence, VK_TRUE, UINT64_MAX);
+		vkResetFences(m_device, 1, &m_inFlightFence);
 	}
 
 	void VulkanRenderer::Destroy()
 	{
+
+		// create instance
+		VulkanUtil::Semaphore.Destroy(m_device, m_imageAvailableSemaphore);
+		VulkanUtil::Semaphore.Destroy(m_device, m_renderFinishedSemaphore);
+		VulkanUtil::Fence.Destroy(m_device, m_inFlightFence);
+		VulkanUtil::CommandPool.Destroy(m_device, m_commandPool);
+		for (auto framebuffer : m_framebuffers)
+		{
+			VulkanUtil::Framebuffer.Destroy(m_device, framebuffer);
+		}
 		for (size_t i = 0; i < m_swapChainImageViews.size(); i++)
 		{
 			vkDestroyImageView(m_device, m_swapChainImageViews[i], nullptr);
 		}
+		VulkanUtil::RenderPass.Destroy(m_device, m_renderPass);
 		vkDestroySwapchainKHR(m_device, m_swapChain, nullptr);
 		vkDestroySurfaceKHR(m_instance, m_surface, nullptr);
 		if (m_debugMessenger != nullptr)

@@ -41,7 +41,7 @@ namespace bns
         return Vec2i(width, height);
     }
 
-    void SDLWindowManager::CreateWindow(WindowParameters windowParameters, Uint32 flags)
+    void SDLWindowManager::CreateSDLWindow(WindowParameters windowParameters, Uint32 flags)
     {
         // Destroy window and renderer if they exist
         if (m_renderer != nullptr)
@@ -80,9 +80,9 @@ namespace bns
         LOG("SDLWindowManager::CreateWindowAndRenderer: Created SDL window: %s", windowParameters.Title.c_str());
     }
 
-    void SDLWindowManager::CreateWindowAndRenderer(WindowParameters windowParameters, Uint32 flags)
+    void SDLWindowManager::CreateSDLWindowAndRenderer(WindowParameters windowParameters, Uint32 flags)
     {
-        CreateWindow(windowParameters, flags);
+        CreateSDLWindow(windowParameters, flags);
 
         // create renderer
         m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -100,7 +100,7 @@ namespace bns
 #if USE_WEBGPU
     bool SDLWindowManager::InitializeForWGPU(WindowParameters windowParameters, WGPUInstance *outInstance, WGPUSurface *outSurface)
     {
-        CreateWindowAndRenderer(windowParameters, 0);
+        CreateSDLWindowAndRenderer(windowParameters, 0);
 
         WGPUInstanceDescriptor desc = {};
         desc.nextInChain = nullptr;
@@ -120,7 +120,7 @@ namespace bns
 #if USE_METAL
     CA::MetalLayer *SDLWindowManager::InitializeForMetal(WindowParameters windowParameters)
     {
-        CreateWindowAndRenderer(windowParameters, SDL_WINDOW_METAL);
+        CreateSDLWindowAndRenderer(windowParameters, SDL_WINDOW_METAL);
 
         CA::MetalLayer *metalLayer = (CA::MetalLayer *)SDL_RenderGetMetalLayer(m_renderer);
 
@@ -143,7 +143,7 @@ namespace bns
 #if USE_D3D11
     HWND SDLWindowManager::InitializeForD3D11(WindowParameters windowParameters)
     {
-        CreateWindowAndRenderer(windowParameters, 0);
+        CreateSDLWindowAndRenderer(windowParameters, 0);
 
         SDL_SysWMinfo systemInfo;
         SDL_VERSION(&systemInfo.version);
@@ -157,7 +157,7 @@ namespace bns
 #if USE_OPENGL
     void SDLWindowManager::InitializeForOpenGL(WindowParameters windowParameters, i32 *outMajorVersion, i32 *outMinorVersion)
     {
-        CreateWindow(windowParameters, SDL_WINDOW_OPENGL);
+        CreateSDLWindow(windowParameters, SDL_WINDOW_OPENGL);
 
         // engine automatically tries the highest version of OpenGL, but it not guaranteed to work.
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); // OpenGL core profile
@@ -194,7 +194,7 @@ namespace bns
 #if USE_OPENGLES
     void SDLWindowManager::InitializeForOpenGLES(WindowParameters windowParameters, i32 *outMajorVersion, i32 *outMinorVersion)
     {
-        CreateWindow(windowParameters, SDL_WINDOW_OPENGL);
+       CreateSDLWindow(windowParameters, SDL_WINDOW_OPENGL);
 
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); // OpenGLES profile
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);                          // we want OpenGLES 3.2
@@ -231,13 +231,13 @@ namespace bns
 
     void SDLWindowManager::InitializeForVulkan(WindowParameters windowParameters, std::vector<std::string> *outRequiredExtensions)
     {
-        CreateWindowAndRenderer(windowParameters, SDL_WINDOW_VULKAN);
+        CreateSDLWindowAndRenderer(windowParameters, SDL_WINDOW_VULKAN);
 
         // Get the extensions count. We need the count to allocate the array of extensions.
         u32 extensionCount = 0;
         if (!SDL_Vulkan_GetInstanceExtensions(m_window, &extensionCount, nullptr))
         {
-            std::string msg = "SDLWindowManager::InitializeForVulkan: Failed to get Vulkan extensions count: " + std::string(SDL_GetError());
+            std::string msg = "SDLWindowManager::InitializeForVulkan: Failed to get Vulkan extensions count: " + std::string(SDL_GetError()) + "\n";
             LOG(msg.c_str());
             BREAKPOINT();
             throw std::runtime_error(msg.c_str());
@@ -246,10 +246,12 @@ namespace bns
         // allocate the array of extensions
         std::vector<const char *> pExtensions(extensionCount);
 
+        LOG("SDLWindowManager::InitializeForVulkan: Vulkan Extensions Count: %d\n", extensionCount);
+
         // Get the extensions
         if (!SDL_Vulkan_GetInstanceExtensions(m_window, &extensionCount, pExtensions.data()))
         {
-            std::string msg = "SDLWindowManager::InitializeForVulkan: Failed to get Vulkan extensions: " + std::string(SDL_GetError());
+            std::string msg = "SDLWindowManager::InitializeForVulkan: Failed to get Vulkan extensions: " + std::string(SDL_GetError()) + "\n";
             LOG(msg.c_str());
             BREAKPOINT();
             throw std::runtime_error(msg.c_str());
@@ -257,7 +259,7 @@ namespace bns
 
         for (u32 i = 0; i < extensionCount; ++i)
         {
-            LOG("SDLWindowManager::InitializeForVulkan: Available Vulkan Extension: %s", pExtensions[i])
+            LOG("SDLWindowManager::InitializeForVulkan: Available Vulkan Extension: %s\n", pExtensions[i]);
 
             outRequiredExtensions->push_back(pExtensions[i]);
         }
@@ -268,10 +270,12 @@ namespace bns
         VkSurfaceKHR surface;
         if (!SDL_Vulkan_CreateSurface(m_window, instance, &surface))
         {
-            std::string msg = "SDLWindowManager::CreateVulkanSurface: Failed to create Vulkan surface: " + std::string(SDL_GetError());
+            std::string msg = "SDLWindowManager::CreateVulkanSurface: Failed to create Vulkan surface: " + std::string(SDL_GetError()) + "\n";
             LOG(msg.c_str());
             throw std::runtime_error(msg.c_str());
         }
+
+        LOG("SDLWindowManager::CreateVulkanSurface: Created Vulkan surface.\n");
 
         surface = surface;
 

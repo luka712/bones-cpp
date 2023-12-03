@@ -205,7 +205,7 @@ namespace bns
         if (m_currentRendererType == RendererType::Vulkan)
             InitializeForVulkan(windowParameters);
 #endif
-        m_spriteRenderer->Initialize();
+        // m_spriteRenderer->Initialize();
 
         m_initializeCallback();
 
@@ -276,11 +276,11 @@ namespace bns
     void Framework::OnDraw()
     {
         m_renderer->BeginDraw();
-        m_spriteRenderer->BeginFrame();
+        // m_spriteRenderer->BeginFrame();
 
         DrawCallback();
 
-        m_spriteRenderer->EndFrame();
+        // m_spriteRenderer->EndFrame();
         m_renderer->EndDraw();
     }
 

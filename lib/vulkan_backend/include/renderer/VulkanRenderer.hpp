@@ -109,6 +109,27 @@ namespace bns
         /// @brief The Vulkan render pass.
         VkRenderPass m_renderPass;
 
+        /// @brief The framebuffers.
+        std::vector<VkFramebuffer> m_framebuffers;
+
+        /// @brief The command pool.
+        VkCommandPool m_commandPool;
+
+        /// @brief The command buffer
+        VkCommandBuffer m_commandBuffer;
+
+        /// @brief The image available semaphore.
+        VkSemaphore m_imageAvailableSemaphore;
+
+        /// @brief The render finished semaphore.
+        VkSemaphore m_renderFinishedSemaphore;
+
+        /// @brief The in flight fence.
+        VkFence m_inFlightFence;
+
+        /// @brief The index of the current frame.
+        u32 m_currentFrameIndex;
+
         /// @brief Setups and create an instance internally.
         /// @param requiredWindowExtensions The required window extensions. This should be provided by the window manager.
         void SetupInstance(const std::vector<std::string> &requiredWindowExtensions);
@@ -180,6 +201,21 @@ namespace bns
 
         /// @brief Sets up the render pass.
         void SetupRenderPass();
+
+        /// @brief Sets up the framebuffers.
+        void SetupFramebuffers();
+
+        /// @brief Sets up the command pool.
+        void SetupCommandPool();
+
+        /// @brief Sets up the command buffer.
+        void SetupCommandBuffer();
+
+        /// @brief Records the command buffer.
+        void RecordCommandBuffer(VkCommandBuffer commandBuffer, u32 imageIndex);
+
+        /// @brief Sets up the semaphores and fences.
+        void SetupSyncObjects();
 
         void Resize();
 

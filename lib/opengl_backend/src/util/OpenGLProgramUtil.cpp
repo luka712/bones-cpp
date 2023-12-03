@@ -2,7 +2,7 @@
 
 #include "util/OpenGLProgramUtil.hpp"
 #include "Types.hpp"
-#include <exception>
+#include <stdexcept>
 #include <string>
 
 namespace bns
@@ -25,6 +25,7 @@ namespace bns
             glDeleteProgram(program);
 
             LOG(msg.c_str());
+            BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
 

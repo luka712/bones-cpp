@@ -2,7 +2,7 @@
 
 #include "util/OpenGLShaderUtil.hpp"
 #include "FileLoader.hpp"
-#include <exception>
+#include <stdexcept>
 #include "Types.hpp"
 
 namespace bns 
@@ -28,6 +28,7 @@ namespace bns
             glDeleteShader(shader);
 
             LOG("%s", msg.c_str());
+            BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
 

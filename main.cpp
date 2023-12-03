@@ -30,7 +30,7 @@ void Draw();
 int main()
 {
     bns::FrameworkDescription desc;
-    desc.RendererType = bns::RendererType::OpenGL;
+    desc.RendererType = bns::RendererType::Vulkan;
     engine = new bns::Framework(desc);
 
     bns::WindowParameters parameters;
@@ -44,6 +44,7 @@ int main()
 
 void Initialize()
 {
+    return;
     font = engine->GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
     testTexture = engine->GetTextureManager().LoadTexture2D("assets/uv_test.png");
 
@@ -64,6 +65,7 @@ void Initialize()
 
 void Draw()
 {
+    return;
     bns::Event event;
     if (engine->GetEvents().HasEvent(bns::EventType::KeyDown, &event))
     {
