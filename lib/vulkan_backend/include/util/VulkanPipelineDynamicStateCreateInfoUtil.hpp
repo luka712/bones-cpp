@@ -14,7 +14,7 @@ namespace bns
     {
         /// @brief Get the default dynamic states used by the application.
         /// @return The default dynamic states. @ref VK_DYNAMIC_STATE_VIEWPORT and @ref VK_DYNAMIC_STATE_SCISSOR.
-        inline static std::vector<VkDynamicState> DefaultDynamicStates() 
+        inline static const std::vector<VkDynamicState> DefaultDynamicStates() 
         {
             return {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
         }

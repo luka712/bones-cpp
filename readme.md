@@ -45,6 +45,14 @@ do: Simply run project in xcode
 ### GOALS 0.2
 - Emscripten go further with game using engine. Make sure it's compiled for web with WebGPU/OpenGLES using Emscripten.
 
+### COMPILE SHADERS
+
+#### VULKAN
+
+##### Windows
+To compile shader on Windows run ```glslc.exe -fshader-stage=<{stage}> {inputShader} -o {outputShader}``` for example ```D:/VulkanSDK/1.3.268.0/Bin/glslc.exe -fshader-stage<vert> shader.glsl -o vert.spv```
+Of course make sure that path corresponds to your system.
+
 
 # Dependencies
 TODO: 

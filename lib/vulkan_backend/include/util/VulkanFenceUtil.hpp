@@ -13,8 +13,9 @@ namespace bns
     {
         /// @brief Create a fence
         /// @param device The device that will own the fence
+        /// @param createFlags The flags to create the fence with. By default 0.
         /// @return The created fence
-        static VkFence Create(VkDevice device);
+        static VkFence Create(VkDevice device, VkFenceCreateFlags createFlags = 0);
 
         /// @brief Destroy a fence
         /// @param device The device that owns the fence

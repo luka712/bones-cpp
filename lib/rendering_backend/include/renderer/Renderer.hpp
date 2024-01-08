@@ -6,6 +6,7 @@
 #include "Math.hpp"
 #include "texture/Texture2D.hpp"
 #include "Vec2.hpp"
+#include "RenderingBackendTypes.hpp"
 
 namespace bns
 {
@@ -38,7 +39,13 @@ namespace bns
         Vec2i m_bufferSize;
 
     public:
+        /// @brief The clear color.
+        /// The color to which renderer will be cleared at the beginning of each frame.
         Color ClearColor;
+
+        /// @brief The front face.
+        /// The front face of the vertices in the scene. By default it is counter clockwise.
+        FrontFace FrontFace;
 
         Renderer();
 

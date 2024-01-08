@@ -7,7 +7,7 @@
 
 #include "texture/Texture2D.hpp"
 #include "ImageData.hpp"
-#include <webgpu/webgpu.h>
+#include "BnsWebgpu.hpp"
 #include "WebGPUUtil.hpp"
 
 namespace bns
@@ -54,18 +54,9 @@ namespace bns
             Release();
         }
 
-        /**
-         * Creates the texture view.
-         */
-        inline WGPUTextureView CreateView() const
-        {
-            WGPUTextureViewDescriptor textureViewDesc
-                = WebGPUUtil::TextureViewDescriptor.Create("Texture view: " + std::to_string(m_id));
-            textureViewDesc.format = Convert(m_format);
-            WGPUTextureView textureView = wgpuTextureCreateView(Texture, &textureViewDesc);
-            return textureView;
-        }
-
+        /// @brief Creates the texture view.
+        /// @return The texture view.
+        WGPUTextureView CreateView() const;
         /**
          * @brief Initialize the texture.
          */

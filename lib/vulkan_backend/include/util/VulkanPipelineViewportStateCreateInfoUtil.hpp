@@ -15,13 +15,14 @@ namespace bns
     {   
         /// @brief Get the default @ref VkPipelineViewportStateCreateInfo. To be used when the viewport and scissor are dynamic state (set per draw call or global)
         /// @return The default @ref VkPipelineViewportStateCreateInfo. 
+        /// @note The viewport and scissor are dynamic state, meaning they are set per draw call or globally.
         static VkPipelineViewportStateCreateInfo Default();
 
         /// @brief Get the default @ref VkPipelineViewportStateCreateInfo. To be used when the viewport and scissor are set per pipeline.
         /// @param viewport The viewport.
         /// @param scissor The scissor.
         /// @return The default @ref VkPipelineViewportStateCreateInfo.
-        static VkPipelineViewportStateCreateInfo Default(const VkViewport& viewport, const VkRect2D& scissor);
+        static VkPipelineViewportStateCreateInfo Create(const VkViewport& viewport, const VkRect2D& scissor);
     };
 } // namespace bns
 

@@ -13,14 +13,14 @@ namespace bns
     struct VulkanPipelineShaderStageCreateInfoUtil
     {
         /// @brief Set the values of @see VkPipelineShaderStageCreateInfo to data for vertex shader stage.
-        /// @param rCreateInfo The create info to be filled.
+        /// @param createInfo The create info to be filled.
         /// @param vertexShaderModule The module for vertex shader stage.
-        static void SetVertexStageInfo(VkPipelineShaderStageCreateInfo &rCreateInfo, VkShaderModule vertexShaderModule);
+        static void SetVertexStageInfo(VkPipelineShaderStageCreateInfo &createInfo, const VkShaderModule& vertexShaderModule);
 
         /// @brief Set the values of @see VkPipelineShaderStageCreateInfo to data for fragment shader stage.
-        /// @param rCreateInfo The create info to be filled.
+        /// @param createInfo The create info to be filled.
         /// @param fragmentShaderModule The module for fragment shader stage.
-        static void SetFragmentStageInfo(VkPipelineShaderStageCreateInfo &rCreateInfo, VkShaderModule fragmentShaderModule);
+        static void SetFragmentStageInfo(VkPipelineShaderStageCreateInfo &createInfo, const VkShaderModule& fragmentShaderModule);
     };
 }
 

@@ -2,12 +2,13 @@
 #include "Types.hpp"
 #include <stdexcept>
 #include <string>
+#include "FileLoader.hpp"
 
 #if USE_VULKAN
 
 namespace bns
 {
-    VkShaderModule VulkanShaderModuleUtil::CreateFromSpirV(VkDevice device, const std::vector<char>& code)
+    VkShaderModule VulkanShaderModuleUtil::CreateFromSpirVSource(VkDevice device, const std::vector<char>& code)
     {
         VkShaderModuleCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -24,6 +25,14 @@ namespace bns
         }
 
         return shaderModule;
+    }
+
+    VkShaderModule VulkanShaderModuleUtil::CreateFromSpirVFilepath(VkDevice device, std::string filepath)
+    {
+        FileLoader fileLoader;
+        std::vector<char> code = fileLoader.LoadFileAsBinary(filepath);
+
+        return CreateFromSpirVSource(device, code);
     }
 
     void VulkanShaderModuleUtil::Destroy(VkDevice device, VkShaderModule shaderModule)

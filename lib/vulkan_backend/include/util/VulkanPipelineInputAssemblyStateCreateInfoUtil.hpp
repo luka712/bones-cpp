@@ -13,7 +13,12 @@ namespace bns
     {
         /// @brief Get the default @ref VkPipelineInputAssemblyStateCreateInfo.
         /// @return The default @ref VkPipelineInputAssemblyStateCreateInfo.
+        /// @note The default topology is @ref VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST.
         static VkPipelineInputAssemblyStateCreateInfo Default();
+
+        /// @brief Create a @ref VkPipelineInputAssemblyStateCreateInfo with the @ref VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST topology.
+        /// @return The @ref VkPipelineInputAssemblyStateCreateInfo with the @ref VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST topology.
+        static VkPipelineInputAssemblyStateCreateInfo CreateWithTriangleListTopology();
     };
 } // namespace bns
 

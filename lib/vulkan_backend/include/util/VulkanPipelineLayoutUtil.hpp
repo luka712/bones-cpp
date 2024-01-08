@@ -3,6 +3,7 @@
 #ifndef BNS_VULKAN_PIPELINE_LAYOUT_UTIL_HPP
 
 #include "BnsVulkan.hpp"
+#include <vector>
 
 namespace bns
 {
@@ -11,9 +12,9 @@ namespace bns
     {
         /// @brief Creates a default @ref VkPipelineLayoutCreateInfo.
         /// @param device The @ref VkDevice to use.
+        /// @param descriptorSetLayout The @ref VkDescriptorSetLayout to use.
         /// @return The default @ref VkPipelineLayoutCreateInfo.
-        // TODO: parameters
-        static VkPipelineLayout Create(VkDevice device);
+        static VkPipelineLayout Create(VkDevice device, const std::vector<VkDescriptorSetLayout> &descriptorSetLayout);
 
         /// @brief Destroys a @ref VkPipelineLayout.
         /// @param device The @ref VkDevice to use.

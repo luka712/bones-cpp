@@ -101,6 +101,14 @@ namespace bns
         Sampler = sampler;
     }
 
+    WGPUTextureView WebGPUTexture2D::CreateView() const 
+    {
+        WGPUTextureViewDescriptor textureViewDesc = WebGPUUtil::TextureViewDescriptor.Create("Texture view: " + std::to_string(m_id));
+        textureViewDesc.format = Convert(m_format);
+        WGPUTextureView textureView = wgpuTextureCreateView(Texture, &textureViewDesc);
+        return textureView;
+    }
+
     void WebGPUTexture2D::Release()
     {
         m_lifecycleState = LifecycleState::Released;

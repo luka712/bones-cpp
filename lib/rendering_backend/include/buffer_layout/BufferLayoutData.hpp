@@ -4,6 +4,7 @@
 
 #include "Types.hpp"
 #include <vector>
+#include "RenderingBackendTypes.hpp"
 
 /**
  * The data that will be used for the buffer layout classes
@@ -11,21 +12,7 @@
 
 namespace bns
 {
-    enum class StepMode
-    {
-        Vertex
-    };
-
-    enum class VertexFormat
-    {
-        Float32x2,
-        Float32x3,
-        Float32x4
-    };
-
-    /**
-     * The buffer layout descriptor.
-     */
+    /// @brief The buffer layout descriptor.    
     struct BufferLayoutAttributeDescriptor
     {
         BufferLayoutAttributeDescriptor(VertexFormat format);
@@ -52,13 +39,13 @@ namespace bns
         size_t Stride;
 
         /// @brief The step mode of the buffer layout.
-        StepMode Step;
+        VertexStepMode Step;
 
         /// @brief The byte size of the buffer. The total buffer size.
         size_t ByteSize;
 
         /// @brief The pointer to the data.
-        void* Data;
+        void *Data;
     };
 }
 

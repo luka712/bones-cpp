@@ -11,9 +11,13 @@ namespace bns
     /// @brief Utility class for creating @ref VkPipelineMultisampleStateCreateInfo.
     struct VulkanPipelineMultisampleStateCreateInfoUtil
     {
-        /// @brief Creates a default @ref VkPipelineMultisampleStateCreateInfo. By default no multisampling.
+        /// @brief Creates a default @ref VkPipelineMultisampleStateCreateInfo. By default no multisampling. 
         /// @return The default @ref VkPipelineMultisampleStateCreateInfo.
         static VkPipelineMultisampleStateCreateInfo Create();
+
+        /// @brief Creates a @ref VkPipelineMultisampleStateCreateInfo with multisampling disabled.
+        /// @return The @ref VkPipelineMultisampleStateCreateInfo with multisampling disabled.
+        static VkPipelineMultisampleStateCreateInfo CreateMSAADisabled();
     };
 } // namespace bns
 

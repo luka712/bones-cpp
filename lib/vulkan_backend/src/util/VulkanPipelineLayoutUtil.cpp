@@ -7,14 +7,14 @@
 
 namespace bns
 {
-    VkPipelineLayout VulkanPipelineLayoutUtil::Create(VkDevice device)
+    VkPipelineLayout VulkanPipelineLayoutUtil::Create(VkDevice device,  const std::vector<VkDescriptorSetLayout> &descriptorSetLayout)
     {
         VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
 
         VkPipelineLayoutCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        createInfo.setLayoutCount = 0;         // Optional
-        createInfo.pSetLayouts = nullptr;      // Optional
+        createInfo.setLayoutCount = static_cast<u32>(descriptorSetLayout.size());
+        createInfo.pSetLayouts = descriptorSetLayout.data();
         createInfo.pushConstantRangeCount = 0; // Optional
         createInfo.pPushConstantRanges = nullptr; // Optional
 

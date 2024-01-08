@@ -6,6 +6,7 @@ namespace bns
                            m_brightnessTexture(nullptr)
     {
         ClearColor = Color::LightPink();
+        FrontFace = FrontFace::CounterClockwise;
     }
 
     void Renderer::SetRenderTexture(Texture2D *texture)

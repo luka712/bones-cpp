@@ -272,6 +272,7 @@ namespace bns
         {
             std::string msg = "SDLWindowManager::CreateVulkanSurface: Failed to create Vulkan surface: " + std::string(SDL_GetError()) + "\n";
             LOG(msg.c_str());
+            BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
 

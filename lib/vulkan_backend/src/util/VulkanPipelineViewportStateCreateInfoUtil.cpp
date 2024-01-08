@@ -18,7 +18,7 @@ namespace bns
         return createInfo;
     }
 
-    VkPipelineViewportStateCreateInfo VulkanPipelineViewportStateCreateInfoUtil::Default(const VkViewport &viewport, const VkRect2D &scissor)
+    VkPipelineViewportStateCreateInfo VulkanPipelineViewportStateCreateInfoUtil::Create(const VkViewport &viewport, const VkRect2D &scissor)
     {
         // viewport and scissor are not dynamic state, meaning they are set per pipeline
 

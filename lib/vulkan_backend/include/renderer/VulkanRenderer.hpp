@@ -11,22 +11,6 @@
 
 namespace bns
 {
-    struct VulkanQueueFamilyIndices
-    {
-        /// @brief The graphics queue family index.
-        std::optional<u32> GraphicsFamily;
-
-        /// @brief The present queue family index.
-        std::optional<u32> PresentFamily;
-
-        /// @brief Checks if the queue family indices are valid.
-        /// @return True if the queue family indices are valid, false otherwise.
-        inline bool IsValid() const
-        {
-            return GraphicsFamily.has_value() && PresentFamily.has_value();
-        }
-    };
-
     struct VulkanSwapChainSupportDetails
     {
         /// @brief The surface capabilities.
@@ -54,15 +38,15 @@ namespace bns
 
 /// The validation layers
 #if DEBUG
-        const std::vector<const char *> m_validationLayers = {
-            "VK_LAYER_KHRONOS_validation"};
+        const std::vector<std::string> m_validationLayers = {"VK_LAYER_KHRONOS_validation"};
 #else
         const std::vector<const char *> m_validationLayers = {};
 #endif
 
         /// @brief The required device extensions.
-        const std::vector<const char *> m_deviceExtensions = {
-            VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+        /// @note This is the minimum required device extensions.
+        /// @note Must support swap chain.
+        const std::vector<std::string> m_deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME}; 
 
         /// @brief The Vulkan instance.
         VkInstance m_instance;
@@ -80,7 +64,10 @@ namespace bns
         VkPhysicalDevice m_physicalDevice;
 
         /// @brief The Vulkan queue family indices.
-        VulkanQueueFamilyIndices m_queueFamilyIndices;
+        u32 m_graphicsQueueFamilyIndex;
+
+        /// @brief The Vulkan present queue family index.
+        u32 m_presentQueueFamilyIndex;
 
         /// @brief The Vulkan logical device.
         VkDevice m_device;
@@ -130,12 +117,12 @@ namespace bns
         /// @brief The index of the current frame.
         u32 m_currentFrameIndex;
 
+        // TODO: remove, just for test
+        VkPipeline m_pipeline;
+
         /// @brief Setups and create an instance internally.
         /// @param requiredWindowExtensions The required window extensions. This should be provided by the window manager.
         void SetupInstance(const std::vector<std::string> &requiredWindowExtensions);
-
-        /// @brief Sets up the surface.
-        void SetupSurface();
 
         /// @brief Checks if the layer is supported.
         /// @param layer The layer to check.
@@ -153,69 +140,8 @@ namespace bns
                                                             const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
                                                             void *pUserData);
 
-        /// @brief Creates and setups the debug messenger.
-        void SetupDebugUtilsMessengerEXT();
-
-        /// @brief Finds the available devices and selects the best one.
-        void SetupPhysicalDevice();
-
-        /// @brief Sets up the queue family indices.
-        /// @param device The physical device.
-        /// @param outQueueFamilyIndices The queue family indices to set.
-        /// @return True if the queue family indices are valid, false otherwise.
-        bool FindValidQueueFamilyIndices(VkPhysicalDevice device, VulkanQueueFamilyIndices *outQueueFamilyIndices);
-
-        /// @brief Sets up the logical device.
-        void SetupLogicalDevice();
-
-        /// @brief Checks if the device extension is supported.
-        /// @param device The physical device.
-        /// @return True if the device extension is supported, false otherwise.
-        bool CheckDeviceExtensionSupport(VkPhysicalDevice device);
-
-        /// @brief Gets the swap chain support details.
-        /// @param device The physical device.
-        /// @return The swap chain support details.
-        VulkanSwapChainSupportDetails QuerySwapChainSupport(VkPhysicalDevice device);
-
-        /// @brief Chooses the swap surface format.
-        /// @param availableFormats The available formats.
-        /// @return The swap surface format.
-        VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR> &availableFormats);
-
-        /// @brief Chooses the swap present mode.
-        /// @param availablePresentModes The available present modes.
-        /// @return The swap present mode.
-        VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR> &availablePresentModes);
-
-        /// @brief Chooses the swap extent.
-        /// @param capabilities The capabilities.
-        /// @return The swap extent.
-        VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR &capabilities);
-
-        /// @brief Sets up the swap chain.
-        void SetupSwapChain();
-
-        /// @brief Sets up the swap chain image views.
-        void SetupSwapChainImageViews();
-
-        /// @brief Sets up the render pass.
-        void SetupRenderPass();
-
-        /// @brief Sets up the framebuffers.
-        void SetupFramebuffers();
-
-        /// @brief Sets up the command pool.
-        void SetupCommandPool();
-
-        /// @brief Sets up the command buffer.
-        void SetupCommandBuffer();
-
         /// @brief Records the command buffer.
         void RecordCommandBuffer(VkCommandBuffer commandBuffer, u32 imageIndex);
-
-        /// @brief Sets up the semaphores and fences.
-        void SetupSyncObjects();
 
         void Resize();
 

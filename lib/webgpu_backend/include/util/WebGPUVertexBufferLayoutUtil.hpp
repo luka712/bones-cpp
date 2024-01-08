@@ -2,14 +2,14 @@
 
 #define BNS_WEBGPU_VERTEX_BUFFER_LAYOUT_UTIL_HPP
 
-#include <webgpu/webgpu.h>
+#include "BnsWebGPU.hpp"
 #include <vector>
 #include <map>
 #include "buffer_layout/BufferLayoutData.hpp"
 
 namespace bns
 {
-    
+    /// @brief Utility class for creating @ref WGPUVertexBufferLayout structs
     class WebGPUVertexBufferLayoutUtil final
     {
     private:
@@ -18,15 +18,15 @@ namespace bns
             {VertexFormat::Float32x3, WGPUVertexFormat::WGPUVertexFormat_Float32x3},
             {VertexFormat::Float32x4, WGPUVertexFormat::WGPUVertexFormat_Float32x4}};
 
-        inline static std::map<StepMode, WGPUVertexStepMode> m_vertexStepModeMap = {
-            {StepMode::Vertex, WGPUVertexStepMode::WGPUVertexStepMode_Vertex}};
+        inline static std::map<VertexStepMode, WGPUVertexStepMode> m_vertexStepModeMap = {
+            {VertexStepMode::Vertex, WGPUVertexStepMode::WGPUVertexStepMode_Vertex}};
 
     public:
-        /**
-         * @brief Create a vertex buffer layout.
-         * @return The vertex buffer layout.
-         */
-        static WGPUVertexBufferLayout* Create(std::vector<BufferLayoutDescriptor> &descriptors);
+        /// @brief Creates an array of @see WGPUVertexBufferLayout
+        /// @param descriptors The buffer layout descriptors.
+        /// @param count The number of vertex buffer layouts that are created.
+        /// @return The created array of @see WGPUVertexBufferLayout
+        static WGPUVertexBufferLayout* Create(std::vector<BufferLayoutDescriptor> &descriptors, u32 *outCount);
 
         /**
          * @brief Delete the vertex buffer layouts and their attributes.

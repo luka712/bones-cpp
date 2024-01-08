@@ -7,10 +7,11 @@
 
 namespace bns
 {
-    VkFence VulkanFenceUtil::Create(VkDevice device)
+    VkFence VulkanFenceUtil::Create(VkDevice device, VkFenceCreateFlags createFlags)
     {
         VkFenceCreateInfo fenceCreateInfo = {};
         fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+        fenceCreateInfo.flags = createFlags;
 
         VkFence fence;
         if (vkCreateFence(device, &fenceCreateInfo, nullptr, &fence) != VK_SUCCESS)

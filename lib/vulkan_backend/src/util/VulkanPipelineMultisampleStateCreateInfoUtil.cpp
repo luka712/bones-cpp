@@ -17,6 +17,12 @@ namespace bns
 
         return createInfo;
     }
+
+    VkPipelineMultisampleStateCreateInfo VulkanPipelineMultisampleStateCreateInfoUtil::CreateMSAADisabled()
+    {
+        // create a default create info with no multisampling disabled.
+        return Create();
+    }
 } // namespace bns
 
-#endif 
+#endif
