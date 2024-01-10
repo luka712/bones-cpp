@@ -7,18 +7,22 @@
 
 namespace bns
 {
-    VkPipelineLayout VulkanPipelineLayoutUtil::Create(VkDevice device,  const std::vector<VkDescriptorSetLayout> &descriptorSetLayout)
+    VkPipelineLayout VulkanPipelineLayoutUtil::Create(VkDevice device,
+                                                      const std::vector<VkDescriptorSetLayout> &descriptorSetLayout,
+                                                      const std::vector<VkPushConstantRange> &pushConstantRanges)
     {
         VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
+
+        VkPushConstantRange pushConstantRange{};
 
         VkPipelineLayoutCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         createInfo.setLayoutCount = static_cast<u32>(descriptorSetLayout.size());
         createInfo.pSetLayouts = descriptorSetLayout.data();
-        createInfo.pushConstantRangeCount = 0; // Optional
-        createInfo.pPushConstantRanges = nullptr; // Optional
+        createInfo.pushConstantRangeCount = static_cast<u32>(pushConstantRanges.size());
+        createInfo.pPushConstantRanges = pushConstantRanges.data();
 
-        if(vkCreatePipelineLayout(device, &createInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
+        if (vkCreatePipelineLayout(device, &createInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
         {
             std::string msg = "VulkanPipelineLayoutUtil::Create: failed to create pipeline layout";
             LOG("%s", msg.c_str());
@@ -36,4 +40,4 @@ namespace bns
 
 } // namespace bns
 
-#endif 
+#endif

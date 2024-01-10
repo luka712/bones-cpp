@@ -11,6 +11,7 @@ namespace bns
         VkDevice device,
         const VkShaderModule &vertexShaderModule, const VkShaderModule &fragmentShaderModule,
         const VkRenderPass &renderPass,
+        const VkPipelineLayout &pipelineLayout,
         const VkExtent2D &swapchainExtent,
         std::string vertexShaderMainName,
         std::string fragmentShaderMainName,
@@ -60,10 +61,6 @@ namespace bns
             VK_DYNAMIC_STATE_LINE_WIDTH
         };
         VkPipelineDynamicStateCreateInfo dynamicState = VulkanUtil::PipelineDynamicStateCreateInfo.Create(dynamicStates);
-
-        // PIPELINE LAYOUT 
-        std::vector<VkDescriptorSetLayout> descriptorSetLayouts = {};
-        VkPipelineLayout pipelineLayout = VulkanUtil::PipelineLayout.Create(device, descriptorSetLayouts);
 
         LOG("VulkanPipelineUtil::Create: Created pipeline layout.\n");
 

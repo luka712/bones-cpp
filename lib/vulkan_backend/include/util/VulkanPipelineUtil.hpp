@@ -18,6 +18,7 @@ namespace bns
         /// @param vertexShaderModule The vertex shader module. 
         /// @param fragmentShaderModule The fragment shader module.
         /// @param renderPass The render pass.
+        /// @param pipelineLayout The pipeline layout.
         /// @param swapchainExtent The swapchain extent.
         /// @param vertexShaderMainName The vertex shader main name. By default it is "main".
         /// @param fragmentShaderMainName The fragment shader main name By default it is "main".
@@ -27,6 +28,7 @@ namespace bns
             VkDevice device,
             const VkShaderModule &vertexShaderModule, const VkShaderModule &fragmentShaderModule,
             const VkRenderPass &renderPass,
+            const VkPipelineLayout &pipelineLayout,
             const VkExtent2D& swapchainExtent,
             std::string vertexShaderMainName = "main", 
             std::string fragmentShaderMainName = "main",

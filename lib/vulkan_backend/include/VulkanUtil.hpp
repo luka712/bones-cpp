@@ -40,6 +40,7 @@
 #include "util/VulkanSwapChainKHRUtil.hpp"
 #include "util/VulkanImageViewUtil.hpp"
 #include "util/VulkanPipelineUtil.hpp"
+#include "util/VulkanPushConstantRangeUtil.hpp"
 
 namespace bns
 {
@@ -140,6 +141,9 @@ namespace bns
 
         /// @brief The @ref VulkanRenderPassBeginInfoUtil for working with @ref VkRenderPassBeginInfo
         static VulkanRenderPassBeginInfoUtil RenderPassBeginInfo;
+
+        /// @brief The @ref VulkanPushConstantRangeUtil for working with @ref VkPushConstantRange
+        static VulkanPushConstantRangeUtil PushConstantRange;
 
         /// @brief The @ref VulkanQueueCreateInfoUtil for working with @ref VkDeviceQueueCreateInfo
         static VulkanQueueCreateInfoUtil QueueCreateInfo;

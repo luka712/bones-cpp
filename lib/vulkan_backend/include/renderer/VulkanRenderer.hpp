@@ -119,6 +119,7 @@ namespace bns
 
         // TODO: remove, just for test
         VkPipeline m_pipeline;
+        VkPipelineLayout m_pipelineLayout;
 
         /// @brief Setups and create an instance internally.
         /// @param requiredWindowExtensions The required window extensions. This should be provided by the window manager.

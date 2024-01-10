@@ -6,6 +6,7 @@
 #include <set>
 #include <algorithm>
 #include "VulkanUtil.hpp"
+#include "Mat4x4.hpp"
 
 namespace bns
 {
@@ -134,7 +135,14 @@ namespace bns
 		// TEST PIPELINE
 		VkShaderModule vertShaderModule = VulkanUtil::ShaderModule.CreateFromSpirVFilepath(m_device, "shaders/vulkan/test/triangle_vs.spv");
 		VkShaderModule fragShaderModule = VulkanUtil::ShaderModule.CreateFromSpirVFilepath(m_device, "shaders/vulkan/test/triangle_fs.spv");
-		m_pipeline = VulkanUtil::Pipeline.Create(m_device, vertShaderModule, fragShaderModule, m_renderPass, m_swapChainExtent);
+
+        std::vector<VkDescriptorSetLayout> descriptorSetLayouts = {};
+        std::vector<VkPushConstantRange> pushConstantRanges = {
+			VulkanUtil::PushConstantRange.Create(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(f32) * 16)
+		};
+       	m_pipelineLayout = VulkanUtil::PipelineLayout.Create(m_device, descriptorSetLayouts, pushConstantRanges);
+
+		m_pipeline = VulkanUtil::Pipeline.Create(m_device, vertShaderModule, fragShaderModule, m_renderPass, m_pipelineLayout, m_swapChainExtent);
 
 		// FRAMEBUFFERS - setup framebuffers
 		m_framebuffers = VulkanUtil::Framebuffer.Create(m_device, m_renderPass, m_swapChainImageViews, m_swapChainExtent);
@@ -227,7 +235,13 @@ namespace bns
 
 		// DRAW
 		vkCmdBindPipeline(m_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline);
-		vkCmdDraw(m_commandBuffer, 3, 1, 0, 0);
+		
+		for(u32 i = 0; i < 3; i++)
+		{
+			Mat4x4f model = Mat4x4f::TranslationMatrix(i * 0.5f, 0.0f, 0.0f);
+			vkCmdPushConstants(m_commandBuffer, m_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(f32) * 16, &model);
+			vkCmdDraw(m_commandBuffer, 3, 1, 0, 0);
+		}
 	}
 
 	void VulkanRenderer::EndDraw()
