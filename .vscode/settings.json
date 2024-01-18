@@ -115,7 +115,8 @@
         "xmemory": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp",
-        "sdl2_extension.h": "c"
+        "sdl2_extension.h": "c",
+        "*.hpp11": "cpp"
     },
     "cmake.configureOnOpen": true
 }

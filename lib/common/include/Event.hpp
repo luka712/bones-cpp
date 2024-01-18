@@ -15,6 +15,9 @@ namespace bns
         /// @brief The window is to be closed.
         WindowClose,
 
+        /// @brief The window is resized.
+        WindowResize,
+
         /// @brief The keyboard key is pressed.
         KeyDown,
     };
@@ -24,6 +27,9 @@ namespace bns
         u32 U32;
         i32 I32;
 
+        u32 Vec2u[2];
+        i32 Vec2i[2];
+        
         EventData() = default;
 
         /// @brief Sets the u32 value.

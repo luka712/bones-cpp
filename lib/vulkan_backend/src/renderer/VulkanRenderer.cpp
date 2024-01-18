@@ -11,8 +11,10 @@
 namespace bns
 {
 	VulkanRenderer::VulkanRenderer(WindowManager *windowManager)
-		: m_windowManager(windowManager), m_instance(nullptr)
+		: m_windowManager(windowManager), m_instance(nullptr), m_swapchainOutOfDateFlag(false)
 	{
+		m_windowManager->RegisterToWindowResize([this](Vec2i size)
+												{ m_swapchainOutOfDateFlag = true; });
 	}
 
 	bool VulkanRenderer::IsLayerSupported(const std::string &layer)
@@ -39,13 +41,10 @@ namespace bns
 																 const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
 																 void *pUserData)
 	{
-		LOG("VulkanRenderer::DebugCallback: %s\n", pCallbackData->pMessage);
+		std::string msg = "VulkanRenderer::DebugCallback: " + std::string(pCallbackData->pMessage);
+		LOG(msg.c_str());
 
 		return VK_FALSE; // return true if the call should be aborted. This is almost never the case. We just want to log the error.
-	}
-
-	void VulkanRenderer::RecordCommandBuffer(VkCommandBuffer commandBuffer, u32 imageIndex)
-	{
 	}
 
 	void VulkanRenderer::Initialize(const std::vector<std::string> &requiredExtensions)
@@ -99,20 +98,10 @@ namespace bns
 		vkGetDeviceQueue(m_device, m_presentQueueFamilyIndex, 0, &m_presentQueue);
 
 		// SWAP CHAIN KHR
-		Vec2i windowSize = m_windowManager->GetWindowSize();
-		m_swapChain = VulkanUtil::SwapChainKHR.Create(m_physicalDevice,
-													  m_device,
-													  m_surface,
-													  windowSize.X, windowSize.Y,
-													  &m_swapChainImages,
-													  &m_swapChainImageFormat,
-													  &m_swapChainExtent);
+		CreateSwapchain();
 
 		// SWAP CHAIN IMAGE VIEWS
-		for (VkImage &image : m_swapChainImages)
-		{
-			m_swapChainImageViews.push_back(VulkanUtil::ImageView.Create(m_device, image, m_swapChainImageFormat));
-		}
+		CreateSwapchainImageViews();
 
 		// RENDER PASS
 		// Create the color attachment
@@ -136,16 +125,40 @@ namespace bns
 		VkShaderModule vertShaderModule = VulkanUtil::ShaderModule.CreateFromSpirVFilepath(m_device, "shaders/vulkan/test/triangle_vs.spv");
 		VkShaderModule fragShaderModule = VulkanUtil::ShaderModule.CreateFromSpirVFilepath(m_device, "shaders/vulkan/test/triangle_fs.spv");
 
-        std::vector<VkDescriptorSetLayout> descriptorSetLayouts = {};
-        std::vector<VkPushConstantRange> pushConstantRanges = {
-			VulkanUtil::PushConstantRange.Create(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(f32) * 16)
-		};
-       	m_pipelineLayout = VulkanUtil::PipelineLayout.Create(m_device, descriptorSetLayouts, pushConstantRanges);
+		std::vector<BufferLayoutDescriptor> layoutDescriptor(1);
+		layoutDescriptor[0].Stride = sizeof(Vec2f) + sizeof(Vec3f);
+		layoutDescriptor[0].Step = VertexStepMode::Vertex;
+		layoutDescriptor[0].Attributes = {
+			BufferLayoutAttributeDescriptor(VertexFormat::Float32x2),
+			BufferLayoutAttributeDescriptor(VertexFormat::Float32x3, 1, sizeof(Vec2f))};
 
-		m_pipeline = VulkanUtil::Pipeline.Create(m_device, vertShaderModule, fragShaderModule, m_renderPass, m_pipelineLayout, m_swapChainExtent);
+		std::vector<VkVertexInputBindingDescription> bindingDescriptions;
+		std::vector<VkVertexInputAttributeDescription> attributeDescriptions;
+		VulkanUtil::VertexInputBindingDescription.Create(layoutDescriptor, bindingDescriptions, attributeDescriptions);
+
+		VkPipelineVertexInputStateCreateInfo vertexInputInfo = VulkanUtil::PipelineVertexInputStateCreateInfo.Create(bindingDescriptions, attributeDescriptions);
+
+		std::vector<VkDescriptorSetLayout> descriptorSetLayouts = {};
+		std::vector<VkPushConstantRange> pushConstantRanges = {
+			VulkanUtil::PushConstantRange.Create(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(f32) * 16)};
+		m_pipelineLayout = VulkanUtil::PipelineLayout.Create(m_device, descriptorSetLayouts, pushConstantRanges);
+
+		m_pipeline = VulkanUtil::Pipeline.Create(m_device, vertShaderModule, fragShaderModule, vertexInputInfo, m_renderPass, m_pipelineLayout, m_swapChainExtent);
+
+		// VERTEX BUFFER
+		std::vector<f32> vertices = {
+			
+			-0.05f, 0.05f, 1.0f, 0.0f, 0.0f,
+			0.05f, 0.05f, 0.0f, 1.0f, 0.0f,
+			0.0f, -0.05f, 0.0f, 0.0f, 1.0f};
+
+		VkDeviceMemory vertexBufferMemory;
+		VkDeviceSize bufferSize = sizeof(f32) * vertices.size();
+		m_vertexBuffer = VulkanUtil::Buffer.CreateVertexBuffer(m_physicalDevice, m_device, bufferSize, &vertexBufferMemory);
+		VulkanUtil::Buffer.WriteToDeviceMemory(m_device, vertexBufferMemory, vertices.data(), bufferSize);
 
 		// FRAMEBUFFERS - setup framebuffers
-		m_framebuffers = VulkanUtil::Framebuffer.Create(m_device, m_renderPass, m_swapChainImageViews, m_swapChainExtent);
+		CreateFramebuffers();
 
 		// COMMAND POOL - setup command pool
 		m_commandPool = VulkanUtil::CommandPool.Create(m_device, m_graphicsQueueFamilyIndex);
@@ -174,19 +187,25 @@ namespace bns
 			throw std::runtime_error(msg);
 		}
 
-		// RESET FENCE - reset the fence to be unsignaled. This means that the GPU is now allowed to start rendering.
-		if (vkResetFences(m_device, 1, &m_inFlightFence) != VK_SUCCESS)
+		// ACQUIRE IMAGE INDEX - here we wait for the image to be available.
+		VkResult result = vkAcquireNextImageKHR(m_device, m_swapChain, 1000 * 1000, m_imageAvailableSemaphore, VK_NULL_HANDLE, &m_currentFrameIndex);
+		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || m_swapchainOutOfDateFlag)
 		{
-			std::string msg = "VulkanRenderer::BeginDraw: Failed to reset fence!";
+			RecreateSwapchain();
+			LOG("VulkanRenderer::BeginDraw: Swapchain out of date. Recreating swapchain.\n");
+		}
+		else if (result != VK_SUCCESS)
+		{
+			std::string msg = "VulkanRenderer::BeginDraw: Failed to acquire swap chain image!";
 			LOG(msg.c_str());
 			BREAKPOINT();
 			throw std::runtime_error(msg);
 		}
 
-		// ACQUIRE IMAGE INDEX - here we wait for the image to be available.
-		if (vkAcquireNextImageKHR(m_device, m_swapChain, UINT64_MAX, m_imageAvailableSemaphore, VK_NULL_HANDLE, &m_currentFrameIndex) != VK_SUCCESS)
+		// RESET FENCE - reset the fence to be unsignaled. This means that the GPU is now allowed to start rendering.
+		if (vkResetFences(m_device, 1, &m_inFlightFence) != VK_SUCCESS)
 		{
-			std::string msg = "VulkanRenderer::BeginDraw: Failed to acquire swap chain image!";
+			std::string msg = "VulkanRenderer::BeginDraw: Failed to reset fence!";
 			LOG(msg.c_str());
 			BREAKPOINT();
 			throw std::runtime_error(msg);
@@ -235,8 +254,12 @@ namespace bns
 
 		// DRAW
 		vkCmdBindPipeline(m_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline);
-		
-		for(u32 i = 0; i < 3; i++)
+
+		// BUFFER
+		VkDeviceSize offsets[] = {0};
+		vkCmdBindVertexBuffers(m_commandBuffer, 0, 1, &m_vertexBuffer, offsets);
+
+		for (u32 i = 0; i < 3; i++)
 		{
 			Mat4x4f model = Mat4x4f::TranslationMatrix(i * 0.5f, 0.0f, 0.0f);
 			vkCmdPushConstants(m_commandBuffer, m_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(f32) * 16, &model);
@@ -288,7 +311,19 @@ namespace bns
 		presentInfo.pResults = nullptr; // Optional
 
 		// PRESENT
-		vkQueuePresentKHR(m_presentQueue, &presentInfo);
+		VkResult result = vkQueuePresentKHR(m_presentQueue, &presentInfo);
+		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
+		{
+			RecreateSwapchain();
+			LOG("VulkanRenderer::EndDraw: Swapchain out of date. Recreating swapchain.");
+		}
+		else if (result != VK_SUCCESS)
+		{
+			std::string msg = "VulkanRenderer::EndDraw: Failed to present swap chain image!";
+			LOG(msg.c_str());
+			BREAKPOINT();
+			throw std::runtime_error(msg);
+		}
 	}
 
 	void VulkanRenderer::Destroy()
@@ -325,8 +360,60 @@ namespace bns
 		return nullptr;
 	}
 
-	void VulkanRenderer::Resize()
+	void VulkanRenderer::CreateSwapchain()
 	{
+		Vec2i windowSize = m_windowManager->GetWindowSize();
+		m_swapChain = VulkanUtil::SwapChainKHR.Create(m_physicalDevice,
+													  m_device,
+													  m_surface,
+													  windowSize.X, windowSize.Y,
+													  &m_swapChainImages,
+													  &m_swapChainImageFormat,
+													  &m_swapChainExtent);
+
+		m_currentFrameIndex = 0;
+	}
+
+	void VulkanRenderer::CreateSwapchainImageViews()
+	{
+		for (VkImage &image : m_swapChainImages)
+		{
+			m_swapChainImageViews.push_back(VulkanUtil::ImageView.Create(m_device, image, m_swapChainImageFormat));
+		}
+	}
+
+	void VulkanRenderer::CreateFramebuffers()
+	{
+		m_framebuffers = VulkanUtil::Framebuffer.Create(m_device, m_renderPass, m_swapChainImageViews, m_swapChainExtent);
+	}
+
+	void VulkanRenderer::RecreateSwapchain()
+	{
+		m_swapchainOutOfDateFlag = false;
+
+		// DESTROY OLD RESOURCES - destroy old framebuffers, imageview, swapchain, images
+		for (VkFramebuffer &framebuffer : m_framebuffers)
+		{
+			vkDestroyFramebuffer(m_device, framebuffer, nullptr);
+		}
+		m_framebuffers.clear();
+
+		for (VkImageView &imageView : m_swapChainImageViews)
+		{
+			vkDestroyImageView(m_device, imageView, nullptr);
+		}
+		m_swapChainImageViews.clear();
+
+		// images just need to be cleared
+		m_swapChainImages.clear();
+
+		vkDestroySwapchainKHR(m_device, m_swapChain, nullptr);
+
+		vkDeviceWaitIdle(m_device);
+
+		CreateSwapchain();
+		CreateSwapchainImageViews();
+		CreateFramebuffers();
 	}
 }
 

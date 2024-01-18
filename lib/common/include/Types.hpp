@@ -7,7 +7,7 @@
 #if LOGGING_ENABLED
 #include <stdio.h>
 /// @brief Log if LOGGING_ENABLED is true
-#define LOG(...) printf(__VA_ARGS__)
+#define LOG(...) printf("%s\n", __VA_ARGS__)
 #else 
 /// @brief Log if LOGGING_ENABLED is true
 #define LOG(...)

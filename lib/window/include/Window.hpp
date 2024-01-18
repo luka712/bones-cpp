@@ -7,6 +7,7 @@
 #include <string>
 #include "Event.hpp"
 #include <functional>
+#include <vector>
 
 #if USE_METAL
 #include "BnsMetal.hpp"
@@ -60,6 +61,9 @@ namespace bns
         {
         protected:
                 Events *m_events;
+
+                /// @brief The window resize event callbacks.
+                std::vector<std::function<void(Vec2i size)>> m_windowResizeEventCallbacks;
 
                 /// @brief The update callback.
                 std::function<void()> m_updateCallback;
@@ -123,7 +127,6 @@ namespace bns
                 /// @return The vulkan surface.
                 virtual VkSurfaceKHR CreateVulkanSurface(VkInstance instance) = 0;
 #endif
-
                 /// @brief Starts the window event loop and calls the update and draw callbacks.
                 virtual void RunEventLoop() = 0;
 
@@ -132,6 +135,10 @@ namespace bns
 
                 /// @brief Destroy the window.
                 virtual void Destroy() = 0;
+
+                /// @brief Register to the window resize event.
+                /// @param callback The callback.
+                void RegisterToWindowResize(std::function<void(Vec2i size)> callback);
         };
 
 } // namespace BNS

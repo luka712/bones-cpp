@@ -19,4 +19,8 @@ namespace bns
     {
     }
 
+    void WindowManager::RegisterToWindowResize(std::function<void(Vec2i size)> callback)
+    {
+        m_windowResizeEventCallbacks.push_back(callback);
+    }
 }

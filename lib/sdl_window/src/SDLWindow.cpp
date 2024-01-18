@@ -231,7 +231,7 @@ namespace bns
 
     void SDLWindowManager::InitializeForVulkan(WindowParameters windowParameters, std::vector<std::string> *outRequiredExtensions)
     {
-        CreateSDLWindowAndRenderer(windowParameters, SDL_WINDOW_VULKAN);
+        CreateSDLWindowAndRenderer(windowParameters, SDL_WINDOW_VULKAN | SDL_WINDOW_RESIZABLE);
 
         // Get the extensions count. We need the count to allocate the array of extensions.
         u32 extensionCount = 0;
@@ -299,12 +299,42 @@ namespace bns
                     m_events->AddEvent(EventType::WindowClose);
                     Quit = true;
                 }
+                else if(event.type == SDL_WINDOWEVENT)
+                {
+                    switch (event.window.event)
+                    {
+                    case SDL_WINDOWEVENT_RESIZED:
+                    {
+                        // Create event
+                        EventData data;
+                        data.Vec2i[0] = event.window.data1;
+                        data.Vec2i[1] = event.window.data2;
+                        m_events->AddEvent(EventType::WindowResize, data);
+                        
+                        // We also have callback, call here.
+                        for(auto& callback : m_windowResizeEventCallbacks)
+                        {
+                            callback(Vec2i(event.window.data1, event.window.data2));
+                        }
+                        break;
+                    }
+                    case SDL_WINDOWEVENT_CLOSE:
+                    {
+                        m_events->AddEvent(EventType::WindowClose);
+                        Quit = true;
+                        break;
+                    }
+                    default:
+                        break;
+                    }
+                }
                 else if (event.type == SDL_KEYDOWN)
                 {
                     EventData data;
                     data.I32 = event.key.keysym.sym;
                     m_events->AddEvent(EventType::KeyDown, data);
                 }
+                
             }
 
             // TODO: update 60 times per second, for draw allow drop frames

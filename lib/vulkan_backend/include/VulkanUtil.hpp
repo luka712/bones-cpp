@@ -41,6 +41,7 @@
 #include "util/VulkanImageViewUtil.hpp"
 #include "util/VulkanPipelineUtil.hpp"
 #include "util/VulkanPushConstantRangeUtil.hpp"
+#include "util/VulkanBUfferUtil.hpp"
 
 namespace bns
 {
@@ -54,6 +55,9 @@ namespace bns
 
         /// @brief The @ref VulkanAttachmentReferenceUtil for working with @ref VkAttachmentReference
         static VulkanAttachmentReferenceUtil AttachmentReference;
+
+        /// @brief The @ref VulkanBufferUtil for working with @ref VkBuffer
+        static VulkanBufferUtil Buffer;
 
         /// @brief The @ref VulkanCommandBufferUtil for working with @ref VkCommandBuffer
         static VulkanCommandBufferUtil CommandBuffer;

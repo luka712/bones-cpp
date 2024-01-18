@@ -10,6 +10,7 @@ namespace bns
     VkPipeline VulkanPipelineUtil::Create(
         VkDevice device,
         const VkShaderModule &vertexShaderModule, const VkShaderModule &fragmentShaderModule,
+        const VkPipelineVertexInputStateCreateInfo& vertexInputInfo,
         const VkRenderPass &renderPass,
         const VkPipelineLayout &pipelineLayout,
         const VkExtent2D &swapchainExtent,
@@ -17,15 +18,6 @@ namespace bns
         std::string fragmentShaderMainName,
         FrontFace frontFace)
     {
-        // VERTEX INPUT INFO - TODO: needs to be passed in
-        VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
-        vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        vertexInputInfo.pNext = nullptr;
-        vertexInputInfo.vertexBindingDescriptionCount = 0;
-        vertexInputInfo.pVertexBindingDescriptions = nullptr; // Optional
-        vertexInputInfo.vertexAttributeDescriptionCount = 0;
-        vertexInputInfo.pVertexAttributeDescriptions = nullptr; // Optional
-
         // SHADER STAGE INFO
         VkPipelineShaderStageCreateInfo shadersStagesInfo[2];
         VulkanUtil::PipelineShaderStageCreateInfo.SetVertexStageInfo(shadersStagesInfo[0], vertexShaderModule);

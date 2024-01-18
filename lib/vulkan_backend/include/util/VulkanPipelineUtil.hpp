@@ -17,6 +17,7 @@ namespace bns
         /// @param device The device.
         /// @param vertexShaderModule The vertex shader module. 
         /// @param fragmentShaderModule The fragment shader module.
+        /// @param vertexInputInfo The vertex input info. This is used to specify the vertex input format.
         /// @param renderPass The render pass.
         /// @param pipelineLayout The pipeline layout.
         /// @param swapchainExtent The swapchain extent.
@@ -27,6 +28,7 @@ namespace bns
         static VkPipeline Create(
             VkDevice device,
             const VkShaderModule &vertexShaderModule, const VkShaderModule &fragmentShaderModule,
+            const VkPipelineVertexInputStateCreateInfo& vertexInputInfo,
             const VkRenderPass &renderPass,
             const VkPipelineLayout &pipelineLayout,
             const VkExtent2D& swapchainExtent,

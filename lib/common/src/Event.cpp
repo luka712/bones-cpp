@@ -2,8 +2,9 @@
 
 namespace bns
 {
-    EventData::EventData(u32 u32) : U32(u32)
+    EventData::EventData(u32 u32)
     {
+        U32 = u32;
     }
 
     Event::Event(EventType type, EventData data) : m_type(type), m_data(data)

@@ -245,6 +245,12 @@ namespace bns
 
         return swapChain;
     }
+
+    void VulkanSwapChainKHRUtil::Destroy(const VkDevice &device, VkSwapchainKHR swapchain)
+    {
+        vkDestroySwapchainKHR(device, swapchain, nullptr);
+        LOG("VulkanSwapChainKHRUtil::Destroy: Swapchain destroyed.\n");
+    }
 }
 
 #endif

@@ -46,7 +46,7 @@ namespace bns
         /// @brief The required device extensions.
         /// @note This is the minimum required device extensions.
         /// @note Must support swap chain.
-        const std::vector<std::string> m_deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME}; 
+        const std::vector<std::string> m_deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
 
         /// @brief The Vulkan instance.
         VkInstance m_instance;
@@ -117,13 +117,26 @@ namespace bns
         /// @brief The index of the current frame.
         u32 m_currentFrameIndex;
 
+        /// @brief The resize flag.
+        bool m_swapchainOutOfDateFlag;
+
         // TODO: remove, just for test
         VkPipeline m_pipeline;
         VkPipelineLayout m_pipelineLayout;
+        VkBuffer m_vertexBuffer;
 
         /// @brief Setups and create an instance internally.
         /// @param requiredWindowExtensions The required window extensions. This should be provided by the window manager.
         void SetupInstance(const std::vector<std::string> &requiredWindowExtensions);
+
+        /// @brief Creates the swapchain.
+        void CreateSwapchain();
+
+        /// @brief Creates the swapchain image views.
+        void CreateSwapchainImageViews();
+
+        /// @brief Creates the framebuffers.
+        void CreateFramebuffers();
 
         /// @brief Checks if the layer is supported.
         /// @param layer The layer to check.
@@ -141,10 +154,9 @@ namespace bns
                                                             const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
                                                             void *pUserData);
 
-        /// @brief Records the command buffer.
-        void RecordCommandBuffer(VkCommandBuffer commandBuffer, u32 imageIndex);
-
-        void Resize();
+        /// @brief Recreate swapchain when needed, such as resize.
+        /// @note Also called when @ref vkAcquireNextImageKHR returns VK_ERROR_OUT_OF_DATE_KHR.
+        void RecreateSwapchain();
 
     public:
         /// @brief Gets the renderer type.

@@ -81,7 +81,11 @@ namespace bns
                                      std::vector<VkImage> *outImages,
                                      VkFormat *outFormat,
                                      VkExtent2D *outExtent);
-        
+
+        /// @brief Destroy the swapchain.
+        /// @param device The device.
+        /// @param swapchain The swapchain.
+        static void Destroy(const VkDevice &device, VkSwapchainKHR swapchain);
     };
 }
 

@@ -30,7 +30,7 @@ namespace bns
         Float32x1,
         Float32x2,
         Float32x3,
-        Float32x4
+        Float32x4,
     };
 
     /// @brief The cull mode.
