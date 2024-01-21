@@ -20,6 +20,16 @@ namespace bns
         /// @return The created buffer
         static VkBuffer CreateVertexBuffer(const VkPhysicalDevice& physicalDevice, const VkDevice &device, VkDeviceSize size, VkDeviceMemory *outDeviceMemory);
 
+   
+        /// @brief Creates a @ref VkBuffer
+        /// @param physicalDevice The physical device to create the buffer on
+        /// @param device The device to create the buffer on
+        /// @param size The size of the buffer
+        /// @param outDeviceMemory The created memory for the buffer
+        /// @return The created buffer
+        static VkBuffer CreateUniformBuffer(const VkPhysicalDevice& physicalDevice, const VkDevice &device, VkDeviceSize size, VkDeviceMemory *outDeviceMemory);
+
+
         /// @brief Creates a @ref VkDeviceMemory for a @ref VkBuffer
         /// @param physicalDevice The physical device to create the memory on
         /// @param device The device to create the memory on

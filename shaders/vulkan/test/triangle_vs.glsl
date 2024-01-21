@@ -9,7 +9,9 @@ layout(push_constant) uniform constants {
     mat4 model;
 } ObjectData;
 
+layout (binding = 0) uniform mat4 projectionView;
+
 void main() {
-	gl_Position = ObjectData.model * vec4(vertexPosition, 0.0, 1.0);
+	gl_Position = projectionView * ObjectData.model * vec4(vertexPosition, 0.0, 1.0);
 	fragColor = vertexColor;
 }

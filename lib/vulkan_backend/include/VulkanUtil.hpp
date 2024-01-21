@@ -42,6 +42,9 @@
 #include "util/VulkanPipelineUtil.hpp"
 #include "util/VulkanPushConstantRangeUtil.hpp"
 #include "util/VulkanBUfferUtil.hpp"
+#include "util/VulkanDescriptorSetLayoutUtil.hpp"
+#include "util/VulkanDescriptorPoolUtil.hpp"
+#include "util/VulkanDescriptorSetUtil.hpp"
 
 namespace bns
 {
@@ -71,8 +74,17 @@ namespace bns
         /// @brief The @ref VulkanDebugUtilsMessengerEXTUtil for working with @ref VkDebugUtilsMessengerEXT
         static VulkanDebugUtilsMessengerEXTUtil DebugUtilsMessengerEXT;
 
+        /// @brief The @ref VulkanDescriptorSetUtil for working with @ref VkDescriptorSet
+        static VulkanDescriptorSetUtil DescriptorSet;
+
         /// @brief The @ref VulkanDescriptorSetLayoutBindingUtil for working with @ref VkDescriptorSetLayoutBinding
         static VulkanDescriptorSetLayoutBindingUtil DescriptorSetLayoutBinding;
+
+        /// @brief The @ref VulkanDescriptorSetLayoutUtil for working with @ref VkDescriptorSetLayout
+        static VulkanDescriptorSetLayoutUtil DescriptorSetLayout;
+
+        /// @brief The @ref VulkanDescriptorPoolUtil for working with @ref VkDescriptorPool
+        static VulkanDescriptorPoolUtil DescriptorPool;
 
         /// @brief The @ref VulkanDeviceUtil for working with @ref VkDevice
         static VulkanDeviceUtil Device;

@@ -124,6 +124,7 @@ namespace bns
         VkPipeline m_pipeline;
         VkPipelineLayout m_pipelineLayout;
         VkBuffer m_vertexBuffer;
+        VkDescriptorSet m_descriptorSet;
 
         /// @brief Setups and create an instance internally.
         /// @param requiredWindowExtensions The required window extensions. This should be provided by the window manager.

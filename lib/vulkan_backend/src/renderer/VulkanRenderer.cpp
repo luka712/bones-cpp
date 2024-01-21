@@ -125,6 +125,7 @@ namespace bns
 		VkShaderModule vertShaderModule = VulkanUtil::ShaderModule.CreateFromSpirVFilepath(m_device, "shaders/vulkan/test/triangle_vs.spv");
 		VkShaderModule fragShaderModule = VulkanUtil::ShaderModule.CreateFromSpirVFilepath(m_device, "shaders/vulkan/test/triangle_fs.spv");
 
+		// TEST VERTEX DATA
 		std::vector<BufferLayoutDescriptor> layoutDescriptor(1);
 		layoutDescriptor[0].Stride = sizeof(Vec2f) + sizeof(Vec3f);
 		layoutDescriptor[0].Step = VertexStepMode::Vertex;
@@ -138,16 +139,32 @@ namespace bns
 
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo = VulkanUtil::PipelineVertexInputStateCreateInfo.Create(bindingDescriptions, attributeDescriptions);
 
-		std::vector<VkDescriptorSetLayout> descriptorSetLayouts = {};
+		std::vector<VkDescriptorSetLayoutBinding> viewMatrixUniformBinding = {
+			VulkanUtil::DescriptorSetLayoutBinding.CreateUniformForVertexStage(0)};
+		std::vector<VkDescriptorSetLayout> descriptorSetLayouts = {
+			VulkanUtil::DescriptorSetLayout.Create(m_device, viewMatrixUniformBinding)};
 		std::vector<VkPushConstantRange> pushConstantRanges = {
 			VulkanUtil::PushConstantRange.Create(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(f32) * 16)};
+
 		m_pipelineLayout = VulkanUtil::PipelineLayout.Create(m_device, descriptorSetLayouts, pushConstantRanges);
 
+		Mat4x4f viewMatrix = Mat4x4f::Identity();
+
+		VkDeviceMemory projectionViewBufferMemory;
+		VkBuffer projectionViewBuffer = VulkanUtil::Buffer.CreateUniformBuffer(m_physicalDevice, m_device, sizeof(Mat4x4f), &projectionViewBufferMemory);
+		VulkanUtil::Buffer.WriteToDeviceMemory(m_device, projectionViewBufferMemory, &viewMatrix, sizeof(Mat4x4f));
+
+		VkDescriptorPool descriptorPool = VulkanUtil::DescriptorPool.CreateForUniformBuffer(m_device, GetFramesInFlight());
+		std::vector<VkDescriptorSet> descriptorSets = VulkanUtil::DescriptorSet.Create(m_device, descriptorPool, descriptorSetLayouts, GetFramesInFlight());
+
+		VulkanUtil::DescriptorSet.UpdateUniform(m_device, descriptorSets[0], 0, projectionViewBuffer, sizeof(Mat4x4f));
+
+		m_descriptorSet = descriptorSets[0];
+	
 		m_pipeline = VulkanUtil::Pipeline.Create(m_device, vertShaderModule, fragShaderModule, vertexInputInfo, m_renderPass, m_pipelineLayout, m_swapChainExtent);
 
 		// VERTEX BUFFER
 		std::vector<f32> vertices = {
-			
 			-0.05f, 0.05f, 1.0f, 0.0f, 0.0f,
 			0.05f, 0.05f, 0.0f, 1.0f, 0.0f,
 			0.0f, -0.05f, 0.0f, 0.0f, 1.0f};
@@ -258,6 +275,9 @@ namespace bns
 		// BUFFER
 		VkDeviceSize offsets[] = {0};
 		vkCmdBindVertexBuffers(m_commandBuffer, 0, 1, &m_vertexBuffer, offsets);
+
+		// UNIFORM
+		vkCmdBindDescriptorSets(m_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSet, 0, nullptr);
 
 		for (u32 i = 0; i < 3; i++)
 		{

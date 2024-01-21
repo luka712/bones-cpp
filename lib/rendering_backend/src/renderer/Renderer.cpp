@@ -7,6 +7,9 @@ namespace bns
     {
         ClearColor = Color::LightPink();
         FrontFace = FrontFace::CounterClockwise;
+
+        // Two frames in flight by default, for double buffering.
+        m_framesInFlight = 2; 
     }
 
     void Renderer::SetRenderTexture(Texture2D *texture)

@@ -34,6 +34,32 @@ namespace bns
         return buffer;
     }
 
+    VkBuffer VulkanBufferUtil::CreateUniformBuffer(
+        const VkPhysicalDevice &physicalDevice,
+        const VkDevice &device,
+        VkDeviceSize size,
+        VkDeviceMemory *outDeviceMemory)
+    {
+        VkBufferCreateInfo bufferCreateInfo = {};
+        bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        bufferCreateInfo.size = size;
+        bufferCreateInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+        bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+        VkBuffer buffer;
+        if (vkCreateBuffer(device, &bufferCreateInfo, nullptr, &buffer) != VK_SUCCESS)
+        {
+            std::string msg = "VulkanBufferUtil::CreateUniformBuffer: Failed to create uniform buffer";
+            LOG("%s", msg.c_str());
+            BREAKPOINT();
+            throw std::runtime_error(msg);
+        }
+
+        *outDeviceMemory = AllocateBufferMemory(physicalDevice, device, buffer);
+
+        return buffer;
+    }
+
     VkDeviceMemory VulkanBufferUtil::AllocateBufferMemory(const VkPhysicalDevice &physicalDevice, const VkDevice &device, VkBuffer &buffer)
     {
         // Get memory requirements

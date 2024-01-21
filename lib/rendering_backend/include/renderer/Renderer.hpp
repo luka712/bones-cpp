@@ -35,6 +35,9 @@ namespace bns
         /// @note This texture is used for bloom effect.
         Texture2D *m_brightnessTexture = nullptr;
 
+        /// @brief The number of frames in flight.
+        u32 m_framesInFlight;
+
         /// @brief The size of the render buffer.
         Vec2i m_bufferSize;
 
@@ -51,6 +54,9 @@ namespace bns
 
         /// @brief Get the buffer size.
         const Vec2i &GetBufferSize() const { return m_bufferSize; }
+
+        /// @brief The number of frames in flight.
+        const u32 GetFramesInFlight() const { return m_framesInFlight; }
 
         /// @brief Gets the renderer type.
         /// @return The renderer type.
