@@ -5,33 +5,45 @@
 #include <string>
 #include "Types.hpp"
 #include "BnsVulkan.hpp"
+#include "VulkanUtil.hpp"
 
 namespace bns
 {
+    VkBuffer VulkanBufferUtil::Create(
+        const VkPhysicalDevice &physicalDevice,
+        const VkDevice &device,
+        VkDeviceSize size,
+        VkBufferUsageFlags usage,
+        VkDeviceMemory *outDeviceMemory,
+        VkMemoryPropertyFlags memoryPropertyFlags)
+    {
+        VkBuffer buffer;
+        VkBufferCreateInfo bufferCreateInfo = {};
+        bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        bufferCreateInfo.size = size;
+        bufferCreateInfo.usage = usage;
+        bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+        if (vkCreateBuffer(device, &bufferCreateInfo, nullptr, &buffer) != VK_SUCCESS)
+        {
+            std::string msg = "VulkanBufferUtil::Create: Failed to create buffer.";
+            LOG("%s", msg.c_str());
+            BREAKPOINT();
+            throw std::runtime_error(msg);
+        }
+
+        *outDeviceMemory = VulkanUtil::DeviceMemory.AllocateBufferMemory(physicalDevice, device, buffer, memoryPropertyFlags);
+
+        return buffer;
+    }
+
     VkBuffer VulkanBufferUtil::CreateVertexBuffer(
         const VkPhysicalDevice &physicalDevice,
         const VkDevice &device,
         VkDeviceSize size,
         VkDeviceMemory *outDeviceMemory)
     {
-        VkBufferCreateInfo bufferCreateInfo = {};
-        bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-        bufferCreateInfo.size = size;
-        bufferCreateInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-        bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-        VkBuffer buffer;
-        if (vkCreateBuffer(device, &bufferCreateInfo, nullptr, &buffer) != VK_SUCCESS)
-        {
-            std::string msg = "VulkanBufferUtil::CreateVertexBuffer: Failed to create vertex buffer";
-            LOG("%s", msg.c_str());
-            BREAKPOINT();
-            throw std::runtime_error(msg);
-        }
-
-        *outDeviceMemory = AllocateBufferMemory(physicalDevice, device, buffer);
-
-        return buffer;
+        return Create(physicalDevice, device, size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, outDeviceMemory);
     }
 
     VkBuffer VulkanBufferUtil::CreateUniformBuffer(
@@ -40,76 +52,59 @@ namespace bns
         VkDeviceSize size,
         VkDeviceMemory *outDeviceMemory)
     {
-        VkBufferCreateInfo bufferCreateInfo = {};
-        bufferCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-        bufferCreateInfo.size = size;
-        bufferCreateInfo.usage = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
-        bufferCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-        VkBuffer buffer;
-        if (vkCreateBuffer(device, &bufferCreateInfo, nullptr, &buffer) != VK_SUCCESS)
-        {
-            std::string msg = "VulkanBufferUtil::CreateUniformBuffer: Failed to create uniform buffer";
-            LOG("%s", msg.c_str());
-            BREAKPOINT();
-            throw std::runtime_error(msg);
-        }
-
-        *outDeviceMemory = AllocateBufferMemory(physicalDevice, device, buffer);
-
-        return buffer;
+        return Create(physicalDevice, device, size, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, outDeviceMemory);
     }
 
-    VkDeviceMemory VulkanBufferUtil::AllocateBufferMemory(const VkPhysicalDevice &physicalDevice, const VkDevice &device, VkBuffer &buffer)
+    VkBuffer VulkanBufferUtil::CreateStagingBuffer(
+        const VkPhysicalDevice &physicalDevice,
+        const VkDevice &device,
+        VkDeviceSize size,
+        VkDeviceMemory *outDeviceMemory)
     {
-        // Get memory requirements
-        VkMemoryRequirements memoryRequirements;
-        vkGetBufferMemoryRequirements(device, buffer, &memoryRequirements);
-
-        // Get memory properties
-        VkPhysicalDeviceMemoryProperties memProperties;
-        vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
-
-        // Find memory type index
-        u32 memoryTypeIndex = 0;
-        u32 typeFilter = memoryRequirements.memoryTypeBits;
-        u32 properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-        for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
-        {
-            if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties)
-            {
-                {
-                    memoryTypeIndex = i;
-                    break;
-                }
-            }
-        }
-
-        VkMemoryAllocateInfo memoryAllocateInfo = {};
-        memoryAllocateInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-        memoryAllocateInfo.allocationSize = memoryRequirements.size;
-        memoryAllocateInfo.memoryTypeIndex = memoryTypeIndex;
-
-        VkDeviceMemory memory;
-        if (vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &memory) != VK_SUCCESS)
-        {
-            std::string msg = "VulkanBufferUtil::AllocateBufferMemory: Failed to allocate buffer memory";
-            LOG("%s", msg.c_str());
-            BREAKPOINT();
-            throw std::runtime_error(msg);
-        }
-
-        vkBindBufferMemory(device, buffer, memory, 0);
-
-        return memory;
+        return Create(physicalDevice, device, size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, outDeviceMemory);
     }
 
-    void VulkanBufferUtil::WriteToDeviceMemory(const VkDevice &device, VkDeviceMemory &deviceMemory, void *data, VkDeviceSize size)
+    void VulkanBufferUtil::CopyBuffer(const VkDevice &device,
+                                      const VkCommandPool &commandPool,
+                                      const VkQueue &queue,
+                                      const VkBuffer &srcBuffer,
+                                      const VkBuffer &dstBuffer,
+                                      VkDeviceSize size)
     {
-        void *mappedMemory;
-        vkMapMemory(device, deviceMemory, 0, size, 0, &mappedMemory);
-        memcpy(mappedMemory, data, size);
-        vkUnmapMemory(device, deviceMemory);
+        // we need to create a command buffer to copy the buffer. This will allocate and destroy the command buffer.
+        VulkanUtil::CommandBuffer.SingleTimeCommand(device, commandPool, queue,
+                                                    [&](const VkCommandBuffer &commandBuffer)
+                                                    {
+                                                        VkBufferCopy copyRegion = {};
+                                                        copyRegion.size = size;
+                                                        vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
+                                                    });
+    }
+
+    void VulkanBufferUtil::CopyBufferToImage(const VkDevice &device,
+                                             const VkCommandPool &commandPool,
+                                             const VkQueue &queue,
+                                             const VkBuffer &srcBuffer,
+                                             const VkImage &dstImage,
+                                             u32 width, u32 height)
+    {
+        // we need to create a command buffer to copy the buffer. This will allocate and destroy the command buffer.
+        VulkanUtil::CommandBuffer.SingleTimeCommand(device, commandPool, queue,
+                                                    [&](const VkCommandBuffer &commandBuffer)
+                                                    {
+                                                        VkBufferImageCopy region = {};
+                                                        region.bufferOffset = 0;
+                                                        region.bufferRowLength = 0;
+                                                        region.bufferImageHeight = 0;
+                                                        region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+                                                        region.imageSubresource.mipLevel = 0;
+                                                        region.imageSubresource.baseArrayLayer = 0;
+                                                        region.imageSubresource.layerCount = 1;
+                                                        region.imageOffset = {0, 0, 0};
+                                                        region.imageExtent = {width, height, 1};
+
+                                                        vkCmdCopyBufferToImage(commandBuffer, srcBuffer, dstImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+                                                    });
     }
 
     void VulkanBufferUtil::Destroy(VkDevice &device, VkBuffer &buffer)
@@ -117,10 +112,6 @@ namespace bns
         vkDestroyBuffer(device, buffer, nullptr);
     }
 
-    void VulkanBufferUtil::Free(VkDevice &device, VkDeviceMemory &memory)
-    {
-        vkFreeMemory(device, memory, nullptr);
-    }
 }
 
 #endif

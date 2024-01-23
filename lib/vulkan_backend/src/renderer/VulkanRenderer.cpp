@@ -7,6 +7,8 @@
 #include <algorithm>
 #include "VulkanUtil.hpp"
 #include "Mat4x4.hpp"
+#include "ImageLoader.hpp"
+#include "texture/VulkanTexture2D.hpp"
 
 namespace bns
 {
@@ -119,6 +121,9 @@ namespace bns
 		std::vector<VkSubpassDescription> subpasses = {subpass};
 		m_renderPass = VulkanUtil::RenderPass.Create(m_device, attachments, subpasses);
 
+		// COMMAND POOL - setup command pool
+		m_commandPool = VulkanUtil::CommandPool.Create(m_device, m_graphicsQueueFamilyIndex);
+
 		LOG("VulkanRenderer::SetupRenderPass: Render pass created.\n");
 
 		// TEST PIPELINE
@@ -152,7 +157,7 @@ namespace bns
 
 		VkDeviceMemory projectionViewBufferMemory;
 		VkBuffer projectionViewBuffer = VulkanUtil::Buffer.CreateUniformBuffer(m_physicalDevice, m_device, sizeof(Mat4x4f), &projectionViewBufferMemory);
-		VulkanUtil::Buffer.WriteToDeviceMemory(m_device, projectionViewBufferMemory, &viewMatrix, sizeof(Mat4x4f));
+		VulkanUtil::DeviceMemory.Map(m_device, projectionViewBufferMemory, &viewMatrix, sizeof(Mat4x4f));
 
 		VkDescriptorPool descriptorPool = VulkanUtil::DescriptorPool.CreateForUniformBuffer(m_device, GetFramesInFlight());
 		std::vector<VkDescriptorSet> descriptorSets = VulkanUtil::DescriptorSet.Create(m_device, descriptorPool, descriptorSetLayouts, GetFramesInFlight());
@@ -160,7 +165,13 @@ namespace bns
 		VulkanUtil::DescriptorSet.UpdateUniform(m_device, descriptorSets[0], 0, projectionViewBuffer, sizeof(Mat4x4f));
 
 		m_descriptorSet = descriptorSets[0];
-	
+
+		// TEXTURE 
+		ImageLoader imageLoader;
+		ImageData *imageData = imageLoader.LoadImage("assets/uv_test.png");
+		VulkanTexture2D texture(m_physicalDevice, m_device, m_commandPool, m_graphicsQueue, imageData, VK_IMAGE_USAGE_SAMPLED_BIT, TextureFormat::BGRA_8_Unorm);
+		texture.Initialize();
+
 		m_pipeline = VulkanUtil::Pipeline.Create(m_device, vertShaderModule, fragShaderModule, vertexInputInfo, m_renderPass, m_pipelineLayout, m_swapChainExtent);
 
 		// VERTEX BUFFER
@@ -172,13 +183,12 @@ namespace bns
 		VkDeviceMemory vertexBufferMemory;
 		VkDeviceSize bufferSize = sizeof(f32) * vertices.size();
 		m_vertexBuffer = VulkanUtil::Buffer.CreateVertexBuffer(m_physicalDevice, m_device, bufferSize, &vertexBufferMemory);
-		VulkanUtil::Buffer.WriteToDeviceMemory(m_device, vertexBufferMemory, vertices.data(), bufferSize);
+		VulkanUtil::DeviceMemory.Map(m_device, vertexBufferMemory, vertices.data(), bufferSize);
 
 		// FRAMEBUFFERS - setup framebuffers
 		CreateFramebuffers();
 
-		// COMMAND POOL - setup command pool
-		m_commandPool = VulkanUtil::CommandPool.Create(m_device, m_graphicsQueueFamilyIndex);
+	;
 
 		// COMMAND BUFFER - setup command buffer
 		m_commandBuffer = VulkanUtil::CommandBuffer.Create(m_device, m_commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY);

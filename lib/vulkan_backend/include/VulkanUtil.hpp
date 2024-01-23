@@ -45,6 +45,9 @@
 #include "util/VulkanDescriptorSetLayoutUtil.hpp"
 #include "util/VulkanDescriptorPoolUtil.hpp"
 #include "util/VulkanDescriptorSetUtil.hpp"
+#include "util/VulkanDeviceMemory.hpp"
+#include "util/VulkanImageUtil.hpp"
+#include "util/VulkanImageLayoutUtil.hpp"
 
 namespace bns
 {
@@ -89,6 +92,9 @@ namespace bns
         /// @brief The @ref VulkanDeviceUtil for working with @ref VkDevice
         static VulkanDeviceUtil Device;
 
+        /// @brief The @ref VulkanDeviceMemoryUtil for working with @ref VkDeviceMemory
+        static VulkanDeviceMemoryUtil DeviceMemory;
+
         /// @brief The @ref VulkanDeviceQueueCreateInfoUtil for working with @ref VkDeviceQueueCreateInfo
         static VulkanDeviceQueueCreateInfoUtil DeviceQueueCreateInfo;
 
@@ -97,6 +103,12 @@ namespace bns
 
         /// @brief The @ref VulkanFramebufferUtil for working with @ref VkFramebuffer
         static VulkanFramebufferUtil Framebuffer;
+
+        /// @brief The @ref VulkanImageUtil for working with @ref VkImage
+        static VulkanImageUtil Image;
+
+        /// @brief The @ref VulkanImageLayoutUtil for working with @ref VkImageLayout
+        static VulkanImageLayoutUtil ImageLayout;
 
         /// @brief The @ref VulkanImageViewUtil for working with @ref VkImageView
         static VulkanImageViewUtil ImageView;
