@@ -77,10 +77,39 @@ namespace bns
             VK_FORMAT_R8G8B8A8_SRGB,
             VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
             VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+        // Release staging buffer.
+        vkDestroyBuffer(m_device, stagingBuffer, nullptr);
+
+        // Release staging buffer memory.
+        vkFreeMemory(m_device, stagingBufferMemory, nullptr);
+
+        // Create image view.
+        m_imageView = VulkanUtil::ImageView.Create(
+            m_device,
+            m_image,
+            VK_FORMAT_R8G8B8A8_SRGB);
+
+        // Create image sampler.
+        m_imageSampler = VulkanUtil::Sampler.Create(
+            m_physicalDevice,
+            m_device);
     }
 
     void VulkanTexture2D::Release()
     {
+        if (m_imageSampler != VK_NULL_HANDLE)
+        {
+            vkDestroySampler(m_device, m_imageSampler, nullptr);
+            m_imageSampler = VK_NULL_HANDLE;
+        }
+
+        if (m_imageView != VK_NULL_HANDLE)
+        {
+            vkDestroyImageView(m_device, m_imageView, nullptr);
+            m_imageView = VK_NULL_HANDLE;
+        }
+
         if (m_image != VK_NULL_HANDLE)
         {
             vkDestroyImage(m_device, m_image, nullptr);

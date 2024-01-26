@@ -10,6 +10,28 @@
 
 namespace bns
 {
+    /// @brief Data transfer object for updating a descriptor set
+    struct VulkanUpdateDescriptorDto
+    {
+        VulkanUpdateDescriptorDto(
+            u32 binding = 0,
+            VkDescriptorType descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+            VkDescriptorBufferInfo *bufferInfo = nullptr,
+            VkDescriptorImageInfo *imageInfo = nullptr);
+
+        /// @brief The binding to update
+        u32 Binding;
+
+        /// @brief The descriptor type
+        VkDescriptorType DescriptorType;
+
+        /// @brief The buffer info. The buffer info is used as a pointer to the buffer.
+        VkDescriptorBufferInfo *BufferInfo;
+
+        /// @brief The image info. The image info is used as a pointer to the image.
+        VkDescriptorImageInfo *ImageInfo;
+    };
+
     struct VulkanDescriptorSetUtil
     {
         /// @brief Creates a @ref VkDescriptorSet
@@ -27,17 +49,11 @@ namespace bns
         /// @brief Updates a @ref VkDescriptorSet
         /// @param device The device to update the descriptor set on
         /// @param descriptorSet The descriptor set to update
-        /// @param binding The binding to update. This is the binding in the shader. In glsl it's set as layout(binding = {binding})
-        /// @param buffer The buffer to update the descriptor set with
-        /// @param bufferSize The size of the buffer
-        /// @param bufferOffset The offset into the buffer
-        static void UpdateUniform(
+        /// @param updateDescriptorDtos The update descriptor dtos. The hold information about the binding, descriptor type, buffer info, and image info.
+        static void Update(
             const VkDevice &device,
             const VkDescriptorSet &descriptorSet,
-            u32 binding, 
-            const VkBuffer &buffer,
-            size_t bufferSize,
-            u32 bufferOffset = 0);
+            const std::vector<VulkanUpdateDescriptorDto>& updateDescriptorDtos);
     };
 }
 

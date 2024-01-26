@@ -48,6 +48,7 @@
 #include "util/VulkanDeviceMemory.hpp"
 #include "util/VulkanImageUtil.hpp"
 #include "util/VulkanImageLayoutUtil.hpp"
+#include "util/VulkanSamplerUtil.hpp"
 
 namespace bns
 {
@@ -112,6 +113,9 @@ namespace bns
 
         /// @brief The @ref VulkanImageViewUtil for working with @ref VkImageView
         static VulkanImageViewUtil ImageView;
+
+        /// @brief The @ref VulkanSamplerUtil for working with @ref VkSampler
+        static VulkanSamplerUtil Sampler;
 
         /// @brief The @ref VulkanSemaphoreUtil for working with @ref VkSemaphore
         static VulkanSemaphoreUtil Semaphore;

@@ -32,8 +32,16 @@ namespace bns
         /// @brief The image memory.
         VkDeviceMemory m_imageMemory;
 
+        /// @brief The image view.
+        VkImageView m_imageView;
+
+        /// @brief The image sampler.
+        VkSampler m_imageSampler;
+
         /// @brief Temporary image data.
         ImageData *m_imageData;
+
+
 
         /**
          * @brief Convert the texture usage flags to Vulkan texture usage flags.
@@ -46,16 +54,6 @@ namespace bns
         // WGPUTextureFormat Convert(TextureFormat format) const;
 
     public:
-        /**
-         * @brief The sampler. Exposed so that it can be used by shader, when creating texture bind group.
-         */
-        // WGPUSampler Sampler;
-
-        /**
-         * @brief The texture. Exposed so that it can be used by shader, when creating texture bind group.
-         */
-        // WGPUTexture Texture;
-
         /// @brief The constructor.
         /// @param physicalDevice The physical device.
         /// @param device The device.
@@ -72,16 +70,11 @@ namespace bns
         /// @brief The destructor.
         ~VulkanTexture2D();
 
-        /**
-         * Creates the texture view.
-         */
-        // inline WGPUTextureView CreateView() const
-        // {
-        //     WGPUTextureViewDescriptor textureViewDesc = VulkanUtil::TextureViewDescriptor.Create("Texture view: " + std::to_string(m_id));
-        //     textureViewDesc.format = Convert(m_format);
-        //     WGPUTextureView textureView = wgpuTextureCreateView(Texture, &textureViewDesc);
-        //     return textureView;
-        // }
+        /// @brief Get the image view.
+        const VkImageView &GetImageView() const { return m_imageView; }
+
+        /// @brief Get the image sampler.
+        const VkSampler &GetSampler() const { return m_imageSampler; }
 
         /// @brief Initialize the texture.
         void Initialize() override;

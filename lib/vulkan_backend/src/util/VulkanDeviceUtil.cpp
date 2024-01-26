@@ -10,10 +10,14 @@ namespace bns
 {
     VkDevice VulkanDeviceUtil::Create(VkPhysicalDevice physicalDevice,
                                       const std::vector<VkDeviceQueueCreateInfo> &queueCreateInfos,
-                                      const VkPhysicalDeviceFeatures& deviceFeatures,
                                       const std::vector<std::string> &deviceExtensions,
                                       const std::vector<std::string> &validationLayers)
     {
+
+		VkPhysicalDeviceFeatures deviceFeatures;
+		vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
+        deviceFeatures.samplerAnisotropy = VK_TRUE; // enable anisotropy
+
         VkDevice device = VK_NULL_HANDLE;
 
         // create device info

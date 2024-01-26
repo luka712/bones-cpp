@@ -8,6 +8,8 @@
 #include "BnsVulkan.hpp"
 #include "Window.hpp"
 #include <optional>
+#include "texture/VulkanTexture2D.hpp"
+
 
 namespace bns
 {
@@ -125,6 +127,7 @@ namespace bns
         VkPipelineLayout m_pipelineLayout;
         VkBuffer m_vertexBuffer;
         VkDescriptorSet m_descriptorSet;
+        VulkanTexture2D *m_texture;
 
         /// @brief Setups and create an instance internally.
         /// @param requiredWindowExtensions The required window extensions. This should be provided by the window manager.

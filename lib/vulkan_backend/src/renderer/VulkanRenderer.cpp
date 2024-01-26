@@ -8,7 +8,6 @@
 #include "VulkanUtil.hpp"
 #include "Mat4x4.hpp"
 #include "ImageLoader.hpp"
-#include "texture/VulkanTexture2D.hpp"
 
 namespace bns
 {
@@ -91,9 +90,7 @@ namespace bns
 			queueCreateInfos = {queueCreateInfos[0]};
 		}
 
-		VkPhysicalDeviceFeatures deviceFeatures;
-		vkGetPhysicalDeviceFeatures(m_physicalDevice, &deviceFeatures);
-		m_device = VulkanUtil::Device.Create(m_physicalDevice, queueCreateInfos, deviceFeatures, m_deviceExtensions, m_validationLayers);
+		m_device = VulkanUtil::Device.Create(m_physicalDevice, queueCreateInfos, m_deviceExtensions, m_validationLayers);
 
 		// QUEUES
 		vkGetDeviceQueue(m_device, m_graphicsQueueFamilyIndex, 0, &m_graphicsQueue);
@@ -132,11 +129,13 @@ namespace bns
 
 		// TEST VERTEX DATA
 		std::vector<BufferLayoutDescriptor> layoutDescriptor(1);
-		layoutDescriptor[0].Stride = sizeof(Vec2f) + sizeof(Vec3f);
+		layoutDescriptor[0].Stride = sizeof(Vec2f) + sizeof(Vec3f) + sizeof(Vec2f);
 		layoutDescriptor[0].Step = VertexStepMode::Vertex;
 		layoutDescriptor[0].Attributes = {
 			BufferLayoutAttributeDescriptor(VertexFormat::Float32x2),
-			BufferLayoutAttributeDescriptor(VertexFormat::Float32x3, 1, sizeof(Vec2f))};
+			BufferLayoutAttributeDescriptor(VertexFormat::Float32x3, 1, sizeof(Vec2f)),
+			BufferLayoutAttributeDescriptor(VertexFormat::Float32x2, 2, sizeof(Vec3f) + sizeof(Vec2f))
+			};
 
 		std::vector<VkVertexInputBindingDescription> bindingDescriptions;
 		std::vector<VkVertexInputAttributeDescription> attributeDescriptions;
@@ -145,9 +144,12 @@ namespace bns
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo = VulkanUtil::PipelineVertexInputStateCreateInfo.Create(bindingDescriptions, attributeDescriptions);
 
 		std::vector<VkDescriptorSetLayoutBinding> viewMatrixUniformBinding = {
-			VulkanUtil::DescriptorSetLayoutBinding.CreateUniformForVertexStage(0)};
+			VulkanUtil::DescriptorSetLayoutBinding.CreateUniformForVertexStage(0),
+			VulkanUtil::DescriptorSetLayoutBinding.CreateTextureForFragmentStage(1)};
+
 		std::vector<VkDescriptorSetLayout> descriptorSetLayouts = {
 			VulkanUtil::DescriptorSetLayout.Create(m_device, viewMatrixUniformBinding)};
+
 		std::vector<VkPushConstantRange> pushConstantRanges = {
 			VulkanUtil::PushConstantRange.Create(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(f32) * 16)};
 
@@ -159,26 +161,40 @@ namespace bns
 		VkBuffer projectionViewBuffer = VulkanUtil::Buffer.CreateUniformBuffer(m_physicalDevice, m_device, sizeof(Mat4x4f), &projectionViewBufferMemory);
 		VulkanUtil::DeviceMemory.Map(m_device, projectionViewBufferMemory, &viewMatrix, sizeof(Mat4x4f));
 
-		VkDescriptorPool descriptorPool = VulkanUtil::DescriptorPool.CreateForUniformBuffer(m_device, GetFramesInFlight());
+		VkDescriptorPool descriptorPool = VulkanUtil::DescriptorPool.Create(m_device, {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER}, GetFramesInFlight());
 		std::vector<VkDescriptorSet> descriptorSets = VulkanUtil::DescriptorSet.Create(m_device, descriptorPool, descriptorSetLayouts, GetFramesInFlight());
 
-		VulkanUtil::DescriptorSet.UpdateUniform(m_device, descriptorSets[0], 0, projectionViewBuffer, sizeof(Mat4x4f));
-
-		m_descriptorSet = descriptorSets[0];
-
-		// TEXTURE 
+		// TEXTURE
 		ImageLoader imageLoader;
 		ImageData *imageData = imageLoader.LoadImage("assets/uv_test.png");
-		VulkanTexture2D texture(m_physicalDevice, m_device, m_commandPool, m_graphicsQueue, imageData, VK_IMAGE_USAGE_SAMPLED_BIT, TextureFormat::BGRA_8_Unorm);
-		texture.Initialize();
+		m_texture = new VulkanTexture2D(m_physicalDevice, m_device, m_commandPool, m_graphicsQueue, imageData, VK_IMAGE_USAGE_SAMPLED_BIT, TextureFormat::BGRA_8_Unorm);
+		m_texture->Initialize();
+
+		VkDescriptorBufferInfo bufferInfo{};
+		bufferInfo.buffer = projectionViewBuffer;
+		bufferInfo.offset = 0;
+		bufferInfo.range = sizeof(Mat4x4f);
+
+		VkDescriptorImageInfo imageInfo{};
+		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+		imageInfo.imageView = m_texture->GetImageView();
+		imageInfo.sampler = m_texture->GetSampler();
+
+		std::vector<VulkanUpdateDescriptorDto> updateDescriptorDtos = {
+			VulkanUpdateDescriptorDto(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, &bufferInfo),
+			VulkanUpdateDescriptorDto(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, nullptr, &imageInfo),};
+
+		VulkanUtil::DescriptorSet.Update(m_device, descriptorSets[0], updateDescriptorDtos);
+
+		m_descriptorSet = descriptorSets[0];
 
 		m_pipeline = VulkanUtil::Pipeline.Create(m_device, vertShaderModule, fragShaderModule, vertexInputInfo, m_renderPass, m_pipelineLayout, m_swapChainExtent);
 
 		// VERTEX BUFFER
 		std::vector<f32> vertices = {
-			-0.05f, 0.05f, 1.0f, 0.0f, 0.0f,
-			0.05f, 0.05f, 0.0f, 1.0f, 0.0f,
-			0.0f, -0.05f, 0.0f, 0.0f, 1.0f};
+			-0.05f, 0.05f, 1.0f, 0.0f, 0.0f, 0.0, 0.0f,
+			0.05f, 0.05f, 0.0f, 1.0f, 0.0f, 1.0, 0.0f,
+			0.0f, -0.05f, 0.0f, 0.0f, 1.0f, 1.1f, 1.1f};
 
 		VkDeviceMemory vertexBufferMemory;
 		VkDeviceSize bufferSize = sizeof(f32) * vertices.size();
@@ -188,7 +204,7 @@ namespace bns
 		// FRAMEBUFFERS - setup framebuffers
 		CreateFramebuffers();
 
-	;
+		;
 
 		// COMMAND BUFFER - setup command buffer
 		m_commandBuffer = VulkanUtil::CommandBuffer.Create(m_device, m_commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
