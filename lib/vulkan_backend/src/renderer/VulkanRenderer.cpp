@@ -12,14 +12,14 @@
 
 namespace bns
 {
-	VulkanRenderer::VulkanRenderer(WindowManager* windowManager)
+	VulkanRenderer::VulkanRenderer(WindowManager *windowManager)
 		: m_windowManager(windowManager), m_instance(nullptr), m_swapchainOutOfDateFlag(false)
 	{
 		m_windowManager->RegisterToWindowResize([this](Vec2i size)
-			{ m_swapchainOutOfDateFlag = true; });
+												{ m_swapchainOutOfDateFlag = true; });
 	}
 
-	bool VulkanRenderer::IsLayerSupported(const std::string& layer)
+	bool VulkanRenderer::IsLayerSupported(const std::string &layer)
 	{
 		u32 layerCount;
 		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
@@ -39,9 +39,9 @@ namespace bns
 	}
 
 	VKAPI_ATTR VkBool32 VKAPI_CALL VulkanRenderer::DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-		VkDebugUtilsMessageTypeFlagsEXT messageType,
-		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
-		void* pUserData)
+																 VkDebugUtilsMessageTypeFlagsEXT messageType,
+																 const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
+																 void *pUserData)
 	{
 		std::string msg = "VulkanRenderer::DebugCallback: " + std::string(pCallbackData->pMessage);
 		LOG(msg.c_str());
@@ -49,7 +49,7 @@ namespace bns
 		return VK_FALSE; // return true if the call should be aborted. This is almost never the case. We just want to log the error.
 	}
 
-	void VulkanRenderer::Initialize(const std::vector<std::string>& requiredExtensions)
+	void VulkanRenderer::Initialize(const std::vector<std::string> &requiredExtensions)
 	{
 		// CREATE INSTANCE
 		// Create app info. This is optional but can be useful for drivers to optimize our specific application.
@@ -79,16 +79,16 @@ namespace bns
 		m_debugMessenger = VulkanUtil::DebugUtilsMessengerEXT.Create(m_instance, DebugCallback);
 #endif
 		// LOGICAL DEVICE
-		std::vector<f32> queuePriorities = { 1.0f };
+		std::vector<f32> queuePriorities = {1.0f};
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos =
-		{
-			VulkanUtil::DeviceQueueCreateInfo.Create(m_graphicsQueueFamilyIndex, queuePriorities),
-			VulkanUtil::DeviceQueueCreateInfo.Create(m_presentQueueFamilyIndex, queuePriorities) };
+			{
+				VulkanUtil::DeviceQueueCreateInfo.Create(m_graphicsQueueFamilyIndex, queuePriorities),
+				VulkanUtil::DeviceQueueCreateInfo.Create(m_presentQueueFamilyIndex, queuePriorities)};
 
 		// If the graphics and present queue are the same, we only need one queue.
 		if (m_graphicsQueueFamilyIndex == m_presentQueueFamilyIndex)
 		{
-			queueCreateInfos = { queueCreateInfos[0] };
+			queueCreateInfos = {queueCreateInfos[0]};
 		}
 
 		m_device = VulkanUtil::Device.Create(m_physicalDevice, queueCreateInfos, m_deviceExtensions, m_validationLayers);
@@ -111,12 +111,12 @@ namespace bns
 		VkAttachmentReference colorAttachmentRef = VulkanUtil::AttachmentReference.CreateColorAttachmentRef(0);
 
 		// Create the subpass description
-		std::vector<VkAttachmentReference> colorAttachmentRefs = { colorAttachmentRef };
+		std::vector<VkAttachmentReference> colorAttachmentRefs = {colorAttachmentRef};
 		VkSubpassDescription subpass = VulkanUtil::SubpassDescription.Create(colorAttachmentRefs);
 
 		// Create the render pass
-		std::vector<VkAttachmentDescription> attachments = { colorAttachment };
-		std::vector<VkSubpassDescription> subpasses = { subpass };
+		std::vector<VkAttachmentDescription> attachments = {colorAttachment};
+		std::vector<VkSubpassDescription> subpasses = {subpass};
 		m_renderPass = VulkanUtil::RenderPass.Create(m_device, attachments, subpasses);
 
 		// COMMAND POOL - setup command pool
@@ -124,88 +124,8 @@ namespace bns
 
 		LOG("VulkanRenderer::SetupRenderPass: Render pass created.\n");
 
-		// TEST PIPELINE
-		VkShaderModule vertShaderModule = VulkanUtil::ShaderModule.CreateFromSpirVFilepath(m_device, "shaders/vulkan/test/triangle_vs.spv");
-		VkShaderModule fragShaderModule = VulkanUtil::ShaderModule.CreateFromSpirVFilepath(m_device, "shaders/vulkan/test/triangle_fs.spv");
-
-		// TEST VERTEX DATA
-		std::vector<BufferLayoutDescriptor> layoutDescriptor(1);
-		layoutDescriptor[0].Stride = sizeof(Vec2f) + sizeof(Vec3f) + sizeof(Vec2f);
-		layoutDescriptor[0].Step = VertexStepMode::Vertex;
-		layoutDescriptor[0].Attributes = {
-			BufferLayoutAttributeDescriptor(VertexFormat::Float32x2),
-			BufferLayoutAttributeDescriptor(VertexFormat::Float32x3, 1, sizeof(Vec2f)),
-			BufferLayoutAttributeDescriptor(VertexFormat::Float32x2, 2, sizeof(Vec3f) + sizeof(Vec2f))
-		};
-
-		std::vector<VkVertexInputBindingDescription> bindingDescriptions;
-		std::vector<VkVertexInputAttributeDescription> attributeDescriptions;
-		VulkanUtil::VertexInputBindingDescription.Create(layoutDescriptor, bindingDescriptions, attributeDescriptions);
-
-		VkPipelineVertexInputStateCreateInfo vertexInputInfo = VulkanUtil::PipelineVertexInputStateCreateInfo.Create(bindingDescriptions, attributeDescriptions);
-
-		std::vector<VkDescriptorSetLayoutBinding> descriptorSetLayoutBindings = {
-			VulkanUtil::DescriptorSetLayoutBinding.CreateUniformForVertexStage(0),
-			VulkanUtil::DescriptorSetLayoutBinding.CreateTextureForFragmentStage(1) };
-
-		std::vector<VkDescriptorSetLayout> descriptorSetLayouts = {
-			VulkanUtil::DescriptorSetLayout.Create(m_device, descriptorSetLayoutBindings) };
-
-		std::vector<VkPushConstantRange> pushConstantRanges = {
-			VulkanUtil::PushConstantRange.Create(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(f32) * 16) };
-
-		m_pipelineLayout = VulkanUtil::PipelineLayout.Create(m_device, descriptorSetLayouts, pushConstantRanges);
-
-		Mat4x4f viewMatrix = Mat4x4f::Identity();
-
-		VkDeviceMemory projectionViewBufferMemory;
-		VkBuffer projectionViewBuffer = VulkanUtil::Buffer.CreateUniformBuffer(m_physicalDevice, m_device, sizeof(Mat4x4f), &projectionViewBufferMemory);
-		VulkanUtil::DeviceMemory.Map(m_device, projectionViewBufferMemory, &viewMatrix, sizeof(Mat4x4f));
-
-		VkDescriptorPool descriptorPool = VulkanUtil::DescriptorPool.Create(m_device, { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER }, GetFramesInFlight());
-		std::vector<VkDescriptorSet> descriptorSets = VulkanUtil::DescriptorSet.Create(m_device, descriptorPool, descriptorSetLayouts, GetFramesInFlight());
-
-		// TEXTURE
-		ImageLoader imageLoader;
-		ImageData* imageData = imageLoader.LoadImage("assets/uv_test.png");
-		m_texture = new VulkanTexture2D(m_physicalDevice, m_device, m_commandPool, m_graphicsQueue, imageData, VK_IMAGE_USAGE_SAMPLED_BIT, TextureFormat::BGRA_8_Unorm);
-		m_texture->Initialize();
-
-		VkDescriptorBufferInfo bufferInfo{};
-		bufferInfo.buffer = projectionViewBuffer;
-		bufferInfo.offset = 0;
-		bufferInfo.range = sizeof(Mat4x4f);
-
-		VkDescriptorImageInfo imageInfo{};
-		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-		imageInfo.imageView = m_texture->GetImageView();
-		imageInfo.sampler = m_texture->GetSampler();
-
-		std::vector<VulkanUpdateDescriptorDto> updateDescriptorDtos = {
-			VulkanUpdateDescriptorDto(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, &bufferInfo),
-			VulkanUpdateDescriptorDto(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, nullptr, &imageInfo), };
-
-		VulkanUtil::DescriptorSet.Update(m_device, descriptorSets[0], updateDescriptorDtos);
-
-		m_descriptorSet = descriptorSets[0];
-
-		m_pipeline = VulkanUtil::Pipeline.Create(m_device, vertShaderModule, fragShaderModule, vertexInputInfo, m_renderPass, m_pipelineLayout);
-
-		// VERTEX BUFFER
-		std::vector<f32> vertices = {
-			-0.05f, 0.05f, 1.0f, 0.0f, 0.0f, 0.0, 0.0f,
-			0.05f, 0.05f, 0.0f, 1.0f, 0.0f, 1.0, 0.0f,
-			0.0f, -0.05f, 0.0f, 0.0f, 1.0f, 1.1f, 1.1f };
-
-		VkDeviceMemory vertexBufferMemory;
-		VkDeviceSize bufferSize = sizeof(f32) * vertices.size();
-		m_vertexBuffer = VulkanUtil::Buffer.CreateVertexBuffer(m_physicalDevice, m_device, bufferSize, &vertexBufferMemory);
-		VulkanUtil::DeviceMemory.Map(m_device, vertexBufferMemory, vertices.data(), bufferSize);
-
 		// FRAMEBUFFERS - setup framebuffers
 		CreateFramebuffers();
-
-		;
 
 		// COMMAND BUFFER - setup command buffer
 		m_commandBuffer = VulkanUtil::CommandBuffer.Create(m_device, m_commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
@@ -216,9 +136,6 @@ namespace bns
 		// the fence is used to synchronize CPU and GPU. We want to wait for the GPU to finish rendering before we start rendering again.
 		// create the fence in the signaled state. This means that the GPU is allowed to start rendering.
 		m_inFlightFence = VulkanUtil::Fence.Create(m_device, VK_FENCE_CREATE_SIGNALED_BIT);
-
-		// TEST 
-		// VulkanUnlitSpritePipeline pipeline(m_physicalDevice, m_device, m_renderPass);
 
 		return;
 	}
@@ -278,16 +195,16 @@ namespace bns
 		}
 
 		// CLEAR COLOR
-		VkClearValue clearColor = { ClearColor.R, ClearColor.G, ClearColor.B, ClearColor.A };
+		VkClearValue clearColor = {ClearColor.R, ClearColor.G, ClearColor.B, ClearColor.A};
 
 		// BEGIN RENDER PASS
 		VkRenderPassBeginInfo renderPassInfo = VulkanUtil::RenderPassBeginInfo.Create(m_renderPass,
-			m_framebuffers[m_currentFrameIndex],
-			m_swapChainExtent,
-			clearColor);
+																					  m_framebuffers[m_currentFrameIndex],
+																					  m_swapChainExtent,
+																					  clearColor);
 
-		// VIEWPORT - note that view y is flipped. 
-		// This is because by default vulkan y is positive down, but we want positive up like 
+		// VIEWPORT - note that view y is flipped.
+		// This is because by default vulkan y is positive down, but we want positive up like
 		// in Metal, WebGPu, OpenGL, and DirectX.
 		// Space now is x: [-1, 1], y: [-1, 1], z: [0, 1]
 		VkViewport viewport;
@@ -301,29 +218,12 @@ namespace bns
 
 		// Scissor
 		VkRect2D scissor{};
-		scissor.offset = { 0, 0 };
+		scissor.offset = {0, 0};
 		scissor.extent = m_swapChainExtent;
 		vkCmdSetScissor(m_commandBuffer, 0, 1, &scissor);
 
 		// BEGIN RENDER PASS
 		vkCmdBeginRenderPass(m_commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-		// DRAW
-		vkCmdBindPipeline(m_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline);
-
-		// BUFFER
-		VkDeviceSize offsets[] = { 0 };
-		vkCmdBindVertexBuffers(m_commandBuffer, 0, 1, &m_vertexBuffer, offsets);
-
-		// UNIFORM
-		vkCmdBindDescriptorSets(m_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1, &m_descriptorSet, 0, nullptr);
-
-		for (u32 i = 0; i < 3; i++)
-		{
-			Mat4x4f model = Mat4x4f::TranslationMatrix(i * 0.5f, 0.0f, 0.0f);
-			vkCmdPushConstants(m_commandBuffer, m_pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(f32) * 16, &model);
-			vkCmdDraw(m_commandBuffer, 3, 1, 0, 0);
-		}
 	}
 
 	void VulkanRenderer::EndDraw()
@@ -342,9 +242,9 @@ namespace bns
 
 		VkPipelineStageFlags waitStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 		VkSubmitInfo submitInfo = VulkanUtil::SubmitInfo.CreateGraphicsSubmitInfo(m_imageAvailableSemaphore,
-			waitStage,
-			m_commandBuffer,
-			m_renderFinishedSemaphore);
+																				  waitStage,
+																				  m_commandBuffer,
+																				  m_renderFinishedSemaphore);
 
 		// submit command buffer
 		if (vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, m_inFlightFence) != VK_SUCCESS)
@@ -414,7 +314,7 @@ namespace bns
 		vkDestroyInstance(m_instance, nullptr);
 	}
 
-	void* VulkanRenderer::GetSwapChainTexture()
+	void *VulkanRenderer::GetSwapChainTexture()
 	{
 		return nullptr;
 	}
@@ -424,18 +324,18 @@ namespace bns
 		Vec2i windowSize = m_windowManager->GetWindowSize();
 		m_bufferSize = windowSize;
 		m_swapChain = VulkanUtil::SwapChainKHR.Create(m_physicalDevice,
-			m_device,
-			m_surface,
-			windowSize.X, windowSize.Y,
-			&m_swapChainImages,
-			&m_swapChainImageFormat,
-			&m_swapChainExtent);
+													  m_device,
+													  m_surface,
+													  windowSize.X, windowSize.Y,
+													  &m_swapChainImages,
+													  &m_swapChainImageFormat,
+													  &m_swapChainExtent);
 		m_currentFrameIndex = 0;
 	}
 
 	void VulkanRenderer::CreateSwapchainImageViews()
 	{
-		for (VkImage& image : m_swapChainImages)
+		for (VkImage &image : m_swapChainImages)
 		{
 			m_swapChainImageViews.push_back(VulkanUtil::ImageView.Create(m_device, image, m_swapChainImageFormat));
 		}
@@ -451,13 +351,13 @@ namespace bns
 		m_swapchainOutOfDateFlag = false;
 
 		// DESTROY OLD RESOURCES - destroy old framebuffers, imageview, swapchain, images
-		for (VkFramebuffer& framebuffer : m_framebuffers)
+		for (VkFramebuffer &framebuffer : m_framebuffers)
 		{
 			vkDestroyFramebuffer(m_device, framebuffer, nullptr);
 		}
 		m_framebuffers.clear();
 
-		for (VkImageView& imageView : m_swapChainImageViews)
+		for (VkImageView &imageView : m_swapChainImageViews)
 		{
 			vkDestroyImageView(m_device, imageView, nullptr);
 		}

@@ -129,13 +129,6 @@ namespace bns
         /// @brief The resize flag.
         bool m_swapchainOutOfDateFlag;
 
-        // TODO: remove, just for test
-        VkPipeline m_pipeline;
-        VkPipelineLayout m_pipelineLayout;
-        VkBuffer m_vertexBuffer;
-        VkDescriptorSet m_descriptorSet;
-        VulkanTexture2D *m_texture;
-
         /// @brief Setups and create an instance internally.
         /// @param requiredWindowExtensions The required window extensions. This should be provided by the window manager.
         void SetupInstance(const std::vector<std::string> &requiredWindowExtensions);
