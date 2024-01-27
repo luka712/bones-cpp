@@ -8,6 +8,7 @@
 #include "VulkanUtil.hpp"
 #include "Mat4x4.hpp"
 #include "ImageLoader.hpp"
+#include "sprite/VulkanUnlitSpritePipeline.hpp"
 
 namespace bns
 {
@@ -143,12 +144,12 @@ namespace bns
 
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo = VulkanUtil::PipelineVertexInputStateCreateInfo.Create(bindingDescriptions, attributeDescriptions);
 
-		std::vector<VkDescriptorSetLayoutBinding> viewMatrixUniformBinding = {
+		std::vector<VkDescriptorSetLayoutBinding> descriptorSetLayoutBindings = {
 			VulkanUtil::DescriptorSetLayoutBinding.CreateUniformForVertexStage(0),
 			VulkanUtil::DescriptorSetLayoutBinding.CreateTextureForFragmentStage(1)};
 
 		std::vector<VkDescriptorSetLayout> descriptorSetLayouts = {
-			VulkanUtil::DescriptorSetLayout.Create(m_device, viewMatrixUniformBinding)};
+			VulkanUtil::DescriptorSetLayout.Create(m_device, descriptorSetLayoutBindings)};
 
 		std::vector<VkPushConstantRange> pushConstantRanges = {
 			VulkanUtil::PushConstantRange.Create(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(f32) * 16)};
@@ -215,6 +216,9 @@ namespace bns
 		// the fence is used to synchronize CPU and GPU. We want to wait for the GPU to finish rendering before we start rendering again.
 		// create the fence in the signaled state. This means that the GPU is allowed to start rendering.
 		m_inFlightFence = VulkanUtil::Fence.Create(m_device, VK_FENCE_CREATE_SIGNALED_BIT);
+
+		// TEST 
+		// VulkanUnlitSpritePipeline pipeline(m_physicalDevice, m_device, m_renderPass);
 
 		return;
 	}
@@ -409,6 +413,7 @@ namespace bns
 	void VulkanRenderer::CreateSwapchain()
 	{
 		Vec2i windowSize = m_windowManager->GetWindowSize();
+		m_bufferSize = windowSize;
 		m_swapChain = VulkanUtil::SwapChainKHR.Create(m_physicalDevice,
 													  m_device,
 													  m_surface,
@@ -416,7 +421,6 @@ namespace bns
 													  &m_swapChainImages,
 													  &m_swapChainImageFormat,
 													  &m_swapChainExtent);
-
 		m_currentFrameIndex = 0;
 	}
 

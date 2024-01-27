@@ -14,19 +14,20 @@
 #endif
 #if USE_OPENGL
 #include "renderer/OpenGLRenderer.hpp"
-    // for apple machine use 400 version, since 450 is not available/supported
-    #if __APPLE__
-        #include "sprite/400/OpenGL400UnlitSpriteRenderer.hpp"
-    #else
-        #include "sprite/OpenGLUnlitSpriteRenderer.hpp"
-    #endif
-#endif  // USE_OPENGL
+// for apple machine use 400 version, since 450 is not available/supported
+#if __APPLE__
+#include "sprite/400/OpenGL400UnlitSpriteRenderer.hpp"
+#else
+#include "sprite/OpenGLUnlitSpriteRenderer.hpp"
+#endif
+#endif // USE_OPENGL
 #if USE_OPENGLES
 #include "renderer/OpenGLESRenderer.hpp"
 #include "sprite/OpenGLESUnlitSpriteRenderer.hpp"
 #endif
 #if USE_VULKAN
 #include "renderer/VulkanRenderer.hpp"
+#include "sprite/VulkanUnlitSpriteRenderer.hpp"
 #endif
 
 #include "SDLWindow.hpp"
@@ -149,6 +150,7 @@ namespace bns
         if (m_currentRendererType == RendererType::Vulkan)
         {
             m_renderer = new VulkanRenderer(m_windowManager);
+            m_spriteRenderer = new VulkanUnlitSpriteRenderer(m_renderer);
         }
 #endif
 
@@ -205,7 +207,7 @@ namespace bns
         if (m_currentRendererType == RendererType::Vulkan)
             InitializeForVulkan(windowParameters);
 #endif
-        // m_spriteRenderer->Initialize();
+        m_spriteRenderer->Initialize();
 
         m_initializeCallback();
 
@@ -276,11 +278,11 @@ namespace bns
     void Framework::OnDraw()
     {
         m_renderer->BeginDraw();
-        // m_spriteRenderer->BeginFrame();
+        m_spriteRenderer->BeginFrame();
 
         DrawCallback();
 
-        // m_spriteRenderer->EndFrame();
+        m_spriteRenderer->EndFrame();
         m_renderer->EndDraw();
     }
 

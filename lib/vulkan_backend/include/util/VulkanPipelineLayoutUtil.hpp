@@ -15,9 +15,16 @@ namespace bns
         /// @param descriptorSetLayout The @ref VkDescriptorSetLayout to use.
         /// @param pushConstantRanges The @ref VkPushConstantRange to use.
         /// @return The default @ref VkPipelineLayoutCreateInfo.
-        static VkPipelineLayout Create(VkDevice device, 
-                const std::vector<VkDescriptorSetLayout> &descriptorSetLayout,
-                const std::vector<VkPushConstantRange> &pushConstantRanges);
+        static VkPipelineLayout Create(VkDevice device,
+                                       const std::vector<VkDescriptorSetLayout> &descriptorSetLayout,
+                                       const std::vector<VkPushConstantRange> &pushConstantRanges);
+
+        /// @brief Creates a default @ref VkPipelineLayoutCreateInfo.
+        /// @param device The @ref VkDevice to use.
+        /// @param descriptorSetLayout The @ref VkDescriptorSetLayout to use.
+        /// @return The default @ref VkPipelineLayoutCreateInfo.
+        static VkPipelineLayout Create(VkDevice device,
+                                       const std::vector<VkDescriptorSetLayout> &descriptorSetLayout);
 
         /// @brief Destroys a @ref VkPipelineLayout.
         /// @param device The @ref VkDevice to use.
@@ -26,6 +33,6 @@ namespace bns
     };
 } // namespace bns
 
-#endif 
+#endif
 
-#endif 
+#endif

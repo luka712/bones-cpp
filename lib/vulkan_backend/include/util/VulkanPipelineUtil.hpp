@@ -35,6 +35,28 @@ namespace bns
             std::string vertexShaderMainName = "main", 
             std::string fragmentShaderMainName = "main",
             FrontFace frontFace = FrontFace::CounterClockwise);
+
+
+             /// @brief Creates a @ref VkPipeline object.
+        /// @param device The device.
+        /// @param vertexShaderModule The vertex shader module. 
+        /// @param fragmentShaderModule The fragment shader module.
+        /// @param vertexInputInfo The vertex input info. This is used to specify the vertex input format.
+        /// @param renderPass The render pass.
+        /// @param pipelineLayout The pipeline layout.
+        /// @param vertexShaderMainName The vertex shader main name. By default it is "main".
+        /// @param fragmentShaderMainName The fragment shader main name By default it is "main".
+        /// @param frontFace The front face of the vertices in the scene. By default it is counter clockwise.
+        /// @return The created @ref VkPipeline object.
+        static VkPipeline Create(
+            VkDevice device,
+            const VkShaderModule &vertexShaderModule, const VkShaderModule &fragmentShaderModule,
+            const VkPipelineVertexInputStateCreateInfo& vertexInputInfo,
+            const VkRenderPass &renderPass,
+            const VkPipelineLayout &pipelineLayout,
+            std::string vertexShaderMainName = "main", 
+            std::string fragmentShaderMainName = "main",
+            FrontFace frontFace = FrontFace::CounterClockwise);
     };
 }
 

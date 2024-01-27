@@ -6,6 +6,11 @@
 #include "texture/MetalTexture2D.hpp"
 #endif
 
+#if USE_VULKAN
+#include "renderer/VulkanRenderer.hpp"
+#include "texture/VulkanTexture2D.hpp"
+#endif
+
 #if USE_D3D11
 #include "renderer/D3D11Renderer.hpp"
 #include "texture/D3D11Texture2D.hpp"
@@ -43,6 +48,20 @@ namespace bns
 		}
 #endif
 
+#if USE_VULKAN
+		if (m_renderer->GetRendererType() == RendererType::Vulkan)
+		{
+			VulkanRenderer *renderer = static_cast<VulkanRenderer *>(m_renderer);
+
+			return new VulkanTexture2D(
+				renderer->GetPhysicalDevice(),
+				renderer->GetDevice(),
+				renderer->GetCommandPool(),
+				renderer->GetGraphicsQueue(),
+				imageData, textureUsageFlags, format);
+		}
+#endif
+
 #if USE_D3D11
 		D3D11Renderer *renderer = static_cast<D3D11Renderer *>(m_renderer);
 		return new D3D11Texture2D(renderer->GetDevice(), imageData, textureUsageFlags, format);
@@ -66,7 +85,7 @@ namespace bns
 		return new OpenGLESTexture2D(imageData, textureUsageFlags, format);
 #endif
 
-		// TODO: Implement OpenGL texture creation.
+		// 
 		throw std::runtime_error("Renderer not selected.");
 		return nullptr;
 	}

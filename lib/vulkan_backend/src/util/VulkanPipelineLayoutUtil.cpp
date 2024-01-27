@@ -33,6 +33,13 @@ namespace bns
         return pipelineLayout;
     }
 
+    VkPipelineLayout VulkanPipelineLayoutUtil::Create(VkDevice device,
+                                                      const std::vector<VkDescriptorSetLayout> &descriptorSetLayouts)
+    {
+        std::vector<VkPushConstantRange> emptyPushConstantRange;
+        return Create(device, descriptorSetLayouts, emptyPushConstantRange);
+    }
+
     void VulkanPipelineLayoutUtil::Destroy(VkDevice device, VkPipelineLayout pipelineLayout)
     {
         vkDestroyPipelineLayout(device, pipelineLayout, nullptr);

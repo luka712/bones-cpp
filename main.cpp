@@ -44,7 +44,6 @@ int main()
 
 void Initialize()
 {
-    return;
     font = engine->GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
     testTexture = engine->GetTextureManager().LoadTexture2D("assets/uv_test.png");
 
@@ -65,7 +64,6 @@ void Initialize()
 
 void Draw()
 {
-    return;
     bns::Event event;
     if (engine->GetEvents().HasEvent(bns::EventType::KeyDown, &event))
     {
@@ -89,7 +87,7 @@ void Draw()
     bns::Vec2f rotationOrigin = bns::Vec2f(0.5f, 0.5f);
 
     engine->GetSpriteRenderer()->PointLights[0].Intensity += 0.1f;
-    spriteRenderer->DrawString(font, "Hello World!", bns::Vec2f(300, 300), bns::Color::White(), 1.0f);
+    // spriteRenderer->DrawString(font, "Hello World!", bns::Vec2f(300, 300), bns::Color::White(), 1.0f);
 
     // whole texture
     spriteRenderer->Draw(testTexture, bns::Rect(0, 0, 100, 100));

@@ -37,6 +37,20 @@ namespace bns
         return buffer;
     }
 
+    VkBuffer VulkanBufferUtil::Create(
+        const VkPhysicalDevice &physicalDevice,
+        const VkDevice &device,
+        void *data,
+        VkDeviceSize size,
+        VkBufferUsageFlags usage,
+        VkDeviceMemory *outDeviceMemory,
+        VkMemoryPropertyFlags memoryPropertyFlags)
+    {
+        VkBuffer buffer = Create(physicalDevice, device, size, usage, outDeviceMemory, memoryPropertyFlags);
+        VulkanUtil::DeviceMemory.Map(device, *outDeviceMemory, data, size);
+        return buffer;
+    }
+  
     VkBuffer VulkanBufferUtil::CreateVertexBuffer(
         const VkPhysicalDevice &physicalDevice,
         const VkDevice &device,
@@ -45,6 +59,17 @@ namespace bns
     {
         return Create(physicalDevice, device, size, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, outDeviceMemory);
     }
+
+      VkBuffer VulkanBufferUtil::CreateIndexBuffer(
+        const VkPhysicalDevice &physicalDevice,
+        const VkDevice &device,
+        const std::vector<u16> &data,
+        VkDeviceMemory *outDeviceMemory)
+    {
+        VkDeviceSize size = data.size() * sizeof(u16);
+        return Create(physicalDevice, device, (void*)data.data(), size, VK_BUFFER_USAGE_INDEX_BUFFER_BIT, outDeviceMemory);
+    }
+
 
     VkBuffer VulkanBufferUtil::CreateUniformBuffer(
         const VkPhysicalDevice &physicalDevice,

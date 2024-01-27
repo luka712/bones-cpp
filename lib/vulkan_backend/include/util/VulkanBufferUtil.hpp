@@ -7,6 +7,7 @@
 #include "Types.hpp"
 #include "BnsVulkan.hpp"
 #include "ImageData.hpp"
+#include <vector>
 
 namespace bns
 {
@@ -28,6 +29,23 @@ namespace bns
                                VkDeviceMemory *outDeviceMemory,
                                VkMemoryPropertyFlags memoryPropertyFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
+        /// @brief Creates a @ref VkBuffer and writes data to it
+        /// @param physicalDevice The physical device to create the buffer on
+        /// @param device The device to create the buffer on
+        /// @param data The data to copy to the buffer
+        /// @param size The size of the buffer
+        /// @param usage The usage of the buffer
+        /// @param outDeviceMemory The created memory for the buffer
+        /// @param memoryPropertyFlags The memory property flags. By default this is @ref VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | @ref VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+        /// @return The created buffer
+        static VkBuffer Create(const VkPhysicalDevice &physicalDevice,
+                               const VkDevice &device,
+                               void *data,
+                               VkDeviceSize size,
+                               VkBufferUsageFlags usage,
+                               VkDeviceMemory *outDeviceMemory,
+                               VkMemoryPropertyFlags memoryPropertyFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+
         /// @brief Creates a @ref VkBuffer
         /// @param physicalDevice The physical device to create the buffer on
         /// @param device The device to create the buffer on
@@ -35,6 +53,17 @@ namespace bns
         /// @param outDeviceMemory The created memory for the buffer
         /// @return The created buffer
         static VkBuffer CreateVertexBuffer(const VkPhysicalDevice &physicalDevice, const VkDevice &device, VkDeviceSize size, VkDeviceMemory *outDeviceMemory);
+
+        /// @brief Creates a @ref VkBuffer and writes data to it
+        /// @param physicalDevice The physical device to create the buffer on
+        /// @param device The device to create the buffer on
+        /// @param data The data to copy to the buffer
+        /// @param outDeviceMemory The created memory for the buffer
+        /// @return The created buffer
+        static VkBuffer CreateIndexBuffer(const VkPhysicalDevice &physicalDevice,
+                                          const VkDevice &device,
+                                          const std::vector<u16> &data,
+                                          VkDeviceMemory *outDeviceMemory);
 
         /// @brief Creates a @ref VkBuffer
         /// @param physicalDevice The physical device to create the buffer on

@@ -169,6 +169,24 @@ namespace bns
 
         VulkanRenderer(WindowManager *windowManager);
 
+        /// @brief Gets the Vulkan physical device.
+        const inline VkPhysicalDevice& GetPhysicalDevice() const { return m_physicalDevice; }
+
+        /// @brief Gets the Vulkan logical device.
+        const inline VkDevice& GetDevice() const { return m_device; }
+
+        /// @brief Gets the current render pass.
+        const inline VkRenderPass& GetRenderPass() const { return m_renderPass; }
+
+        /// @brief Gets the current command buffer.
+        const inline VkCommandBuffer& GetCommandBuffer() const { return m_commandBuffer; }
+
+        /// @brief Gets the current command pool.
+        const inline VkCommandPool& GetCommandPool() const { return m_commandPool; }
+
+        /// @brief Gets the graphics queue.
+        const inline VkQueue& GetGraphicsQueue() const { return m_graphicsQueue; }
+
         /// @brief Initialize the renderer.
         /// @param requiredWindowExtensions The required window extensions. In other words these are provided by the window manager and windowing system.
         void Initialize(const std::vector<std::string> &requiredWindowExtensions);
