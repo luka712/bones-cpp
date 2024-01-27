@@ -33,26 +33,24 @@ namespace bns
 		T R2C3;
 		T R3C3;
 
-		/**
-		 * @brief Construct a new Mat 4x 4 object
-		 *
-		 * @param T r0c0
-		 * @param T r0c1
-		 * @param T r0c2
-		 * @param T r0c3
-		 * @param T r1c0
-		 * @param T r1c1
-		 * @param T r1c2
-		 * @param T r1c3
-		 * @param T r2c0
-		 * @param T r2c1
-		 * @param T r2c2
-		 * @param T r2c3
-		 * @param T r3c0
-		 * @param T r3c1
-		 * @param T r3c2
-		 * @param T r3c3
-		 */
+		
+		/// @brief Construct a new Mat 4x 4 object
+		/// @param T r0c0
+		/// @param T r0c1
+		/// @param T r0c2
+		/// @param T r0c3
+		/// @param T r1c0
+		/// @param T r1c1
+		/// @param T r1c2
+		/// @param T r1c3
+		/// @param T r2c0
+		/// @param T r2c1
+		/// @param T r2c2
+		/// @param T r2c3
+		/// @param T r3c0
+		/// @param T r3c1
+		/// @param T r3c2
+		/// @param T r3c3
 		Mat4x4(
 			T r0c0, T r0c1, T r0c2, T r0c3,
 			T r1c0, T r1c1, T r1c2, T r1c3,
@@ -219,43 +217,39 @@ namespace bns
 				0.0, 0.0, 1.0, 0.0);
 		}
 
-		/**
-		 * @brief Create ortographic projection matrix.
-		 *
-		 * @param T left
-		 * @param T right
-		 * @param T bottom
-		 * @param T top
-		 * @param T z_near
-		 * @param T z_far
-		 * @return Mat4x4<T>
-		 */
+		/// @brief Create ortographic projection matrix.
+		/// It is assumed that the coordinate system is left handed and normalized device coordinates are in range x: [-1, 1], y: [-1, 1], z: [0, 1]
+		/// @param T left
+		/// @param T right
+		/// @param T bottom
+		/// @param T top
+		/// @param T z_near
+		/// @param T z_far
+		/// @return Mat4x4<T>
 		static Mat4x4<T> Orthographic(T left, T right, T bottom, T top, T z_near, T z_far)
 		{
-			// width
-			T w = right - left;
+			// SCALE
+			T r0c0 = 2 / (right - left);
+			T r1c1 = 2 / (top - bottom);
+			T r2c2 = 1 / (z_far - z_near);
 
-			// height
-			T h = top - bottom;
-
-			// depth
-			T z = z_far - z_near;
+			// TRANSLATE
+			T r0c3 = -(right + left) / (right - left); // -1 to 1 
+			T r1c3 = -(top + bottom) / (top - bottom); // -1 to 1
+			T r2c3 = -z_near / (z_far - z_near); // 0 to 1
 
 			return Mat4x4<T>(
-				2 / w, 0, 0, -((right + left) / w),
-				0, 2 / h, 0, -((top + bottom) / h),
-				0, 0, -2 / z, -((z_near + z_far) / z),
+				r0c0, 0, 0, r0c3,
+				0, r1c1, 0, r1c3,
+				0, 0, r2c2, r2c3,
 				0, 0, 0, 1);
 		}
 
-		/**
-		 * @brief Create a look at matrix.
-		 *
-		 * @param Vec3<T> eye
-		 * @param Vec3<T> center
-		 * @param Vec3<T> up
-		 * @return Mat4x4<T>
-		 */
+		/// @brief Create a look at matrix for left handed coordinate system.
+		/// @param Vec3<T> eye
+		/// @param Vec3<T> center
+		/// @param Vec3<T> up
+		/// @return Mat4x4<T>
 		static Mat4x4<T> LookAt(Vec3<T> eye, Vec3<T> center, Vec3<T> up)
 		{
 			// Steps:

@@ -12,14 +12,14 @@
 
 namespace bns
 {
-	VulkanRenderer::VulkanRenderer(WindowManager *windowManager)
+	VulkanRenderer::VulkanRenderer(WindowManager* windowManager)
 		: m_windowManager(windowManager), m_instance(nullptr), m_swapchainOutOfDateFlag(false)
 	{
 		m_windowManager->RegisterToWindowResize([this](Vec2i size)
-												{ m_swapchainOutOfDateFlag = true; });
+			{ m_swapchainOutOfDateFlag = true; });
 	}
 
-	bool VulkanRenderer::IsLayerSupported(const std::string &layer)
+	bool VulkanRenderer::IsLayerSupported(const std::string& layer)
 	{
 		u32 layerCount;
 		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
@@ -39,9 +39,9 @@ namespace bns
 	}
 
 	VKAPI_ATTR VkBool32 VKAPI_CALL VulkanRenderer::DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-																 VkDebugUtilsMessageTypeFlagsEXT messageType,
-																 const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
-																 void *pUserData)
+		VkDebugUtilsMessageTypeFlagsEXT messageType,
+		const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+		void* pUserData)
 	{
 		std::string msg = "VulkanRenderer::DebugCallback: " + std::string(pCallbackData->pMessage);
 		LOG(msg.c_str());
@@ -49,7 +49,7 @@ namespace bns
 		return VK_FALSE; // return true if the call should be aborted. This is almost never the case. We just want to log the error.
 	}
 
-	void VulkanRenderer::Initialize(const std::vector<std::string> &requiredExtensions)
+	void VulkanRenderer::Initialize(const std::vector<std::string>& requiredExtensions)
 	{
 		// CREATE INSTANCE
 		// Create app info. This is optional but can be useful for drivers to optimize our specific application.
@@ -79,16 +79,16 @@ namespace bns
 		m_debugMessenger = VulkanUtil::DebugUtilsMessengerEXT.Create(m_instance, DebugCallback);
 #endif
 		// LOGICAL DEVICE
-		std::vector<f32> queuePriorities = {1.0f};
+		std::vector<f32> queuePriorities = { 1.0f };
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos =
-			{
-				VulkanUtil::DeviceQueueCreateInfo.Create(m_graphicsQueueFamilyIndex, queuePriorities),
-				VulkanUtil::DeviceQueueCreateInfo.Create(m_presentQueueFamilyIndex, queuePriorities)};
+		{
+			VulkanUtil::DeviceQueueCreateInfo.Create(m_graphicsQueueFamilyIndex, queuePriorities),
+			VulkanUtil::DeviceQueueCreateInfo.Create(m_presentQueueFamilyIndex, queuePriorities) };
 
 		// If the graphics and present queue are the same, we only need one queue.
 		if (m_graphicsQueueFamilyIndex == m_presentQueueFamilyIndex)
 		{
-			queueCreateInfos = {queueCreateInfos[0]};
+			queueCreateInfos = { queueCreateInfos[0] };
 		}
 
 		m_device = VulkanUtil::Device.Create(m_physicalDevice, queueCreateInfos, m_deviceExtensions, m_validationLayers);
@@ -111,12 +111,12 @@ namespace bns
 		VkAttachmentReference colorAttachmentRef = VulkanUtil::AttachmentReference.CreateColorAttachmentRef(0);
 
 		// Create the subpass description
-		std::vector<VkAttachmentReference> colorAttachmentRefs = {colorAttachmentRef};
+		std::vector<VkAttachmentReference> colorAttachmentRefs = { colorAttachmentRef };
 		VkSubpassDescription subpass = VulkanUtil::SubpassDescription.Create(colorAttachmentRefs);
 
 		// Create the render pass
-		std::vector<VkAttachmentDescription> attachments = {colorAttachment};
-		std::vector<VkSubpassDescription> subpasses = {subpass};
+		std::vector<VkAttachmentDescription> attachments = { colorAttachment };
+		std::vector<VkSubpassDescription> subpasses = { subpass };
 		m_renderPass = VulkanUtil::RenderPass.Create(m_device, attachments, subpasses);
 
 		// COMMAND POOL - setup command pool
@@ -136,7 +136,7 @@ namespace bns
 			BufferLayoutAttributeDescriptor(VertexFormat::Float32x2),
 			BufferLayoutAttributeDescriptor(VertexFormat::Float32x3, 1, sizeof(Vec2f)),
 			BufferLayoutAttributeDescriptor(VertexFormat::Float32x2, 2, sizeof(Vec3f) + sizeof(Vec2f))
-			};
+		};
 
 		std::vector<VkVertexInputBindingDescription> bindingDescriptions;
 		std::vector<VkVertexInputAttributeDescription> attributeDescriptions;
@@ -146,13 +146,13 @@ namespace bns
 
 		std::vector<VkDescriptorSetLayoutBinding> descriptorSetLayoutBindings = {
 			VulkanUtil::DescriptorSetLayoutBinding.CreateUniformForVertexStage(0),
-			VulkanUtil::DescriptorSetLayoutBinding.CreateTextureForFragmentStage(1)};
+			VulkanUtil::DescriptorSetLayoutBinding.CreateTextureForFragmentStage(1) };
 
 		std::vector<VkDescriptorSetLayout> descriptorSetLayouts = {
-			VulkanUtil::DescriptorSetLayout.Create(m_device, descriptorSetLayoutBindings)};
+			VulkanUtil::DescriptorSetLayout.Create(m_device, descriptorSetLayoutBindings) };
 
 		std::vector<VkPushConstantRange> pushConstantRanges = {
-			VulkanUtil::PushConstantRange.Create(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(f32) * 16)};
+			VulkanUtil::PushConstantRange.Create(VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(f32) * 16) };
 
 		m_pipelineLayout = VulkanUtil::PipelineLayout.Create(m_device, descriptorSetLayouts, pushConstantRanges);
 
@@ -162,12 +162,12 @@ namespace bns
 		VkBuffer projectionViewBuffer = VulkanUtil::Buffer.CreateUniformBuffer(m_physicalDevice, m_device, sizeof(Mat4x4f), &projectionViewBufferMemory);
 		VulkanUtil::DeviceMemory.Map(m_device, projectionViewBufferMemory, &viewMatrix, sizeof(Mat4x4f));
 
-		VkDescriptorPool descriptorPool = VulkanUtil::DescriptorPool.Create(m_device, {VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER}, GetFramesInFlight());
+		VkDescriptorPool descriptorPool = VulkanUtil::DescriptorPool.Create(m_device, { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER }, GetFramesInFlight());
 		std::vector<VkDescriptorSet> descriptorSets = VulkanUtil::DescriptorSet.Create(m_device, descriptorPool, descriptorSetLayouts, GetFramesInFlight());
 
 		// TEXTURE
 		ImageLoader imageLoader;
-		ImageData *imageData = imageLoader.LoadImage("assets/uv_test.png");
+		ImageData* imageData = imageLoader.LoadImage("assets/uv_test.png");
 		m_texture = new VulkanTexture2D(m_physicalDevice, m_device, m_commandPool, m_graphicsQueue, imageData, VK_IMAGE_USAGE_SAMPLED_BIT, TextureFormat::BGRA_8_Unorm);
 		m_texture->Initialize();
 
@@ -183,19 +183,19 @@ namespace bns
 
 		std::vector<VulkanUpdateDescriptorDto> updateDescriptorDtos = {
 			VulkanUpdateDescriptorDto(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, &bufferInfo),
-			VulkanUpdateDescriptorDto(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, nullptr, &imageInfo),};
+			VulkanUpdateDescriptorDto(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, nullptr, &imageInfo), };
 
 		VulkanUtil::DescriptorSet.Update(m_device, descriptorSets[0], updateDescriptorDtos);
 
 		m_descriptorSet = descriptorSets[0];
 
-		m_pipeline = VulkanUtil::Pipeline.Create(m_device, vertShaderModule, fragShaderModule, vertexInputInfo, m_renderPass, m_pipelineLayout, m_swapChainExtent);
+		m_pipeline = VulkanUtil::Pipeline.Create(m_device, vertShaderModule, fragShaderModule, vertexInputInfo, m_renderPass, m_pipelineLayout);
 
 		// VERTEX BUFFER
 		std::vector<f32> vertices = {
 			-0.05f, 0.05f, 1.0f, 0.0f, 0.0f, 0.0, 0.0f,
 			0.05f, 0.05f, 0.0f, 1.0f, 0.0f, 1.0, 0.0f,
-			0.0f, -0.05f, 0.0f, 0.0f, 1.0f, 1.1f, 1.1f};
+			0.0f, -0.05f, 0.0f, 0.0f, 1.0f, 1.1f, 1.1f };
 
 		VkDeviceMemory vertexBufferMemory;
 		VkDeviceSize bufferSize = sizeof(f32) * vertices.size();
@@ -278,21 +278,30 @@ namespace bns
 		}
 
 		// CLEAR COLOR
-		VkClearValue clearColor = {ClearColor.R, ClearColor.G, ClearColor.B, ClearColor.A};
+		VkClearValue clearColor = { ClearColor.R, ClearColor.G, ClearColor.B, ClearColor.A };
 
 		// BEGIN RENDER PASS
 		VkRenderPassBeginInfo renderPassInfo = VulkanUtil::RenderPassBeginInfo.Create(m_renderPass,
-																					  m_framebuffers[m_currentFrameIndex],
-																					  m_swapChainExtent,
-																					  clearColor);
+			m_framebuffers[m_currentFrameIndex],
+			m_swapChainExtent,
+			clearColor);
 
-		// Viewport
-		VkViewport viewport = VulkanUtil::Viewport.Create(m_swapChainExtent);
+		// VIEWPORT - note that view y is flipped. 
+		// This is because by default vulkan y is positive down, but we want positive up like 
+		// in Metal, WebGPu, OpenGL, and DirectX.
+		// Space now is x: [-1, 1], y: [-1, 1], z: [0, 1]
+		VkViewport viewport;
+		viewport.x = 0.0f;
+		viewport.y = m_swapChainExtent.height;
+		viewport.width = m_swapChainExtent.width;
+		viewport.height = -static_cast<f32>(m_swapChainExtent.height);
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
 		vkCmdSetViewport(m_commandBuffer, 0, 1, &viewport);
 
 		// Scissor
 		VkRect2D scissor{};
-		scissor.offset = {0, 0};
+		scissor.offset = { 0, 0 };
 		scissor.extent = m_swapChainExtent;
 		vkCmdSetScissor(m_commandBuffer, 0, 1, &scissor);
 
@@ -303,7 +312,7 @@ namespace bns
 		vkCmdBindPipeline(m_commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline);
 
 		// BUFFER
-		VkDeviceSize offsets[] = {0};
+		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(m_commandBuffer, 0, 1, &m_vertexBuffer, offsets);
 
 		// UNIFORM
@@ -333,9 +342,9 @@ namespace bns
 
 		VkPipelineStageFlags waitStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
 		VkSubmitInfo submitInfo = VulkanUtil::SubmitInfo.CreateGraphicsSubmitInfo(m_imageAvailableSemaphore,
-																				  waitStage,
-																				  m_commandBuffer,
-																				  m_renderFinishedSemaphore);
+			waitStage,
+			m_commandBuffer,
+			m_renderFinishedSemaphore);
 
 		// submit command buffer
 		if (vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, m_inFlightFence) != VK_SUCCESS)
@@ -405,7 +414,7 @@ namespace bns
 		vkDestroyInstance(m_instance, nullptr);
 	}
 
-	void *VulkanRenderer::GetSwapChainTexture()
+	void* VulkanRenderer::GetSwapChainTexture()
 	{
 		return nullptr;
 	}
@@ -415,18 +424,18 @@ namespace bns
 		Vec2i windowSize = m_windowManager->GetWindowSize();
 		m_bufferSize = windowSize;
 		m_swapChain = VulkanUtil::SwapChainKHR.Create(m_physicalDevice,
-													  m_device,
-													  m_surface,
-													  windowSize.X, windowSize.Y,
-													  &m_swapChainImages,
-													  &m_swapChainImageFormat,
-													  &m_swapChainExtent);
+			m_device,
+			m_surface,
+			windowSize.X, windowSize.Y,
+			&m_swapChainImages,
+			&m_swapChainImageFormat,
+			&m_swapChainExtent);
 		m_currentFrameIndex = 0;
 	}
 
 	void VulkanRenderer::CreateSwapchainImageViews()
 	{
-		for (VkImage &image : m_swapChainImages)
+		for (VkImage& image : m_swapChainImages)
 		{
 			m_swapChainImageViews.push_back(VulkanUtil::ImageView.Create(m_device, image, m_swapChainImageFormat));
 		}
@@ -442,13 +451,13 @@ namespace bns
 		m_swapchainOutOfDateFlag = false;
 
 		// DESTROY OLD RESOURCES - destroy old framebuffers, imageview, swapchain, images
-		for (VkFramebuffer &framebuffer : m_framebuffers)
+		for (VkFramebuffer& framebuffer : m_framebuffers)
 		{
 			vkDestroyFramebuffer(m_device, framebuffer, nullptr);
 		}
 		m_framebuffers.clear();
 
-		for (VkImageView &imageView : m_swapChainImageViews)
+		for (VkImageView& imageView : m_swapChainImageViews)
 		{
 			vkDestroyImageView(m_device, imageView, nullptr);
 		}

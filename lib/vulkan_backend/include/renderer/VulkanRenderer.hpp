@@ -48,7 +48,14 @@ namespace bns
         /// @brief The required device extensions.
         /// @note This is the minimum required device extensions.
         /// @note Must support swap chain.
-        const std::vector<std::string> m_deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};
+        const std::vector<std::string> m_deviceExtensions = {
+            // This is used in order to have support for the VK_KHR_swapchain extension, which is used to present images to the screen.
+            VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+            // This is used in order to have support for the VK_KHR_maintenance1 extension,
+            // which we need to flip the y coordinate of the viewport. It's by default [1, -1] in Vulkan with y pointing down.
+            // We need to flip it to [-1, 1] in order to match other APIs.
+            VK_KHR_MAINTENANCE1_EXTENSION_NAME
+         };
 
         /// @brief The Vulkan instance.
         VkInstance m_instance;

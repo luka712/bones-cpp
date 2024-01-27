@@ -17,6 +17,14 @@ namespace bns
         /// @param height The height of the viewport.
         /// @return The default @ref VkViewport.
         static VkViewport Default(f32 width, f32 height);
+ 
+        /// @brief Get the @ref VkViewport with the y axis flipped. 
+        // Reason for this is that Vulkan has the y axis pointing down. 
+        // This is not the case for other APIs.
+        /// @param width The width of the viewport.
+        /// @param height The height of the viewport.
+        /// @return The @ref VkViewport with the y axis flipped.
+        static VkViewport FlipY(f32 width, f32 height);
 
         /// @brief Create a @ref VkViewport from the given swapChainExtent vector.
         /// @param swapChainExtent The swap chain extent.

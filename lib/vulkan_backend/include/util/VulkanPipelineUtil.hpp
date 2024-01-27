@@ -23,7 +23,7 @@ namespace bns
         /// @param swapchainExtent The swapchain extent.
         /// @param vertexShaderMainName The vertex shader main name. By default it is "main".
         /// @param fragmentShaderMainName The fragment shader main name By default it is "main".
-        /// @param frontFace The front face of the vertices in the scene. By default it is counter clockwise.
+        /// @param frontFace The front face of the vertices in the scene. By default it is clockwise. Vulkan is exception to other apis here because we are flipping the y axis of the viewport.
         /// @return The created @ref VkPipeline object.
         static VkPipeline Create(
             VkDevice device,
@@ -32,9 +32,9 @@ namespace bns
             const VkRenderPass &renderPass,
             const VkPipelineLayout &pipelineLayout,
             const VkExtent2D& swapchainExtent,
-            std::string vertexShaderMainName = "main", 
-            std::string fragmentShaderMainName = "main",
-            FrontFace frontFace = FrontFace::CounterClockwise);
+            std::string vertexShaderMainName = "vs_main", 
+            std::string fragmentShaderMainName = "fs_main",
+            FrontFace frontFace = FrontFace::Clockwise);
 
 
              /// @brief Creates a @ref VkPipeline object.
@@ -46,7 +46,7 @@ namespace bns
         /// @param pipelineLayout The pipeline layout.
         /// @param vertexShaderMainName The vertex shader main name. By default it is "main".
         /// @param fragmentShaderMainName The fragment shader main name By default it is "main".
-        /// @param frontFace The front face of the vertices in the scene. By default it is counter clockwise.
+        /// @param frontFace The front face of the vertices in the scene. By default it is clockwise. Vulkan is exception to other apis here because we are flipping the y axis of the viewport.
         /// @return The created @ref VkPipeline object.
         static VkPipeline Create(
             VkDevice device,
@@ -54,9 +54,9 @@ namespace bns
             const VkPipelineVertexInputStateCreateInfo& vertexInputInfo,
             const VkRenderPass &renderPass,
             const VkPipelineLayout &pipelineLayout,
-            std::string vertexShaderMainName = "main", 
-            std::string fragmentShaderMainName = "main",
-            FrontFace frontFace = FrontFace::CounterClockwise);
+            std::string vertexShaderMainName = "vs_main", 
+            std::string fragmentShaderMainName = "fs_main",
+            FrontFace frontFace = FrontFace::Clockwise);
     };
 }
 

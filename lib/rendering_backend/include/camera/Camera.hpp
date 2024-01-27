@@ -11,9 +11,7 @@ namespace bns
     class Camera
     {
     public:
-        /**
-         * @brief The projection matrix.
-         */
+        /// @brief The projection matrix.
         Mat4x4f ProjectionMatrix;
 
         /**
