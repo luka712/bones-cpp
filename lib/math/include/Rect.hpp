@@ -6,24 +6,23 @@
 
 namespace bns
 {
+    /// @brief The rectangle.
     struct Rect
     {
-        i32 X;
-        i32 Y;
-        i32 Width;
-        i32 Height;
+        f32 X;
+        f32 Y;
+        f32 Width;
+        f32 Height;
 
-        /**
-         * The constructor.
-         */
-        Rect() : X(0), Y(0), Width(0), Height(0)
-        {
-        }
+        /// @brief The default constructor.
+        Rect();
 
-        Rect(i32 x, i32 y, i32 width, i32 height) 
-            : X(x), Y(y), Width(width), Height(height)
-        {
-        }
+        /// @brief The constructor.
+        /// @param x The x coordinate.
+        /// @param y The y coordinate.
+        /// @param width The width.
+        /// @param height The height.
+        Rect(f32 x, f32 y, f32 width, f32 height);
     };
 }
 

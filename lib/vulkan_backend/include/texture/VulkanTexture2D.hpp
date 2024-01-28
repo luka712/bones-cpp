@@ -41,17 +41,15 @@ namespace bns
         /// @brief Temporary image data.
         ImageData *m_imageData;
 
+        /// @brief Convert sampler filter to vulkan filter.
+        /// @param filter The sampler filter.
+        /// @return The vulkan filter.
+        VkFilter SamplerFilterToVulkanFilter(SamplerMinFilter filter);
 
-
-        /**
-         * @brief Convert the texture usage flags to Vulkan texture usage flags.
-         */
-        //  WGPUTextureUsage Convert(i32 textureUsageFlags) const;
-
-        /**
-         * @brief Convert the texture format to Vulkan texture format.
-         */
-        // WGPUTextureFormat Convert(TextureFormat format) const;
+        /// @brief Convert sampler filter to vulkan filter.
+        /// @param filter The sampler filter.
+        /// @return The vulkan filter.
+        VkFilter SamplerFilterToVulkanFilter(SamplerMagFilter filter);
 
     public:
         /// @brief The constructor.
@@ -62,11 +60,14 @@ namespace bns
         /// @param imageData The image data.
         /// @param textureUsageFlags The texture usage flags.
         /// @param format The texture format.
+        /// @param minFilter The min filter. By default, it is set to SamplerMinFilter::LINEAR.
+        /// @param magFilter The mag filter. By default, it is set to SamplerMagFilter::LINEAR.
         VulkanTexture2D(const VkPhysicalDevice &physicalDevice,
                         const VkDevice &device,
                         const VkCommandPool &commandPool,
                         const VkQueue &graphicsQueue,
-                        ImageData *imageData, i32 textureUsageFlags, TextureFormat format);
+                        ImageData *imageData, i32 textureUsageFlags, TextureFormat format,
+                        SamplerMinFilter minFilter = SamplerMinFilter::LINEAR, SamplerMagFilter magFilter = SamplerMagFilter::LINEAR);
         /// @brief The destructor.
         ~VulkanTexture2D();
 

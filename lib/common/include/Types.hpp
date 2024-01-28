@@ -3,11 +3,12 @@
 #define BNS_TYPE_H
 
 #include <stdint.h>
+#include <iostream>
 
 #if LOGGING_ENABLED
 #include <stdio.h>
 /// @brief Log if LOGGING_ENABLED is true
-#define LOG(...) printf("%s\n", __VA_ARGS__)
+#define LOG(...) std::cout << __VA_ARGS__ << std::endl;
 #else 
 /// @brief Log if LOGGING_ENABLED is true
 #define LOG(...)

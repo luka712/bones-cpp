@@ -33,7 +33,7 @@ namespace bns
         if (vkCreateImage(device, &imageInfo, nullptr, &image) != VK_SUCCESS)
         {
             std::string msg = "VulkanImageUtil::Create: Failed to create image.";
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

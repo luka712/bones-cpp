@@ -43,7 +43,7 @@ namespace bns
         if(waitStage != VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT)
         {
             std::string message = "VulkanSubmitInfoUtil::CreateGraphicsSubmitInfo: waitStage must be VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT";
-            LOG("%s", message.c_str());
+            LOG( message);
             BREAKPOINT();
             throw std::runtime_error(message);
         }

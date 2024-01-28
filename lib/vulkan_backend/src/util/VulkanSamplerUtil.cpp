@@ -41,7 +41,7 @@ namespace bns
         if (vkCreateSampler(device, &samplerCreateInfo, nullptr, &sampler) != VK_SUCCESS)
         {
             std::string msg = "VulkanSamplerUtil::Create: Failed to create sampler.";
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

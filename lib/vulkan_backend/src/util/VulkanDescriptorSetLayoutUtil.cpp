@@ -18,7 +18,7 @@ namespace bns
         if (vkCreateDescriptorSetLayout(device, &createInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS)
         {
             std::string msg = "VulkanDescriptorSetLayoutUtil::Create: Failed to create descriptor set layout";
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }
@@ -37,7 +37,7 @@ namespace bns
         if (vkCreateDescriptorSetLayout(device, &createInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS)
         {
             std::string msg = "VulkanDescriptorSetLayoutUtil::Create: Failed to create descriptor set layout";
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

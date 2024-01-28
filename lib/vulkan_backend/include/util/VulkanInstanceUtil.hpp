@@ -14,13 +14,13 @@ namespace bns
     struct VulkanInstanceUtil
     {
         /// @brief Creates @ref VkInstance struct with default values
-        /// @param appInfo The @ref VkApplicationInfo struct
         /// @param enableExtensions The list of extensions to enable
         /// @param enableLayers The list of layers to enable
+        /// @param applicationName The name of the application. 
         /// @return The created @ref VkInstance struct
-        static VkInstance Create(const VkApplicationInfo &appInfo,
-                                 const std::vector<std::string> &enableExtensions,
-                                 const std::vector<std::string> &enableLayers);
+        static VkInstance Create(const std::vector<std::string> &enableExtensions,
+                                 const std::vector<std::string> &enableLayers,
+                                 std::string applicationName = "Bones Framework");
 
 
         /// @brief Checks if the given extension is supported

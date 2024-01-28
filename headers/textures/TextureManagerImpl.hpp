@@ -13,7 +13,7 @@ namespace bns
 
     class TextureManagerImpl final : public TextureManager
     {
-private:
+    private:
         /// @brief The renderer.
         Renderer *m_renderer;
 
@@ -23,11 +23,15 @@ private:
         /// @param imageData The image data.
         /// @param textureUsageFlags The texture usage flags.
         /// @param format The texture format.
+        /// @param samplerMinFilter The min filter. By default, it is set to SamplerMinFilter::LINEAR.
+        /// @param samplerMagFilter The mag filter. By default, it is set to SamplerMagFilter::LINEAR.
         /// @return The texture instance.
-        Texture2D *CreateBackendImplTexture(ImageData *imageData, i32 textureUsageFlags, TextureFormat format) override;
+        Texture2D *CreateBackendImplTexture(ImageData *imageData, i32 textureUsageFlags, TextureFormat format, 
+                                            SamplerMinFilter samplerMinFilter = SamplerMinFilter::LINEAR,
+                                            SamplerMagFilter samplerMagFilter = SamplerMagFilter::LINEAR) override;
 
     public:
-        TextureManagerImpl(Renderer* renderer,  ImageLoader* imageLoader);
+        TextureManagerImpl(Renderer *renderer, ImageLoader *imageLoader);
     };
 }
 

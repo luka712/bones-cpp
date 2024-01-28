@@ -73,11 +73,11 @@ namespace bns
         if (m_window == nullptr)
         {
             std::string msg = "SDLWindowManager::CreateWindowAndRenderer: Failed to create SDL window: " + std::string(SDL_GetError());
-            LOG(msg.c_str());
+            LOG(msg);
             SDL_Quit();
             throw std::runtime_error(msg);
         }
-        LOG("SDLWindowManager::CreateWindowAndRenderer: Created SDL window: %s", windowParameters.Title.c_str());
+        LOG("SDLWindowManager::CreateWindowAndRenderer: Created SDL window: " + windowParameters.Title);
     }
 
     void SDLWindowManager::CreateSDLWindowAndRenderer(WindowParameters windowParameters, Uint32 flags)
@@ -90,11 +90,11 @@ namespace bns
         if (m_renderer == nullptr)
         {
             std::string msg = "SDLWindowManager::CreateWindowAndRenderer: Failed to create SDL renderer: " + std::string(SDL_GetError());
-            LOG(msg.c_str());
+            LOG(msg);
             SDL_Quit();
             throw std::runtime_error(msg.c_str());
         }
-        LOG("SDLWindowManager::CreateWindowAndRenderer: Created SDL renderer: %s", windowParameters.Title.c_str());
+        LOG("SDLWindowManager::CreateWindowAndRenderer: Created SDL renderer: " + windowParameters.Title);
     }
 
 #if USE_WEBGPU
@@ -108,7 +108,7 @@ namespace bns
         if (!outInstance)
         {
             std::string msg = "SDLWindowManager::InitializeForWGPU: Failed to create WGPU instance";
-            LOG(msg.c_str());
+            LOG(msg);
             throw std::runtime_error(msg.c_str());
         }
         *outSurface = GetWGPUSurface(*outInstance, m_window);
@@ -127,7 +127,7 @@ namespace bns
         if (metalLayer == nullptr)
         {
             std::string msg = "SDLWindowManager::InitializeForMetal: Failed to create SDL renderer: " + std::string(SDL_GetError());
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
@@ -169,7 +169,7 @@ namespace bns
         if (glContext == nullptr)
         {
             std::string msg = "SDLWindowManager::InitializeForOpenGL: Failed to create SDL renderer: " + std::string(SDL_GetError());
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
@@ -178,7 +178,7 @@ namespace bns
         if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
         {
             std::string msg = "SDLWindowManager::InitializeForOpenGL: Failed to create SDL renderer: " + std::string(SDL_GetError());
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
@@ -205,7 +205,7 @@ namespace bns
         if (glContext == nullptr)
         {
             std::string msg = "SDLWindowManager::InitializeForOpenGLES: Failed to create SDL renderer: " + std::string(SDL_GetError());
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
@@ -214,7 +214,7 @@ namespace bns
         if (!gladLoadGLES2Loader((GLADloadproc)SDL_GL_GetProcAddress))
         {
             std::string msg = "SDLWindowManager::InitializeForOpenGLES: Failed to create SDL renderer: " + std::string(SDL_GetError());
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
@@ -238,7 +238,7 @@ namespace bns
         if (!SDL_Vulkan_GetInstanceExtensions(m_window, &extensionCount, nullptr))
         {
             std::string msg = "SDLWindowManager::InitializeForVulkan: Failed to get Vulkan extensions count: " + std::string(SDL_GetError()) + "\n";
-            LOG(msg.c_str());
+            LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
@@ -246,20 +246,20 @@ namespace bns
         // allocate the array of extensions
         std::vector<const char *> pExtensions(extensionCount);
 
-        LOG("SDLWindowManager::InitializeForVulkan: Vulkan Extensions Count: %d\n", extensionCount);
+        LOG("SDLWindowManager::InitializeForVulkan: Vulkan Extensions Count: " + extensionCount);
 
         // Get the extensions
         if (!SDL_Vulkan_GetInstanceExtensions(m_window, &extensionCount, pExtensions.data()))
         {
             std::string msg = "SDLWindowManager::InitializeForVulkan: Failed to get Vulkan extensions: " + std::string(SDL_GetError()) + "\n";
-            LOG(msg.c_str());
+            LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
 
         for (u32 i = 0; i < extensionCount; ++i)
         {
-            LOG("SDLWindowManager::InitializeForVulkan: Available Vulkan Extension: %s\n", pExtensions[i]);
+            LOG("SDLWindowManager::InitializeForVulkan: Available Vulkan Extension: " + std::string(pExtensions[i]));
 
             outRequiredExtensions->push_back(pExtensions[i]);
         }
@@ -271,7 +271,7 @@ namespace bns
         if (!SDL_Vulkan_CreateSurface(m_window, instance, &surface))
         {
             std::string msg = "SDLWindowManager::CreateVulkanSurface: Failed to create Vulkan surface: " + std::string(SDL_GetError()) + "\n";
-            LOG(msg.c_str());
+            LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }

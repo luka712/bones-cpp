@@ -14,4 +14,14 @@ namespace bns
 
         return result;
     }
+
+    void CharUtil::FreeCopy(char** copy, u32 size)
+    {
+        for (size_t i = 0; i < size; i++)
+        {
+            delete[] copy[i];
+        }
+
+        delete[] copy;
+    }
 } // namespace bns

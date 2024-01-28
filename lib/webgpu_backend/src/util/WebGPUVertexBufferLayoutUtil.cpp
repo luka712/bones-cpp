@@ -2,11 +2,11 @@
 
 namespace bns
 {
-    WGPUVertexBufferLayout *WebGPUVertexBufferLayoutUtil::Create(std::vector<BufferLayoutDescriptor> &descriptors, u32 *outCount)
+    WGPUVertexBufferLayout *WebGPUVertexBufferLayoutUtil::Create(std::vector<BufferLayoutDescriptor> &descriptors, size_t *outCount)
     {
         // Vertex state
         WGPUVertexBufferLayout *bufferLayouts = new WGPUVertexBufferLayout[descriptors.size()];
-        *outCount = (u32)descriptors.size();
+        *outCount = descriptors.size();
 
         size_t i = 0;
         for (auto desc : descriptors)

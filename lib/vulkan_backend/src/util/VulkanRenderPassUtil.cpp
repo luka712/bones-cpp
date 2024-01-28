@@ -22,7 +22,7 @@ namespace bns
         if(vkCreateRenderPass(device, &renderPassCreateInfo, nullptr, &renderPass) != VK_SUCCESS)
         {
             std::string msg = "VulkanRenderPassUtil::Create: failed to create render pass!";
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

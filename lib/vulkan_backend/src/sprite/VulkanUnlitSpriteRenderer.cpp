@@ -176,10 +176,10 @@ namespace bns
         }
 
         // find texture coords
-        f32 u0 = static_cast<float>(sourceRect.X) / static_cast<float>(texture->GetWidth());
-        f32 v0 = static_cast<float>(sourceRect.Y) / static_cast<float>(texture->GetHeight());
-        f32 u1 = static_cast<float>(sourceRect.X + sourceRect.Width) / static_cast<float>(texture->GetWidth());
-        f32 v1 = static_cast<float>(sourceRect.Y + sourceRect.Height) / static_cast<float>(texture->GetHeight());
+        f32 u0 = sourceRect.X / static_cast<float>(texture->GetWidth());
+        f32 v0 = sourceRect.Y / static_cast<float>(texture->GetHeight());
+        f32 u1 = (sourceRect.X + sourceRect.Width) / static_cast<float>(texture->GetWidth());
+        f32 v1 = (sourceRect.Y + sourceRect.Height) / static_cast<float>(texture->GetHeight());
 
         // t1
         d[i + 0] = topLeft.X;
@@ -227,8 +227,6 @@ namespace bns
 
         pipeline.InstanceIndex++;
     }
-
-    // TODO: draw without source rect
 
     void VulkanUnlitSpriteRenderer::DrawString(SpriteFont *font, const std::string &text, const Vec2f &position,
                                                const Color &tintColor, const f32 scale)

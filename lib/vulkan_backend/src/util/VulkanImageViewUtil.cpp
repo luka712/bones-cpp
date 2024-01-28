@@ -30,7 +30,7 @@ namespace bns
         if (vkCreateImageView(device, &createInfo, nullptr, &imageView) != VK_SUCCESS) 
         {
             std::string msg = "VulkanImageViewUtil::Create: Failed to create image view!";
-            LOG("%s", msg.c_str()); 
+           LOG(msg); 
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

@@ -39,7 +39,7 @@ namespace bns
             return VK_CULL_MODE_FRONT_AND_BACK;
         default:
             std::string msg = "VulkanPipelineRasterizationStateCreateInfoUtil::GetCullModeFlags: Invalid CullMode: " + std::to_string(static_cast<int>(cullMode));
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }
@@ -55,7 +55,7 @@ namespace bns
             return VK_FRONT_FACE_COUNTER_CLOCKWISE;
         default:
             std::string msg = "VulkanPipelineRasterizationStateCreateInfoUtil::GetFrontFace: Invalid FrontFace: " + std::to_string(static_cast<int>(frontFace));
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

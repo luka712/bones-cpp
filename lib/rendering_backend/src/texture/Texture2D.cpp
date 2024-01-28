@@ -14,8 +14,9 @@ namespace bns
 
 #pragma endregion
 
-    Texture2D::Texture2D(i32 width, i32 height, i32 textureUsageFlags, TextureFormat format)
-        : m_width(width), m_height(height), m_textureUsageFlags(textureUsageFlags), m_format(format)
+    Texture2D::Texture2D(i32 width, i32 height, i32 textureUsageFlags, TextureFormat format, SamplerMinFilter minFilter, SamplerMagFilter magFilter)
+        : m_width(width), m_height(height), m_textureUsageFlags(textureUsageFlags), m_format(format),
+          m_minFilter(minFilter), m_magFilter(magFilter)
     {
         m_lifecycleState = LifecycleState::Created;
         m_id = GenerateID();

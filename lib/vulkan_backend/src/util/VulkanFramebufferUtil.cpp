@@ -22,7 +22,7 @@ namespace bns
         if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &framebuffer) != VK_SUCCESS)
         {
             std::string msg = "VulkanFramebufferUtil::CreateFramebuffer: failed to create framebuffer!";
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

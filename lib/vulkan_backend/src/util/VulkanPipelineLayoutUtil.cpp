@@ -25,7 +25,7 @@ namespace bns
         if (vkCreatePipelineLayout(device, &createInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
         {
             std::string msg = "VulkanPipelineLayoutUtil::Create: failed to create pipeline layout";
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

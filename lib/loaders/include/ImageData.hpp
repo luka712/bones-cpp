@@ -31,6 +31,9 @@ namespace bns
         /// @param channels The number of channels in the image
         ImageData(void *data, i32 width, i32 height, i32 channels);
 
+        /// @brief Destroy the Image Data object
+        ~ImageData();
+
         /// @brief Gets the size of the image data
         inline size_t GetSize() const { return Width * Height * Channels; }
     };

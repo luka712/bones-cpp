@@ -38,11 +38,12 @@ namespace bns
         vertexLayoutDescriptors.push_back(bufferLayoutDesc);
 
         // Create vertex buffer layout
-        WGPUVertexBufferLayout *wgpuVertexBufferLayouts = WebGPUVertexBufferLayoutUtil::Create(vertexLayoutDescriptors);
+        size_t vertexBuffersLayoutCount;
+        WGPUVertexBufferLayout *wgpuVertexBufferLayouts = WebGPUVertexBufferLayoutUtil::Create(vertexLayoutDescriptors, &vertexBuffersLayoutCount);
 
         descriptor.vertex.module = shaderModule;
         descriptor.vertex.entryPoint = "vs_main";
-        descriptor.vertex.bufferCount = 1;
+        descriptor.vertex.bufferCount = vertexBuffersLayoutCount;
         descriptor.vertex.buffers = &wgpuVertexBufferLayouts[0];
 
         // Fragment state

@@ -45,7 +45,7 @@ namespace bns
         renderPipelineDescriptor.nextInChain = nullptr;
 
         BufferLayoutDescriptor bufferLayoutDescriptor;
-        bufferLayoutDescriptor.Step = StepMode::Vertex;
+        bufferLayoutDescriptor.Step = VertexStepMode::Vertex;
         bufferLayoutDescriptor.Stride = sizeof(f32) * FLOATS_PER_VERTEX;
         bufferLayoutDescriptor.Attributes.push_back({VertexFormat::Float32x3, 0, 0});
         bufferLayoutDescriptor.Attributes.push_back({VertexFormat::Float32x2, 1, sizeof(f32) * 3});
@@ -54,14 +54,15 @@ namespace bns
         std::vector<BufferLayoutDescriptor> vertexBufferLayouts;
         vertexBufferLayouts.push_back(bufferLayoutDescriptor);
 
-        WGPUVertexBufferLayout *layout = WebGPUVertexBufferLayoutUtil::Create(vertexBufferLayouts);
+        size_t layoutsCount;
+        WGPUVertexBufferLayout *layout = WebGPUVertexBufferLayoutUtil::Create(vertexBufferLayouts, &layoutsCount);
 
         // TODO: move to util
         WGPUVertexState vertexState;
         vertexState.nextInChain = nullptr;
         vertexState.entryPoint = "vs_main";
         vertexState.module = shaderModule;
-        vertexState.bufferCount = 1;
+        vertexState.bufferCount = layoutsCount;
         vertexState.buffers = layout;
         vertexState.constantCount = 0;
         renderPipelineDescriptor.vertex = vertexState;

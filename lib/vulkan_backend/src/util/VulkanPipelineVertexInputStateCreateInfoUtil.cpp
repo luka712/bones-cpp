@@ -16,7 +16,7 @@ namespace bns
         {
             createInfo.vertexBindingDescriptionCount = 0;
             // throw small warning because this is not an error but it is not normal
-            LOG("%s", "VulkanPipelineVertexInputStateCreateInfoUtil::Create: vertexInputBindingDescriptions is empty");
+            LOG( "VulkanPipelineVertexInputStateCreateInfoUtil::Create: vertexInputBindingDescriptions is empty");
         }
         else
         {
@@ -28,7 +28,7 @@ namespace bns
         {
             createInfo.vertexAttributeDescriptionCount = 0;
             // throw small warning because this is not an error but it is not normal
-            LOG("%s", "VulkanPipelineVertexInputStateCreateInfoUtil::Create: vertexInputAttributeDescriptions is empty");
+            LOG( "VulkanPipelineVertexInputStateCreateInfoUtil::Create: vertexInputAttributeDescriptions is empty");
         }
         else
         {

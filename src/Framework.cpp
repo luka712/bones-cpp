@@ -203,10 +203,9 @@ namespace bns
         if (m_currentRendererType == RendererType::WebGPU)
             InitializeForWGPU(windowParameters);
 #endif
-#if USE_VULKAN
         if (m_currentRendererType == RendererType::Vulkan)
             InitializeForVulkan(windowParameters);
-#endif
+
         m_spriteRenderer->Initialize();
 
         m_initializeCallback();

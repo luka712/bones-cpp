@@ -32,7 +32,6 @@
 #include "util/VulkanPipelineMultisampleStateCreateInfoUtil.hpp"
 #include "util/VulkanPipelineColorBlendStateCreateInfoUtil.hpp"
 #include "util/VulkanPipelineLayoutUtil.hpp"
-#include "util/VulkanApplicationInfoUtil.hpp"
 #include "util/VulkanInstanceUtil.hpp"
 #include "util/VulkanPhysicalDeviceUtil.hpp"
 #include "util/VulkanDeviceQueueCreateInfoUtil.hpp"
@@ -54,9 +53,6 @@ namespace bns
 {
     struct VulkanUtil
     {
-        /// @brief The @ref VulkanApplicationInfoUtil for working with @ref VkApplicationInfo
-        static VulkanApplicationInfoUtil ApplicationInfo;
-
         /// @brief The @ref VulkanAttachmentDescriptionUtil for working with @ref VkAttachmentDescription
         static VulkanAttachmentDescriptionUtil AttachmentDescription;
 

@@ -14,7 +14,7 @@ namespace bns
         if (outVertexInputBindingDescriptions.size() != 0)
         {
             std::string message = "outVertexInputBindingDescriptions must be empty";
-            LOG("%s", message.c_str());
+            LOG(message);
             BREAKPOINT();
             throw std::runtime_error(message);
         }
@@ -22,7 +22,7 @@ namespace bns
         if (outVertexInputAttributeDescriptions.size() != 0)
         {
             std::string message = "outVertexInputAttributeDescriptions must be empty";
-            LOG("%s", message.c_str());
+            LOG(message);
             BREAKPOINT();
             throw std::runtime_error(message);
         }

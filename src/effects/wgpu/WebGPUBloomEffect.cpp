@@ -106,7 +106,7 @@ WGPURenderPipeline WebGPUBloomEffectImpl::CreateRenderPipeline(std::vector<WGPUB
 
     // 1 layout with 2 attributes
     BufferLayoutDescriptor bufferLayoutDescriptor;
-    bufferLayoutDescriptor.Step = StepMode::Vertex;
+    bufferLayoutDescriptor.Step = VertexStepMode::Vertex;
     bufferLayoutDescriptor.Stride = sizeof(f32) * 5; // x, y, z, u, v
     bufferLayoutDescriptor.Attributes.push_back({VertexFormat::Float32x3, 0, 0});
     bufferLayoutDescriptor.Attributes.push_back({VertexFormat::Float32x2, 1, sizeof(f32) * 3});
@@ -114,14 +114,15 @@ WGPURenderPipeline WebGPUBloomEffectImpl::CreateRenderPipeline(std::vector<WGPUB
     std::vector<BufferLayoutDescriptor> vertexBufferLayouts;
     vertexBufferLayouts.push_back(bufferLayoutDescriptor);
 
-    WGPUVertexBufferLayout *vertexBuffersLayout = WebGPUUtil::VertexBufferLayout.Create(vertexBufferLayouts);
+    size_t vertexBuffersLayoutCount;
+    WGPUVertexBufferLayout *vertexBuffersLayout = WebGPUUtil::VertexBufferLayout.Create(vertexBufferLayouts, &vertexBuffersLayoutCount);
 
     // TODO: move to util
     WGPUVertexState vertexState;
     vertexState.nextInChain = nullptr;
     vertexState.entryPoint = "vs_main";
     vertexState.module = shaderModule;
-    vertexState.bufferCount = 1;
+    vertexState.bufferCount = vertexBuffersLayoutCount;
     vertexState.buffers = vertexBuffersLayout;
     vertexState.constantCount = 0;
 

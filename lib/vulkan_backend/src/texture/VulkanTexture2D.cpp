@@ -9,8 +9,12 @@ namespace bns
                                      const VkDevice &device,
                                      const VkCommandPool &commandPool,
                                      const VkQueue &graphicsQueue,
-                                     ImageData *imageData, i32 textureUsageFlags, TextureFormat format)
-        : Texture2D(imageData->Width, imageData->Height, textureUsageFlags, format),
+                                     ImageData *imageData,
+                                     i32 textureUsageFlags,
+                                     TextureFormat format,
+                                     SamplerMinFilter minFilter,
+                                     SamplerMagFilter magFilter)
+        : Texture2D(imageData->Width, imageData->Height, textureUsageFlags, format, minFilter, magFilter),
           m_physicalDevice(physicalDevice), m_device(device), m_commandPool(commandPool), m_graphicsQueue(graphicsQueue)
     {
         m_imageData = imageData;
@@ -93,7 +97,9 @@ namespace bns
         // Create image sampler.
         m_imageSampler = VulkanUtil::Sampler.Create(
             m_physicalDevice,
-            m_device);
+            m_device,
+            SamplerFilterToVulkanFilter(m_magFilter),
+            SamplerFilterToVulkanFilter(m_minFilter));
     }
 
     void VulkanTexture2D::Release()
@@ -121,6 +127,38 @@ namespace bns
             vkFreeMemory(m_device, m_imageMemory, nullptr);
             m_imageMemory = VK_NULL_HANDLE;
         }
+    }
+
+    VkFilter VulkanTexture2D::SamplerFilterToVulkanFilter(SamplerMinFilter filter)
+    {
+        switch (filter)
+        {
+        case SamplerMinFilter::NEAREST:
+            return VK_FILTER_NEAREST;
+        case SamplerMinFilter::LINEAR:
+            return VK_FILTER_LINEAR;
+        }
+
+        std::string msg = "VulkanTexture2D::SamplerFilterToVulkanFilter: Invalid filter.";
+        LOG(msg);
+        BREAKPOINT();
+        throw std::runtime_error(msg);
+    }
+
+    VkFilter VulkanTexture2D::SamplerFilterToVulkanFilter(SamplerMagFilter filter)
+    {
+        switch (filter)
+        {
+        case SamplerMagFilter::NEAREST:
+            return VK_FILTER_NEAREST;
+        case SamplerMagFilter::LINEAR:
+            return VK_FILTER_LINEAR;
+        }
+
+        std::string msg = "VulkanTexture2D::SamplerFilterToVulkanFilter: Invalid filter.";
+        LOG(msg);
+        BREAKPOINT();
+        throw std::runtime_error(msg);
     }
 }
 

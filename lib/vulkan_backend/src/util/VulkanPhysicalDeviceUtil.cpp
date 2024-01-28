@@ -21,7 +21,7 @@ namespace bns
         for (const VkExtensionProperties &extension : extensions)
         {
 
-            LOG("\t %s\n", extension.extensionName);
+            LOG("\t" + std::string(extension.extensionName));
             extensionNames.push_back(extension.extensionName);
         }
 
@@ -34,31 +34,28 @@ namespace bns
         vkGetPhysicalDeviceProperties(device, &properties);
 
         LOG("Device properties:");
-        LOG("\t Device name: %s\n", properties.deviceName);
-        LOG("\t Device type: %d\n", properties.deviceType);
-        LOG("\t API version: %d\n", properties.apiVersion);
-        LOG("\t Driver version: %d\n", properties.driverVersion);
-        LOG("\t Vendor ID: %d\n", properties.vendorID);
-        LOG("\t Device ID: %d\n", properties.deviceID);
-        LOG("\t Pipeline cache UUID: %d\n", properties.pipelineCacheUUID);
-        LOG("\t Limits:\n");
-        LOG("\t\t maxImageDimension1D: %d\n", properties.limits.maxImageDimension1D);
-        LOG("\t\t maxImageDimension2D: %d\n", properties.limits.maxImageDimension2D);
-        LOG("\t\t maxImageDimension3D: %d\n", properties.limits.maxImageDimension3D);
-        LOG("\t\t maxImageDimensionCube: %d\n", properties.limits.maxImageDimensionCube);
-        LOG("\t\t maxImageArrayLayers: %d\n", properties.limits.maxImageArrayLayers);
-        LOG("\t\t maxTexelBufferElements: %d\n", properties.limits.maxTexelBufferElements);
-        LOG("\t\t maxUniformBufferRange: %d\n", properties.limits.maxUniformBufferRange);
-        LOG("\t\t maxStorageBufferRange: %d\n", properties.limits.maxStorageBufferRange);
-        LOG("\t\t maxPushConstantsSize: %d\n", properties.limits.maxPushConstantsSize);
-        LOG("\t\t maxMemoryAllocationCount: %d\n", properties.limits.maxMemoryAllocationCount);
-        LOG("\t\t maxSamplerAllocationCount: %d\n", properties.limits.maxSamplerAllocationCount);
-        LOG("\t\t bufferImageGranularity: %d\n", properties.limits.bufferImageGranularity);
-        LOG("\t\t sparseAddressSpaceSize: %d\n", properties.limits.sparseAddressSpaceSize);
-        LOG("\t\t maxBoundDescriptorSets: %d\n", properties.limits.maxBoundDescriptorSets);
-        LOG("\t\t maxPerStageDescriptorSamplers: %d\n", properties.limits.maxPerStageDescriptorSamplers);
-        LOG("\t\t maxPerStageDescriptorUniformBuffers: %d\n", properties.limits.maxPerStageDescriptorUniformBuffers);
-
+        LOG("\t Device name: " +  std::string(properties.deviceName));
+        LOG("\t Device type: " + std::to_string(properties.deviceType));
+        LOG("\t API version: " + std::to_string(properties.apiVersion));
+        LOG("\t Driver version: " + std::to_string(properties.driverVersion));
+        LOG("\t Vendor ID: " + std::to_string(properties.vendorID));
+        LOG("\t Device ID: " + std::to_string(properties.deviceID));
+        LOG("\t Limits:");
+        LOG("\t\t maxImageDimension1D: " + std::to_string(properties.limits.maxImageDimension1D));
+        LOG("\t\t maxImageDimension2D: " + std::to_string(properties.limits.maxImageDimension2D));
+        LOG("\t\t maxImageDimension3D: " + std::to_string(properties.limits.maxImageDimension3D));
+        LOG("\t\t maxImageDimensionCube: " + std::to_string(properties.limits.maxImageDimensionCube));
+        LOG("\t\t maxImageArrayLayers: " + std::to_string(properties.limits.maxImageArrayLayers));
+        LOG("\t\t maxTexelBufferElements: " + std::to_string(properties.limits.maxTexelBufferElements));
+        LOG("\t\t maxUniformBufferRange: " + std::to_string(properties.limits.maxUniformBufferRange));
+        LOG("\t\t maxStorageBufferRange: " + std::to_string(properties.limits.maxStorageBufferRange));
+        LOG("\t\t maxPushConstantsSize: " + std::to_string(properties.limits.maxPushConstantsSize));
+        LOG("\t\t maxMemoryAllocationCount: " + std::to_string(properties.limits.maxMemoryAllocationCount));
+        LOG("\t\t maxSamplerAllocationCount: " + std::to_string(properties.limits.maxSamplerAllocationCount));
+        LOG("\t\t bufferImageGranularity: " + std::to_string(properties.limits.bufferImageGranularity));
+        LOG("\t\t sparseAddressSpaceSize: " + std::to_string(properties.limits.sparseAddressSpaceSize));
+        LOG("\t\t maxBoundDescriptorSets: " + std::to_string(properties.limits.maxBoundDescriptorSets));
+            
         return properties;
     }
 
@@ -70,7 +67,7 @@ namespace bns
 
         for (const std::string &requiredExtension : requiredExtensions)
         {
-            LOG("Required extension: %s", requiredExtension.c_str());
+            LOG("Required extension: " + requiredExtension);
 
             bool extensionFound = false;
             for (const std::string &availableExtension : availableExtensions)
@@ -78,7 +75,7 @@ namespace bns
                 if (requiredExtension == availableExtension)
                 {
                     extensionFound = true;
-                    LOG("Extension found: %s", availableExtension.c_str());
+                    LOG("Extension found: " + availableExtension);
                     break;
                 }
             }
@@ -86,7 +83,7 @@ namespace bns
             if (!extensionFound)
             {
                 std::string msg = "VulkanPhysicalDeviceUtil::IsDeviceSuitable: Device does not support required extension: " + requiredExtension;
-                LOG(msg.c_str());
+                LOG(msg);
                 BREAKPOINT();
                 throw std::runtime_error(msg);
             }
@@ -104,7 +101,7 @@ namespace bns
         if (deviceCount == 0)
         {
             std::string msg = "VulkanPhysicalDeviceUtil::PickPhysicalDevice: No physical devices found.";
-            LOG(msg.c_str());
+            LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }
@@ -139,7 +136,7 @@ namespace bns
 
         // No suitable device found.
         std::string msg = "VulkanPhysicalDeviceUtil::PickPhysicalDevice: No suitable physical device found.";
-        LOG(msg.c_str());
+        LOG(msg);
         BREAKPOINT();
         throw std::runtime_error(msg);
     }
@@ -187,7 +184,7 @@ namespace bns
         if (*graphicsFamily == UINT32_MAX)
         {
             std::string msg = "VulkanPhysicalDeviceUtil::GetQueueFamilyIndices: No graphics queue family found.";
-            LOG(msg.c_str());
+            LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }
@@ -195,7 +192,7 @@ namespace bns
         if (*presentFamily == UINT32_MAX)
         {
             std::string msg = "VulkanPhysicalDeviceUtil::GetQueueFamilyIndices: No present queue family found.";
-            LOG(msg.c_str());
+            LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

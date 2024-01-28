@@ -25,7 +25,7 @@ namespace bns
         if (func == nullptr)
         {
             std::string msg = "VulkanRenderer::SetupDebugUtilsMessengerEXT: Failed to setup debug messenger! Function not found!";
-            LOG(msg.c_str());
+            LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }
@@ -34,7 +34,7 @@ namespace bns
         if (func(instance, &createInfo, nullptr, &debugMessanger) != VK_SUCCESS)
         {
             std::string msg = "VulkanRenderer::SetupDebugUtilsMessengerEXT: Failed to setup debug messenger! Function returned error!";
-            LOG(msg.c_str());
+            LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

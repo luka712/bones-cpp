@@ -13,7 +13,7 @@ layout (std140, binding = 0) uniform CameraBuffer
 layout(location = 0) out vec2 v_texCoords;
 layout(location = 1) out vec4 v_tintColor;
 
-void main()
+void vs_main()
 {
     gl_Position = u_projectionViewMatrix * vec4(a_position, 1.0);
     v_texCoords = a_texCoords;

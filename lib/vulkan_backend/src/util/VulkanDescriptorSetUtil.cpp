@@ -30,7 +30,7 @@ namespace bns
         if (vkAllocateDescriptorSets(device, &allocInfo, descriptorSets.data()) != VK_SUCCESS)
         {
             std::string msg = "VulkanDescriptorSetUtil::Create: Failed to allocate descriptor sets";
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

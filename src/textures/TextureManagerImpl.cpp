@@ -38,7 +38,8 @@ namespace bns
 	{
 	}
 
-	Texture2D *TextureManagerImpl::CreateBackendImplTexture(ImageData *imageData, i32 textureUsageFlags, TextureFormat format)
+	Texture2D *TextureManagerImpl::CreateBackendImplTexture(ImageData *imageData, i32 textureUsageFlags, TextureFormat format,
+															SamplerMinFilter samplerMinFilter, SamplerMagFilter samplerMagFilter)
 	{
 #if USE_METAL
 		if (m_renderer->GetRendererType() == RendererType::Metal)
@@ -58,7 +59,8 @@ namespace bns
 				renderer->GetDevice(),
 				renderer->GetCommandPool(),
 				renderer->GetGraphicsQueue(),
-				imageData, textureUsageFlags, format);
+				imageData, textureUsageFlags, format, 
+				samplerMinFilter, samplerMagFilter);
 		}
 #endif
 
@@ -85,7 +87,7 @@ namespace bns
 		return new OpenGLESTexture2D(imageData, textureUsageFlags, format);
 #endif
 
-		// 
+		//
 		throw std::runtime_error("Renderer not selected.");
 		return nullptr;
 	}

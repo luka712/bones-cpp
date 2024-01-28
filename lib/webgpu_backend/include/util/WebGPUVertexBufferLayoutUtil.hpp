@@ -26,7 +26,7 @@ namespace bns
         /// @param descriptors The buffer layout descriptors.
         /// @param count The number of vertex buffer layouts that are created.
         /// @return The created array of @see WGPUVertexBufferLayout
-        static WGPUVertexBufferLayout* Create(std::vector<BufferLayoutDescriptor> &descriptors, u32 *outCount);
+        static WGPUVertexBufferLayout* Create(std::vector<BufferLayoutDescriptor> &descriptors, size_t *outCount);
 
         /**
          * @brief Delete the vertex buffer layouts and their attributes.

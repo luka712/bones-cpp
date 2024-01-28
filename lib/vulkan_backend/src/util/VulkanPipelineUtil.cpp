@@ -80,7 +80,7 @@ namespace bns
         if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline) != VK_SUCCESS)
         {
             std::string msg = "VulkanPipelineUtil::Create: Failed to create graphics pipeline!";
-            LOG("%s\n", msg.c_str());
+            LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }
@@ -149,7 +149,7 @@ namespace bns
         if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline) != VK_SUCCESS)
         {
             std::string msg = "VulkanPipelineUtil::Create: Failed to create graphics pipeline!";
-            LOG("%s\n", msg.c_str());
+            LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

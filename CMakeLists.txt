@@ -129,32 +129,37 @@ vendor/tinyxml2/tinyxml2.cpp
 # copy assets to build/assets
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR}/assets)
 
+# COPY ALL RELEVANT ENGINE HEADERS
+copy_framework_headers()
+# COPY ALL RELEVANT VENDOR HEADERS
+copy_vendor_headers()
+
 # include it only once
 include_guard(GLOBAL)
 
 if(USE_OPENGL)
-include_directories(
-        # vendor     
-        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad
-        # The lib dependencies
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/opengl_backend/include
-    )
+    include_directories(
+            # vendor     
+            ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad
+            # The lib dependencies
+            ${CMAKE_CURRENT_SOURCE_DIR}/lib/opengl_backend/include
+        )
 endif()
 if(USE_OPENGLES)
-include_directories(
-        # vendor     
-        ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad_es
-        # The lib dependencies
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/opengles_backend/include
-    )
+    include_directories(
+            # vendor     
+            ${CMAKE_CURRENT_SOURCE_DIR}/vendor/glad_es
+            # The lib dependencies
+            ${CMAKE_CURRENT_SOURCE_DIR}/lib/opengles_backend/include
+        )
 endif()
 if(USE_VULKAN)
-include_directories(
-        # the lib dependencies
-        ${CMAKE_CURRENT_SOURCE_DIR}/lib/vulkan_backend/include
+    include_directories(
+            # the lib dependencies
+            ${CMAKE_CURRENT_SOURCE_DIR}/lib/vulkan_backend/include
 
-        # The machine dependencies
-        ${VULKAN_INCLUDE}
+            # The machine dependencies
+            ${VULKAN_INCLUDE}
 )
 endif()
 
@@ -189,7 +194,8 @@ include_directories(
 
 
 # Add the executable
-add_executable(App main.cpp ${SOURCES})
+add_executable(BonesFrameworkExe main.cpp ${SOURCES})
+add_library(BonesFrameworkStatic STATIC ${SOURCES})
 
 # COMPILE OPTIONS
 # Custom extension for WebGPU and SDL2
@@ -208,7 +214,13 @@ target_compile_options(glad_es PRIVATE)
 endif()
 
 # If we are on Apple, we can use Metal or WebGPU (Metal is the default)
-target_compile_options(App PRIVATE 
+target_compile_options(BonesFrameworkExe PRIVATE 
+-DDEBUG=${DEBUG} -DDEBUG_BREAKPOINT_ENABLED=${DEBUG_BREAKPOINT_ENABLED} -DLOGGING_ENABLED=${LOGGING_ENABLED}
+-DUSE_METAL=${USE_METAL} -DUSE_D3D11=${USE_D3D11} -DUSE_WEBGPU=${USE_WEBGPU} -DUSE_OPENGL=${USE_OPENGL} -DUSE_OPENGLES=${USE_OPENGLES} -DUSE_VULKAN=${USE_VULKAN}
+-DFORWARD_2D_NUM_OF_POINT_LIGHTS=${FORWARD_2D_NUM_OF_POINT_LIGHTS}
+) 
+
+target_compile_options(BonesFrameworkStatic PRIVATE 
 -DDEBUG=${DEBUG} -DDEBUG_BREAKPOINT_ENABLED=${DEBUG_BREAKPOINT_ENABLED} -DLOGGING_ENABLED=${LOGGING_ENABLED}
 -DUSE_METAL=${USE_METAL} -DUSE_D3D11=${USE_D3D11} -DUSE_WEBGPU=${USE_WEBGPU} -DUSE_OPENGL=${USE_OPENGL} -DUSE_OPENGLES=${USE_OPENGLES} -DUSE_VULKAN=${USE_VULKAN}
 -DFORWARD_2D_NUM_OF_POINT_LIGHTS=${FORWARD_2D_NUM_OF_POINT_LIGHTS}
@@ -220,71 +232,20 @@ target_compile_options(App PRIVATE
 # ADDITIONAL LINK DIRECTORIES
 link_directories({WINDOWS_SDK})
 
-target_link_directories(App PRIVATE ${VULKAN_LIB_DIR})
+target_link_directories(BonesFrameworkExe PRIVATE ${VULKAN_LIB_DIR})
+target_link_directories(BonesFrameworkExe PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/webgpu)
+target_link_directories(BonesFrameworkStatic PRIVATE ${VULKAN_LIB_DIR})
+target_link_directories(BonesFrameworkStatic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/webgpu)
 
-if(WIN32)
-    # SDL2::SDL2main may or may not be available. It is e.g. required by Windows GUI applications
-    if(TARGET SDL2::SDL2main)
-        # It has an implicit dependency on SDL2 functions, so it MUST be added before SDL2::SDL2 (or SDL2::SDL2-static)
-        target_link_libraries(App PRIVATE SDL2::SDL2main)
-    endif()
-endif()
-
-# Link libraries which are shared between different targets
-target_link_libraries(App PRIVATE BnsCommon)
-
-if(APPLE)
-# Link the libraries to the executable (SDL2, Metal, QuartzCore, Foundation) 
-target_link_libraries(App PRIVATE SDL2::SDL2 ${APPLE_FWK_FOUNDATION} ${APPLE_FWK_QUARTZ_CORE} ${APPLE_FWK_METAL} SDL2Extension 
-BnsWindow
-BnsSDLWindow
-BnsLoaders 
-BnsMath 
-BnsRenderingBackend
-)
-elseif(WIN32)
-target_link_libraries(App PRIVATE SDL2::SDL2 d3d11 dxgi d3dcompiler SDL2Extension 
-BnsWindow
-BnsSDLWindow
-BnsLoaders 
-BnsMath 
-BnsRenderingBackend
-)
-else()
-target_link_libraries(App PRIVATE SDL2::SDL2 SDL2Extension
-BnsWindow
-BnsSDLWindow
-BnsLoaders 
-BnsMath 
-BnsRenderingBackend
-)
-endif()
-
-# glad must be linked if OpenGL is used as it provides headers
-if(USE_OPENGL)
-    target_link_libraries(App PRIVATE glad BnsOpenGLBackend)
-endif()
-if(USE_OPENGLES)
-    target_link_libraries(App PRIVATE glad_es BnsOpenGLESBackend)
-endif()
-if(USE_WEBGPU)
-    target_link_libraries(App PRIVATE webgpu BnsWebGPUBackend)
-endif()
-if(USE_D3D11)
-    target_link_libraries(App PRIVATE BnsD3D11Backend)
-endif()
-if(USE_METAL)
-    target_link_libraries(App PRIVATE BnsMetalBackend)
-endif()
-if(USE_VULKAN)
-    target_link_libraries(App PRIVATE vulkan-1 BnsVulkanBackend)
-endif()
+# LINK LIBRARIES
+target_link_libraries_util(BonesFrameworkExe)
+target_link_libraries_util(BonesFrameworkStatic)
 
 
-    # copy SDL2.dll, SDL2_image.dll to the output directory
-add_custom_command(TARGET App POST_BUILD
+# copy SDL2.dll, SDL2_image.dll to the output directory
+add_custom_command(TARGET BonesFrameworkExe POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:SDL2::SDL2> $<TARGET_FILE_DIR:App>
+        $<TARGET_FILE:SDL2::SDL2> $<TARGET_FILE_DIR:BonesFrameworkExe>
 )
 
 
@@ -293,7 +254,7 @@ add_custom_command(TARGET App POST_BUILD
 if(XCODE)
 
     # Copy non source files to build dir such as shaders, assets, etc
-    add_custom_command(TARGET App POST_BUILD
+    add_custom_command(TARGET BonesFrameworkExe POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_CURRENT_SOURCE_DIR}/shaders 
         ${CMAKE_CURRENT_BINARY_DIR}/Debug/shaders
@@ -304,7 +265,7 @@ if(XCODE)
     )
 
     # enable metal frame capture
-    set_target_properties(App PROPERTIES
+    set_target_properties(BonesFrameworkExe PROPERTIES
         XCODE_GENERATE_SCHEME ON
         XCODE_SCHEME_ENABLE_GPU_FRAME_CAPTURE_MODE "Metal")
 elseif(WIN32)
@@ -314,27 +275,30 @@ file(COPY ${CMAKE_SOURCE_DIR}/shaders DESTINATION ${CMAKE_BINARY_DIR}/Debug)
 file(COPY ${CMAKE_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR}/Debug)
 else()
 # Set the executable's properties for Cmake
-set_target_properties(App PROPERTIES CXX_STANDARD 17)
+set_target_properties(BonesFrameworkExe PROPERTIES CXX_STANDARD 17)
+set_target_properties(BonesFrameworkStatic PROPERTIES CXX_STANDARD 17)
 endif()
 
 
 # set 
 set_target_properties(webgpu PROPERTIES IMPORTED_LOCATION webgpu)
-set_target_properties(App PROPERTIES VS_DEBUGGER_ENVIRONMENT "DAWN_DEBUG_BREAK_ON_ERROR=1")
+set_target_properties(BonesFrameworkExe PROPERTIES VS_DEBUGGER_ENVIRONMENT "DAWN_DEBUG_BREAK_ON_ERROR=1")
+set_target_properties(BonesFrameworkStatic PROPERTIES VS_DEBUGGER_ENVIRONMENT "DAWN_DEBUG_BREAK_ON_ERROR=1")
 
 # Disabled due to metal specific stuff
-# target_treat_all_warnings_as_errors(App)
+# target_treat_all_warnings_as_errors(BonesFrameworkExe)
 
 # The application's binary must find wgpu.dll or libwgpu.so at runtime,
 # so we automatically copy it (it's called WGPU_RUNTIME_LIB in general)
 # next to the binary.
-target_copy_webgpu_binaries(App)
+target_copy_webgpu_binaries(BonesFrameworkExe)
+target_copy_webgpu_binaries(BonesFrameworkStatic)
 
 if(WIN32)
     # copy SDL2.dll, SDL2_image.dll to the output directory
-    add_custom_command(TARGET App POST_BUILD
+    add_custom_command(TARGET BonesFrameworkExe POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            $<TARGET_FILE:SDL2::SDL2> $<TARGET_FILE_DIR:App>
-           #  $<TARGET_FILE:SDL2_image::SDL2_image> $<TARGET_FILE_DIR:App>
+            $<TARGET_FILE:SDL2::SDL2> $<TARGET_FILE_DIR:BonesFrameworkExe>
+           #  $<TARGET_FILE:SDL2_image::SDL2_image> $<TARGET_FILE_DIR:BonesFrameworkExe>
             )
 endif()

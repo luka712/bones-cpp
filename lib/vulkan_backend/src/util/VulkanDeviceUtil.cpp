@@ -46,7 +46,7 @@ namespace bns
         if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS)
         {
             std::string msg = "VulkanRenderer::SetupLogicalDevice: Failed to create logical device!";
-            LOG(msg.c_str());
+            LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

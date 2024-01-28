@@ -16,7 +16,7 @@ namespace bns
         if (vkCreateSemaphore(device, &semaphoreCreateInfo, nullptr, &semaphore) != VK_SUCCESS)
         {
             std::string msg = "VulkanSemaphoreUtil::Create: Failed to create semaphore";
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

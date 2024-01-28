@@ -27,7 +27,7 @@ namespace bns
         // Create the device, device context, and swap chain
         // Define your swap chain and device creation parameters
         DXGI_SWAP_CHAIN_DESC sd = {};
-        sd.BufferCount = 1;
+        sd.BufferCount = 2; // Dobule buffering
         sd.BufferDesc.Width = m_bufferSize.X;
         sd.BufferDesc.Height = m_bufferSize.Y;
         sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;

@@ -27,7 +27,7 @@ namespace bns
         if (vkCreateBuffer(device, &bufferCreateInfo, nullptr, &buffer) != VK_SUCCESS)
         {
             std::string msg = "VulkanBufferUtil::Create: Failed to create buffer.";
-            LOG("%s", msg.c_str());
+            LOG( msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

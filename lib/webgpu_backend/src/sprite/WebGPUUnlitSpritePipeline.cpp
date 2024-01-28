@@ -95,7 +95,7 @@ namespace bns
         vertexBufferLayouts.push_back(bufferLayoutDescriptor);
 
         // Should be 1, since there is only 1 vertex buffer layout descriptor
-        u32 vertexBufferLayoutCount = 0;
+        size_t vertexBufferLayoutCount = 0;
         WGPUVertexBufferLayout *layout = WebGPUVertexBufferLayoutUtil::Create(vertexBufferLayouts, &vertexBufferLayoutCount);
 
 
@@ -104,7 +104,7 @@ namespace bns
         vertexState.nextInChain = nullptr;
         vertexState.entryPoint = "vs_main";
         vertexState.module = shaderModule;
-        vertexState.bufferCount = 1;
+        vertexState.bufferCount = vertexBufferLayoutCount;
         vertexState.buffers = layout;
         vertexState.constantCount = 0;
         renderPipelineDescriptor.vertex = vertexState;

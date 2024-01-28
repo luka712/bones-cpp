@@ -19,23 +19,49 @@ namespace bns
 												{ m_swapchainOutOfDateFlag = true; });
 	}
 
-	bool VulkanRenderer::IsLayerSupported(const std::string &layer)
+	void VulkanRenderer::CheckValidationLayerSupport()
 	{
-		u32 layerCount;
-		vkEnumerateInstanceLayerProperties(&layerCount, nullptr);
+		// Get count of available layers
+		u32 propertyCount = 0;
+		vkEnumerateInstanceLayerProperties(&propertyCount, nullptr);
 
-		std::vector<VkLayerProperties> availableLayers(layerCount);
-		vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
+		// Get available layers
+		std::vector<VkLayerProperties> availableLayers(propertyCount);
+		vkEnumerateInstanceLayerProperties(&propertyCount, availableLayers.data());
 
-		for (size_t i = 0; i < availableLayers.size(); i++)
+		// Check if all layers are supported
+		// Go through each required layer and compare it to the available layers
+		for (const std::string &layer : m_validationLayers)
 		{
-			if (std::string(availableLayers[i].layerName) == layer)
+			bool layerFound = false;
+
+			// Check against availalbe layers
+			for (const VkLayerProperties &availableLayer : availableLayers)
 			{
-				return true;
+				if (strcmp(layer.c_str(), availableLayer.layerName) == 0)
+				{
+					layerFound = true;
+					break;
+				}
+			}
+
+			// If we didn't find the layer, throw an error
+			if (!layerFound)
+			{
+				std::string msg = "VulkanRenderer::CheckValidationLayerSupport: Validation layer " + layer + " not is not supported!";
+				LOG(msg);
+				BREAKPOINT();
+				throw std::runtime_error(msg);
 			}
 		}
+	}
 
-		return false;
+	void VulkanRenderer::CreateInstance(const std::vector<std::string> &requiredExtensions)
+	{
+		// If we are in debug mode, we want to have debug utils extension enabled.
+		std::vector<std::string> copyRequiredExtensions = m_additionalExtensions;
+		copyRequiredExtensions.insert(copyRequiredExtensions.end(), requiredExtensions.begin(), requiredExtensions.end());
+		m_instance = VulkanUtil::Instance.Create(copyRequiredExtensions, m_validationLayers);
 	}
 
 	VKAPI_ATTR VkBool32 VKAPI_CALL VulkanRenderer::DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
@@ -44,26 +70,15 @@ namespace bns
 																 void *pUserData)
 	{
 		std::string msg = "VulkanRenderer::DebugCallback: " + std::string(pCallbackData->pMessage);
-		LOG(msg.c_str());
+		LOG(msg);
 
 		return VK_FALSE; // return true if the call should be aborted. This is almost never the case. We just want to log the error.
 	}
 
 	void VulkanRenderer::Initialize(const std::vector<std::string> &requiredExtensions)
 	{
-		// CREATE INSTANCE
-		// Create app info. This is optional but can be useful for drivers to optimize our specific application.
-		VkApplicationInfo appInfo = VulkanUtil::ApplicationInfo.Create();
-
-		// Of we are in debug mode, we want to have debug utils extension enabled.
-		std::vector<std::string> copyRequiredExtensions = requiredExtensions;
-#if DEBUG
-		copyRequiredExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME); // this extension is used for debug purposes. We can use it to log errors and warnings.
-#endif
-
-		m_instance = VulkanUtil::Instance.Create(appInfo, copyRequiredExtensions, m_validationLayers);
-
-		VulkanUtil::Instance.PrintAvailableExtensionsAndLayers();
+		CheckValidationLayerSupport();
+		CreateInstance(requiredExtensions);
 
 		// PHYSICAL DEVICE
 		m_physicalDevice = VulkanUtil::PhysicalDevice.PickPhysicalDevice(m_instance, m_deviceExtensions);
@@ -146,7 +161,7 @@ namespace bns
 		if (vkWaitForFences(m_device, 1, &m_inFlightFence, VK_TRUE, UINT64_MAX) != VK_SUCCESS)
 		{
 			std::string msg = "VulkanRenderer::BeginDraw: Failed to wait for fence!";
-			LOG(msg.c_str());
+			LOG(msg);
 			BREAKPOINT();
 			throw std::runtime_error(msg);
 		}
@@ -161,7 +176,7 @@ namespace bns
 		else if (result != VK_SUCCESS)
 		{
 			std::string msg = "VulkanRenderer::BeginDraw: Failed to acquire swap chain image!";
-			LOG(msg.c_str());
+			LOG(msg);
 			BREAKPOINT();
 			throw std::runtime_error(msg);
 		}
@@ -170,7 +185,7 @@ namespace bns
 		if (vkResetFences(m_device, 1, &m_inFlightFence) != VK_SUCCESS)
 		{
 			std::string msg = "VulkanRenderer::BeginDraw: Failed to reset fence!";
-			LOG(msg.c_str());
+			LOG(msg);
 			BREAKPOINT();
 			throw std::runtime_error(msg);
 		}
@@ -179,7 +194,7 @@ namespace bns
 		if (vkResetCommandBuffer(m_commandBuffer, 0) != VK_SUCCESS)
 		{
 			std::string msg = "VulkanRenderer::BeginDraw: Failed to reset command buffer!";
-			LOG(msg.c_str());
+			LOG(msg);
 			BREAKPOINT();
 			throw std::runtime_error(msg);
 		}
@@ -189,7 +204,7 @@ namespace bns
 		if (vkBeginCommandBuffer(m_commandBuffer, &beginInfo) != VK_SUCCESS)
 		{
 			std::string msg = "VulkanRenderer::RecordCommandBuffer: Failed to begin recording command buffer!";
-			LOG(msg.c_str());
+			LOG(msg);
 			BREAKPOINT();
 			throw std::runtime_error(msg);
 		}
@@ -235,7 +250,7 @@ namespace bns
 		if (vkEndCommandBuffer(m_commandBuffer) != VK_SUCCESS)
 		{
 			std::string msg = "VulkanRenderer::RecordCommandBuffer: Failed to record command buffer!";
-			LOG(msg.c_str());
+			LOG(msg);
 			BREAKPOINT();
 			throw std::runtime_error(msg);
 		}
@@ -250,7 +265,7 @@ namespace bns
 		if (vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, m_inFlightFence) != VK_SUCCESS)
 		{
 			std::string msg = "VuekanRenderer::EndDraw: Failed to submit draw command buffer!";
-			LOG("%s", msg.c_str());
+			LOG( msg);
 			BREAKPOINT();
 			throw std::runtime_error(msg);
 		}
@@ -279,7 +294,7 @@ namespace bns
 		else if (result != VK_SUCCESS)
 		{
 			std::string msg = "VulkanRenderer::EndDraw: Failed to present swap chain image!";
-			LOG(msg.c_str());
+			LOG(msg);
 			BREAKPOINT();
 			throw std::runtime_error(msg);
 		}

@@ -43,7 +43,7 @@ namespace bns
         if (vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &memory) != VK_SUCCESS)
         {
             std::string msg = "VulkanBufferUtil::AllocateBufferMemory: Failed to allocate buffer memory.";
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }
@@ -87,7 +87,7 @@ namespace bns
         if (vkAllocateMemory(device, &memoryAllocateInfo, nullptr, &memory) != VK_SUCCESS)
         {
             std::string msg = "VulkanBufferUtil::AllocateImageMemory: Failed to allocate image memory.";
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

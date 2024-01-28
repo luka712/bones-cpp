@@ -55,7 +55,7 @@ namespace bns
                     else
                     {
                         std::string msg = "VulkanImageLayoutUtil::TransitionImageLayout: unsupported layout transition!";
-                        LOG("%s", msg.c_str());
+                       LOG(msg);
                         BREAKPOINT();
                         throw std::runtime_error(msg);
                     }

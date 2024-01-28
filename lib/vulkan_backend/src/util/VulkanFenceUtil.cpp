@@ -17,7 +17,7 @@ namespace bns
         if (vkCreateFence(device, &fenceCreateInfo, nullptr, &fence) != VK_SUCCESS)
         {
             std::string msg = "VulkanFenceUtil::Create: Failed to create fence";
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

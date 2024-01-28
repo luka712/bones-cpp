@@ -19,9 +19,15 @@ namespace bns
 
         /// @brief The texture format. By default, it is set to TextureFormat::RGBA_8_Unorm.
         TextureFormat Format;
+
+        /// @brief The min filter.
+        SamplerMinFilter MinFilter;
+
+        /// @brief The mag filter.
+        SamplerMagFilter MagFilter;
     };
 
-    class TextureManager 
+    class TextureManager
     {
     protected:
         ImageLoader *m_imageLoader;
@@ -34,13 +40,16 @@ namespace bns
         /// @param imageData The image data.
         /// @param textureUsageFlags The texture usage flags.
         /// @param format The texture format.
+        /// @param samplerMinFilter The min filter. By default, it is set to SamplerMinFilter::LINEAR.
+        /// @param samplerMagFilter The mag filter. By default, it is set to SamplerMagFilter::LINEAR.
         /// @return The texture instance.
-        virtual Texture2D* CreateBackendImplTexture(ImageData *imageData, i32 textureUsageFlags, TextureFormat format) = 0;
-
+        virtual Texture2D *CreateBackendImplTexture(ImageData *imageData, i32 textureUsageFlags, TextureFormat format,
+                                                    SamplerMinFilter samplerMinFilter = SamplerMinFilter::LINEAR,
+                                                    SamplerMagFilter samplerMagFilter = SamplerMagFilter::LINEAR) = 0;
 
     public:
         /// @brief Construct a new TextureManager object
-        TextureManager(ImageLoader* imageLoader);
+        TextureManager(ImageLoader *imageLoader);
 
         /// @brief Load a texture.
         /// @param path The path to the texture.
@@ -54,11 +63,14 @@ namespace bns
         /// @param imageData The image data.
         /// @param textureUsageFlags The texture usage flags. By default, it is set to TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST.
         /// @param format The texture format. By default, it is set to TextureFormat::RGBA_8_Unorm.
+        /// @param samplerMinFilter The min filter. By default, it is set to SamplerMinFilter::LINEAR.
+        /// @param samplerMagFilter The mag filter. By default, it is set to SamplerMagFilter::LINEAR.
         /// @param key The key to cache texture by. If not specified, texture is not cached.
-        /// @return 
+        /// @return
         Texture2D *CreateTexture(ImageData *imageData,
                                  i32 textureUsageFlags = TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST,
                                  TextureFormat format = TextureFormat::RGBA_8_Unorm,
+                                 SamplerMinFilter samplerMinFilter = SamplerMinFilter::LINEAR, SamplerMagFilter samplerMagFilter = SamplerMagFilter::LINEAR,
                                  std::string key = "");
 
         /**

@@ -21,7 +21,7 @@ namespace bns
             return VK_SHADER_STAGE_GEOMETRY_BIT;
         default:
             std::string msg = "VulkanDescriptorSetLayoutBindingUtil::GetShaderStageFlags: Invalid shader type";
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }
@@ -37,7 +37,7 @@ namespace bns
             return VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
         default:
             std::string msg = "VulkanDescriptorSetLayoutBindingUtil::GetDescriptorType: Invalid binding type";
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

@@ -6,6 +6,8 @@ namespace bns
     {
         TextureUsageFlags = TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST;
         Format = TextureFormat::RGBA_8_Unorm;
+        MinFilter = SamplerMinFilter::LINEAR;
+        MagFilter = SamplerMagFilter::LINEAR;
     }
 
     TextureManager::TextureManager(ImageLoader *imageLoader)
@@ -23,16 +25,18 @@ namespace bns
             options = *textureOptions;
         }
 
-        Texture2D *texture = CreateTexture(imageData, options.TextureUsageFlags, options.Format, key);
+        Texture2D *texture = CreateTexture(imageData, options.TextureUsageFlags, options.Format, options.MinFilter, options.MagFilter, key);
         delete imageData;
 
         return texture;
     }
 
-    Texture2D *TextureManager::CreateTexture(ImageData *imageData, i32 textureUsageFlags, TextureFormat format, std::string key )
+    Texture2D *TextureManager::CreateTexture(ImageData *imageData, i32 textureUsageFlags, TextureFormat format,
+                                             SamplerMinFilter samplerMinFilter, SamplerMagFilter samplerMagFilter,
+                                             std::string key)
     {
         // Here texture 2d will be of type WebGPUTexture2D, MetalTexture2D etc.
-        Texture2D *texture = CreateBackendImplTexture(imageData, textureUsageFlags, format);
+        Texture2D *texture = CreateBackendImplTexture(imageData, textureUsageFlags, format, samplerMinFilter, samplerMagFilter);
 
         texture->Initialize();
 

@@ -13,7 +13,7 @@ namespace bns
         if (!input_file.is_open())
         {
             std::string msg = "FileLoader::LoadFile: File not found: " + path;
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }
@@ -45,7 +45,7 @@ namespace bns
         if (!file.is_open())
         {
             std::string msg = "FileLoader::LoadFileAsBinary: File not found: " + path;
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

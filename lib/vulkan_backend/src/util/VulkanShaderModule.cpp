@@ -19,7 +19,7 @@ namespace bns
         if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS)
         {
             std::string msg = "VulkanShaderModuleUtil::CreateFromSpirV: Failed to create shader module.";
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

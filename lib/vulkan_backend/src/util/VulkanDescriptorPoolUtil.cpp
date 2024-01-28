@@ -18,7 +18,7 @@ namespace bns
         if (vkCreateDescriptorPool(device, &poolInfo, nullptr, &descriptorPool) != VK_SUCCESS)
         {
             std::string msg = "VulkanDescriptorPoolUtil::Create: failed to create descriptor pool!";
-            LOG("%s", msg.c_str());
+           LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

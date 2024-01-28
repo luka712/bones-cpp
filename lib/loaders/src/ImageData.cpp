@@ -16,3 +16,11 @@ bns::ImageData::ImageData()
 {
     Data = nullptr;
 }
+
+bns::ImageData::~ImageData()
+{
+    if (Data != nullptr)
+    {
+        stbi_image_free(Data);
+    }
+}

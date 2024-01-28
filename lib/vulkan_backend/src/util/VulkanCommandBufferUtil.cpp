@@ -22,7 +22,7 @@ namespace bns
         if (vkAllocateCommandBuffers(device, &allocInfo, &commandBuffer) != VK_SUCCESS)
         {
             std::string msg = "VulkanCommandBufferUtil::Create: failed to allocate command buffers!";
-            LOG("%s", msg.c_str());
+            LOG( msg);
             BREAKPOINT();
             throw std::runtime_error(msg);
         }

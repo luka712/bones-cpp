@@ -7,7 +7,8 @@ layout(binding = 1) uniform sampler2D u_texture;
 
 layout(location = 0) out vec4 o_fragColor;
 
-void main()
+
+void fs_main()
 {
     vec4 color = texture(u_texture, v_texCoords) * v_tintColor;
 

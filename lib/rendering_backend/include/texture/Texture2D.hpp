@@ -57,6 +57,24 @@ namespace bns
         BGRA_8_Unorm = 0x2,
     };
 
+    /// @brief The min filter.
+    enum class SamplerMinFilter
+    {
+        NEAREST = 0x1,
+        LINEAR = 0x2,
+        NEAREST_MIPMAP_NEAREST = 0x3,
+        LINEAR_MIPMAP_NEAREST = 0x4,
+        NEAREST_MIPMAP_LINEAR = 0x5,
+        LINEAR_MIPMAP_LINEAR = 0x6,
+    };
+
+    /// @brief The mag filter.
+    enum class SamplerMagFilter
+    {
+        NEAREST = 0x1,
+        LINEAR = 0x2,
+    };
+
     class Texture2D
     {
     protected:
@@ -66,15 +84,17 @@ namespace bns
         i32 m_width;
         i32 m_height;
 
-        /**
-         * @brief The usage of the texture.
-         */
+        /// @brief The usage of the texture.
         i32 m_textureUsageFlags;
 
-        /**
-         * @brief The format of the texture.
-         */
+        /// @brief The format of the texture.
         TextureFormat m_format;
+
+        /// @brief The min filter.
+        SamplerMinFilter m_minFilter;
+
+        /// @brief The mag filter.
+        SamplerMagFilter m_magFilter;
 
         /**
          * The id generator for the textures. Is increased whenever a new texture is created.
@@ -87,7 +107,15 @@ namespace bns
         static u32 GenerateID();
 
     public:
-        Texture2D(i32 width, i32 height, i32 textureUsageFlags, TextureFormat format);
+        /// @brief The constructor.
+        /// @param width The width.
+        /// @param height The height.
+        /// @param textureUsageFlags The texture usage flags.
+        /// @param format The texture format.
+        /// @param minFilter The min filter. By default, it is set to SamplerMinFilter::LINEAR.
+        /// @param magFilter The mag filter. By default, it is set to SamplerMagFilter::LINEAR.
+        Texture2D(i32 width, i32 height, i32 textureUsageFlags, TextureFormat format,
+                  SamplerMinFilter minFilter = SamplerMinFilter::LINEAR, SamplerMagFilter magFilter = SamplerMagFilter::LINEAR);
 
         virtual ~Texture2D();
 
