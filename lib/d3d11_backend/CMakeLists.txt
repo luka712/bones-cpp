@@ -7,7 +7,10 @@ file(GLOB D3D11_BACKEND_SOURCES src/*.cpp src/**/*.cpp)
 ADD_LIBRARY(BnsD3D11Backend STATIC ${D3D11_BACKEND_SOURCES})
 
 # USE_D3D11 is defined in the root CMakeLists.txt
-target_compile_options(BnsD3D11Backend PRIVATE -DUSE_D3D11=${USE_D3D11})
+target_compile_options(BnsD3D11Backend PRIVATE -DUSE_D3D11=${USE_D3D11}
+-DDEBUG=${DEBUG}
+-DLOGGING_ENABLED=${LOGGING_ENABLED}
+-DEBUG_BREAKPOINT_ENABLED=${DEBUG_BREAKPOINT_ENABLED})
 
 # Find DirectX Libraries
 # Path to DirectX SDK
@@ -21,7 +24,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 
     # project libraries 
-    ${CMAKE_CURRENT_SOURCE_DIR}/../common/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../core/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../loaders/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../rendering_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../texture/include

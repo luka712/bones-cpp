@@ -4,18 +4,21 @@
 
 #include "Window.hpp"
 #include <SDL2/SDL.h>
-#include "BnsWebGPU.hpp"
+#include "time/TimeManager.hpp"
 
 namespace bns
 {
-        /**
-         * @brief SDL implementation of WindowManager.
-         */
+        /// @brief SDL implementation of WindowManager.
         class SDLWindowManager final : public WindowManager
         {
         private:
+                TimeManager *m_timeManager;
+
                 SDL_Window *m_window;
                 SDL_Renderer *m_renderer;
+
+                f32 m_currentFrameTime;
+                f32 m_lastFrameTime;
 
                 /// @brief Creates a window. Sometimes renderer is not needed (OpenGL, Vulkan, etc.)
                 /// @param windowParameters The window parameters.
@@ -32,9 +35,10 @@ namespace bns
         public:
                 /// @brief The constructor.
                 /// @param events The framework events.
+                /// @param timeManager The time manager.
                 /// @param updateCallback The update callback.
                 /// @param drawCallback The draw callback.
-                SDLWindowManager(Events *events, std::function<void()> updateCallback, std::function<void()> drawCallback);
+                SDLWindowManager(Events *events, TimeManager *timeManager, std::function<void(Time)> updateCallback, std::function<void()> drawCallback);
                 ~SDLWindowManager();
 
                 Vec2i GetWindowSize() override;

@@ -1,5 +1,5 @@
 #include "SDLWindow.hpp"
-#include <iostream>
+#include <iostream>"
 #include "SDL2Extension/SDL2_Extension.h"
 
 // To get correct struct from <SDL2\SDL_syswm.h>, we must define.
@@ -18,8 +18,8 @@
 
 namespace bns
 {
-    SDLWindowManager::SDLWindowManager(Events *events, std::function<void()> updateCallback, std::function<void()> drawCallback)
-        : WindowManager(events, updateCallback, drawCallback), Quit(false)
+    SDLWindowManager::SDLWindowManager(Events *events, TimeManager *timeManager, std::function<void(Time time)> updateCallback, std::function<void()> drawCallback)
+        : WindowManager(events, timeManager, updateCallback, drawCallback), m_timeManager(timeManager), Quit(false)
     {
         m_window = nullptr;
         m_renderer = nullptr;
@@ -127,7 +127,7 @@ namespace bns
         if (metalLayer == nullptr)
         {
             std::string msg = "SDLWindowManager::InitializeForMetal: Failed to create SDL renderer: " + std::string(SDL_GetError());
-           LOG(msg);
+            LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
@@ -169,7 +169,7 @@ namespace bns
         if (glContext == nullptr)
         {
             std::string msg = "SDLWindowManager::InitializeForOpenGL: Failed to create SDL renderer: " + std::string(SDL_GetError());
-           LOG(msg);
+            LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
@@ -178,7 +178,7 @@ namespace bns
         if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
         {
             std::string msg = "SDLWindowManager::InitializeForOpenGL: Failed to create SDL renderer: " + std::string(SDL_GetError());
-           LOG(msg);
+            LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
@@ -194,7 +194,7 @@ namespace bns
 #if USE_OPENGLES
     void SDLWindowManager::InitializeForOpenGLES(WindowParameters windowParameters, i32 *outMajorVersion, i32 *outMinorVersion)
     {
-       CreateSDLWindow(windowParameters, SDL_WINDOW_OPENGL);
+        CreateSDLWindow(windowParameters, SDL_WINDOW_OPENGL);
 
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); // OpenGLES profile
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);                          // we want OpenGLES 3.2
@@ -205,7 +205,7 @@ namespace bns
         if (glContext == nullptr)
         {
             std::string msg = "SDLWindowManager::InitializeForOpenGLES: Failed to create SDL renderer: " + std::string(SDL_GetError());
-           LOG(msg);
+            LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
@@ -214,7 +214,7 @@ namespace bns
         if (!gladLoadGLES2Loader((GLADloadproc)SDL_GL_GetProcAddress))
         {
             std::string msg = "SDLWindowManager::InitializeForOpenGLES: Failed to create SDL renderer: " + std::string(SDL_GetError());
-           LOG(msg);
+            LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }
@@ -287,10 +287,15 @@ namespace bns
 
     void SDLWindowManager::RunEventLoop()
     {
+        m_timeManager->PrepareStart();
         m_events->ClearEvents();
         SDL_Event event;
+
         while (!Quit)
         {
+            // Start frame
+            m_timeManager->Start();
+
             // Process events
             while (SDL_PollEvent(&event))
             {
@@ -299,7 +304,7 @@ namespace bns
                     m_events->AddEvent(EventType::WindowClose);
                     Quit = true;
                 }
-                else if(event.type == SDL_WINDOWEVENT)
+                else if (event.type == SDL_WINDOWEVENT)
                 {
                     switch (event.window.event)
                     {
@@ -310,9 +315,9 @@ namespace bns
                         data.Vec2i[0] = event.window.data1;
                         data.Vec2i[1] = event.window.data2;
                         m_events->AddEvent(EventType::WindowResize, data);
-                        
+
                         // We also have callback, call here.
-                        for(auto& callback : m_windowResizeEventCallbacks)
+                        for (auto &callback : m_windowResizeEventCallbacks)
                         {
                             callback(Vec2i(event.window.data1, event.window.data2));
                         }
@@ -334,14 +339,15 @@ namespace bns
                     data.I32 = event.key.keysym.sym;
                     m_events->AddEvent(EventType::KeyDown, data);
                 }
-                
             }
 
-            // TODO: update 60 times per second, for draw allow drop frames
-            m_updateCallback();
+            m_updateCallback(m_timeManager->GetTime());
             m_drawCallback();
 
-            SDL_Delay(16);
+            // End frame
+            m_timeManager->End();
+
+            LOG("FPS: " << m_timeManager->GetFPS());
         }
     }
 

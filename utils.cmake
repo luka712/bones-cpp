@@ -35,7 +35,7 @@ function(target_link_libraries_util Target)
 
 
 	# Link libraries which are shared between different targets
-	target_link_libraries(${Target} PRIVATE SDL2::SDL2 SDL2Extension BnsCommon BnsWindow BnsSDLWindow BnsLoaders BnsMath BnsRenderingBackend)
+	target_link_libraries(${Target} PRIVATE SDL2::SDL2 SDL2Extension BnsCore BnsWindow BnsSDLWindow BnsLoaders BnsMath BnsRenderingBackend)
 
 	if(APPLE)
 		# Link the libraries to the executable (SDL2, Metal, QuartzCore, Foundation) 
@@ -70,7 +70,7 @@ endfunction()
 function(copy_framework_headers)
 
 file(COPY headers DESTINATION ${CMAKE_BINARY_DIR}) # headers should be at one points only in lib
-file(COPY lib/common/include DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY lib/core/include DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY lib/loaders/include DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY lib/math/include DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY lib/sdl_window/include DESTINATION ${CMAKE_BINARY_DIR})

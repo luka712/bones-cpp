@@ -2,7 +2,7 @@
 
 #define BNS_WINDOW_H
 
-#include "Types.hpp"
+#include "time/TimeManager.hpp"
 #include "Vec2.hpp"
 #include <string>
 #include "Event.hpp"
@@ -46,27 +46,25 @@ namespace bns
                 i32 Height;
                 bool Centered;
 
-                /**
-                 * @brief If set full screen is used.
-                 */
+                /// @brief If set full screen is used.
                 bool FullScreen;
 
-                /**
-                 * @brief Is set, created window should be resizable.
-                 */
+                /// @brief Is set, created window should be resizable.
                 bool Resizable;
         };
 
         class WindowManager
         {
         protected:
+                TimeManager* m_timeManager;
+
                 Events *m_events;
 
                 /// @brief The window resize event callbacks.
                 std::vector<std::function<void(Vec2i size)>> m_windowResizeEventCallbacks;
 
                 /// @brief The update callback.
-                std::function<void()> m_updateCallback;
+                std::function<void(Time)> m_updateCallback;
 
                 /// @brief The draw callback.
                 std::function<void()> m_drawCallback;
@@ -74,9 +72,10 @@ namespace bns
         public:
                 /// @brief The constructor.
                 /// @param events The events.
+                /// @param timeManager The time manager.
                 /// @param updateCallback The update callback.
                 /// @param drawCallback The draw callback.
-                WindowManager(Events *events, std::function<void()> updateCallback, std::function<void()> drawCallback);
+                WindowManager(Events *events, TimeManager* timeManager, std::function<void(Time)> updateCallback, std::function<void()> drawCallback);
 
                 /// @brief Get the window size.
                 virtual Vec2i GetWindowSize() = 0;

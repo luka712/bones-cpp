@@ -2,7 +2,7 @@
 
 namespace bns
 {
-    Renderer::Renderer() : m_renderTexture(nullptr),
+    Renderer::Renderer(SurfacePresentationMode presentationMode) : m_renderTexture(nullptr),
                            m_brightnessTexture(nullptr)
     {
         ClearColor = Color::LightPink();
@@ -10,6 +10,7 @@ namespace bns
 
         // Two frames in flight by default, for double buffering.
         m_framesInFlight = 2; 
+        m_presentationMode = presentationMode;
     }
 
     void Renderer::SetRenderTexture(Texture2D *texture)

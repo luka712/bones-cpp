@@ -22,9 +22,15 @@ namespace bns
         /// @brief The device context.
         CComPtr<ID3D11DeviceContext> m_deviceContext;
 
+        /// @brief The DXGI factory. It is responsible for creating DXGI objects. Creates the swap chain.
+        CComPtr<IDXGIFactory2> m_dxgiFactory;
+
         /// @brief The swap chain. It is responsible for creating a swap chain.
         /// Swap chain in this context is a collection of buffers that can be drawn on.
-        CComPtr<IDXGISwapChain> m_swapChain;
+        CComPtr<IDXGISwapChain1> m_swapChain;
+
+        /// @brief The viewport.
+        D3D11_VIEWPORT m_viewport;
 
         /// @brief A view into the back buffer texture that allows the GPU to render to it.
         CComPtr<ID3D11RenderTargetView> m_renderTargetView;
@@ -41,11 +47,19 @@ namespace bns
         /// @brief A view into the depth stencil texture that allows the GPU to read and write depth information.
         CComPtr<ID3D11DepthStencilView> m_depthStencilView;
 
-        /// @brief Configures the depth stencil.
+        /// @brief Creates the device and device context.
+        void CreateDeviceAndDeviceContext();
+
+        /// @brief Creates the swap chain.
+        void CreateSwapchain(HWND win32Handle);
+
+        /// @brief Creates the depth stencil.
         /// @param width the width of the depth stencil.
         /// @param height the height of the depth stencil.
-        /// @return true if the depth stencil was configured successfully.
-        bool ConfigureDepthStencil(u32 width, u32 height);
+        void CreateDepthStencilBufferAndView(u32 width, u32 height);
+
+        /// @brief Creates the rasterizer state. This is default rasterizer state.
+        void CreateRasterizerState();
 
         /// @brief Resizes the swap chain.
         void Resize();

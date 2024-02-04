@@ -2,5 +2,6 @@
 	#include <d3d11.h>
 	#include <d3dcompiler.h>
 	#include <d3dcommon.h>
+	#include <dxgi1_2.h>
 	#include <atlbase.h> // Contains the declaration of CComPtr.
 #endif 

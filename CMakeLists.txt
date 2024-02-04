@@ -26,12 +26,12 @@ set(USE_OPENGL 0)
 
 # Windows/Linux 
 set(USE_OPENGLES 0)
-set(USE_VULKAN 1)
+set(USE_VULKAN 0)
 
 # Mac specific
 set(USE_METAL 0)
 # Windows specific
-set(USE_D3D11 0)
+set(USE_D3D11 1)
 
 # DEBUG 
 # flips debug mode on/off
@@ -69,7 +69,7 @@ add_subdirectory(vendor/glad_es EXCLUDE_FROM_ALL)
 endif()
 
 # PROJECT LIBRARIES
-add_subdirectory(lib/common)
+add_subdirectory(lib/core)
 add_subdirectory(lib/window)
 add_subdirectory(lib/sdl_window)
 add_subdirectory(lib/loaders)
@@ -180,7 +180,7 @@ include_directories(
     # The lib dependencies
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/window/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/sdl_window/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/lib/common/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib/core/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/loaders/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/math/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/rendering_backend/include

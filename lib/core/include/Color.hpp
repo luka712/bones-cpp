@@ -17,14 +17,11 @@ namespace bns
         f32 B;
         f32 A;
 
-        /**
-         * @brief Construct a new Color F object
-         *
-         * @param r
-         * @param g
-         * @param b
-         * @param a
-         */
+        /// @brief Construct a new Color object.
+        /// @param r the red value.
+        /// @param g the green value.
+        /// @param b the blue value.
+        /// @param a the alpha value.   
         Color(f32 r, f32 g, f32 b, f32 a)
         {
             R = r;
@@ -33,29 +30,22 @@ namespace bns
             A = a;
         }
 
-        /**
-         * @brief Construct a new Color F object
-         *
-         * @param r
-         * @param g
-         * @param b
-         */
+
+        /// @brief Construct a new Color F object
+        /// @param r
+        /// @param g
+        /// @param b
         Color(f32 r, f32 g, f32 b)
             : Color(r, g, b, 1.0)
         {
         }
 
-        /**
-         * @brief Construct a new Color F object
-         */
+        /// @brief Construct a new Color object
         Color()
             : Color(1.0, 1.0, 1.0, 1.0) {}
 
-        /**
-         * @brief Returns the light pink color.
-         *
-         * @return Color
-         */
+        /// @brief Returns the light pink color.
+        /// @return Color
         static Color LightPink()
         {
             return Color(1.0f, 0.71f, 0.76f);

@@ -34,6 +34,7 @@ enum class LifecycleState
    Created,
    Initialized,
    Released,
+   Destroyed,
 };
 
 namespace bns

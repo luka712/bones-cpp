@@ -39,7 +39,7 @@ if(USE_VULKAN)
     target_link_libraries(BnsWindow BnsVulkanBackend)
 endif()
 
-target_link_libraries(BnsWindow BnsCommon)
+target_link_libraries(BnsWindow BnsCore)
 
 # INCLUDES
 include_directories(
@@ -47,7 +47,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 
     # project libraries 
-    ${CMAKE_CURRENT_SOURCE_DIR}/../common/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../core/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../math/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../webgpu_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../d3d11_backend/include

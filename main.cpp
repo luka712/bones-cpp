@@ -30,7 +30,7 @@ void Draw();
 int main()
 {
     bns::FrameworkDescription desc;
-    desc.RendererType = bns::RendererType::Vulkan;
+    desc.RendererType = bns::RendererType::D3D11;
     engine = new bns::Framework(desc);
 
     bns::WindowParameters parameters;
@@ -38,6 +38,7 @@ int main()
     { Draw(); };
 
     engine->Initialize(parameters, Initialize);
+    engine->Destroy();
 
     return 0;
 }

@@ -2,7 +2,7 @@
 
 set(CMAKE_CXX_STANDARD 17)
 
-ADD_LIBRARY(BnsSDLWindow STATIC src/SDLWindow.cpp)
+ADD_LIBRARY(BnsSDLWindow STATIC src/SDLWindow.cpp src/time/SDLTimeManager.cpp)
 
 # USE_WEBGPU is defined in the root CMakeLists.txt
 target_compile_options(BnsSDLWindow PRIVATE 
@@ -33,7 +33,7 @@ if(USE_VULKAN)
 endif()
 
 # LIBRARIES
-target_link_libraries(BnsSDLWindow BnsWindow)
+target_link_libraries(BnsSDLWindow BnsCore BnsWindow)
 
 if(USE_WEBGPU)
 target_link_libraries(BnsWindow SDL2Extension BnsWebGPUBackend)
@@ -65,7 +65,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include
 
     # project libraries 
-    ${CMAKE_CURRENT_SOURCE_DIR}/../common/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../core/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../math/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../window/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../webgpu_backend/include

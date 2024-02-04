@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 file(GLOB COMMON_SOURCES src/*.cpp src/**/*.cpp)
 
-ADD_LIBRARY(BnsCommon STATIC ${COMMON_SOURCES})
+ADD_LIBRARY(BnsCore STATIC ${COMMON_SOURCES})
 
 include_directories(
     # local 

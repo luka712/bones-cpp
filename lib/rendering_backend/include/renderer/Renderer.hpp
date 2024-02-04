@@ -24,6 +24,19 @@ namespace bns
         Vulkan
     };
 
+    /// @brief The presentation mode.
+    enum class SurfacePresentationMode
+    {
+        /// @brief The immediate presentation mode. The frame will be presented immediately.
+        SingleBuffer,
+
+        /// @brief The vsync presentation mode. One back buffer and one front buffer. We will wait for the next vsync to present the frame. 
+        DoubleBuffering,
+ 
+        /// @brief The triple buffering presentation mode. Two back buffers and one front buffer. Instead of back buffer having to wait for vsync, we can write to another back buffer.
+        TripleBuffering
+    };
+
     class Renderer
     {
     protected:
@@ -41,6 +54,9 @@ namespace bns
         /// @brief The size of the render buffer.
         Vec2i m_bufferSize;
 
+        /// @brief The presentation mode.
+        SurfacePresentationMode m_presentationMode;
+
     public:
         /// @brief The clear color.
         /// The color to which renderer will be cleared at the beginning of each frame.
@@ -50,7 +66,9 @@ namespace bns
         /// The front face of the vertices in the scene. By default it is counter clockwise.
         FrontFace FrontFace;
 
-        Renderer();
+        /// @brief The constructor.
+        /// @param presentationMode The presentation mode. By default it is double buffering. 
+        Renderer(SurfacePresentationMode presentationMode = SurfacePresentationMode::DoubleBuffering);
 
         /// @brief Get the buffer size.
         const Vec2i &GetBufferSize() const { return m_bufferSize; }

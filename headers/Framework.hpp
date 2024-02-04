@@ -18,13 +18,17 @@
 #include "renderer/Renderer.hpp"
 #include "effects/EffectFactory.hpp"
 #include <functional>
+#include "time/TimeManager.hpp"
 
 namespace bns
 {
     struct FrameworkDescription
     {
         FrameworkDescription();
+
+        /// @brief The renderer type.
         RendererType RendererType;
+
     };
 
     /// @brief The framework context.
@@ -40,6 +44,7 @@ namespace bns
 
         Events *m_events;
         WindowManager *m_windowManager;
+        TimeManager *m_timeManager;
         Renderer *m_renderer;
         GeometryBuilder *m_geometryBuilder;
         MeshFactory *m_meshFactory;
@@ -83,13 +88,11 @@ namespace bns
         /// @brief Initialize the framework with Vulkan as the backend.
         void InitializeForVulkan(WindowParameters windowParameters);
 #endif
-
-        void OnUpdate();
         void OnDraw();
 
     public:
         /// @brief The update callback.
-        std::function<void()> UpdateCallback;
+        std::function<void(Time time)> UpdateCallback;
         /// @brief The draw callback.
         std::function<void()> DrawCallback;
 
@@ -115,15 +118,13 @@ namespace bns
         }
 
         /// @brief Get the renderer.
-        inline Renderer *GetRenderer() const {    return m_renderer;  }
+        inline Renderer *GetRenderer() const { return m_renderer; }
 
-        /**
-         * @brief Get the geometry builder.
-         */
-        inline GeometryBuilder &GetGeometryBuilder() const
-        {
-            return *m_geometryBuilder;
-        }
+        /// @brief Get the time manager.
+        inline TimeManager *GetTimeManager() const { return m_timeManager; }
+
+        /// @brief Get the geometry builder.
+        inline GeometryBuilder &GetGeometryBuilder() const { return *m_geometryBuilder; }
 
         /**
          * @brief Get the mesh factory.
@@ -191,6 +192,9 @@ namespace bns
         /// @brief Switches the renderer.
         /// @param rendererType The renderer type.
         void SwitchRenderer(RendererType rendererType);
+
+        /// @brief Destroys the framework.
+        void Destroy();
     };
 }
 #endif
