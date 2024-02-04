@@ -50,7 +50,7 @@ namespace bns
             std::string msg = "D3D11::CreateDeviceAndDeviceContext: Failed to create device and device context";
             LOG(msg);
             BREAKPOINT();
-            throw std::exception(msg.c_str());
+            throw std::runtime_error(msg.c_str());
         }
 
         LOG("D3D11::CreateDeviceAndDeviceContext: D3D11 device and device context created successfully");
@@ -66,7 +66,7 @@ namespace bns
             std::string msg = "D3D11::CreateSwapchain: Failed to query interface for IDXGIDevice";
             LOG(msg);
             BREAKPOINT();
-            throw std::exception(msg.c_str());
+            throw std::runtime_error(msg.c_str());
         }
         LOG("D3D11::CreateSwapchain: Got the DXGI device");
 
@@ -78,7 +78,7 @@ namespace bns
             std::string msg = "D3D11::CreateSwapchain: Failed to get adapter";
             LOG(msg);
             BREAKPOINT();
-            throw std::exception(msg.c_str());
+            throw std::runtime_error(msg.c_str());
         }
         LOG("D3D11::CreateSwapchain: Got the DXGI adapter");
 
@@ -89,19 +89,19 @@ namespace bns
             std::string msg = "D3D11::CreateSwapchain: Failed to get parent";
             LOG(msg);
             BREAKPOINT();
-            throw std::exception(msg.c_str());
+            throw std::runtime_error(msg.c_str());
         }
         LOG("D3D11::CreateSwapchain: Got the DXGI factory");
 
         // By default we use double buffering
-        UINT bufferCount = 2;
+        UINT numberOfPresentationBuffers = 2;
         if (m_presentationMode == SurfacePresentationMode::TripleBuffering)
         {
-            bufferCount = 3;
+            numberOfPresentationBuffers = 3;
         }
         else if (m_presentationMode == SurfacePresentationMode::SingleBuffer)
         {
-            bufferCount = 1;
+            numberOfPresentationBuffers = 1;
         }
 
         DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
@@ -113,7 +113,7 @@ namespace bns
         swapChainDesc.SampleDesc.Count = 1;
         swapChainDesc.SampleDesc.Quality = 0;
         swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        swapChainDesc.BufferCount = bufferCount;
+        swapChainDesc.BufferCount = numberOfPresentationBuffers;
         swapChainDesc.Scaling = DXGI_SCALING_STRETCH; // stretch the back buffer to fit the entire window, even it's smaller.
         swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
         swapChainDesc.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
@@ -132,7 +132,7 @@ namespace bns
             std::string msg = "D3D11::CreateSwapchain: Failed to create swap chain";
             LOG(msg);
             BREAKPOINT();
-            throw std::exception(msg.c_str());
+            throw std::runtime_error(msg.c_str());
         }
         LOG("D3D11::CreateSwapchain: Swap chain created successfully");
 
@@ -166,7 +166,7 @@ namespace bns
             std::string msg = "D3D11::CreateDepthStencilBuffer: Failed to create depth stencil buffer.";
             LOG(msg);
             BREAKPOINT();
-            throw std::exception(msg.c_str());
+            throw std::runtime_error(msg.c_str());
         }
         LOG("D3D11::CreateDepthStencilBuffer: Depth stencil buffer created successfully.");
 
@@ -177,7 +177,7 @@ namespace bns
             std::string msg = "D3D11::CreateDepthStencilBuffer: Failed to create depth stencil view.";
             LOG(msg);
             BREAKPOINT();
-            throw std::exception(msg.c_str());
+            throw std::runtime_error(msg.c_str());
         }
         LOG("D3D11::CreateDepthStencilBuffer: Depth stencil view created successfully.");
     }
@@ -202,7 +202,7 @@ namespace bns
             std::string msg = "D3D11::CreateRasterizerState: Failed to create rasterizer state.";
             LOG(msg);
             BREAKPOINT();
-            throw std::exception(msg.c_str());
+            throw std::runtime_error(msg.c_str());
         }
         LOG("D3D11::CreateRasterizerState: Rasterizer state created successfully.");
     }
@@ -236,7 +236,7 @@ namespace bns
             std::string msg = "D3D11::BeginDraw: Failed to get back buffer.";
             LOG(msg);
             BREAKPOINT();
-            throw std::exception(msg.c_str());
+            throw std::runtime_error(msg.c_str());
         }
 
         // Create a render target view
@@ -246,7 +246,7 @@ namespace bns
             std::string msg = "D3D11::BeginDraw: Failed to create render target view.";
             LOG(msg);
             BREAKPOINT();
-            throw std::exception(msg.c_str());
+            throw std::runtime_error(msg.c_str());
         }
 
         // CLEAR COLOR

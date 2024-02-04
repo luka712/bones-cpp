@@ -349,8 +349,9 @@ namespace bns
                 m_deviceContext->VSSetConstantBuffers(0, 1, &m_projectionViewMatrixBuffer.p);
                 m_deviceContext->PSSetConstantBuffers(0, 1, &m_brightnessThresholdBuffer.p);
 
-                // set texture
+                // set texture and sampler
                 m_deviceContext->PSSetShaderResources(0, 1, &texture->TextureView.p);
+                m_deviceContext->PSSetSamplers(0, 1, &texture->Sampler.p);
 
                 // draw
                 m_deviceContext->DrawIndexed(spritePipeline->InstanceIndex * 6, 0, 0);

@@ -3,22 +3,11 @@
 #define BNS_TIME_MANAGER_HPP
 
 #include "Types.hpp"
+#include "time/Time.hpp"
 
 namespace bns
 {
-    /// @brief The time information.
-    struct Time 
-    {
-        /// @brief The delta time in milliseconds.
-        f32 DeltaTimeMS;
-
-        /// @brief Total elapsed time since start of game in milliseconds.
-        f32 ElapsedTimeMS;
-
-        /// @brief Total elapsed time since start of game in seconds.
-        f32 ElapsedTimeSec;
-    };
-
+   
     /// @brief The time manager which is used to manage time.
     class TimeManager
     {
@@ -33,9 +22,6 @@ namespace bns
 
         /// @brief Amount of elapsed time since the game started.
         u64 m_elapsedTime;
-
-        /// @brief Number of frames that have been rendered.
-        u64 m_framesCount;
 
     public:
         /// @brief The constructor.

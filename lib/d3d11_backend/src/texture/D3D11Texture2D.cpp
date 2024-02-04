@@ -1,11 +1,15 @@
 #if USE_D3D11
 #include "texture/D3D11Texture2D.hpp"
-#include <exception>
+#include <stdexcept>
+#include <string>
+#include "Types.hpp"
 
 namespace bns
 {
-    D3D11Texture2D::D3D11Texture2D(CComPtr<ID3D11Device> device, ImageData *imageData, i32 textureUsageFlags, TextureFormat format)
-        : Texture2D(imageData->Width, imageData->Height, textureUsageFlags, format), m_device(device), m_imageData(imageData)
+    D3D11Texture2D::D3D11Texture2D(CComPtr<ID3D11Device> device, ImageData *imageData, i32 textureUsageFlags, TextureFormat format,
+                                   SamplerMinFilter minFilter,
+                                   SamplerMagFilter magFilter)
+        : Texture2D(imageData->Width, imageData->Height, textureUsageFlags, format, minFilter, magFilter), m_device(device), m_imageData(imageData)
     {
     }
 
@@ -14,7 +18,7 @@ namespace bns
         Release();
     }
 
-    DXGI_FORMAT D3D11Texture2D::Convert(TextureFormat format)  
+    DXGI_FORMAT D3D11Texture2D::Convert(TextureFormat format)
     {
         switch (format)
         {
@@ -23,7 +27,7 @@ namespace bns
         case TextureFormat::BGRA_8_Unorm:
             return DXGI_FORMAT_B8G8R8A8_UNORM;
         default:
-            throw new std::exception("D3D11Texture2D::Convert: Unknown texture format.");
+            throw new std::runtime_error("D3D11Texture2D::Convert: Unknown texture format.");
         }
     }
 
@@ -42,10 +46,37 @@ namespace bns
 
         if (bindFlags == 0)
         {
-            throw new std::exception("D3D11Texture2D::Convert: Unknown texture usage flags.");
+            throw new std::runtime_error("D3D11Texture2D::Convert: Unknown texture usage flags.");
         }
 
         return bindFlags;
+    }
+
+    D3D11_FILTER D3D11Texture2D::Convert(SamplerMinFilter minFilter, SamplerMagFilter magFilter)
+    {
+        if(minFilter == SamplerMinFilter::NEAREST && magFilter == SamplerMagFilter::NEAREST)
+        {
+            return D3D11_FILTER_MIN_MAG_MIP_POINT;
+        }
+        else if(minFilter == SamplerMinFilter::NEAREST && magFilter == SamplerMagFilter::LINEAR)
+        {
+            return D3D11_FILTER_MIN_POINT_MAG_MIP_LINEAR;
+        }
+        else if(minFilter == SamplerMinFilter::LINEAR && magFilter == SamplerMagFilter::NEAREST)
+        {
+            return D3D11_FILTER_MIN_LINEAR_MAG_MIP_POINT;
+        }
+        else if(minFilter == SamplerMinFilter::LINEAR && magFilter == SamplerMagFilter::LINEAR)
+        {
+            return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        }
+        else
+        {
+            std::string msg = "D3D11Texture2D::Convert: Unknown min filter or mag filter.";
+            LOG(msg);
+            BREAKPOINT();
+            throw std::runtime_error(msg.c_str());
+        }
     }
 
     void D3D11Texture2D::Initialize()
@@ -80,7 +111,10 @@ namespace bns
         }
         if (FAILED(hr))
         {
-            throw new std::exception("D3D11Texture2D::Initialize: Failed to create texture.");
+            std::string msg = "D3D11Texture2D::Initialize: Failed to create texture. HRESULT: " + std::to_string(hr);
+            LOG(msg);
+            BREAKPOINT();
+            throw new std::runtime_error(msg.c_str());
         }
 
         // Create the resource view
@@ -94,11 +128,16 @@ namespace bns
 
         if (FAILED(hr))
         {
-            throw new std::exception("D3D11Texture2D::Initialize: Failed to create shader resource view.");
+            std::string msg = "D3D11Texture2D::Initialize: Failed to create shader resource view. HRESULT: " + std::to_string(hr);
+            LOG(msg);
+            BREAKPOINT();
+            throw new std::runtime_error(msg.c_str());
         }
 
+        D3D11_FILTER filter = Convert(m_minFilter, m_magFilter);
+
         D3D11_SAMPLER_DESC samplerDesc = {};
-        samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        samplerDesc.Filter = filter;
         samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
         samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
         samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -110,7 +149,10 @@ namespace bns
 
         if (FAILED(hr))
         {
-            throw new std::exception("D3D11Texture2D::Initialize: Failed to create sampler state.");
+            std::string msg = "D3D11Texture2D::Initialize: Failed to create sampler state. HRESULT: " + std::to_string(hr);
+            LOG(msg);
+            BREAKPOINT();
+            throw new std::runtime_error(msg.c_str());
         }
     }
 

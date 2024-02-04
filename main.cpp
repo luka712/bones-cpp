@@ -46,7 +46,11 @@ int main()
 void Initialize()
 {
     font = engine->GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
-    testTexture = engine->GetTextureManager().LoadTexture2D("assets/uv_test.png");
+    bns::TextureOptions options;
+    options.Format = bns::TextureFormat::RGBA_8_Unorm;
+    options.MagFilter = bns::SamplerMagFilter::NEAREST;
+    options.MinFilter = bns::SamplerMinFilter::NEAREST;
+    testTexture = engine->GetTextureManager().LoadTexture2D("assets/uv_test.png", "" , &options);
 
     // effect = engine->GetEffectFactory().CreateBloomEffect();
 

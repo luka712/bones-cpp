@@ -35,9 +35,6 @@ namespace bns
         /// @brief A view into the back buffer texture that allows the GPU to render to it.
         CComPtr<ID3D11RenderTargetView> m_renderTargetView;
 
-        /// @brief A rasterizer state object describes how triangles are rendered.
-        CComPtr<ID3D11RasterizerState> m_rasterizerState;
-
         /// @brief A depth stencil view is a view into a texture that allows the GPU to read and write depth information.
         CComPtr<ID3D11DepthStencilState> m_depthStencilState;
 
@@ -46,6 +43,9 @@ namespace bns
 
         /// @brief A view into the depth stencil texture that allows the GPU to read and write depth information.
         CComPtr<ID3D11DepthStencilView> m_depthStencilView;
+
+        /// @brief A rasterizer state object describes how triangles are rendered.
+        CComPtr<ID3D11RasterizerState> m_rasterizerState;
 
         /// @brief Creates the device and device context.
         void CreateDeviceAndDeviceContext();
@@ -79,9 +79,7 @@ namespace bns
         /// @return The device context.
         ID3D11DeviceContext *GetDeviceContext() const { return m_deviceContext.p; }
 
-        /**
-         * @brief Gets the view into swap chain texture.
-         */
+        /// @brief Gets the view into swap chain texture.
         void *GetSwapChainTexture() override;
 
         void Initialize(HWND win32Handle);

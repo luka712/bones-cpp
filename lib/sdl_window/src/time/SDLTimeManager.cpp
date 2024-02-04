@@ -10,7 +10,6 @@ namespace bns
 
     void SDLTimeManager::PrepareStart()
     {
-        m_framesCount = 0;
         m_time.ElapsedTimeMS = SDL_GetTicks64();
     }
 
@@ -32,8 +31,8 @@ namespace bns
             SDL_Delay(static_cast<u32>(delay));
         }
         m_time.DeltaTimeMS = delta_time;
+        m_time.DeltaTimeSec = m_time.DeltaTimeMS / 1000.0f;
         m_time.ElapsedTimeMS += m_time.DeltaTimeMS;
         m_time.ElapsedTimeSec = m_time.ElapsedTimeMS / 1000.0f;
-        m_framesCount++;
     }
 } // namespace bns

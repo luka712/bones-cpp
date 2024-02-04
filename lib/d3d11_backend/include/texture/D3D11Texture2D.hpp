@@ -26,6 +26,12 @@ namespace bns
         /// @brief Convert the texture usage flags to D3D11 texture usage flags.
         UINT Convert(i32 textureUsageFlags);
 
+        /// @brief Convert the min filter and mag filter to D3D11 filter.
+        /// @param minFilter The min filter.
+        /// @param magFilter The mag filter.
+        /// @return The D3D11 filter.
+        D3D11_FILTER Convert(SamplerMinFilter minFilter, SamplerMagFilter magFilter);
+
     public:
         /// @brief The D3D11 sampler state.
         CComPtr<ID3D11SamplerState> Sampler;
@@ -41,7 +47,11 @@ namespace bns
         /// @param imageData The image data.
         /// @param textureUsageFlags The texture usage flags.
         /// @param format The texture format.
-        D3D11Texture2D(CComPtr<ID3D11Device> device, ImageData *imageData, i32 textureUsageFlags, TextureFormat format);
+        /// @param minFilter The min filter. By default, it is set to SamplerMinFilter::LINEAR.
+        /// @param magFilter The mag filter. By default, it is set to SamplerMagFilter::LINEAR.
+        D3D11Texture2D(CComPtr<ID3D11Device> device, ImageData *imageData, i32 textureUsageFlags, TextureFormat format,
+                       SamplerMinFilter minFilter = SamplerMinFilter::LINEAR,
+                       SamplerMagFilter magFilter = SamplerMagFilter::LINEAR);
 
         /// @brief The destructor.
         ~D3D11Texture2D();

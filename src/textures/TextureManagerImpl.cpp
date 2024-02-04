@@ -65,8 +65,11 @@ namespace bns
 #endif
 
 #if USE_D3D11
-		D3D11Renderer *renderer = static_cast<D3D11Renderer *>(m_renderer);
-		return new D3D11Texture2D(renderer->GetDevice(), imageData, textureUsageFlags, format);
+		if(m_renderer->GetRendererType() == RendererType::D3D11)
+		{
+			D3D11Renderer *renderer = static_cast<D3D11Renderer *>(m_renderer);
+			return new D3D11Texture2D(renderer->GetDevice(), imageData, textureUsageFlags, format, samplerMinFilter, samplerMagFilter);
+		}
 #endif
 
 #if USE_WEBGPU
