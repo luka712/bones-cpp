@@ -6,7 +6,7 @@
 
 #include "Constants.hpp"
 #include <vector>
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include "renderer/OpenGLRenderer.hpp"
 #include "texture/OpenGLTexture2D.hpp"
 

@@ -6,7 +6,7 @@
 
 #include "Constants.hpp"
 #include <vector>
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include "texture/D3D11Texture2D.hpp"
 
 #define FLOATS_PER_VERTEX 9

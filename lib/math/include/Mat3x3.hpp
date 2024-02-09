@@ -3,7 +3,7 @@
 #define BNS_MATH_MAT3x3_H
 
 #include <cmath>
-#include "Types.hpp"
+#include "bns_types.hpp"
 
 namespace bns
 {

@@ -2,11 +2,11 @@
 
 #define VULKAN_DESCRIPTOR_SET_LAYOUT_BINDING_UTIL_HPP
 
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include "BnsVulkan.hpp"
 #include <vector>
 #include <map>
-#include "RenderingBackendTypes.hpp"
+#include "bns_rendering_backend_types.hpp"
 
 namespace bns
 {

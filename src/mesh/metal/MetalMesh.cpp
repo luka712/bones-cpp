@@ -2,7 +2,7 @@
 
 #include "mesh/metal/MetalMesh.hpp"
 #include "Framework.hpp"
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include "MetalUtil.hpp"
 
 namespace bns

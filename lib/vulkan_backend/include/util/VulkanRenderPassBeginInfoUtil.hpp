@@ -5,7 +5,7 @@
 #define BNS_VULKAN_RENDER_PASS_BEGIN_INFO_HPP
 
 #include "BnsVulkan.hpp"
-#include "Types.hpp"
+#include "bns_types.hpp"
 
 namespace bns
 {

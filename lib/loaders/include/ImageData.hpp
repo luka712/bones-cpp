@@ -2,7 +2,7 @@
 
 #define BNS_IMAGE_DATA_HPP
 
-#include "Types.hpp"
+#include "bns_types.hpp"
 
 namespace bns
 {

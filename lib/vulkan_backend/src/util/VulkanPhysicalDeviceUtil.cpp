@@ -1,7 +1,7 @@
 #if USE_VULKAN
 
 #include "util/VulkanPhysicalDeviceUtil.hpp"
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include <stdexcept>
 
 namespace bns

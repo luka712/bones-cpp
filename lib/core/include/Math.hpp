@@ -2,7 +2,7 @@
 
 #define BNS_MATH_H
 
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include "Vec2.hpp"
 #include "Color.hpp"
 

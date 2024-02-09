@@ -4,7 +4,7 @@
 #define BNS_VULKAN_COMMAND_POOL_UTIL_HPP
 
 #include "BnsVulkan.hpp"
-#include "Types.hpp"
+#include "bns_types.hpp"
 
 namespace bns
 {

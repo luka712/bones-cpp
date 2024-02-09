@@ -4,7 +4,7 @@
 
 #define BNS_VULKAN_BUFFER_UTIL_HPP
 
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include "BnsVulkan.hpp"
 #include "ImageData.hpp"
 #include <vector>

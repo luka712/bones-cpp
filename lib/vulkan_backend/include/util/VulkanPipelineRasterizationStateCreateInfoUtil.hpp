@@ -5,7 +5,7 @@
 #define BNS_VULKAN_PIPELINE_RASTERIZATION_STATE_CREATE_INFO_UTIL_HPP
 
 #include "BnsVulkan.hpp"
-#include "RenderingBackendTypes.hpp"
+#include "bns_rendering_backend_types.hpp"
 
 namespace bns
 {

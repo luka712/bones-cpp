@@ -1,4 +1,4 @@
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include "FileLoader.hpp"
 #include <iostream>
 #include <fstream>

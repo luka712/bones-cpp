@@ -1,7 +1,7 @@
 #if USE_VULKAN
 
 #include "util/VulkanSubpassDescriptionUtil.hpp"
-#include "Types.hpp"
+#include "bns_types.hpp"
 
 namespace bns
 {

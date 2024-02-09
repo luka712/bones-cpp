@@ -3,7 +3,7 @@
 
 #define BNS_TEXTURE_2D_HPP
 
-#include "Types.hpp"
+#include "bns_types.hpp"
 
 namespace bns
 {
@@ -96,14 +96,11 @@ namespace bns
         /// @brief The mag filter.
         SamplerMagFilter m_magFilter;
 
-        /**
-         * The id generator for the textures. Is increased whenever a new texture is created.
-         */
+        /// @brief The id generator for the textures. Is increased whenever a new texture is created.
         static u32 s_idGenerator;
 
-        /**
-         * @brief Generates a new id for the texture.
-         */
+        
+        /// @brief Generates a new id for the texture.
         static u32 GenerateID();
 
     public:

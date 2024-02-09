@@ -4,7 +4,7 @@
 
 #define BNS_VULKAN_PUSH_CONSTANT_RANGE_UTIL_HPP
 
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include "BnsVulkan.hpp"
 
 namespace bns

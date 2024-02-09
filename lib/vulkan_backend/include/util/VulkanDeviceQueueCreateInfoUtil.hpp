@@ -5,7 +5,7 @@
 #define VULKAN_DEVICE_QUEUE_CREATE_INFO_UTIL_HPP
 
 #include "BnsVulkan.hpp"
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include <vector>
 
 namespace bns

@@ -6,7 +6,7 @@
 
 #include "BnsVulkan.hpp"
 #include <string>
-#include "RenderingBackendTypes.hpp"
+#include "bns_rendering_backend_types.hpp"
 
 namespace bns
 {

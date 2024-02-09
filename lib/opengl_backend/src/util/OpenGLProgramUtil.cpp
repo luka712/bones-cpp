@@ -1,7 +1,7 @@
 #if USE_OPENGL
 
 #include "util/OpenGLProgramUtil.hpp"
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include <stdexcept>
 #include <string>
 

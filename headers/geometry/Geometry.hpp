@@ -2,7 +2,7 @@
 
 #define BNS_GEOMETRY_HPP
 
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include <vector>
 
 namespace bns

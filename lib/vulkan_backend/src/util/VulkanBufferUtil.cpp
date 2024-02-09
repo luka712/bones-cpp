@@ -3,7 +3,7 @@
 #include "util/VulkanBufferUtil.hpp"
 #include <stdexcept>
 #include <string>
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include "BnsVulkan.hpp"
 #include "VulkanUtil.hpp"
 

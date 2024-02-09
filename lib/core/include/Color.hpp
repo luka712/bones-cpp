@@ -2,7 +2,7 @@
 
 #define BNS_COLOR_HPP
 
-#include "Types.hpp"
+#include "bns_types.hpp"
 
 namespace bns 
 {

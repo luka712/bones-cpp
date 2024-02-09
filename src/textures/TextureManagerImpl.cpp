@@ -82,12 +82,12 @@ namespace bns
 
 #if USE_OPENGL
 		OpenGLRenderer *renderer = static_cast<OpenGLRenderer *>(m_renderer);
-		return new OpenGLTexture2D(imageData, textureUsageFlags, format);
+		return new OpenGLTexture2D(imageData, textureUsageFlags, format, samplerMinFilter, samplerMagFilter);
 #endif
 
 #if USE_OPENGLES
 		OpenGLESRenderer *renderer = static_cast<OpenGLESRenderer *>(m_renderer);
-		return new OpenGLESTexture2D(imageData, textureUsageFlags, format);
+		return new OpenGLESTexture2D(imageData, textureUsageFlags, format, samplerMinFilter, samplerMagFilter);
 #endif
 
 		//

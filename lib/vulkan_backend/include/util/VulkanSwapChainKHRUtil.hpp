@@ -6,7 +6,7 @@
 
 #include "BnsVulkan.hpp"
 #include <vector>
-#include "Types.hpp"
+#include "bns_types.hpp"
 
 namespace bns
 {

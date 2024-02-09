@@ -2,7 +2,7 @@
 
 #define BNS_TIME_MANAGER_HPP
 
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include "time/Time.hpp"
 
 namespace bns

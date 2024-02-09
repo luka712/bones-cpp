@@ -2,7 +2,7 @@
 
 #define BNS_MATH_VEC2_H
 
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include <math.h>
 
 namespace bns

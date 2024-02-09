@@ -3,7 +3,7 @@
 #define BNS_EVENT_HPP
 
 #include <vector>
-#include "Types.hpp"
+#include "bns_types.hpp"
 
 namespace bns
 {

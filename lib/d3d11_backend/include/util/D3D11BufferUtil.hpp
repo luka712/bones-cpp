@@ -5,7 +5,7 @@
 #define BNS_D3D11_BUFFER_UTIL_HPP
 
 #include "BnsDirectX11.hpp"
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include <vector>
 #include <exception>
 

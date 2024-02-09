@@ -2,7 +2,7 @@
 
 #define BNS_IMAGE_LOADER_HPP
 
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include "ImageData.hpp"
 #include <string>
 

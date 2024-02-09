@@ -2,7 +2,7 @@
 
 #define BNS_CHAR_UTIL_HPP
 
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include <vector>
 #include <string>
 

@@ -3,7 +3,7 @@
 #include "util/OpenGLShaderUtil.hpp"
 #include "FileLoader.hpp"
 #include <stdexcept>
-#include "Types.hpp"
+#include "bns_types.hpp"
 
 namespace bns 
 {

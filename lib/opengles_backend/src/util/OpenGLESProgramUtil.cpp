@@ -1,7 +1,7 @@
 #if USE_OPENGLES
 
 #include "util/OpenGLESProgramUtil.hpp"
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include <stdexcept>
 #include <string>
 

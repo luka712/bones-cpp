@@ -3,7 +3,7 @@
 #define BNS_WGPU_BIND_GROUP_LAYOUT_ENTRY_UTIL_HPP
 
 #include <webgpu/webgpu.h>
-#include "Types.hpp"
+#include "bns_types.hpp"
 
 namespace bns
 {

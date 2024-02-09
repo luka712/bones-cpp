@@ -6,7 +6,7 @@
 
 #include "BnsOpenGLES.hpp"
 #include "buffer_layout/BufferLayoutData.hpp"
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include <vector>
 #include <exception>
 

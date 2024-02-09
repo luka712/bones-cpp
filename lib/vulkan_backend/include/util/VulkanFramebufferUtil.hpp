@@ -4,7 +4,7 @@
 #define __UTIL_VULKAN_FRAMEBUFFER_UTIL_HPP__
 
 #include "BnsVulkan.hpp"
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include <vector>
 
 namespace bns

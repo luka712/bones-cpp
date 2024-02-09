@@ -42,11 +42,11 @@ namespace bns
 
         if (key != "")
         {
-            if (m_textureCache.at(key) != nullptr)
+            if (m_textureCache.count(key) > 0)
             {
                 // Destroy the texture.
                 m_textureCache[key]->Release();
-                auto ptr = m_textureCache[key];
+                Texture2D *ptr = m_textureCache[key];
                 delete ptr;
             }
 

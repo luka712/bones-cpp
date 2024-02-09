@@ -2,7 +2,7 @@
 
 #include "util/VulkanVertexInputBindingDescriptionUtil.hpp"
 #include <stdexcept>
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include <string>
 
 namespace bns

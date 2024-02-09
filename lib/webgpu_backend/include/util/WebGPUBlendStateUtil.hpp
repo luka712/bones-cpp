@@ -3,7 +3,7 @@
 #define BNS_WGPU_BLEND_STATE_UTIL_HPP
 
 #include <webgpu/webgpu.h>
-#include "Types.hpp"
+#include "bns_types.hpp"
 
 namespace bns
 {

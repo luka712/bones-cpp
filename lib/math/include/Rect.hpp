@@ -2,7 +2,7 @@
 
 #define BNS_RECT_HPP
 
-#include "Types.hpp"
+#include "bns_types.hpp"
 
 namespace bns
 {

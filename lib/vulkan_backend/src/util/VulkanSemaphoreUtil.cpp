@@ -2,7 +2,7 @@
 
 #include "util/VulkanSemaphoreUtil.hpp"
 #include <string>
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include <stdexcept>
 
 namespace bns

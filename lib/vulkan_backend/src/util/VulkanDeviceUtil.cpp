@@ -3,7 +3,7 @@
 #include "util/VulkanDeviceUtil.hpp"
 #include <string>
 #include <stdexcept>
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include "CharUtil.hpp"
 
 namespace bns

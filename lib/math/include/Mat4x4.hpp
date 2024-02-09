@@ -3,7 +3,7 @@
 #define BNS_MATH_MAT4x4_HPP
 
 #include <cmath>
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include "Vec3.hpp"
 #include "Mat3x3.hpp"
 

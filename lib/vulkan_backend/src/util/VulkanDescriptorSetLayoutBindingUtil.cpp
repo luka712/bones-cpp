@@ -1,7 +1,7 @@
 #if USE_VULKAN
 
 #include "util/VulkanDescriptorSetLayoutBindingUtil.hpp"
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include <string>
 #include <stdexcept>
 

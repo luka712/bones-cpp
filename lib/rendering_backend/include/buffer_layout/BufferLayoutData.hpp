@@ -2,9 +2,9 @@
 
 #define BNS_BUFFER_LAYOUT_DATA_HPP
 
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include <vector>
-#include "RenderingBackendTypes.hpp"
+#include "bns_rendering_backend_types.hpp"
 
 /**
  * The data that will be used for the buffer layout classes

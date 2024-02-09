@@ -5,8 +5,6 @@
 
 namespace bns
 {
-
-
     /// @brief The shader type.
     enum class ShaderType
     {

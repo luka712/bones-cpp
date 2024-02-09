@@ -1,7 +1,7 @@
 #if USE_VULKAN
 
 #include "util/VulkanPipelineLayoutUtil.hpp"
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include <string>
 #include <stdexcept>
 

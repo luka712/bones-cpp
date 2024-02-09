@@ -5,7 +5,7 @@
 #define BNS_VULKAN_DESCRIPTOR_POOL_UTIL_HPP
 
 #include "BnsVulkan.hpp"
-#include "Types.hpp"
+#include "bns_types.hpp"
 #include <vector>
 
 namespace bns
