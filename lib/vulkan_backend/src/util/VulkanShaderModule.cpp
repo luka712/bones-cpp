@@ -2,7 +2,7 @@
 #include "bns_types.hpp"
 #include <stdexcept>
 #include <string>
-#include "FileLoader.hpp"
+#include "loaders/bns_file_loader.hpp"
 
 #if USE_VULKAN
 

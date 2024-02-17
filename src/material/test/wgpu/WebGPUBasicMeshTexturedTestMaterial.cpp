@@ -8,7 +8,7 @@
 #include "util/WebGPUShaderModuleUtil.hpp"
 
 #include "util/WebGPUVertexBufferLayoutUtil.hpp"
-#include "WebGPUUtil.hpp"
+#include "bns_webgpu_util.hpp"
 
 namespace bns
 {

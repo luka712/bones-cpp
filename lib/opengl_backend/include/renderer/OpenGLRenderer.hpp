@@ -5,7 +5,7 @@
 #define BNS_OPENGL_RENDERER_HPP
 
 #include "BnsOpenGL.hpp"
-#include "renderer/Renderer.hpp"
+#include "renderer/bns_renderer.hpp"
 #include "Window.hpp"
 
 namespace bns

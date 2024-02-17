@@ -4,9 +4,9 @@
 
 #define BNS_RENDERER_WGPU_HPP
 
-#include "BnsWebGPU.hpp"
+#include "bns_webgpu.hpp"
 #include "Math.hpp"
-#include "renderer/Renderer.hpp"
+#include "renderer/bns_renderer.hpp"
 #include "texture/TextureManager.hpp"
 #include "Window.hpp"
 

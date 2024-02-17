@@ -1,6 +1,6 @@
 #if USE_OPENGL
 
-#include "renderer/OpenGLRenderer.hpp"
+#include "renderer/OpenGLbns_renderer.hpp"
 
 namespace bns
 {

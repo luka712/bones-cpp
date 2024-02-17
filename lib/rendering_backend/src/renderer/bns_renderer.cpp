@@ -1,4 +1,4 @@
-#include "renderer/Renderer.hpp"
+#include "renderer/bns_renderer.hpp"
 
 namespace bns
 {

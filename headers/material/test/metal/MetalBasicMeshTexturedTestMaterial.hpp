@@ -7,7 +7,7 @@
 #include "material/Material.hpp"
 #include "texture/Texture2D.hpp"
 #include "BnsMetal.hpp"
-#include "renderer/MetalRenderer.hpp"
+#include "renderer/Metalbns_renderer.hpp"
 
 namespace bns
 {

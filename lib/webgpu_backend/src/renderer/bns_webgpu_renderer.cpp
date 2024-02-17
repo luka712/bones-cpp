@@ -1,4 +1,4 @@
-#include "renderer/WebGPURenderer.hpp"
+#include "renderer/bns_webgpu_renderer.hpp"
 #include <iostream>
 #include "texture/WebGPUTexture2D.hpp"
 #include <assert.h>
@@ -38,10 +38,11 @@ namespace bns
 			if (status == WGPURequestAdapterStatus_Success)
 			{
 				userData.adapter = outAdapter;
+				LOG("WebGPURenderer::CreateAdapter: WebGPU Adapter created.");
 			}
 			else
 			{
-				std::cout << "Could not get WebGPU adapter: " << message << std::endl;
+				LOG("WebGPURenderer::CreateAdapter: Could not get WebGPU adapter: " << message);
 			}
 			userData.isSuccess = true;
 		};
@@ -68,7 +69,7 @@ namespace bns
 		// code). In practice, we know that when the wgpuInstanceRequestAdapter()
 		// function returns its callback has been called.
 		assert(outData.isSuccess);
-
+		
 		m_adapter = outData.adapter;
 		return m_adapter;
 	}
@@ -87,10 +88,12 @@ namespace bns
 			if (status == WGPURequestDeviceStatus_Success)
 			{
 				userData.device = device;
+				LOG("WebGPURenderer::CreateDevice: WebGPU Device created.");
 			}
 			else
 			{
-				std::cout << "Could not get WebGPU adapter: " << message << std::endl;
+				LOG("WebGPURenderer::CreateDevice: Could not get WebGPU adapter: " << message);
+				BREAKPOINT();
 			}
 			userData.isSuccess = true;
 		};
@@ -247,8 +250,9 @@ namespace bns
 	void WebGPURenderer::EndDraw()
 	{
 		wgpuRenderPassEncoderPopDebugGroup(m_currentPassEncoder);
-		wgpuRenderPassEncoderEnd(m_currentPassEncoder);
 
+		// End and release render pass encoder.
+		wgpuRenderPassEncoderEnd(m_currentPassEncoder);
 		wgpuRenderPassEncoderRelease(m_currentPassEncoder);
 
 		WGPUCommandBuffer commands = wgpuCommandEncoderFinish(m_drawCommandEncoder, nullptr);

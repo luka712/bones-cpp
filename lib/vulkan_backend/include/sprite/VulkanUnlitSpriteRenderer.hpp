@@ -4,11 +4,11 @@
 
 #define BNS_VULKAN_UNLIT_SPRITE_RENDERER_HPP
 
-#include "sprite/SpriteRenderer.hpp"
+#include "sprite/bns_sprite_renderer.hpp"
 #include "sprite/VulkanUnlitSpritePipeline.hpp"
 #include <map>
 #include <stack>
-#include "renderer/VulkanRenderer.hpp"
+#include "renderer/Vulkanbns_renderer.hpp"
 
 namespace bns
 {

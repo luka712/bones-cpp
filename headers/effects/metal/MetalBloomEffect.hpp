@@ -6,7 +6,7 @@
 #include "effects/BloomEffect.hpp"
 #include "effects/metal/MetalBlurEffect.hpp"
 #include <math.h>
-#include "renderer/MetalRenderer.hpp"
+#include "renderer/Metalbns_renderer.hpp"
 
 namespace bns
 {

@@ -5,17 +5,17 @@
 #include "BnsMetal.hpp"
 
 #include "Window.hpp"
-#include "FileLoader.hpp"
+#include "loaders/bns_file_loader.hpp"
 #include "ImageLoader.hpp"
 #include "loaders/BitmapSpriteFontLoader.hpp"
 #include "material/MaterialFactory.hpp"
 #include "geometry/GeometryBuilder.hpp"
 #include "mesh/MeshFactory.hpp"
-#include "sprite/SpriteRenderer.hpp"
+#include "sprite/bns_sprite_renderer.hpp"
 #include "texture/TextureManager.hpp"
 #include <webgpu/webgpu.h>
 #include "Vec2.hpp"
-#include "renderer/Renderer.hpp"
+#include "renderer/bns_renderer.hpp"
 #include "effects/EffectFactory.hpp"
 #include <functional>
 #include "time/TimeManager.hpp"

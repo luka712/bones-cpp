@@ -1,6 +1,6 @@
 #if USE_OPENGL
 
-#include "sprite/400/OpenGL400UnlitSpriteRenderer.hpp"
+#include "sprite/400/OpenGL400Unlitbns_sprite_renderer.hpp"
 #include <vector>
 #include "OpenGLUtil.hpp"
 

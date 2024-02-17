@@ -9,7 +9,7 @@ namespace bns
         *outCount = descriptors.size();
 
         size_t i = 0;
-        for (auto desc : descriptors)
+        for (BufferLayoutDescriptor& desc : descriptors)
         {
             // Create layout
             WGPUVertexBufferLayout bufferLayout = {};

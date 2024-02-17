@@ -1,7 +1,7 @@
 #if USE_OPENGL
 
 #include "util/OpenGLShaderUtil.hpp"
-#include "FileLoader.hpp"
+#include "loaders/bns_file_loader.hpp"
 #include <stdexcept>
 #include "bns_types.hpp"
 

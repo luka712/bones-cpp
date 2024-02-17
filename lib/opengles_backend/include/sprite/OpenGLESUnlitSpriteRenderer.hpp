@@ -6,8 +6,8 @@
 
 #define BNS_UNLIT_SPRITE_RENDERER_OpenGLES_HPP
 
-#include "sprite/SpriteRenderer.hpp"
-#include "renderer/OpenGLESRenderer.hpp"
+#include "sprite/bns_sprite_renderer.hpp"
+#include "renderer/OpenGLESbns_renderer.hpp"
 #include "sprite/OpenGLESUnlitSpritePipeline.hpp"
 #include "texture/OpenGLESTexture2D.hpp"
 #include <unordered_map>

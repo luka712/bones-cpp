@@ -1,5 +1,5 @@
 #include "bns_types.hpp"
-#include "FileLoader.hpp"
+#include "loaders/bns_file_loader.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>

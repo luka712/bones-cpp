@@ -1,6 +1,6 @@
 #if USE_VULKAN
 
-#include "renderer/VulkanRenderer.hpp"
+#include "renderer/bns_vulkan_bns_renderer.hpp"
 #include <stdexcept>
 #include "CharUtil.hpp"
 #include <set>

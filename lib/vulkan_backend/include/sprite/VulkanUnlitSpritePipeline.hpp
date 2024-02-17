@@ -7,7 +7,7 @@
 #include "Constants.hpp"
 #include "texture/VulkanTexture2D.hpp"
 #include <vector>
-#include "FileLoader.hpp"
+#include "loaders/bns_file_loader.hpp"
 
 #define FLOATS_PER_VERTEX 9
 #define FLOATS_PER_INSTANCE (4 * FLOATS_PER_VERTEX)

@@ -1,33 +1,33 @@
 #include "Framework.hpp"
 #include <vector>
 #if USE_METAL
-#include "renderer/MetalRenderer.hpp"
-#include "sprite/MetalUnlitSpriteRenderer.hpp"
+#include "renderer/Metalbns_renderer.hpp"
+#include "sprite/MetalUnlitbns_sprite_renderer.hpp"
 #endif
 #if USE_WEBGPU
-#include "renderer/WebGPURenderer.hpp"
-#include "sprite/WebGPUUnlitSpriteRenderer.hpp"
+#include "renderer/bns_webgpu_renderer.hpp"
+#include "sprite/bns_webgpu_unlit_sprite_renderer.hpp"
 #endif
 #if USE_D3D11
-#include "renderer/D3D11Renderer.hpp"
-#include "sprite/D3D11UnlitSpriteRenderer.hpp"
+#include "renderer/D3D11bns_renderer.hpp"
+#include "sprite/D3D11Unlitbns_sprite_renderer.hpp"
 #endif
 #if USE_OPENGL
-#include "renderer/OpenGLRenderer.hpp"
+#include "renderer/OpenGLbns_renderer.hpp"
 // for apple machine use 400 version, since 450 is not available/supported
 #if __APPLE__
-#include "sprite/400/OpenGL400UnlitSpriteRenderer.hpp"
+#include "sprite/400/OpenGL400Unlitbns_sprite_renderer.hpp"
 #else
-#include "sprite/OpenGLUnlitSpriteRenderer.hpp"
+#include "sprite/OpenGLUnlitbns_sprite_renderer.hpp"
 #endif
 #endif // USE_OPENGL
 #if USE_OPENGLES
-#include "renderer/OpenGLESRenderer.hpp"
-#include "sprite/OpenGLESUnlitSpriteRenderer.hpp"
+#include "renderer/OpenGLESbns_renderer.hpp"
+#include "sprite/OpenGLESUnlitbns_sprite_renderer.hpp"
 #endif
 #if USE_VULKAN
-#include "renderer/VulkanRenderer.hpp"
-#include "sprite/VulkanUnlitSpriteRenderer.hpp"
+#include "renderer/Vulkanbns_renderer.hpp"
+#include "sprite/VulkanUnlitbns_sprite_renderer.hpp"
 #endif
 
 #include "SDLWindow.hpp"
@@ -42,7 +42,7 @@
 #include "material/test/metal/MetalBasicMeshTestMaterial.hpp"
 #include "material/test/metal/MetalBasicMeshTexturedTestMaterial.hpp"
 #include "texture/MetalTexture2D.hpp"
-#include "sprite/wgpu/WebGPUSpriteRenderer.hpp"
+#include "sprite/wgpu/bns_webgpu_sprite_renderer.hpp"
 #include "time/SDLTimeManager.hpp"
 
 #include "textures/TextureManagerImpl.hpp"

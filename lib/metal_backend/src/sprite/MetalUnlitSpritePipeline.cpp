@@ -2,7 +2,7 @@
 #if USE_METAL
 
 #include "sprite/MetalUnlitSpritePipeline.hpp"
-#include "FileLoader.hpp"
+#include "loaders/bns_file_loader.hpp"
 #include "MetalUtil.hpp"
 
 namespace bns

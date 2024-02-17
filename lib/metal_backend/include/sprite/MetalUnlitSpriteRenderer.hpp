@@ -6,10 +6,10 @@
 
 #include "bns_types.hpp"
 #include "sprite/MetalUnlitSpritePipeline.hpp"
-#include "sprite/SpriteRenderer.hpp"
+#include "sprite/bns_sprite_renderer.hpp"
 #include "font/SpriteFont.hpp"
 #include "BnsMetal.hpp"
-#include "renderer/MetalRenderer.hpp"
+#include "renderer/Metalbns_renderer.hpp"
 #include <map>
 #include <stack>
 

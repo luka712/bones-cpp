@@ -1,4 +1,4 @@
-#include "sprite/SpriteRenderer.hpp"
+#include "sprite/bns_sprite_renderer.hpp"
 #include "Framework.hpp"
 
 namespace bns

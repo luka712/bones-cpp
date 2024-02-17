@@ -1,6 +1,6 @@
 #if USE_D3D11
 
-#include "sprite/D3D11UnlitSpriteRenderer.hpp"
+#include "sprite/D3D11Unlitbns_sprite_renderer.hpp"
 #include <vector>
 #include "D3D11Util.hpp"
 

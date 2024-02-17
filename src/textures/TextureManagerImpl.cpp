@@ -2,32 +2,32 @@
 #include "Framework.hpp"
 
 #if USE_METAL
-#include "renderer/MetalRenderer.hpp"
+#include "renderer/Metalbns_renderer.hpp"
 #include "texture/MetalTexture2D.hpp"
 #endif
 
 #if USE_VULKAN
-#include "renderer/VulkanRenderer.hpp"
+#include "renderer/Vulkanbns_renderer.hpp"
 #include "texture/VulkanTexture2D.hpp"
 #endif
 
 #if USE_D3D11
-#include "renderer/D3D11Renderer.hpp"
+#include "renderer/D3D11bns_renderer.hpp"
 #include "texture/D3D11Texture2D.hpp"
 #endif
 
 #if USE_WEBGPU
-#include "renderer/WebGPURenderer.hpp"
+#include "renderer/bns_webgpu_renderer.hpp"
 #include "texture/WebGPUTexture2D.hpp"
 #endif
 
 #if USE_OPENGL
-#include "renderer/OpenGLRenderer.hpp"
+#include "renderer/OpenGLbns_renderer.hpp"
 #include "texture/OpenGLTexture2D.hpp"
 #endif
 
 #if USE_OPENGLES
-#include "renderer/OpenGLESRenderer.hpp"
+#include "renderer/OpenGLESbns_renderer.hpp"
 #include "texture/OpenGLESTexture2D.hpp"
 #endif
 

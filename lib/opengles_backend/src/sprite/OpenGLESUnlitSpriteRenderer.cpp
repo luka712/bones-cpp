@@ -1,6 +1,6 @@
 #if USE_OPENGLES
 
-#include "sprite/OpenGLESUnlitSpriteRenderer.hpp"
+#include "sprite/OpenGLESUnlitbns_sprite_renderer.hpp"
 #include <vector>
 #include "OpenGLESUtil.hpp"
 

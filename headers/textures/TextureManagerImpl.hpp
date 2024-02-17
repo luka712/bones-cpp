@@ -5,7 +5,7 @@
 #include "texture/Texture2D.hpp"
 #include "texture/TextureManager.hpp"
 #include "ImageLoader.hpp"
-#include "renderer/Renderer.hpp"
+#include "renderer/bns_renderer.hpp"
 #include <map>
 
 namespace bns

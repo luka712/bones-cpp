@@ -7,8 +7,6 @@
 #include "util/WebGPUTextureViewDescriptorUtil.hpp"
 #include "util/WebGPUBufferUtil.hpp"
 #include "util/WebGPUFragmentStateUtil.hpp"
-#include "util/WebGPUBindGroupLayoutDescriptorUtil.hpp"
-#include "util/WebGPUBindGroupLayoutEntryUtil.hpp"
 #include "util/WebGPUBindGroupEntryUtil.hpp"
 #include "util/WebGPUPipelineLayoutDescriptorUtil.hpp"
 #include "util/WebGPUBindGroupDescriptorUtil.hpp"
@@ -19,6 +17,7 @@
 #include "util/WebGPUVertexBufferLayoutUtil.hpp"
 #include "util/WebGPURenderPipelineDescriptorUtil.hpp"
 #include "util/WebGPUCommandEncoderUtil.hpp"
+#include "util/bns_webgpu_bind_group_layout_util.hpp"
 
 namespace bns
 {
@@ -29,10 +28,11 @@ namespace bns
         /// @brief The texture view descriptor util.
         static WebGPUTextureViewDescriptorUtil TextureViewDescriptor;
 
+        /// @brief The bind group layout util.
+        static WebGPUBindGroupLayoutUtil BindGroupLayout;
+
         static WebGPUBufferUtil Buffer;
         static WebGPUFragmentStateUtil FragmentState;
-        static WebGPUBindGroupLayoutDescriptorUtil BindGroupLayoutDescriptor;
-        static WebGPUBindGroupLayoutEntryUtil BindGroupLayoutEntry;
         static WebGPUBindGroupEntryUtil BindGroupEntry;
         static WebGPUPipelineLayoutDescriptorUtil PipelineLayoutDescriptor;
         static WebGPUBindGroupDescriptorUtil BindGroupDescriptor;

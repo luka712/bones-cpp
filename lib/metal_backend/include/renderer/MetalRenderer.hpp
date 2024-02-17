@@ -7,8 +7,8 @@
 
 #define BNS_RENDERER_METAL_HPP
 
-#include "renderer/Renderer.hpp"
-#include "FileLoader.hpp"
+#include "renderer/bns_renderer.hpp"
+#include "loaders/bns_file_loader.hpp"
 #include "Window.hpp"
 #include "BnsMetal.hpp"
 #include "Vec2.hpp"

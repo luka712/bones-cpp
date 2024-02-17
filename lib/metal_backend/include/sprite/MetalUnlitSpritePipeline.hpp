@@ -8,7 +8,7 @@
 #include "texture/MetalTexture2D.hpp"
 #include <vector>
 #include "BnsMetal.hpp"
-#include "renderer/MetalRenderer.hpp"
+#include "renderer/Metalbns_renderer.hpp"
 
 #define FLOATS_PER_VERTEX 9
 #define FLOATS_PER_INSTANCE (4 * FLOATS_PER_VERTEX)

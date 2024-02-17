@@ -6,8 +6,8 @@
 
 #define BNS_UNLIT_SPRITE_RENDERER_D3D11_HPP
 
-#include "sprite/SpriteRenderer.hpp"
-#include "renderer/D3D11Renderer.hpp"
+#include "sprite/bns_sprite_renderer.hpp"
+#include "renderer/D3D11bns_renderer.hpp"
 #include "sprite/D3D11UnlitSpritePipeline.hpp"
 #include "texture/D3D11Texture2D.hpp"
 #include <map>

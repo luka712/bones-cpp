@@ -1,7 +1,7 @@
 #if USE_WEBGPU
 
 #include "mesh/wgpu/WebGPUMesh.hpp"
-#include "WebGPUUtil.hpp"
+#include "bns_webgpu_util.hpp"
 #include "Framework.hpp"
 
 namespace bns

@@ -6,7 +6,7 @@
 
 #include "material/Material.hpp"
 #include "BnsMetal.hpp"
-#include "renderer/MetalRenderer.hpp"
+#include "renderer/Metalbns_renderer.hpp"
 
 namespace bns
 {

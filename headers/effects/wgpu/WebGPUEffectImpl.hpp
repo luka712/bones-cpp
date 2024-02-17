@@ -9,7 +9,7 @@
 #include "texture/WebGPUTexture2D.hpp"
 #include <string>
 #include <vector>
-#include "renderer/WebGPURenderer.hpp"
+#include "renderer/bns_webgpu_renderer.hpp"
 
 /**
  * Each effects should at least have a vertex shader and a fragment shader

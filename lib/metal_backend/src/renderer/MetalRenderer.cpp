@@ -1,6 +1,6 @@
 #if USE_METAL
 
-#include "renderer/MetalRenderer.hpp"
+#include "renderer/Metalbns_renderer.hpp"
 #include <simd/simd.h>
 #include "MetalUtil.hpp"
 #include "texture/MetalTexture2D.hpp"

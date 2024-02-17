@@ -1,7 +1,7 @@
 #if USE_WEBGPU
 
-#include "sprite/WebGPUUnlitSpriteRenderer.hpp"
-#include "WebGPUUtil.hpp"
+#include "sprite/bns_webgpu_unlit_sprite_renderer.hpp"
+#include "bns_webgpu_util.hpp"
 #include "Constants.hpp"
 
 namespace bns

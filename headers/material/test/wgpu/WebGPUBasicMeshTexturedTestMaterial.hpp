@@ -7,8 +7,8 @@
 #include "material/Material.hpp"
 #include <webgpu/webgpu.h>
 #include "texture/Texture2D.hpp"
-#include "renderer/WebGPURenderer.hpp"
-#include "FileLoader.hpp"
+#include "renderer/bns_webgpu_renderer.hpp"
+#include "loaders/bns_file_loader.hpp"
 
 namespace bns
 {

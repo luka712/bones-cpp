@@ -1,7 +1,7 @@
 #if USE_WEBGPU
 
-#include "sprite/wgpu/WebGPUSpriteRenderer.hpp"
-#include "WebGPUUtil.hpp"
+#include "sprite/wgpu/bns_webgpu_sprite_renderer.hpp"
+#include "bns_webgpu_util.hpp"
 #include "Constants.hpp"
 #include "Framework.hpp"
 

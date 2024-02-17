@@ -6,8 +6,8 @@
 
 #define BNS_UNLIT_SPRITE_RENDERER_OPENGL_HPP_400
 
-#include "sprite/SpriteRenderer.hpp"
-#include "renderer/OpenGLRenderer.hpp"
+#include "sprite/bns_sprite_renderer.hpp"
+#include "renderer/OpenGLbns_renderer.hpp"
 #include "sprite/400/OpenGL400UnlitSpritePipeline.hpp"
 #include "texture/OpenGLTexture2D.hpp"
 #include <unordered_map>

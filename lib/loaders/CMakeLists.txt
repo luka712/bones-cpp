@@ -3,7 +3,6 @@
 set(CMAKE_CXX_STANDARD 17)
 
 ADD_LIBRARY(BnsLoaders STATIC 
-    src/FileLoader.cpp 
     src/ImageLoader.cpp 
     src/ImageData.cpp
 )

@@ -4,7 +4,7 @@
 
 #define BNS_VULKAN_RENDERER_HPP
 
-#include "renderer/Renderer.hpp"
+#include "renderer/bns_renderer.hpp"
 #include "BnsVulkan.hpp"
 #include "Window.hpp"
 #include <optional>

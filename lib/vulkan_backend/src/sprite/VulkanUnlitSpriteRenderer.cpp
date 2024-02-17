@@ -1,6 +1,6 @@
 #if USE_VULKAN
 
-#include "sprite/VulkanUnlitSpriteRenderer.hpp"
+#include "sprite/VulkanUnlitbns_sprite_renderer.hpp"
 #include "VulkanUtil.hpp"
 #include "Constants.hpp"
 

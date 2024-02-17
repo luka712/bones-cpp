@@ -1,9 +1,9 @@
 #if USE_WEBGPU
 
 #include "effects/wgpu/WebGPUBloomEffect.hpp"
-#include "WebGPUUtil.hpp"
+#include "bns_webgpu_util.hpp"
 #include "Framework.hpp"
-#include "renderer/WebGPURenderer.hpp"
+#include "renderer/bns_webgpu_renderer.hpp"
 
 namespace bns
 {

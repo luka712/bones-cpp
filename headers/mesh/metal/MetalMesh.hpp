@@ -7,7 +7,7 @@
 #include "BnsMetal.hpp"
 #include "mesh/Mesh.hpp"
 #include "geometry/Geometry.hpp"
-#include "renderer/MetalRenderer.hpp"
+#include "renderer/Metalbns_renderer.hpp"
 
 namespace bns
 {

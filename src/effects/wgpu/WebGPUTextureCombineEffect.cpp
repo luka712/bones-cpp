@@ -1,7 +1,7 @@
 #if USE_WEBGPU
 
 #include "effects/wgpu/WebGPUTextureCombineEffect.hpp"
-#include "WebGPUUtil.hpp"
+#include "bns_webgpu_util.hpp"
 #include "Framework.hpp"
 
 namespace bns
@@ -23,14 +23,11 @@ namespace bns
         WGPUBindGroupLayoutEntry combineTextureBindGroupLayoutEntries[2];
 
         // Bind group layout for texture
-        // Sampler
-        combineTextureBindGroupLayoutEntries[0] = WebGPUUtil::BindGroupLayoutEntry.CreateSamplerLayoutEntry(0, WGPUShaderStage_Fragment);
-        // Texture
-        combineTextureBindGroupLayoutEntries[1] = WebGPUUtil::BindGroupLayoutEntry.CreateTextureLayoutEntry(1, WGPUShaderStage_Fragment);
-
-        // Create layout
-        WGPUBindGroupLayoutDescriptor bindGroupLayoutDesc = WebGPUUtil::BindGroupLayoutDescriptor.Create(combineTextureBindGroupLayoutEntries, 2);
-        WGPUBindGroupLayout bindGroupLayout = wgpuDeviceCreateBindGroupLayout(m_device, &bindGroupLayoutDesc);
+        std::vector<WebGPUBindGroupLayoutEntry> bindGroupLayoutEntries = {
+            WebGPUBindGroupLayoutEntry::CreateSamplerLayoutEntry(0, ShaderType::Fragment),
+            WebGPUBindGroupLayoutEntry::CreateTextureLayoutEntry(1,ShaderType::Fragment)
+        };
+        WGPUBindGroupLayout bindGroupLayout = WebGPUUtil::BindGroupLayout.Create(m_device, bindGroupLayoutEntries, "Texture Layout");
 
         // pust bind group layout to result
         result.push_back(bindGroupLayout);
@@ -38,17 +35,12 @@ namespace bns
         // assing to member variable
         m_combineTextureBindGroupLayout = bindGroupLayout;
 
-        // Mix value layout
-        // create the bind group layout entries
-        WGPUBindGroupLayoutEntry mixValueBindGroupLayoutEntries[1];
-
         // Bind group layout for mix value
         // Uniform
-        mixValueBindGroupLayoutEntries[0] = WebGPUUtil::BindGroupLayoutEntry.CreateUniformBufferLayoutEntry(0, WGPUShaderStage_Fragment);
-
-        // Create layout
-        bindGroupLayoutDesc = WebGPUUtil::BindGroupLayoutDescriptor.Create(mixValueBindGroupLayoutEntries, 1);
-        bindGroupLayout = wgpuDeviceCreateBindGroupLayout(m_device, &bindGroupLayoutDesc);
+        bindGroupLayoutEntries = {
+			WebGPUBindGroupLayoutEntry::CreateUniformBufferLayoutEntry(0, ShaderType::Fragment)
+		};
+        bindGroupLayout = WebGPUUtil::BindGroupLayout.Create(m_device, bindGroupLayoutEntries, "Mix Value Layout");
 
         // pust bind group layout to result
         result.push_back(bindGroupLayout);

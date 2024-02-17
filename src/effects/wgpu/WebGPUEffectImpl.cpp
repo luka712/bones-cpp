@@ -3,7 +3,7 @@
 
 #include "effects/wgpu/WebGPUEffectImpl.hpp"
 #include "Framework.hpp"
-#include "WebGPUUtil.hpp"
+#include "bns_webgpu_util.hpp"
 #include "buffer_layout/BufferLayoutData.hpp"
 
 namespace bns
@@ -56,14 +56,11 @@ namespace bns
         WGPUBindGroupLayoutEntry bindGroupLayoutEntries[2];
 
         // Bind group layout for texture
-        // Sampler
-        bindGroupLayoutEntries[0] = WebGPUBindGroupLayoutEntryUtil::CreateSamplerLayoutEntry(0, WGPUShaderStage_Fragment);
-        // Texture
-        bindGroupLayoutEntries[1] = WebGPUBindGroupLayoutEntryUtil::CreateTextureLayoutEntry(1, WGPUShaderStage_Fragment);
-
-        // Create layout
-        WGPUBindGroupLayoutDescriptor bindGroupLayoutDesc = WebGPUBindGroupLayoutDescriptorUtil::Create(bindGroupLayoutEntries, 2);
-        WGPUBindGroupLayout bindGroupLayout = wgpuDeviceCreateBindGroupLayout(m_device, &bindGroupLayoutDesc);
+        std::vector<WebGPUBindGroupLayoutEntry> bindGroupLayoutEntriesVector = {
+            WebGPUBindGroupLayoutEntry::CreateSamplerLayoutEntry(0, ShaderType::Fragment),
+			WebGPUBindGroupLayoutEntry::CreateTextureLayoutEntry(1, ShaderType::Fragment)
+        };
+        WGPUBindGroupLayout bindGroupLayout = WebGPUUtil::BindGroupLayout.Create(m_device, bindGroupLayoutEntriesVector, "Texture Layout");
 
         // pust bind group layout to result
         result.push_back(bindGroupLayout);

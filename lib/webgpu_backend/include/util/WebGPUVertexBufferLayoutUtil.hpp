@@ -2,7 +2,7 @@
 
 #define BNS_WEBGPU_VERTEX_BUFFER_LAYOUT_UTIL_HPP
 
-#include "BnsWebGPU.hpp"
+#include "bns_webgpu.hpp"
 #include <vector>
 #include <map>
 #include "buffer_layout/BufferLayoutData.hpp"

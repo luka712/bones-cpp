@@ -1,6 +1,6 @@
 #if USE_D3D11
 
-#include "renderer/D3D11Renderer.hpp"
+#include "renderer/D3D11bns_renderer.hpp"
 #include <stdexcept>
 
 namespace bns

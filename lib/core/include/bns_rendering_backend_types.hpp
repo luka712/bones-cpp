@@ -60,6 +60,8 @@ namespace bns
         /// @brief The binding type for texture and sampler.
         CombinedTextureSampler,
     };
+
+    
 }
 
 #endif

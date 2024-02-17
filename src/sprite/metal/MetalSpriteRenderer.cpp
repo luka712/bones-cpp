@@ -1,6 +1,6 @@
 #if USE_METAL
 
-#include "sprite/metal/MetalSpriteRenderer.hpp"
+#include "sprite/metal/Metalbns_sprite_renderer.hpp"
 #include "MetalUtil.hpp"
 #include "Constants.hpp"
 #include "Framework.hpp"

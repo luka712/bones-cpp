@@ -15,12 +15,15 @@
 
 #include "Framework.hpp"
 
+#include "pipelines/bns_webgpu_unlit_material_pipeline.hpp"
+
 bns::Framework *engine;
 
 // Scene data
 bns::SpriteFont *font;
 bns::Texture2D *testTexture;
 bns::BloomEffect *effect;
+bns::WebGPUUnlitMaterialPipeline* testPipeline;
 
 static bns::f32 rotation = 0.0f;
 
@@ -30,7 +33,7 @@ void Draw();
 int main()
 {
     bns::FrameworkDescription desc;
-    desc.RendererType = bns::RendererType::D3D11;
+    desc.RendererType = bns::RendererType::WebGPU;
     engine = new bns::Framework(desc);
 
     bns::WindowParameters parameters;
@@ -65,6 +68,10 @@ void Initialize()
     // engine->GetSpriteRenderer()->PointLights[0].Attenuation.Unit = 100.0f;
     // engine->GetSpriteRenderer()->AmbientLight.Intensity = 0.0f;
     // engine->GetSpriteRenderer()->AmbientLight.Color = bns::Color::Black();
+
+    testPipeline = new bns::WebGPUUnlitMaterialPipeline(renderer);
+    testPipeline->Initialize();
+
 }
 
 void Draw()

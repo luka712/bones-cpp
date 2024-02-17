@@ -18,7 +18,7 @@
 #endif // USE_D3D11
 
 #if USE_WEBGPU
-#include "BnsWebGPU.hpp"
+#include "bns_webgpu.hpp"
 #endif
 
 #if USE_OPENGL

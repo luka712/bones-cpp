@@ -7,8 +7,8 @@
 
 #include "texture/Texture2D.hpp"
 #include "ImageData.hpp"
-#include "BnsWebgpu.hpp"
-#include "WebGPUUtil.hpp"
+#include "bns_webgpu.hpp"
+#include "bns_webgpu_util.hpp"
 
 namespace bns
 {

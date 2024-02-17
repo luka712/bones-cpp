@@ -4,9 +4,9 @@
 
 #include "effects/wgpu/WebGPUBlurEffect.hpp"
 #include "Framework.hpp"
-#include "WebGPUUtil.hpp"
+#include "bns_webgpu_util.hpp"
 #include "buffer_layout/BufferLayoutData.hpp"
-#include "renderer/WebGPURenderer.hpp"
+#include "renderer/bns_webgpu_renderer.hpp"
 
 namespace bns
 {

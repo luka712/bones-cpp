@@ -7,7 +7,7 @@
 #include "BnsDirectX11.hpp"
 #include "Window.hpp"
 #include "Math.hpp"
-#include "renderer/Renderer.hpp"
+#include "renderer/bns_renderer.hpp"
 
 namespace bns
 {
