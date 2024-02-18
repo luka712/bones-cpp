@@ -66,7 +66,6 @@ include_directories(
 
     # project libraries 
     ${CMAKE_CURRENT_SOURCE_DIR}/../core/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../math/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../window/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../webgpu_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../d3d11_backend/include

@@ -5,7 +5,7 @@
 #define BNS_WEBGPU_UTIL
 
 #include "util/WebGPUTextureViewDescriptorUtil.hpp"
-#include "util/WebGPUBufferUtil.hpp"
+#include "util/bns_webgpu_buffer_util.hpp"
 #include "util/WebGPUFragmentStateUtil.hpp"
 #include "util/WebGPUBindGroupEntryUtil.hpp"
 #include "util/WebGPUPipelineLayoutDescriptorUtil.hpp"

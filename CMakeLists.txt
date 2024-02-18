@@ -73,7 +73,6 @@ add_subdirectory(lib/core)
 add_subdirectory(lib/window)
 add_subdirectory(lib/sdl_window)
 add_subdirectory(lib/loaders)
-add_subdirectory(lib/math)
 add_subdirectory(lib/rendering_backend)
 if(USE_METAL)
     add_subdirectory(lib/metal_backend)
@@ -182,7 +181,6 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/sdl_window/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/core/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/loaders/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/lib/math/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/rendering_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/metal_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/lib/webgpu_backend/include

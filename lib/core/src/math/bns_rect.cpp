@@ -1,4 +1,4 @@
-#include "Rect.hpp"
+#include "math/bns_rect.hpp"
 
 namespace bns
 {

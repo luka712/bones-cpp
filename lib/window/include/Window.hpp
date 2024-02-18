@@ -3,7 +3,7 @@
 #define BNS_WINDOW_H
 
 #include "time/TimeManager.hpp"
-#include "Vec2.hpp"
+#include "math/bns_vec2.hpp"
 #include <string>
 #include "Event.hpp"
 #include <functional>

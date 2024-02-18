@@ -3,9 +3,9 @@
 #define BNS_RENDERER_HPP
 
 #include "bns_types.hpp"
-#include "Math.hpp"
+#include "bns_math.hpp"
 #include "texture/Texture2D.hpp"
-#include "Vec2.hpp"
+#include "math/bns_vec2.hpp"
 #include "bns_rendering_backend_types.hpp"
 
 namespace bns

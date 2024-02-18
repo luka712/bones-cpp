@@ -7,9 +7,12 @@
 
 namespace bns
 {
-    WebGPUUnlitMaterialPipeline::WebGPUUnlitMaterialPipeline(Renderer *renderer)
+    WebGPUUnlitMaterialPipeline::WebGPUUnlitMaterialPipeline(Renderer *renderer, ConstantBuffer<Mat4x4f> *cameraBuffer, ConstantBuffer<Mat4x4f> *modelBuffer)
     {
         m_device = static_cast<WebGPURenderer *>(renderer)->GetDevice();
+        m_renderer = static_cast<WebGPURenderer *>(renderer);
+        m_cameraBuffer = static_cast<WebGPUConstantBuffer<Mat4x4f> *>(cameraBuffer);
+        m_modelBuffer = static_cast<WebGPUConstantBuffer<Mat4x4f> *>(modelBuffer);
     }
 
     void WebGPUUnlitMaterialPipeline::CreateBindGroupLayouts()
@@ -41,6 +44,15 @@ namespace bns
         m_materialBindGroupLayout = WebGPUUtil::BindGroupLayout.Create(m_device, webGPUBindGroupLayoutEntry);
     }
 
+    void WebGPUUnlitMaterialPipeline::CreateBuffers()
+    {
+        m_textureTillingBuffer = new WebGPUConstantBuffer<Mat4x4f>(m_renderer);
+        m_textureTillingBuffer->Initialize();
+
+        m_diffuseColorBuffer = new WebGPUConstantBuffer<Mat4x4f>(m_renderer);
+        m_diffuseColorBuffer->Initialize();
+    }
+
     void WebGPUUnlitMaterialPipeline::Initialize()
     {
         // Get shader module.
@@ -49,6 +61,7 @@ namespace bns
         WGPUShaderModule shaderModule = WebGPUUtil::ShaderModule.Create(m_device, shaderCode, "unlit_material");
 
         CreateBindGroupLayouts();
+        CreateBuffers();
 
         // Dispose
         WebGPUUtil::ShaderModule.Dispose(shaderModule);
@@ -56,6 +69,14 @@ namespace bns
 
     void WebGPUUnlitMaterialPipeline::Dispose()
     {
+        m_textureTillingBuffer->Dispose();
+        delete m_textureTillingBuffer;
+        m_textureTillingBuffer = nullptr;
+
+        m_diffuseColorBuffer->Dispose();
+        delete m_diffuseColorBuffer;
+        m_diffuseColorBuffer = nullptr;
+
         WebGPUUtil::BindGroupLayout.Dispose(m_modelBindGroupLayout);
         WebGPUUtil::BindGroupLayout.Dispose(m_cameraBindGroupLayout);
         WebGPUUtil::BindGroupLayout.Dispose(m_textureBindGroupLayout);

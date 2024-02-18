@@ -25,7 +25,6 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../rendering_backend/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../texture/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../window/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../math/include
 
     # vendor
     ${CMAKE_CURRENT_SOURCE_DIR}/../../vendor/glad_es

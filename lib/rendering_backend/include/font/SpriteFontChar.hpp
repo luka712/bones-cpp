@@ -2,8 +2,8 @@
 
 #define BNS_SPRITE_FONT_CHAR_H
 
-#include "Vec2.hpp"
-#include "Quad.hpp"
+#include "math/bns_vec2.hpp"
+#include "math/bns_quad.hpp"
 
 namespace bns 
 {

@@ -26,7 +26,6 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../core/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../loaders/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../rendering_backend/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../math/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../window/include
 
     # vendor

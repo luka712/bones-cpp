@@ -3,7 +3,7 @@
 #include "sprite/VulkanUnlitSpritePipeline.hpp"
 #include "VulkanUtil.hpp"
 #include "loaders/bns_file_loader.hpp"
-#include "Mat4x4.hpp"
+#include "math/bns_mat4x4.hpp"
 
 namespace bns
 {

@@ -5,8 +5,8 @@
 #include <string>
 #include "texture/Texture2D.hpp"
 #include "Color.hpp"
-#include "Rect.hpp"
-#include "Vec2.hpp"
+#include "math/bns_rect.hpp"
+#include "math/bns_vec2.hpp"
 #include "camera/SpriteRendererCamera.hpp"
 #include "font/SpriteFont.hpp"
 #include "lights/AmbientLight.hpp"

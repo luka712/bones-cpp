@@ -14,7 +14,7 @@
 #include "sprite/bns_sprite_renderer.hpp"
 #include "texture/TextureManager.hpp"
 #include <webgpu/webgpu.h>
-#include "Vec2.hpp"
+#include "math/bns_vec2.hpp"
 #include "renderer/bns_renderer.hpp"
 #include "effects/EffectFactory.hpp"
 #include <functional>

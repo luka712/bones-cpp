@@ -4,8 +4,8 @@
 
 #include <cmath>
 #include "bns_types.hpp"
-#include "Vec3.hpp"
-#include "Mat3x3.hpp"
+#include "math/bns_vec3.hpp"
+#include "math/bns_mat3x3.hpp"
 
 namespace bns
 {

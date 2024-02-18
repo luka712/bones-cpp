@@ -16,6 +16,7 @@
 #include "Framework.hpp"
 
 #include "pipelines/bns_webgpu_unlit_material_pipeline.hpp"
+#include "camera/bns_webgpu_perspective_camera.hpp"
 
 bns::Framework *engine;
 
@@ -24,6 +25,8 @@ bns::SpriteFont *font;
 bns::Texture2D *testTexture;
 bns::BloomEffect *effect;
 bns::WebGPUUnlitMaterialPipeline* testPipeline;
+bns::WebGPUPerspectiveCamera *testCamera;
+bns::WebGPUConstantBuffer<bns::Mat4x4f> *testTransformBuffer;
 
 static bns::f32 rotation = 0.0f;
 
@@ -69,7 +72,11 @@ void Initialize()
     // engine->GetSpriteRenderer()->AmbientLight.Intensity = 0.0f;
     // engine->GetSpriteRenderer()->AmbientLight.Color = bns::Color::Black();
 
-    testPipeline = new bns::WebGPUUnlitMaterialPipeline(renderer);
+    testCamera = new bns::WebGPUPerspectiveCamera(renderer, 1.0f);
+    testCamera->Initialize();
+    testTransformBuffer = new bns::WebGPUConstantBuffer<bns::Mat4x4f>(renderer);
+    testTransformBuffer->Initialize();
+    testPipeline = new bns::WebGPUUnlitMaterialPipeline(renderer, testCamera->GetBuffer(), testTransformBuffer);
     testPipeline->Initialize();
 
 }

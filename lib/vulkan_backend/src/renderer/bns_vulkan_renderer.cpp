@@ -6,7 +6,7 @@
 #include <set>
 #include <algorithm>
 #include "VulkanUtil.hpp"
-#include "Mat4x4.hpp"
+#include "math/bns_mat4x4.hpp"
 #include "ImageLoader.hpp"
 #include "sprite/VulkanUnlitSpritePipeline.hpp"
 

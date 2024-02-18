@@ -2,7 +2,7 @@
 
 #define BNS_QUAD_HPP
 
-#include "Vec2.hpp"
+#include "math/bns_vec2.hpp"
 
 namespace bns
 {

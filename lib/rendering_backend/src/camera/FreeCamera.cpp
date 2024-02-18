@@ -1,5 +1,5 @@
 #include "camera/FreeCamera.hpp"
-#include "Math.hpp"
+#include "bns_math.hpp"
 
 namespace bns
 {

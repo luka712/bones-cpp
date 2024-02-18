@@ -65,16 +65,31 @@ namespace bns
             return buffer;
         }
 
-        /**
-         * @brief Create a uniform buffer
-         * @param device The webgpu device
-         * @param byteSize The size of the buffer in bytes
-         * @param label The label of the buffer
-         * @return The uniform buffer
-        */
+        
+        /// @brief Create a uniform buffer
+        /// @param device The webgpu device
+        /// @param byteSize The size of the buffer in bytes
+        /// @param label The label of the buffer
+        /// @return The uniform buffer
         static WGPUBuffer CreateUniformBuffer(WGPUDevice device,
                                               size_t byteSize,
                                               std::string label);
+
+        /// @brief Update the uniform buffer
+        /// @param queue The webgpu queue.
+        /// @param buffer The buffer to be updated.
+        /// @param byteSize The size of the buffer in bytes.
+        /// @param data The data to be copied to the buffer.
+        /// @param offset The offset of the buffer in bytes. By default 0.
+        static void UpdateUniformBuffer(WGPUQueue queue,
+                                        WGPUBuffer buffer,
+                                        size_t byteSize,
+                                        void* data,
+                                        size_t offset = 0);
+
+        /// @brief Dispose the buffer.
+        /// @param buffer The buffer to be disposed.
+        static void Dispose(WGPUBuffer buffer);
     };
 }
 

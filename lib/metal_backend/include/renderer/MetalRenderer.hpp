@@ -11,7 +11,7 @@
 #include "loaders/bns_file_loader.hpp"
 #include "Window.hpp"
 #include "BnsMetal.hpp"
-#include "Vec2.hpp"
+#include "math/bns_vec2.hpp"
 #include "Color.hpp"
 
 namespace bns

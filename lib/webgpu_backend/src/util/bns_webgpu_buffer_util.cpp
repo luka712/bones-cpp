@@ -1,4 +1,4 @@
-#include "util/WebGPUBufferUtil.hpp"
+#include "util/bns_webgpu_buffer_util.hpp"
 
 namespace bns
 {
@@ -50,5 +50,19 @@ namespace bns
         WGPUBuffer buffer = wgpuDeviceCreateBuffer(device, &bufferDescriptor);
 
         return buffer;
+    }
+
+    void WebGPUBufferUtil::UpdateUniformBuffer(WGPUQueue queue,
+                                                     WGPUBuffer buffer,
+                                                     size_t byteSize,
+                                                     void *data,
+                                                     size_t offset)
+    {
+        wgpuQueueWriteBuffer(queue, buffer, offset, data, byteSize);
+    }
+
+    void WebGPUBufferUtil::Dispose(WGPUBuffer buffer)
+    {
+        wgpuBufferDestroy(buffer);
     }
 }

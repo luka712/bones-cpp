@@ -4,7 +4,7 @@
 
 #define BNS_CAMERA_HPP
 
-#include "Mat4x4.hpp"
+#include "math/bns_mat4x4.hpp"
 
 namespace bns
 {
