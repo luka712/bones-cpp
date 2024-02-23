@@ -1,5 +1,4 @@
-#if USE_WEBGPU 
-
+#if USE_WEBGPU
 
 #include "effects/wgpu/WebGPUEffectImpl.hpp"
 #include "Framework.hpp"
@@ -58,8 +57,7 @@ namespace bns
         // Bind group layout for texture
         std::vector<WebGPUBindGroupLayoutEntry> bindGroupLayoutEntriesVector = {
             WebGPUBindGroupLayoutEntry::CreateSamplerLayoutEntry(0, ShaderType::Fragment),
-			WebGPUBindGroupLayoutEntry::CreateTextureLayoutEntry(1, ShaderType::Fragment)
-        };
+            WebGPUBindGroupLayoutEntry::CreateTextureLayoutEntry(1, ShaderType::Fragment)};
         WGPUBindGroupLayout bindGroupLayout = WebGPUUtil::BindGroupLayout.Create(m_device, bindGroupLayoutEntriesVector, "Texture Layout");
 
         // pust bind group layout to result
@@ -121,8 +119,7 @@ namespace bns
         WGPUShaderModule shaderModule = WebGPUUtil::ShaderModule.Create(m_device, shaderSource);
 
         // Create pipeline layout. Here the global bind group layout is assigned.
-        WGPUPipelineLayoutDescriptor desc = WebGPUPipelineLayoutDescriptorUtil::Create(layouts.data(), layouts.size());
-        WGPUPipelineLayout layout = wgpuDeviceCreatePipelineLayout(m_device, &desc);
+        WGPUPipelineLayout layout = WebGPUUtil::PipelineLayout.Create(m_device, layouts);
 
         // 1 layout with 2 attributes
         BufferLayoutDescriptor bufferLayoutDescriptor;
@@ -236,5 +233,4 @@ namespace bns
     }
 }
 
-
-#endif 
+#endif

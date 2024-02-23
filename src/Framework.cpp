@@ -34,7 +34,6 @@
 #include "material/WebGPUMaterialFactory.hpp"
 #include "mesh/wgpu/WebGPUMeshFactory.hpp"
 #include "mesh/metal/MetalMeshFactory.hpp"
-#include "renderer/common/WebGPURenderPipelineUtil.hpp"
 #include "camera/FreeCamera.hpp"
 #include "material/test/wgpu/WebGPUNoMeshTestMaterial.hpp"
 #include "material/test/wgpu/WebGPUBasicMeshTexturedTestMaterial.hpp"

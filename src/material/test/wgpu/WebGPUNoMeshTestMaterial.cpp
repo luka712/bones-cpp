@@ -1,7 +1,6 @@
 #if USE_WEBGPU
 
 #include "material/test/wgpu/WebGPUNoMeshTestMaterial.hpp"
-#include "renderer/common/WebGPURenderPipelineUtil.hpp"
 #include "util/WebGPUShaderModuleUtil.hpp"
 
 #include "Framework.hpp"

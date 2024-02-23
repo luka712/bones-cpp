@@ -5,8 +5,8 @@
 #define BNS_WEBGPU_SPRITE_RENDERER_HPP
 
 #include "sprite/bns_sprite_renderer.hpp"
-#include "sprite/WebGPUUnlitSpritePipeline.hpp"
-#include <webgpu/webgpu.h>
+#include "sprite/bns_webgpu_unlit_sprite_pipeline.hpp"
+#include "bns_webgpu.hpp"
 #include <map>
 #include <stack>
 #include "renderer/bns_webgpu_renderer.hpp"

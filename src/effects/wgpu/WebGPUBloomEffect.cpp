@@ -101,8 +101,7 @@ WGPURenderPipeline WebGPUBloomEffectImpl::CreateRenderPipeline(std::vector<WGPUB
         m_sourceTextureBindGroupLayout,
         m_sourceTextureBindGroupLayout
     };
-    WGPUPipelineLayoutDescriptor desc = WebGPUPipelineLayoutDescriptorUtil::Create(_layouts.data(), _layouts.size());
-    WGPUPipelineLayout layout = wgpuDeviceCreatePipelineLayout(m_device, &desc);
+    WGPUPipelineLayout layout = WebGPUUtil::PipelineLayout.Create(m_device, _layouts);
 
     // 1 layout with 2 attributes
     BufferLayoutDescriptor bufferLayoutDescriptor;

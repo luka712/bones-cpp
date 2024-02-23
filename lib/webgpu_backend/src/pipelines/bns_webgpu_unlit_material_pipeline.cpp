@@ -15,6 +15,16 @@ namespace bns
         m_modelBuffer = static_cast<WebGPUConstantBuffer<Mat4x4f> *>(modelBuffer);
     }
 
+    void WebGPUUnlitMaterialPipeline::CreateShaderModule()
+    {
+        // Get shader module.
+        FileLoader fileLoader;
+        std::string shaderCode = fileLoader.LoadFile("shaders/webgpu/material/unlit_material.wgsl");
+        m_shaderModule = WebGPUUtil::ShaderModule.Create(m_device, shaderCode, "unlit_material");
+
+        LOG("WebGPUUnlitMaterialPipeline: Shader module created.");
+    }
+
     void WebGPUUnlitMaterialPipeline::CreateBindGroupLayouts()
     {
         // Transforms and texture tilling.
@@ -42,6 +52,21 @@ namespace bns
             WebGPUBindGroupLayoutEntry::CreateUniformBufferLayoutEntry(0, ShaderType::Fragment), // Diffuse color
         };
         m_materialBindGroupLayout = WebGPUUtil::BindGroupLayout.Create(m_device, webGPUBindGroupLayoutEntry);
+
+        LOG("WebGPUUnlitMaterialPipeline: Bind group layouts created.");
+    }
+
+    void WebGPUUnlitMaterialPipeline::CreatePipelineLayout()
+    {
+        std::vector<WGPUBindGroupLayout> bindGroupLayouts = {
+            m_modelBindGroupLayout,
+            m_cameraBindGroupLayout,
+            m_textureBindGroupLayout,
+            m_materialBindGroupLayout};
+
+        m_pipelineLayout = WebGPUPipelineLayoutUtil::Create(m_device, bindGroupLayouts);
+
+        LOG("WebGPUUnlitMaterialPipeline: Pipeline layout created.");
     }
 
     void WebGPUUnlitMaterialPipeline::CreateBuffers()
@@ -51,20 +76,35 @@ namespace bns
 
         m_diffuseColorBuffer = new WebGPUConstantBuffer<Mat4x4f>(m_renderer);
         m_diffuseColorBuffer->Initialize();
+
+        LOG("WebGPUUnlitMaterialPipeline: Buffers created.");
+    }
+
+    void WebGPUUnlitMaterialPipeline::CreatePipeline()
+    {
+        std::vector<BufferLayoutDescriptor> bufferLayoutDescriptors(1);
+        bufferLayoutDescriptors[0].Step = VertexStepMode::Vertex;
+        bufferLayoutDescriptors[0].Stride = (3 + 4 + 2) * sizeof(f32);
+        bufferLayoutDescriptors[0].Attributes.push_back({VertexFormat::Float32x3, 0, 0});
+        bufferLayoutDescriptors[0].Attributes.push_back({VertexFormat::Float32x4, 1, sizeof(f32) * 3});
+        bufferLayoutDescriptors[0].Attributes.push_back({VertexFormat::Float32x2, 2, sizeof(f32) * (3 + 4)});
+
+        m_pipeline = WebGPUUtil::RenderPipeline.Create(m_device, m_shaderModule, m_pipelineLayout, bufferLayoutDescriptors);
+
+        LOG("WebGPUUnlitMaterialPipeline: Pipeline created.");
     }
 
     void WebGPUUnlitMaterialPipeline::Initialize()
     {
-        // Get shader module.
-        FileLoader fileLoader;
-        std::string shaderCode = fileLoader.LoadFile("shaders/webgpu/material/unlit_material.wgsl");
-        WGPUShaderModule shaderModule = WebGPUUtil::ShaderModule.Create(m_device, shaderCode, "unlit_material");
-
+        CreateShaderModule();
         CreateBindGroupLayouts();
         CreateBuffers();
+        CreatePipelineLayout();
+        CreatePipeline();
 
         // Dispose
-        WebGPUUtil::ShaderModule.Dispose(shaderModule);
+        WebGPUUtil::ShaderModule.Dispose(m_shaderModule);
+        WebGPUUtil::PipelineLayout.Dispose(m_pipelineLayout);
     }
 
     void WebGPUUnlitMaterialPipeline::Dispose()

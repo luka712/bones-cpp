@@ -71,8 +71,8 @@ namespace bns
     WGPURenderPipeline WebGPUBlurEffectImpl::CreatePipeline(WGPUShaderModule shaderModule, WGPUBindGroupLayout bindGroupLayout, std::string &fragmentMainName)
     {
         // Create pipeline layout. Here the global bind group layout is assigned.
-        WGPUPipelineLayoutDescriptor desc = WebGPUPipelineLayoutDescriptorUtil::Create(&bindGroupLayout, 1);
-        WGPUPipelineLayout layout = wgpuDeviceCreatePipelineLayout(m_device, &desc);
+        std::vector<WGPUBindGroupLayout> bindGroupLayouts = {bindGroupLayout};
+        WGPUPipelineLayout layout = WebGPUUtil::PipelineLayout.Create(m_device, bindGroupLayouts);
 
         // 1 layout with 2 attributes
         BufferLayoutDescriptor bufferLayoutDescriptor;

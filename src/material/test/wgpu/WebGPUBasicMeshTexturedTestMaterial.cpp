@@ -1,7 +1,6 @@
 #if USE_WEBGPU
 
 #include "material/test/wgpu/WebGPUBasicMeshTexturedTestMaterial.hpp"
-#include "renderer/common/WebGPURenderPipelineUtil.hpp"
 #include "mesh/wgpu/WebGPUMesh.hpp"
 #include "Framework.hpp"
 #include "texture/WebGPUTexture2D.hpp"

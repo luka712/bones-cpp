@@ -8,7 +8,6 @@
 #include "util/bns_webgpu_buffer_util.hpp"
 #include "util/WebGPUFragmentStateUtil.hpp"
 #include "util/WebGPUBindGroupEntryUtil.hpp"
-#include "util/WebGPUPipelineLayoutDescriptorUtil.hpp"
 #include "util/WebGPUBindGroupDescriptorUtil.hpp"
 #include "util/WebGPUBlendStateUtil.hpp"
 #include "util/WebGPURenderPassColorAttachmentUtil.hpp"
@@ -18,6 +17,8 @@
 #include "util/WebGPURenderPipelineDescriptorUtil.hpp"
 #include "util/WebGPUCommandEncoderUtil.hpp"
 #include "util/bns_webgpu_bind_group_layout_util.hpp"
+#include "util/bns_webgpu_pipeline_layout_util.hpp"
+#include "util/bns_webgpu_render_pipeline_util.hpp"
 
 namespace bns
 {
@@ -31,10 +32,15 @@ namespace bns
         /// @brief The bind group layout util.
         static WebGPUBindGroupLayoutUtil BindGroupLayout;
 
+        /// @brief The pipeline layout util.
+        static WebGPUPipelineLayoutUtil PipelineLayout;
+
+        /// @brief The render pipeline util.
+        static WebGPURenderPipelineUtil RenderPipeline;
+
         static WebGPUBufferUtil Buffer;
         static WebGPUFragmentStateUtil FragmentState;
         static WebGPUBindGroupEntryUtil BindGroupEntry;
-        static WebGPUPipelineLayoutDescriptorUtil PipelineLayoutDescriptor;
         static WebGPUBindGroupDescriptorUtil BindGroupDescriptor;
         static WebGPUBlendStateUtil BlendState;
         static WebGPURenderPassColorAttachmentUtil RenderPassColorAttachment;

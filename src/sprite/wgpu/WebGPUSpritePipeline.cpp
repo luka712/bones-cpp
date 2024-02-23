@@ -1,7 +1,6 @@
 #if USE_WEBGPU
 
 #include "sprite/wgpu/WebGPUSpritePipeline.hpp"
-#include "renderer/common/WebGPURenderPipelineUtil.hpp"
 #include "bns_webgpu_util.hpp"
 #include "util/WebGPUVertexBufferLayoutUtil.hpp"
 #include "loaders/bns_file_loader.hpp"
@@ -114,15 +113,13 @@ namespace bns
         WGPUBindGroupLayout brightnessLightsBindGroupLayout = WebGPUUtil::BindGroupLayout.Create(device, brightnessLightsBindGroupLayoutEntriesVector, "Brightness Lights Bind Group Layout");
 
         // merge layout to array.
-        WGPUBindGroupLayout bindGroupLayouts[3] = {
+        std::vector<WGPUBindGroupLayout> bindGroupLayouts = {
             projectionViewBufferBindGroupLayout,
             textureBindGroupLayout,
             brightnessLightsBindGroupLayout};
 
         // TODO: move to util
-        WGPUPipelineLayoutDescriptor pipelineLayoutDescriptor = WebGPUUtil::PipelineLayoutDescriptor.Create(&bindGroupLayouts[0], 3);
-        renderPipelineDescriptor.layout = wgpuDeviceCreatePipelineLayout(device, &pipelineLayoutDescriptor);
-
+        renderPipelineDescriptor.layout = WebGPUUtil::PipelineLayout.Create(device, bindGroupLayouts);
         renderPipelineDescriptor.depthStencil = nullptr;
 
         renderPipelineDescriptor.multisample.nextInChain = nullptr;

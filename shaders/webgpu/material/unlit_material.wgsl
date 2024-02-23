@@ -22,7 +22,7 @@ var<uniform> textureTilling: vec2f;
 var<uniform> projectionView: mat4x4f;
 
 @vertex 
-fn unlitMaterialVS(
+fn main_vs(
     in: VSInput,
 
     // builtins 
@@ -48,7 +48,7 @@ var<uniform> diffuseColor: vec4f;
 
 
 @fragment
-fn unlitMaterialFS(in : VSOutput) -> @location(0) vec4f
+fn main_fs(in : VSOutput) -> @location(0) vec4f
 {
     return textureSample(diffuseTexture, diffuseTexSampler, in.texCoord) * in.color * diffuseColor;
 }

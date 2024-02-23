@@ -3,7 +3,7 @@
 #include "Framework.hpp"
 #include "material/basic/wgpu/WebGPUBasicMaterial.hpp"
 #include "util/WebGPUShaderModuleUtil.hpp"
-#include "renderer/common/WebGPURenderPipelineUtil.hpp"
+#include "bns_webgpu_util.hpp"
 #include "mesh/wgpu/WebGPUMesh.hpp"
 #include <iostream>
 
@@ -41,10 +41,8 @@ namespace bns
 
         WGPUPipelineLayout pipelineLayout = wgpuDeviceCreatePipelineLayout(device, &pipelineLayoutDesc);
 
-        WGPURenderPipelineDescriptor pipelineDesc = WebGPURenderPipelineUtil::Create(
-            pipelineLayout,
-            states.VertexState,
-            states.FragmentState);
+        WGPURenderPipelineDescriptor pipelineDesc;
+        // TODO: move to util
 
         // release shader modules
         //   wgpuShaderModuleRelease(states.VertexState.module);
