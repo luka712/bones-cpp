@@ -1,10 +1,10 @@
-#include "texture/TextureManager.hpp"
+#include "texture/bns_texture_manager.hpp"
 
 namespace bns
 {
     TextureOptions::TextureOptions()
     {
-        TextureUsageFlags = TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST;
+        TextureUsage = TextureUsage::CopyDst_TextureBinding;
         Format = TextureFormat::RGBA_8_Unorm;
         MinFilter = SamplerMinFilter::LINEAR;
         MagFilter = SamplerMagFilter::LINEAR;
@@ -25,18 +25,18 @@ namespace bns
             options = *textureOptions;
         }
 
-        Texture2D *texture = CreateTexture(imageData, options.TextureUsageFlags, options.Format, options.MinFilter, options.MagFilter, key);
+        Texture2D *texture = CreateTexture(imageData, options.TextureUsage, options.Format, options.MinFilter, options.MagFilter, key);
         delete imageData;
 
         return texture;
     }
 
-    Texture2D *TextureManager::CreateTexture(ImageData *imageData, i32 textureUsageFlags, TextureFormat format,
+    Texture2D *TextureManager::CreateTexture(ImageData *imageData, TextureUsage textureUsage, TextureFormat format,
                                              SamplerMinFilter samplerMinFilter, SamplerMagFilter samplerMagFilter,
                                              std::string key)
     {
         // Here texture 2d will be of type WebGPUTexture2D, MetalTexture2D etc.
-        Texture2D *texture = CreateBackendImplTexture(imageData, textureUsageFlags, format, samplerMinFilter, samplerMagFilter);
+        Texture2D *texture = CreateBackendImplTexture(imageData, textureUsage, format, samplerMinFilter, samplerMagFilter);
 
         texture->Initialize();
 
@@ -45,7 +45,7 @@ namespace bns
             if (m_textureCache.count(key) > 0)
             {
                 // Destroy the texture.
-                m_textureCache[key]->Release();
+                m_textureCache[key]->Dispose();
                 Texture2D *ptr = m_textureCache[key];
                 delete ptr;
             }
@@ -56,7 +56,7 @@ namespace bns
         return texture;
     }
 
-    Texture2D *TextureManager::CreateEmpty(u32 width, u32 height, i32 textureUsageFlags, TextureFormat format)
+    Texture2D *TextureManager::CreateEmpty(u32 width, u32 height, TextureUsage textureUsage, TextureFormat format)
     {
         // image data is done in this way so that it gets automatically deleted
         ImageData imageData;
@@ -64,6 +64,6 @@ namespace bns
         imageData.Height = height;
         imageData.Data = new u8[width * height * 4];
 
-        return CreateTexture(&imageData, textureUsageFlags, format);
+        return CreateTexture(&imageData, textureUsage, format);
     }
 }

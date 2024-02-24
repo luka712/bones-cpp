@@ -27,13 +27,13 @@ namespace bns
         m_sourceTexture = m_framework
                               .GetTextureManager()
                               .CreateEmpty(bufferSize.X, bufferSize.Y,
-                                           TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
+                                           TextureUsage::CopyDst_TextureBinding_RenderAttachment,
                                            TextureFormat::BGRA_8_Unorm);
 
         Texture2D *midStepTexture = m_framework
                                     .GetTextureManager()
                                     .CreateEmpty(bufferSize.X, bufferSize.Y,
-                                                 TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
+                                                 TextureUsage::CopyDst_TextureBinding_RenderAttachment,
                                                  TextureFormat::BGRA_8_Unorm);
 
         m_midStepTexture = static_cast<WebGPUTexture2D *>(midStepTexture);

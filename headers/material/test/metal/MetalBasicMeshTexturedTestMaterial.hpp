@@ -5,7 +5,7 @@
 #define METAL_BASIC_MESH_TEXTURED_TEST_MATERIAL_HPP
 
 #include "material/Material.hpp"
-#include "texture/Texture2D.hpp"
+#include "texture/bns_texture2d.hpp"
 #include "BnsMetal.hpp"
 #include "renderer/Metalbns_renderer.hpp"
 

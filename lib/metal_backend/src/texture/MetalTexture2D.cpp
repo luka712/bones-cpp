@@ -25,7 +25,7 @@ namespace bns
         {
             usage |= MTL::TextureUsageShaderRead;
         }
-        if (textureUsageFlags & TextureUsage::COPY_SRC)
+        if (textureUsageFlags & TextureUsage::CopySrc)
         {
             usage |= MTL::TextureUsageShaderWrite;
         }

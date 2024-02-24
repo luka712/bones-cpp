@@ -4,7 +4,7 @@
 
 #include "bns_types.hpp"
 #include "bns_math.hpp"
-#include "texture/Texture2D.hpp"
+#include "texture/bns_texture2d.hpp"
 #include "math/bns_vec2.hpp"
 #include "bns_rendering_backend_types.hpp"
 

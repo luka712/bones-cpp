@@ -7,7 +7,7 @@
 #include "bns_webgpu.hpp"
 #include "bns_math.hpp"
 #include "renderer/bns_renderer.hpp"
-#include "texture/TextureManager.hpp"
+#include "texture/bns_texture_manager.hpp"
 #include "Window.hpp"
 
 namespace bns

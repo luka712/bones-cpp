@@ -18,7 +18,7 @@
 
 #if USE_WEBGPU
 #include "renderer/bns_webgpu_renderer.hpp"
-#include "texture/WebGPUTexture2D.hpp"
+#include "texture/bns_webgpu_texture2d.hpp"
 #endif
 
 #if USE_OPENGL
@@ -38,7 +38,7 @@ namespace bns
 	{
 	}
 
-	Texture2D *TextureManagerImpl::CreateBackendImplTexture(ImageData *imageData, i32 textureUsageFlags, TextureFormat format,
+	Texture2D *TextureManagerImpl::CreateBackendImplTexture(ImageData *imageData, TextureUsage textureUsage, TextureFormat format,
 															SamplerMinFilter samplerMinFilter, SamplerMagFilter samplerMagFilter)
 	{
 #if USE_METAL
@@ -76,7 +76,7 @@ namespace bns
 		if (m_renderer->GetRendererType() == RendererType::WebGPU)
 		{
 			WebGPURenderer *renderer = static_cast<WebGPURenderer *>(m_renderer);
-			return new WebGPUTexture2D(renderer->GetDevice(), imageData, textureUsageFlags, format);
+			return new WebGPUTexture2D(renderer, imageData, textureUsage, format);
 		}
 #endif
 

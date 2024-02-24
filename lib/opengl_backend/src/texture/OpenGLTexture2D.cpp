@@ -65,7 +65,7 @@ namespace bns
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    void OpenGLTexture2D::Release()
+    void OpenGLTexture2D::Dispose()
     {
         glDeleteTextures(1, &Texture);
     }

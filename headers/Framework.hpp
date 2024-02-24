@@ -12,7 +12,7 @@
 #include "geometry/GeometryBuilder.hpp"
 #include "mesh/MeshFactory.hpp"
 #include "sprite/bns_sprite_renderer.hpp"
-#include "texture/TextureManager.hpp"
+#include "texture/bns_texture_manager.hpp"
 #include <webgpu/webgpu.h>
 #include "math/bns_vec2.hpp"
 #include "renderer/bns_renderer.hpp"

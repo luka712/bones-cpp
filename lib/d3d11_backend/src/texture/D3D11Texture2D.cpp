@@ -15,7 +15,7 @@ namespace bns
 
     D3D11Texture2D::~D3D11Texture2D()
     {
-        Release();
+        Dispose();
     }
 
     DXGI_FORMAT D3D11Texture2D::Convert(TextureFormat format)
@@ -156,7 +156,7 @@ namespace bns
         }
     }
 
-    void D3D11Texture2D::Release()
+    void D3D11Texture2D::Dispose()
     {
         TextureView.Release();
         Sampler.Release();

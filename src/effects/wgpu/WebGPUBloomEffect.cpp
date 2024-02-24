@@ -21,7 +21,7 @@ namespace bns
         Texture2D *texture = m_framework
                                     .GetTextureManager()
                                     .CreateEmpty(bufferSize.X, bufferSize.Y,
-                                                 TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
+                                                 TextureUsage::CopyDst_CopySrc_TextureBinding_RenderAttachment,
                                                  TextureFormat::BGRA_8_Unorm);
 
         m_brightnessTexture = static_cast<WebGPUTexture2D *>(texture);

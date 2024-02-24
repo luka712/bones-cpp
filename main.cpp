@@ -17,6 +17,7 @@
 
 #include "pipelines/bns_webgpu_unlit_material_pipeline.hpp"
 #include "camera/bns_webgpu_perspective_camera.hpp"
+#include "texture/bns_webgpu_texture2d.hpp"
 
 bns::Framework *engine;
 
@@ -78,7 +79,12 @@ void Initialize()
     testTransformBuffer->Initialize();
     testPipeline = new bns::WebGPUUnlitMaterialPipeline(renderer, testCamera->GetBuffer(), testTransformBuffer);
     testPipeline->Initialize();
-
+    bns::ImageData imageData;
+    imageData.Width = 1;
+    imageData.Height = 1;
+    imageData.Data = new bns::u8[4]{255, 0, 0, 255};
+    bns::Texture2D *texture = new bns::WebGPUTexture2D(renderer, &imageData, bns::TextureUsage::CopyDst_TextureBinding, bns::TextureFormat::RGBA_8_Unorm);
+    texture->Initialize();
 }
 
 void Draw()

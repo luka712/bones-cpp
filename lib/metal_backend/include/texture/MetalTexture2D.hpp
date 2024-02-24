@@ -4,7 +4,7 @@
 
 #define BNS_METAL_TEXTURE_2D_HPP
 
-#include "texture/Texture2D.hpp"
+#include "texture/bns_texture2d.hpp"
 #include "ImageData.hpp"
 #include "BnsMetal.hpp"
 

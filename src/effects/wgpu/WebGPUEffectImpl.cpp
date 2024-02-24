@@ -15,7 +15,7 @@ namespace bns
 
     WebGPUEffectImpl::~WebGPUEffectImpl()
     {
-        m_sourceTexture->Release();
+        m_sourceTexture->Dispose();
         wgpuBufferRelease(m_vertexBuffer);
         wgpuBindGroupLayoutRelease(m_sourceTextureBindGroupLayout);
         wgpuBindGroupRelease(m_sourceTextureBindGroup);
@@ -183,7 +183,7 @@ namespace bns
         Vec2i bufferSize = m_framework.GetRenderer()->GetBufferSize();
         Texture2D *texture = m_framework.GetTextureManager()
                                  .CreateEmpty(bufferSize.X, bufferSize.Y,
-                                              TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
+                                              TextureUsage::CopyDst_TextureBinding_RenderAttachment,
                                               TextureFormat::BGRA_8_Unorm);
         m_sourceTexture = static_cast<WebGPUTexture2D *>(texture);
 

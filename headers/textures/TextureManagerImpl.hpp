@@ -2,8 +2,8 @@
 
 #define BNS_TEXTURE_FACTORY_IMPL_HPP
 
-#include "texture/Texture2D.hpp"
-#include "texture/TextureManager.hpp"
+#include "texture/bns_texture2d.hpp"
+#include "texture/bns_texture_manager.hpp"
 #include "ImageLoader.hpp"
 #include "renderer/bns_renderer.hpp"
 #include <map>
@@ -26,7 +26,7 @@ namespace bns
         /// @param samplerMinFilter The min filter. By default, it is set to SamplerMinFilter::LINEAR.
         /// @param samplerMagFilter The mag filter. By default, it is set to SamplerMagFilter::LINEAR.
         /// @return The texture instance.
-        Texture2D *CreateBackendImplTexture(ImageData *imageData, i32 textureUsageFlags, TextureFormat format, 
+        Texture2D *CreateBackendImplTexture(ImageData *imageData, TextureUsage textureUsage, TextureFormat format, 
                                             SamplerMinFilter samplerMinFilter = SamplerMinFilter::LINEAR,
                                             SamplerMagFilter samplerMagFilter = SamplerMagFilter::LINEAR) override;
 

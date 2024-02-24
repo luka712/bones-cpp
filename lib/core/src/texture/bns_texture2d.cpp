@@ -1,4 +1,4 @@
-#include "texture/Texture2D.hpp"
+#include "texture/bns_texture2d.hpp"
 #include "iostream"
 
 namespace bns
@@ -14,8 +14,8 @@ namespace bns
 
 #pragma endregion
 
-    Texture2D::Texture2D(i32 width, i32 height, i32 textureUsageFlags, TextureFormat format, SamplerMinFilter minFilter, SamplerMagFilter magFilter)
-        : m_width(width), m_height(height), m_textureUsageFlags(textureUsageFlags), m_format(format),
+    Texture2D::Texture2D(i32 width, i32 height, TextureUsage textureUsage, TextureFormat format, SamplerMinFilter minFilter, SamplerMagFilter magFilter)
+        : m_width(width), m_height(height), m_textureUsage(textureUsage), m_format(format),
           m_minFilter(minFilter), m_magFilter(magFilter)
     {
         m_lifecycleState = LifecycleState::Created;
@@ -24,8 +24,6 @@ namespace bns
 
     Texture2D::~Texture2D()
     {
-#if DEBUG
-        std::cout << "Texture2D::~Texture2D() " << m_id << std::endl;
-#endif
+        LOG("Texture2D::~Texture2D()");
     }
 }

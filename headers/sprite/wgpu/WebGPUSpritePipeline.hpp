@@ -5,7 +5,7 @@
 #define BNS_WEBGPU_SPRITE_PIPELINE
 
 #include "Constants.hpp"
-#include "texture/WebGPUTexture2D.hpp"
+#include "texture/bns_webgpu_texture2d.hpp"
 #include <vector>
 
 #define FLOATS_PER_VERTEX 9

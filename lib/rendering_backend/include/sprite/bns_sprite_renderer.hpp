@@ -3,7 +3,7 @@
 #define BNS_SPRITE_RENDERER_HPP
 
 #include <string>
-#include "texture/Texture2D.hpp"
+#include "texture/bns_texture2d.hpp"
 #include "Color.hpp"
 #include "math/bns_rect.hpp"
 #include "math/bns_vec2.hpp"

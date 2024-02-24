@@ -1,6 +1,6 @@
 #include "renderer/bns_webgpu_renderer.hpp"
 #include <iostream>
-#include "texture/WebGPUTexture2D.hpp"
+#include "texture/bns_webgpu_texture2d.hpp"
 #include <assert.h>
 
 namespace bns
@@ -178,9 +178,9 @@ namespace bns
 		imageData.Width = m_bufferSize.X;
 		imageData.Height = m_bufferSize.Y;
 		imageData.Data = new u8[m_bufferSize.X * m_bufferSize.Y * 4];
-		i32 usageFlags = TextureUsage::RENDER_ATTACHMENT | TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_SRC | TextureUsage::COPY_DST;
+		TextureUsage textureUsage = TextureUsage::CopyDst_CopySrc_TextureBinding_RenderAttachment;
 		TextureFormat format = TextureFormat::BGRA_8_Unorm;
-		m_brightnessTexture = new WebGPUTexture2D(m_device, &imageData, usageFlags, format);
+		m_brightnessTexture = new WebGPUTexture2D(this, &imageData, textureUsage, format);
 		m_brightnessTexture->Initialize();
 	}
 

@@ -3,7 +3,7 @@
 #include "material/test/wgpu/WebGPUBasicMeshTexturedTestMaterial.hpp"
 #include "mesh/wgpu/WebGPUMesh.hpp"
 #include "Framework.hpp"
-#include "texture/WebGPUTexture2D.hpp"
+#include "texture/bns_webgpu_texture2d.hpp"
 #include "util/WebGPUShaderModuleUtil.hpp"
 
 #include "util/WebGPUVertexBufferLayoutUtil.hpp"

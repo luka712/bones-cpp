@@ -24,7 +24,7 @@ namespace bns
 
     VulkanTexture2D::~VulkanTexture2D()
     {
-        Release();
+        Dispose();
     }
 
     void VulkanTexture2D::Initialize()
@@ -102,7 +102,7 @@ namespace bns
             SamplerFilterToVulkanFilter(m_minFilter));
     }
 
-    void VulkanTexture2D::Release()
+    void VulkanTexture2D::Dispose()
     {
         if (m_imageSampler != VK_NULL_HANDLE)
         {

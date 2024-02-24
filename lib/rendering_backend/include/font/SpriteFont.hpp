@@ -5,7 +5,7 @@
 #include <string>
 #include <map>
 #include "font/SpriteFontChar.hpp"
-#include "texture/Texture2D.hpp"
+#include "texture/bns_texture2d.hpp"
 #include <stdexcept>
 
 namespace bns

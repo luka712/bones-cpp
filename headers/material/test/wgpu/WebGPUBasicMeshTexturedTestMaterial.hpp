@@ -6,7 +6,7 @@
 
 #include "material/Material.hpp"
 #include <webgpu/webgpu.h>
-#include "texture/Texture2D.hpp"
+#include "texture/bns_texture2d.hpp"
 #include "renderer/bns_webgpu_renderer.hpp"
 #include "loaders/bns_file_loader.hpp"
 

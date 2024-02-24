@@ -6,7 +6,7 @@
 #define BNS_WEBGPU_POST_PROCESS_EFFECT_HPP
 
 #include "effects/Effect.hpp"
-#include "texture/WebGPUTexture2D.hpp"
+#include "texture/bns_webgpu_texture2d.hpp"
 #include <string>
 #include <vector>
 #include "renderer/bns_webgpu_renderer.hpp"
