@@ -76,7 +76,7 @@ void Initialize()
     // engine->GetSpriteRenderer()->AmbientLight.Intensity = 0.0f;
     // engine->GetSpriteRenderer()->AmbientLight.Color = bns::Color::Black();
 
-    testCamera = new bns::WebGPUPerspectiveCamera(renderer, 1.0f);
+    testCamera = new bns::WebGPUPerspectiveCamera(renderer, 800.0f / 600.0f);
     testCamera->Initialize();
     testTransformBuffer = new bns::WebGPUUniformBuffer<bns::Mat4x4f>(renderer);
     testTransformBuffer->Initialize();
