@@ -9,7 +9,7 @@
 #include "ImageLoader.hpp"
 #include "loaders/BitmapSpriteFontLoader.hpp"
 #include "material/MaterialFactory.hpp"
-#include "geometry/GeometryBuilder.hpp"
+#include "geometry/bns_geometry_builder.hpp"
 #include "mesh/MeshFactory.hpp"
 #include "sprite/bns_sprite_renderer.hpp"
 #include "texture/bns_texture_manager.hpp"

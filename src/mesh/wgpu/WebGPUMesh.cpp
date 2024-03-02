@@ -10,7 +10,7 @@ namespace bns
         : Mesh(framework), m_geometry(geometry)
     {
         m_renderer = static_cast<WebGPURenderer *>(m_framework.GetRenderer());
-        m_numOfVertices = geometry.NumOfVertices;
+        //m_numOfVertices = geometry.NumOfVertices;
         IndicesCount = geometry.Indices.size();
 
         VertexBuffer = nullptr;
@@ -77,65 +77,65 @@ namespace bns
 
     void WebGPUMesh::InitializeVertexBuffer()
     {
-        if (!m_geometry.IsInterleaved)
-            return;
+        // if (!m_geometry.IsInterleaved)
+        //     return;
 
-        size_t byteSize = m_geometry.Data.size() * sizeof(f32);
+        // size_t byteSize = m_geometry.Data.size() * sizeof(f32);
 
-        VertexBuffer = WebGPUUtil::Buffer.CreateVertexBuffer(m_device, m_geometry.Data, "vertex_buffer");
-        VertexBufferSize = byteSize;
+        // VertexBuffer = WebGPUUtil::Buffer.CreateVertexBuffer(m_device, m_geometry.Data, "vertex_buffer");
+        // VertexBufferSize = byteSize;
     }
 
     void WebGPUMesh::InitializeVertexPositionsBuffer()
     {
-        if (m_geometry.IsInterleaved || m_geometry.VertexPositions.empty())
-        {
-            return;
-        }
+        // if (m_geometry.IsInterleaved || m_geometry.VertexPositions.empty())
+        // {
+        //     return;
+        // }
 
-        size_t byteSize = m_geometry.VertexPositions.size() * sizeof(f32);
-        VertexPositionsBuffer = WebGPUUtil::Buffer.CreateVertexBuffer(m_device, m_geometry.VertexPositions, "vertex_positions_buffer");
-        VertexPositionsBufferSize = byteSize;
+        // size_t byteSize = m_geometry.VertexPositions.size() * sizeof(f32);
+        // VertexPositionsBuffer = WebGPUUtil::Buffer.CreateVertexBuffer(m_device, m_geometry.VertexPositions, "vertex_positions_buffer");
+        // VertexPositionsBufferSize = byteSize;
     }
 
     void WebGPUMesh::InitializeTextureCoordinatesBuffer()
     {
-        if (m_geometry.IsInterleaved || m_geometry.TextureCoordinates.empty())
-        {
-            return;
-        }
+        // if (m_geometry.IsInterleaved || m_geometry.TextureCoordinates.empty())
+        // {
+        //     return;
+        // }
 
-        size_t byteSize = m_geometry.TextureCoordinates.size() * sizeof(f32);
-        TextureCoordinatesBuffer = WebGPUUtil::Buffer.CreateVertexBuffer(m_device, m_geometry.TextureCoordinates, "texture_coordinates_buffer");
-        TextureCoordinatesBufferSize = byteSize;
+        // size_t byteSize = m_geometry.TextureCoordinates.size() * sizeof(f32);
+        // TextureCoordinatesBuffer = WebGPUUtil::Buffer.CreateVertexBuffer(m_device, m_geometry.TextureCoordinates, "texture_coordinates_buffer");
+        // TextureCoordinatesBufferSize = byteSize;
     }
 
     void WebGPUMesh::InitializeVertexColorsBuffer()
     {
-        if(m_geometry.IsInterleaved) return;
+        // if(m_geometry.IsInterleaved) return;
 
-        std::vector<f32> colors = m_geometry.VertexColors;
+        // std::vector<f32> colors = m_geometry.VertexColors;
 
-        // if empty initialize all to white
-        if (colors.empty())
-        {
-            for (size_t i = 0; i < m_numOfVertices; i++)
-            {
-                colors.push_back(1.0f);
-                colors.push_back(1.0f);
-                colors.push_back(1.0f);
-                colors.push_back(1.0f);
-            }
-        }
+        // // if empty initialize all to white
+        // if (colors.empty())
+        // {
+        //     for (size_t i = 0; i < m_numOfVertices; i++)
+        //     {
+        //         colors.push_back(1.0f);
+        //         colors.push_back(1.0f);
+        //         colors.push_back(1.0f);
+        //         colors.push_back(1.0f);
+        //     }
+        // }
 
-        if (colors.empty())
-        {
-            return;
-        }
+        // if (colors.empty())
+        // {
+        //     return;
+        // }
 
-        size_t byteSize = colors.size() * sizeof(f32);
-        VertexColorsBuffer = WebGPUUtil::Buffer.CreateVertexBuffer(m_device, colors, "vertex_colors_buffer");
-        VertexColorsBufferSize = byteSize;
+        // size_t byteSize = colors.size() * sizeof(f32);
+        // VertexColorsBuffer = WebGPUUtil::Buffer.CreateVertexBuffer(m_device, colors, "vertex_colors_buffer");
+        // VertexColorsBufferSize = byteSize;
     }
 
 }

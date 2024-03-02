@@ -6,7 +6,7 @@
 
 #include "mesh/Mesh.hpp"
 #include <webgpu/webgpu.h>
-#include "geometry/Geometry.hpp"
+#include "geometry/bns_geometry.hpp"
 #include "renderer/bns_webgpu_renderer.hpp"
 
 namespace bns

@@ -18,6 +18,7 @@
 #include "pipelines/bns_webgpu_unlit_material_pipeline.hpp"
 #include "camera/bns_webgpu_perspective_camera.hpp"
 #include "texture/bns_webgpu_texture2d.hpp"
+#include "geometry/bns_geometry_builder.hpp"
 
 bns::Framework *engine;
 
@@ -28,7 +29,8 @@ bns::BloomEffect *effect;
 bns::WebGPUUnlitMaterialPipeline *testPipeline;
 bns::WebGPUPerspectiveCamera *testCamera;
 bns::WebGPUUniformBuffer<bns::Mat4x4f> *testTransformBuffer;
-bns::WebGPUVertexBuffer<bns::f32> *testVertexBuffer;
+bns::WebGPUVertexBuffer *testVertexBuffer;
+bns::WebGPUIndexBuffer *testIndexBuffer;
 
 static bns::f32 rotation = 0.0f;
 
@@ -88,14 +90,15 @@ void Initialize()
     bns::Texture2D *texture = new bns::WebGPUTexture2D(renderer, &imageData, bns::TextureUsage::CopyDst_TextureBinding, bns::TextureFormat::BGRA_8_Unorm);
     texture->Initialize();
 
-    testVertexBuffer = new bns::WebGPUVertexBuffer<bns::f32>(renderer, (3 + 4 + 2) * 4 * sizeof(bns::f32), "Attribute Buffer");
-    testVertexBuffer->Initialize();
-    std::vector<bns::f32> data = {
-        -1.f, -1.f, 0.f, 1, 1, 1, 1, 0, 0, // v1
-        -1.f, 1.f, 0.f, 1, 1, 1, 1, 1, 0,  // v2
-        1.f, -1.f, 0.f, 1, 1, 1, 1, 1, 0,  // v3
-    };
+    bns::Geometry geometry = bns::GeometryBuilder().QuadGeomtry();
+
+    testVertexBuffer = new bns::WebGPUVertexBuffer(renderer, "Attribute Buffer");
+    std::vector<bns::f32> data = geometry.ToInterleaved(bns::GeometryFormat::Pos3_Color4_TextureCoords2);
+    testVertexBuffer->Initialize(data, true);
     testVertexBuffer->Update(data);
+
+    testIndexBuffer = new bns::WebGPUIndexBuffer(renderer, "Index Buffer");
+    testIndexBuffer->Initialize(geometry.Indices);
 }
 
 void Draw()
@@ -140,7 +143,7 @@ void Draw()
     // bottom right quadrant
     spriteRenderer->Draw(testTexture, bns::Rect(200, 100, 100, 100), bns::Rect(hw, hh, hw, hh), bns::Color::White(), rotation, rotationOrigin);
 
-    testPipeline->Render(*testVertexBuffer);
+    testPipeline->Render(*testVertexBuffer, *testIndexBuffer);
 
     // effect->Draw(renderer->GetSwapChainTexture());
 }

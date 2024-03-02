@@ -4,19 +4,32 @@ namespace bns
 {
     WGPUBuffer WebGPUBufferUtil::CreateVertexBuffer(WGPUDevice device,
                                                     std::vector<f32> data,
-                                                    std::string label)
+                                                    std::string label,
+                                                    WGPUBufferUsageFlags bufferUsage)
     {
         size_t byteSize = data.size() * sizeof(f32);
 
-        WGPUBufferDescriptor bufferDescriptor;
+        // The default buffer usage. Vertex, no other usage.
+        WGPUBufferUsageFlags usage = WGPUBufferUsage_Vertex;
+
+        // Combine the usage.
+        usage = usage | bufferUsage;
+
+        WGPUBufferDescriptor bufferDescriptor = {};
+        bufferDescriptor.nextInChain = nullptr;
         bufferDescriptor.label = label.c_str();
         bufferDescriptor.size = byteSize;
-        bufferDescriptor.usage = WGPUBufferUsage_Vertex;
+        bufferDescriptor.usage = usage;
         bufferDescriptor.mappedAtCreation = true;
-        bufferDescriptor.nextInChain = nullptr;
+
+        // Create the buffer.
         WGPUBuffer buffer = wgpuDeviceCreateBuffer(device, &bufferDescriptor);
 
-        memcpy(wgpuBufferGetMappedRange(buffer, 0, byteSize), data.data(), byteSize);
+        // Get pointer to gpu memory.
+        void* gpuBufferPtr = wgpuBufferGetMappedRange(buffer, 0, byteSize);
+        // copy to gpu memory.
+        memcpy(gpuBufferPtr, data.data(), byteSize);
+        // Unmap the buffer.
         wgpuBufferUnmap(buffer);
 
         return buffer;
@@ -26,12 +39,12 @@ namespace bns
                                   size_t byteSize,
                                   std::string label)
     {
-        WGPUBufferDescriptor bufferDescriptor;
+        WGPUBufferDescriptor bufferDescriptor = {};
+        bufferDescriptor.nextInChain = nullptr;
         bufferDescriptor.label = label.c_str();
         bufferDescriptor.size = byteSize;
         bufferDescriptor.usage = WGPUBufferUsage_Vertex | WGPUBufferUsage_CopyDst;
         bufferDescriptor.mappedAtCreation = false;
-        bufferDescriptor.nextInChain = nullptr;
         WGPUBuffer buffer = wgpuDeviceCreateBuffer(device, &bufferDescriptor);
 
         return buffer;

@@ -7,6 +7,7 @@
 #include "renderer/bns_renderer.hpp"
 #include "buffers/bns_webgpu_uniform_buffer.hpp"
 #include "buffers/bns_webgpu_vertex_buffer.hpp"
+#include "buffers/bns_webgpu_index_buffer.hpp"
 #include "math/bns_mat4x4.hpp"
 #include "renderer/bns_webgpu_renderer.hpp"
 #include "texture/bns_webgpu_texture2d.hpp"
@@ -101,7 +102,10 @@ namespace bns
         void Initialize();
 
         /// @brief Render the pipeline.
-        void Render(WebGPUVertexBuffer<f32>& vertexBuffer);
+        /// @param vertexBuffer The vertex buffer.
+        /// @param indexBuffer The index buffer.
+        /// @param instanceCount The number of instances to render. By default, it is 1.
+        void Render(WebGPUVertexBuffer& vertexBuffer, WebGPUIndexBuffer& indexBuffer, u32 instanceCount = 1);
 
         /// @brief Dispose of pipeline.
         void Dispose();

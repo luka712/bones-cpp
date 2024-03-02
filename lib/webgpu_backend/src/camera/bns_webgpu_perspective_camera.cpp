@@ -22,7 +22,6 @@ namespace bns
     void WebGPUPerspectiveCamera::Update()
     {
         UpdateMatrices();
-        m_viewProjectionMatrix = Mat4x4f::Identity();
         m_buffer->Update(m_viewProjectionMatrix);
     }
 

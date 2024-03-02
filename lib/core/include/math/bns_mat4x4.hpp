@@ -33,7 +33,6 @@ namespace bns
 		T R2C3;
 		T R3C3;
 
-		
 		/// @brief Construct a new Mat 4x 4 object
 		/// @param T r0c0
 		/// @param T r0c1
@@ -84,9 +83,9 @@ namespace bns
 		 */
 		Mat4x4()
 			: Mat4x4(1, 0, 0, 0,
-					 0, 1, 0, 0,
-					 0, 0, 1, 0,
-					 0, 0, 0, 1)
+				0, 1, 0, 0,
+				0, 0, 1, 0,
+				0, 0, 0, 1)
 		{
 		}
 
@@ -105,7 +104,7 @@ namespace bns
 		 * @param const Vec3<T>& scale_vector
 		 * @return Mat4x4<T>
 		 */
-		Mat4x4<T> ScaleMatrix(const Vec3<T> &scale_vector)
+		Mat4x4<T> ScaleMatrix(const Vec3<T>& scale_vector)
 		{
 			Mat4x4<f32> r;
 			r.R0C0 = scale_vector.X;
@@ -196,24 +195,29 @@ namespace bns
 			return Mat4x4::From(sum);
 		}
 
-		/**
-		 * @brief Create a perspective projection matrix.
-		 * @param T fovRadians - field of view in radians.
-		 * @param T aspectRatio - aspect ratio of the screen.
-		 * @param T zNear - near clipping plane.
-		 * @param T zFar - far clipping plane.
-		 * @return Mat4x4<T>
-		 */
-		static Mat4x4<T> Perspective(T fovRadians, T aspectRatio, T zNear, T zFar)
-		{
-			T tanHalfFov = std::tan(fovRadians / 2.0);
 
-			T zRange = zNear - zFar;
+		/// @brief Create a perspective projection matrix.
+		/// @param fovRadians Field of view in radians.
+		/// @param aspectRatio Aspect ratio of the screen.
+		/// @param near Near clipping plane.
+		/// @param far Far clipping plane.
+		/// @return Mat4x4<T>
+		/// @note Matrix is setup for left handed system with depth range of [0, 1].
+		static Mat4x4<T> Perspective(T fovRadians, T aspectRatio, T near, T far)
+		{
+			T t = std::tan(fovRadians / 2.0);
+
+			T r0c0 = 1.0 / (t * aspectRatio);
+			T r1c1 = 1.0 / t;
+
+			// normaly we have depth that's in range [0, 1]. But if we want 2 units depth [-1,1] we can override.
+			T r2c2 = -far / (near - far); // scale 
+			T r2c3 = (near * far) / (near - far); // translate
 
 			return Mat4x4<T>(
-				1.0 / (tanHalfFov * aspectRatio), 0.0, 0.0, 0.0,
-				0.0, 1.0 / tanHalfFov, 0.0, 0.0,
-				0.0, 0.0, (-zNear - zFar) / zRange, 2.0 * zFar * zNear / zRange,
+				r0c0, 0.0, 0.0, 0.0,
+				0.0, r1c1, 0.0, 0.0,
+				0.0, 0.0, r2c2, r2c3,
 				0.0, 0.0, 1.0, 0.0);
 		}
 
@@ -234,9 +238,9 @@ namespace bns
 			T r2c2 = 1 / (z_far - z_near);
 
 			// TRANSLATE
-			T r0c3 = -(right + left) / (right - left); // -1 to 1 
+			T r0c3 = -(right + left) / (right - left); // -1 to 1
 			T r1c3 = -(top + bottom) / (top - bottom); // -1 to 1
-			T r2c3 = -z_near / (z_far - z_near); // 0 to 1
+			T r2c3 = -z_near / (z_far - z_near);	   // 0 to 1
 
 			return Mat4x4<T>(
 				r0c0, 0, 0, r0c3,
@@ -252,44 +256,28 @@ namespace bns
 		/// @return Mat4x4<T>
 		static Mat4x4<T> LookAt(Vec3<T> eye, Vec3<T> center, Vec3<T> up)
 		{
-			// Steps:
-			// 1. Create a coordinate frame for the camera
-			// 2. Define a rotation matrix.
-			// 3. Apply appropriate translation for camera ( eye ) location
+			// Find forward vector or unitz vector.
+			Vec3<T> forward = center - eye;
+			forward.Normalize();
 
-			//       a        b x w
-			//  w = ---   u = -------   v = w x u
-			//     ||a||   || b x w ||
+			// Use orthogonalization to find right and up vectors.
+			Vec3<T> right = Vec3<T>::Cross(up, forward);
+			right.Normalize();
 
-			// a = eye - center
-			// therefore w is a / || a || or unit a
-			Vec3<T> w = eye - center;
-			w.Normalize();
+			up = Vec3<T>::Cross(forward, right);
+			up.Normalize();
 
-			Vec3<T> u = Vec3<T>::Cross(up, w);
-			u.Normalize();
+			// right, up and forward make for a rotation matrix which should be translated.
+			// eye should be in inverse translation part of the matrix.
+			// Those two should be multiplied to get the final matrix.
+			// We embed operation as follows.
 
-			Vec3<T> v = Vec3<T>::Cross(w, u);
+			return Mat4x4<T>(
+				right.X, right.Y, right.Z, -eye.Dot(right),
+				up.X, up.Y, up.Z, -eye.Dot(up),
+				forward.X, forward.Y, forward.Z, -eye.Dot(forward),
+				0, 0, 0, 1);
 
-			Mat4x4<T> r;
-			r.R0C0 = u.X;
-			r.R0C1 = u.Y;
-			r.R0C2 = u.Z;
-			r.R0C3 = -(eye.Dot(u));
-
-			r.R1C0 = v.X;
-			r.R1C1 = v.Y;
-			r.R1C2 = v.Z;
-			r.R1C3 = -(eye.Dot(w));
-
-			r.R2C0 = w.X;
-			r.R2C1 = w.Y;
-			r.R2C2 = w.Z;
-			r.R2C3 = -(eye.Dot(w));
-
-			// Last row is already identity row.
-
-			return r;
 		}
 
 		/**
@@ -320,7 +308,7 @@ namespace bns
 	};
 
 	template <typename T>
-	Mat4x4<T> operator*(const Mat4x4<T> &a, const Mat4x4<T> &b)
+	Mat4x4<T> operator*(const Mat4x4<T>& a, const Mat4x4<T>& b)
 	{
 		Mat4x4<T> r(
 			a.R0C0 * b.R0C0 + a.R0C1 * b.R1C0 + a.R0C2 * b.R2C0 + a.R0C3 * b.R3C0,

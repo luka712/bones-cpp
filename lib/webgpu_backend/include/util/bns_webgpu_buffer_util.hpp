@@ -12,21 +12,25 @@ namespace bns
     class WebGPUBufferUtil final
     {
     public:
-        /// @brief Create a vertex buffer
-        /// @param device The webgpu device
-        /// @param data The data to be copied to the buffer
-        /// @param label The label of the buffer
-        /// @return The vertex buffer
-        /// @note The data is copied to the buffer
+        /// @brief Create a vertex buffer.
+        /// @param device The webgpu device.
+        /// @param data The data to be copied to the buffer.
+        /// @param label The label of the buffer.
+        /// @param usage The usage of the buffer. By default WGPUBufferUsage_None.
+        /// @return The vertex buffer. 
+        /// @note This buffer is mapped at creation and cannot be written into unless BufferUsage is set appropriately.
+        /// @note The data is copied to the buffer at creation.
         static WGPUBuffer CreateVertexBuffer(WGPUDevice device,
                                              std::vector<f32> data,
-                                             std::string label);
+                                             std::string label,
+                                             WGPUBufferUsageFlags usage = WGPUBufferUsage_None);
 
-        /// @brief Create a vertex buffer
-        /// @param device The webgpu device
-        /// @param byteSize The size of the buffer in bytes
-        /// @param label The label of the buffer
-        /// @return The vertex buffer
+        /// @brief Create a vertex buffer. 
+        /// Buffer usage is set to Vertex and CopyDst by default. Must by CopyDst since there is no data to write at creation.
+        /// @param device The webgpu device.
+        /// @param byteSize The size of the buffer in bytes.
+        /// @param label The label of the buffer.
+        /// @return The vertex buffer.
         static WGPUBuffer CreateVertexBuffer(WGPUDevice device,
                                              size_t byteSize,
                                              std::string label);

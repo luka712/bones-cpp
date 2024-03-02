@@ -101,7 +101,7 @@ namespace bns
         SetTextureTilling(Vec2f::One());
         SetDiffuseColor(Color::White())
 
-        LOG("WebGPUUnlitMaterialPipeline: Buffers created.");
+            LOG("WebGPUUnlitMaterialPipeline: Buffers created.");
     }
 
     void WebGPUUnlitMaterialPipeline::CreatePipeline()
@@ -150,7 +150,6 @@ namespace bns
         m_materialBindGroup = WebGPUUtil::BindGroup.Create(m_device, m_materialBindGroupLayout, bindGroupEntries, "Unlit Render Pipeline Material Bind Group");
     }
 
-
     void WebGPUUnlitMaterialPipeline::CreateDiffuseTextureBindGroup()
     {
         std::vector<WebGPUBindGroupEntry> bindGroupEntries(2);
@@ -176,7 +175,7 @@ namespace bns
         WebGPUUtil::PipelineLayout.Dispose(m_pipelineLayout);
     }
 
-    void WebGPUUnlitMaterialPipeline::Render(WebGPUVertexBuffer<f32>& vertexBuffer)
+    void WebGPUUnlitMaterialPipeline::Render(WebGPUVertexBuffer &vertexBuffer, WebGPUIndexBuffer &indexBuffer, u32 instanceCount )
     {
         WGPURenderPassEncoder pass = m_renderer->GetCurrentRenderPassEncoder();
 
@@ -184,6 +183,7 @@ namespace bns
 
         // Set attributes
         wgpuRenderPassEncoderSetVertexBuffer(pass, 0, vertexBuffer.GetBuffer(), 0, vertexBuffer.GetByteSize());
+        wgpuRenderPassEncoderSetIndexBuffer(pass, indexBuffer.GetBuffer(), WGPUIndexFormat_Uint16, 0, indexBuffer.GetByteSize());
 
         // Set bind groups
         wgpuRenderPassEncoderSetBindGroup(pass, 0, m_modelBindGroup, 0, nullptr);
@@ -191,8 +191,7 @@ namespace bns
         wgpuRenderPassEncoderSetBindGroup(pass, 2, m_textureBindGroup, 0, nullptr);
         wgpuRenderPassEncoderSetBindGroup(pass, 3, m_materialBindGroup, 0, nullptr);
 
-        // Draw TODO:
-        wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+        wgpuRenderPassEncoderDrawIndexed(pass, indexBuffer.GetIndicesCount(), instanceCount, 0, 0, 0);
     }
 
     void WebGPUUnlitMaterialPipeline::Dispose()
