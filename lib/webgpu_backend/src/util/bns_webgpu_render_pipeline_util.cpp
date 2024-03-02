@@ -81,20 +81,34 @@ namespace bns
         vertexState.constantCount = 0;
 
         // FRAGMENT STATE
+        // blend state
+        WGPUBlendState blendState;
+        blendState.color.operation = WGPUBlendOperation_Add;
+        blendState.color.srcFactor = WGPUBlendFactor_One;
+        blendState.color.dstFactor = WGPUBlendFactor_One;
+        blendState.alpha.operation = WGPUBlendOperation_Add;
+        blendState.alpha.srcFactor = WGPUBlendFactor_One;
+        blendState.alpha.dstFactor = WGPUBlendFactor_One;
+
         // color target
-        WGPUColorTargetState colorTargetState;
-        colorTargetState.nextInChain = nullptr;
-        colorTargetState.format = WGPUTextureFormat_BGRA8Unorm;
-        colorTargetState.blend = nullptr;
-        colorTargetState.writeMask = WGPUColorWriteMask_All;
+        std::vector<WGPUColorTargetState> colorTargetStates(2);
+        colorTargetStates[0].nextInChain = nullptr;
+        colorTargetStates[0].format = WGPUTextureFormat_BGRA8Unorm;
+        colorTargetStates[0].blend = &blendState;
+        colorTargetStates[0].writeMask = WGPUColorWriteMask_All;
+
+        colorTargetStates[1].nextInChain = nullptr;
+        colorTargetStates[1].format = WGPUTextureFormat_BGRA8Unorm;
+        colorTargetStates[1].blend = &blendState;
+        colorTargetStates[1].writeMask = WGPUColorWriteMask_None;
 
         // fragment state
         WGPUFragmentState fragmentState;
         fragmentState.nextInChain = nullptr;
         fragmentState.module = shaderModule;
         fragmentState.entryPoint = fragmentEntryPoint.c_str();
-        fragmentState.targetCount = 1;
-        fragmentState.targets = &colorTargetState;
+        fragmentState.targetCount = 2;
+        fragmentState.targets = colorTargetStates.data();
         fragmentState.constantCount = 0;
 
         // MULTISAMPLE STATE

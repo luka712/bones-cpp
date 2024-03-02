@@ -45,9 +45,7 @@ namespace bns
          */
         WGPUDevice m_device;
 
-        /**
-         * @brief WGPUQueue is a class in WebGPU. TODO: describe better, I don't know what it is and copilitot is not helping.
-         */
+        /// @brief The queue.
         WGPUQueue m_queue;
 
         /**
@@ -122,7 +120,10 @@ namespace bns
         /// @return The queue.
         WGPUQueue GetQueue() const { return m_queue; }
         WGPUCommandEncoder GetDrawCommandEncoder() const { return m_drawCommandEncoder; }
-        WGPURenderPassEncoder GetCurrentPassEncoder() const { return m_currentPassEncoder; }
+
+        /// @brief Gets the current render pass encoder.
+        /// @return The current WGPURenderPassEncoder.
+        WGPURenderPassEncoder GetCurrentRenderPassEncoder() const { return m_currentPassEncoder; }
 
         /**
          * @brief Gets the view into swap chain texture.

@@ -193,7 +193,7 @@ namespace bns
     {
         WGPUDevice device = m_renderer->GetDevice();
         WGPUQueue queue = wgpuDeviceGetQueue(device);
-        WGPURenderPassEncoder pass = m_renderer->GetCurrentPassEncoder();
+        WGPURenderPassEncoder pass = m_renderer->GetCurrentRenderPassEncoder();
 
         WebGPUMesh webGPUMesh = *static_cast<WebGPUMesh *>(mesh);
 

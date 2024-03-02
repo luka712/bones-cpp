@@ -7,7 +7,7 @@
 #include "renderer/bns_renderer.hpp"
 #include "camera/bns_perspective_camera.hpp"
 #include "bns_webgpu.hpp"
-#include "constant_buffer/bns_webgpu_constant_buffer.hpp"
+#include "buffers/bns_webgpu_uniform_buffer.hpp"
 
 namespace bns
 {
@@ -17,7 +17,7 @@ namespace bns
     private:
         Renderer *m_renderer;
         WGPUDevice m_device;
-        WebGPUConstantBuffer<Mat4x4f> *m_buffer;
+        WebGPUUniformBuffer<Mat4x4f> *m_buffer;
 
     public:
         /// @brief Constructor for the perspective camera.
@@ -26,7 +26,7 @@ namespace bns
         WebGPUPerspectiveCamera(Renderer *renderer, f32 aspectRatio);
 
         /// @brief Get the buffer of the camera.
-        inline ConstantBuffer<Mat4x4f> *GetBuffer() const
+        inline UniformBuffer<Mat4x4f> *GetBuffer() const
         {
             return m_buffer;
         }

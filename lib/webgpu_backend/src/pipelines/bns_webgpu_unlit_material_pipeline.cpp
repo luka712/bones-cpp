@@ -7,12 +7,29 @@
 
 namespace bns
 {
-    WebGPUUnlitMaterialPipeline::WebGPUUnlitMaterialPipeline(Renderer *renderer, ConstantBuffer<Mat4x4f> *cameraBuffer, ConstantBuffer<Mat4x4f> *modelBuffer)
+    WebGPUUnlitMaterialPipeline::WebGPUUnlitMaterialPipeline(Renderer *renderer, UniformBuffer<Mat4x4f> *cameraBuffer, UniformBuffer<Mat4x4f> *modelBuffer)
     {
         m_device = static_cast<WebGPURenderer *>(renderer)->GetDevice();
         m_renderer = static_cast<WebGPURenderer *>(renderer);
-        m_cameraBuffer = static_cast<WebGPUConstantBuffer<Mat4x4f> *>(cameraBuffer);
-        m_modelBuffer = static_cast<WebGPUConstantBuffer<Mat4x4f> *>(modelBuffer);
+        m_cameraBuffer = static_cast<WebGPUUniformBuffer<Mat4x4f> *>(cameraBuffer);
+        m_modelBuffer = static_cast<WebGPUUniformBuffer<Mat4x4f> *>(modelBuffer);
+    }
+
+    void WebGPUUnlitMaterialPipeline::SetDiffuseColor(Color diffuseColor)
+    {
+        m_diffuseColor = diffuseColor;
+        m_diffuseColorBuffer->Update(diffuseColor);
+    }
+
+    void WebGPUUnlitMaterialPipeline::SetTextureTilling(Vec2f textureTilling)
+    {
+        m_textureTilling = textureTilling;
+        m_textureTillingBuffer->Update(textureTilling);
+    }
+
+    void WebGPUUnlitMaterialPipeline::SetDiffuseTexture(WebGPUTexture2D *diffuseTexture)
+    {
+        m_diffuseTexture = static_cast<WebGPUTexture2D *>(diffuseTexture);
     }
 
     void WebGPUUnlitMaterialPipeline::CreateShaderModule()
@@ -69,13 +86,20 @@ namespace bns
         LOG("WebGPUUnlitMaterialPipeline: Pipeline layout created.");
     }
 
-    void WebGPUUnlitMaterialPipeline::CreateBuffers()
+    void WebGPUUnlitMaterialPipeline::CreateResources()
     {
-        m_textureTillingBuffer = new WebGPUConstantBuffer<Mat4x4f>(m_renderer);
+        m_textureTillingBuffer = new WebGPUUniformBuffer<Vec2f>(m_renderer);
         m_textureTillingBuffer->Initialize();
 
-        m_diffuseColorBuffer = new WebGPUConstantBuffer<Mat4x4f>(m_renderer);
+        m_diffuseColorBuffer = new WebGPUUniformBuffer<Color>(m_renderer);
         m_diffuseColorBuffer->Initialize();
+
+        m_diffuseTexture = WebGPUTexture2D::CreateEmpty(m_renderer, 1, 1);
+        m_diffuseTexture->Initialize();
+
+        // This will write to buffers
+        SetTextureTilling(Vec2f::One());
+        SetDiffuseColor(Color::White())
 
         LOG("WebGPUUnlitMaterialPipeline: Buffers created.");
     }
@@ -94,17 +118,81 @@ namespace bns
         LOG("WebGPUUnlitMaterialPipeline: Pipeline created.");
     }
 
+    void WebGPUUnlitMaterialPipeline::CreateBindGroups()
+    {
+        CreateDiffuseTextureBindGroup();
+
+        // Create model bind group.
+        std::vector<WebGPUBindGroupEntry> bindGroupEntries(2);
+        bindGroupEntries[0].Binding = 0;
+        bindGroupEntries[0].Buffer = m_modelBuffer->GetBuffer();
+        bindGroupEntries[0].Offset = 0;
+        bindGroupEntries[0].Size = sizeof(Mat4x4f) * m_modelBuffer->GetInstanceCount();
+        bindGroupEntries[1].Binding = 1;
+        bindGroupEntries[1].Buffer = m_textureTillingBuffer->GetBuffer();
+        bindGroupEntries[1].Offset = 0;
+        bindGroupEntries[1].Size = sizeof(Vec2f);
+        m_modelBindGroup = WebGPUUtil::BindGroup.Create(m_device, m_modelBindGroupLayout, bindGroupEntries, "Unlit Render Pipeline Model Bind Group");
+
+        // Create camera bind group.
+        bindGroupEntries.resize(1);
+        bindGroupEntries[0].Binding = 0;
+        bindGroupEntries[0].Buffer = m_cameraBuffer->GetBuffer();
+        bindGroupEntries[0].Offset = 0;
+        bindGroupEntries[0].Size = sizeof(Mat4x4f);
+        m_cameraBindGroup = WebGPUUtil::BindGroup.Create(m_device, m_cameraBindGroupLayout, bindGroupEntries, "Unlit Render Pipeline Camera Bind Group");
+
+        // Create material bind group.
+        bindGroupEntries[0].Binding = 0;
+        bindGroupEntries[0].Buffer = m_diffuseColorBuffer->GetBuffer();
+        bindGroupEntries[0].Offset = 0;
+        bindGroupEntries[0].Size = sizeof(Color);
+        m_materialBindGroup = WebGPUUtil::BindGroup.Create(m_device, m_materialBindGroupLayout, bindGroupEntries, "Unlit Render Pipeline Material Bind Group");
+    }
+
+
+    void WebGPUUnlitMaterialPipeline::CreateDiffuseTextureBindGroup()
+    {
+        std::vector<WebGPUBindGroupEntry> bindGroupEntries(2);
+        bindGroupEntries[0].Binding = 0;
+        bindGroupEntries[0].TextureView = m_diffuseTexture->CreateView("Unlit Render Pipeline Diffuse Texture");
+        bindGroupEntries[1].Binding = 1;
+        bindGroupEntries[1].Sampler = m_diffuseTexture->Sampler;
+
+        m_textureBindGroup = WebGPUUtil::BindGroup.Create(m_device, m_textureBindGroupLayout, bindGroupEntries, "Unlit Render Pipeline Diffuse Texture Bind Group");
+    }
+
     void WebGPUUnlitMaterialPipeline::Initialize()
     {
         CreateShaderModule();
         CreateBindGroupLayouts();
-        CreateBuffers();
+        CreateResources();
         CreatePipelineLayout();
         CreatePipeline();
+        CreateBindGroups();
 
         // Dispose
         WebGPUUtil::ShaderModule.Dispose(m_shaderModule);
         WebGPUUtil::PipelineLayout.Dispose(m_pipelineLayout);
+    }
+
+    void WebGPUUnlitMaterialPipeline::Render(WebGPUVertexBuffer<f32>& vertexBuffer)
+    {
+        WGPURenderPassEncoder pass = m_renderer->GetCurrentRenderPassEncoder();
+
+        wgpuRenderPassEncoderSetPipeline(pass, m_pipeline);
+
+        // Set attributes
+        wgpuRenderPassEncoderSetVertexBuffer(pass, 0, vertexBuffer.GetBuffer(), 0, vertexBuffer.GetByteSize());
+
+        // Set bind groups
+        wgpuRenderPassEncoderSetBindGroup(pass, 0, m_modelBindGroup, 0, nullptr);
+        wgpuRenderPassEncoderSetBindGroup(pass, 1, m_cameraBindGroup, 0, nullptr);
+        wgpuRenderPassEncoderSetBindGroup(pass, 2, m_textureBindGroup, 0, nullptr);
+        wgpuRenderPassEncoderSetBindGroup(pass, 3, m_materialBindGroup, 0, nullptr);
+
+        // Draw TODO:
+        wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
     }
 
     void WebGPUUnlitMaterialPipeline::Dispose()

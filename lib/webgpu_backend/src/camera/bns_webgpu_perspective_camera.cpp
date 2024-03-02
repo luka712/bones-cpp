@@ -14,7 +14,7 @@ namespace bns
 
     void WebGPUPerspectiveCamera::Initialize()
     {
-        m_buffer = new WebGPUConstantBuffer<Mat4x4f>(m_renderer);
+        m_buffer = new WebGPUUniformBuffer<Mat4x4f>(m_renderer);
         m_buffer->Initialize();
         Update();
     }
@@ -22,6 +22,7 @@ namespace bns
     void WebGPUPerspectiveCamera::Update()
     {
         UpdateMatrices();
+        m_viewProjectionMatrix = Mat4x4f::Identity();
         m_buffer->Update(m_viewProjectionMatrix);
     }
 

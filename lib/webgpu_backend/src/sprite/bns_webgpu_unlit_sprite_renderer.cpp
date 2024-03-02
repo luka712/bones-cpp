@@ -294,7 +294,7 @@ namespace bns
 
     void WebGPUUnlitSpriteRenderer::EndFrame()
     {
-        WGPURenderPassEncoder renderPass = m_renderer->GetCurrentPassEncoder();
+        WGPURenderPassEncoder renderPass = m_renderer->GetCurrentRenderPassEncoder();
         WGPUQueue queue = wgpuDeviceGetQueue(m_device);
 
         std::stack<WGPUBuffer> tempVertexBufferStack;

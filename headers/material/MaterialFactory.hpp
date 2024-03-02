@@ -2,7 +2,7 @@
 
 #define BNS_MATERIAL_FACTORY_HPP
 
-#include "Color.hpp"
+#include "bns_color.hpp"
 #include "material/basic/BasicMaterial.hpp"
 
 namespace bns

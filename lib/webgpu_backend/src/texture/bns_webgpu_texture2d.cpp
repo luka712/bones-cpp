@@ -57,19 +57,6 @@ namespace bns
         return static_cast<WGPUTextureUsage>(usage);
     }
 
-    WGPUTextureFormat WebGPUTexture2D::Convert(TextureFormat format) const
-    {
-        switch (format)
-        {
-        case TextureFormat::RGBA_8_Unorm:
-            return WGPUTextureFormat_RGBA8Unorm;
-        case TextureFormat::BGRA_8_Unorm:
-            return WGPUTextureFormat_BGRA8Unorm;
-        default:
-            throw std::runtime_error("Unknown texture format");
-        }
-    }
-
     WGPUFilterMode WebGPUTexture2D::Convert(SamplerMinFilter minFilter) const
     {
         switch (minFilter)
@@ -107,7 +94,7 @@ namespace bns
         textureDescriptor.size = {(u32)m_imageData->Width, (u32)m_imageData->Height, 1};
 
         // convert convers our custom format to the WebGPU format
-        textureDescriptor.format = Convert(m_format);
+        textureDescriptor.format = WebGPUUtil::Converter.Convert(m_format);
         textureDescriptor.usage = Convert(m_textureUsage);
 
         Texture = wgpuDeviceCreateTexture(device, &textureDescriptor);
@@ -181,11 +168,9 @@ namespace bns
         CreateSampler();
     }
 
-    WGPUTextureView WebGPUTexture2D::CreateView() const
+    WGPUTextureView WebGPUTexture2D::CreateView(std::string label) const
     {
-        WGPUTextureViewDescriptor textureViewDesc = WebGPUUtil::TextureViewDescriptor.Create("Texture view: " + std::to_string(m_id));
-        textureViewDesc.format = Convert(m_format);
-        WGPUTextureView textureView = wgpuTextureCreateView(Texture, &textureViewDesc);
+        WGPUTextureView textureView = WebGPUUtil::TextureView.Create(Texture, m_format, label);
         return textureView;
     }
 
@@ -194,5 +179,21 @@ namespace bns
         m_lifecycleState = LifecycleState::Released;
         wgpuSamplerRelease(Sampler);
         wgpuTextureRelease(Texture);
+    }
+
+    WebGPUTexture2D *WebGPUTexture2D::CreateEmpty(Renderer* renderer, u32 width, u32 height)
+    {
+        u8 *data = new u8[width * height * 4];
+        for (u32 i = 0; i < width * height * 4; i++)
+        {
+            data[i] = 0;
+        }
+
+        ImageData *imageData = new ImageData(data, width, height, 4);
+        WebGPUTexture2D *texture = new WebGPUTexture2D(renderer, imageData, TextureUsage::CopyDst_TextureBinding, TextureFormat::BGRA_8_Unorm);
+        texture->Initialize();
+
+        delete data;
+        return texture;
     }
 }

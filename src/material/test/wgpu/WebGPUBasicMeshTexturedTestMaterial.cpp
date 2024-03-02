@@ -160,7 +160,7 @@ namespace bns
     void WebGPUBasicMeshTexturedTestMaterial::Draw(const Camera &camera, Mesh *mesh)
     {
         WebGPUMesh webGPUMesh = *static_cast<WebGPUMesh *>(mesh);
-        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentPassEncoder();
+        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentRenderPassEncoder();
 
         wgpuRenderPassEncoderSetPipeline(passEncoder, m_pipeline);
         wgpuRenderPassEncoderSetIndexBuffer(passEncoder, webGPUMesh.IndexBuffer, webGPUMesh.IndexFormat, 0, 6 * sizeof(u32));
@@ -179,7 +179,7 @@ namespace bns
      */
     void WebGPUBasicMeshTexturedTestMaterial::Draw(const Camera &camera, const Mesh &mesh, std::vector<Mat4x4f> transforms)
     {
-        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentPassEncoder();
+        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentRenderPassEncoder();
         wgpuRenderPassEncoderSetPipeline(passEncoder, m_pipeline);
         wgpuRenderPassEncoderDraw(passEncoder, 3, 1, 0, 0);
     }
@@ -195,7 +195,7 @@ namespace bns
      */
     void WebGPUBasicMeshTexturedTestMaterial::DrawInstancedPrefilled(const Camera &camera, const Mesh &mesh, f32 *flatTransformsArray, i32 nOfInstances)
     {
-        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentPassEncoder();
+        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentRenderPassEncoder();
         wgpuRenderPassEncoderSetPipeline(passEncoder, m_pipeline);
         wgpuRenderPassEncoderDraw(passEncoder, 3, 1, 0, 0);
     }

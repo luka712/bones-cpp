@@ -17,7 +17,7 @@ namespace bns
         /// @brief The texture usage. By default, it is set to TextureUsage::CopyDst_TextureBinding.
         TextureUsage TextureUsage;
 
-        /// @brief The texture format. By default, it is set to TextureFormat::RGBA_8_Unorm.
+        /// @brief The texture format. By default, it is set to TextureFormat::BGRA_8_Unorm.
         TextureFormat Format;
 
         /// @brief The min filter.
@@ -62,14 +62,14 @@ namespace bns
         /// @brief Create a texture.
         /// @param imageData The image data.
         /// @param textureUsageF The texture usage flags. By default, it is set to TextureUsage::CopyDst_TextureBinding.
-        /// @param format The texture format. By default, it is set to TextureFormat::RGBA_8_Unorm.
+        /// @param format The texture format. By default, it is set to TextureFormat::BGRA_8_Unorm.
         /// @param samplerMinFilter The min filter. By default, it is set to SamplerMinFilter::LINEAR.
         /// @param samplerMagFilter The mag filter. By default, it is set to SamplerMagFilter::LINEAR.
         /// @param key The key to cache texture by. If not specified, texture is not cached.
         /// @return
         Texture2D *CreateTexture(ImageData *imageData,
                                  TextureUsage textureUsageFlags = TextureUsage::CopyDst_TextureBinding,
-                                 TextureFormat format = TextureFormat::RGBA_8_Unorm,
+                                 TextureFormat format = TextureFormat::BGRA_8_Unorm,
                                  SamplerMinFilter samplerMinFilter = SamplerMinFilter::LINEAR, SamplerMagFilter samplerMagFilter = SamplerMagFilter::LINEAR,
                                  std::string key = "");
 

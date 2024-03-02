@@ -71,12 +71,18 @@ namespace bns
             Y = ry;
         }
 
-        /**
-         * Returns the zero vector.
-         */
+        /// @brief Creates the (0.0, 0.0) vector.
+        /// @return The Vec2.
         static Vec2<T> Zero()
         {
             return Vec2<T>(0, 0);
+        }
+
+         /// @brief Creates the (1.0, 1.0) vector.
+        /// @return The Vec2.
+        static Vec2<T> One()
+        {
+            return Vec2<T>(1, 1);
         }
     };
 

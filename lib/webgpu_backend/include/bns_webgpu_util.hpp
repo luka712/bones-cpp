@@ -19,6 +19,9 @@
 #include "util/bns_webgpu_bind_group_layout_util.hpp"
 #include "util/bns_webgpu_pipeline_layout_util.hpp"
 #include "util/bns_webgpu_render_pipeline_util.hpp"
+#include "util/bns_webgpu_texture_view_util.hpp"
+#include "util/bns_webgpu_converter.hpp"
+#include "util/bns_webgpu_bind_group_util.hpp"
 
 namespace bns
 {
@@ -37,6 +40,15 @@ namespace bns
 
         /// @brief The render pipeline util.
         static WebGPURenderPipelineUtil RenderPipeline;
+
+        /// @brief The converter util.
+        static WebGPUConverter Converter;
+
+        /// @brief The bind group util.
+        static WebGPUBindGroupUtil BindGroup;
+
+        /// @brief The texture view util.
+        static WebGPUTextureViewUtil TextureView;
 
         static WebGPUBufferUtil Buffer;
         static WebGPUFragmentStateUtil FragmentState;

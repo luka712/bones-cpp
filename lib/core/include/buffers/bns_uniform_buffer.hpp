@@ -1,6 +1,6 @@
-#ifndef BNS_CONSTANT_BUFFER
+#ifndef bns_uniform_buffer
 
-#define BNS_CONSTANT_BUFFER
+#define bns_uniform_buffer
 
 #include "bns_types.hpp"
 
@@ -8,7 +8,7 @@ namespace bns
 {
 
     template <typename T>
-    class ConstantBuffer
+    class UniformBuffer
     {
     private:
         u32 m_instanceCount;
@@ -16,13 +16,13 @@ namespace bns
     public:
         /// @brief Constructor for the constant buffer
         /// @param instanceCount The number of instances that buffer supoorts. 1 by default.
-        ConstantBuffer(u32 instanceCount = 1) : m_instanceCount(instanceCount) {}
+        UniformBuffer(u32 instanceCount = 1) : m_instanceCount(instanceCount) {}
 
         /// @brief The number of instances that buffer supoorts. 1 by default.
-        /// @return
+        /// @return The instace count.
         inline const u32 GetInstanceCount() const
         {
-            return m_instnaceCount;
+            return m_instanceCount;
         }
 
         /// @brief Initialize the constant buffer.

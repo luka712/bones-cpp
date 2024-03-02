@@ -95,7 +95,7 @@ namespace bns
     void WebGPUBasicMeshTestMaterial::Draw(const Camera &camera, Mesh *mesh)
     {
         WebGPUMesh webGPUMesh = *static_cast<WebGPUMesh *>(mesh);
-        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentPassEncoder();
+        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentRenderPassEncoder();
 
         wgpuRenderPassEncoderSetVertexBuffer(passEncoder, 0, webGPUMesh.VertexPositionsBuffer, 0, webGPUMesh.VertexPositionsBufferSize);
         wgpuRenderPassEncoderSetVertexBuffer(passEncoder, 1, webGPUMesh.VertexColorsBuffer, 0, webGPUMesh.VertexColorsBufferSize);
@@ -113,7 +113,7 @@ namespace bns
      */
     void WebGPUBasicMeshTestMaterial::Draw(const Camera &camera, const Mesh &mesh, std::vector<Mat4x4f> transforms)
     {
-        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentPassEncoder();
+        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentRenderPassEncoder();
 
         wgpuRenderPassEncoderSetPipeline(passEncoder, m_pipeline);
         wgpuRenderPassEncoderDraw(passEncoder, 3, 1, 0, 0);
@@ -130,7 +130,7 @@ namespace bns
      */
     void WebGPUBasicMeshTestMaterial::DrawInstancedPrefilled(const Camera &camera, const Mesh &mesh, f32 *flatTransformsArray, i32 nOfInstances)
     {
-        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentPassEncoder();
+        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentRenderPassEncoder();
 
         wgpuRenderPassEncoderSetPipeline(passEncoder, m_pipeline);
         wgpuRenderPassEncoderDraw(passEncoder, 3, 1, 0, 0);

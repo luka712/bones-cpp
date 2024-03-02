@@ -4,7 +4,7 @@
 
 #include "bns_types.hpp"
 #include "math/bns_vec2.hpp"
-#include "Color.hpp"
+#include "bns_color.hpp"
 
 namespace bns
 {

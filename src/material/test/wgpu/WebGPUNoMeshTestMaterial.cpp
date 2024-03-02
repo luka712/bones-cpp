@@ -75,7 +75,7 @@ namespace bns
      */
     void WebGPUNoMeshTestMaterial::Draw(const Camera &camera, Mesh *mesh)
     {
-        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentPassEncoder();
+        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentRenderPassEncoder();
         wgpuRenderPassEncoderSetPipeline(passEncoder, m_pipeline);
         wgpuRenderPassEncoderDraw(passEncoder, 3, 1, 0, 0);
     }
@@ -90,7 +90,7 @@ namespace bns
      */
     void WebGPUNoMeshTestMaterial::Draw(const Camera &camera, const Mesh &mesh, std::vector<Mat4x4f> transforms)
     {
-        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentPassEncoder();
+        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentRenderPassEncoder();
         wgpuRenderPassEncoderSetPipeline(passEncoder, m_pipeline);
         wgpuRenderPassEncoderDraw(passEncoder, 3, 1, 0, 0);
     }
@@ -106,7 +106,7 @@ namespace bns
      */
     void WebGPUNoMeshTestMaterial::DrawInstancedPrefilled(const Camera &camera, const Mesh &mesh, f32 *flatTransformsArray, i32 nOfInstances)
     {
-        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentPassEncoder();
+        WGPURenderPassEncoder passEncoder = m_renderer->GetCurrentRenderPassEncoder();
         wgpuRenderPassEncoderSetPipeline(passEncoder, m_pipeline);
         wgpuRenderPassEncoderDraw(passEncoder, 3, 1, 0, 0);
     }

@@ -23,9 +23,6 @@ namespace bns
         /// @brief Convert the texture usage flags to WebGPU texture usage flags.
         WGPUTextureUsage Convert(TextureUsage textureUsage) const;
 
-        /// @brief Convert the texture format to WebGPU texture format.
-        WGPUTextureFormat Convert(TextureFormat format) const;
-
         /// @brief Convert the sampler min filter to WebGPU filter mode.
         WGPUFilterMode Convert(SamplerMinFilter minFilter) const;
 
@@ -55,14 +52,22 @@ namespace bns
         ~WebGPUTexture2D();
 
         /// @brief Creates the texture view.
+        /// @param label The label.
         /// @return The texture view.
-        WGPUTextureView CreateView() const;
+        WGPUTextureView CreateView(std::string label = "") const;
 
         /// @brief Initialize the texture.         
         void Initialize() override;
 
         /// @brief Destroy the texture.
         void Dispose() override;
+
+        /// @brief Create an empty texture.
+        /// @param renderer The renderer.
+        /// @param width The width of the texture.
+        /// @param height The height of the texture.
+        /// @return The empty texture.
+        static WebGPUTexture2D* CreateEmpty(Renderer* renderer, u32 width, u32 height);
     };
 }
 

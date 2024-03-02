@@ -5,7 +5,7 @@
 #define BNS_MATERIAL_HPP
 
 #include <string>
-#include "Color.hpp"
+#include "bns_color.hpp"
 #include "camera/Camera.hpp"
 #include "mesh/Mesh.hpp"
 

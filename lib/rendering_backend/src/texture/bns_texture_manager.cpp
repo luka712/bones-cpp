@@ -5,7 +5,7 @@ namespace bns
     TextureOptions::TextureOptions()
     {
         TextureUsage = TextureUsage::CopyDst_TextureBinding;
-        Format = TextureFormat::RGBA_8_Unorm;
+        Format = TextureFormat::BGRA_8_Unorm;
         MinFilter = SamplerMinFilter::LINEAR;
         MagFilter = SamplerMagFilter::LINEAR;
     }

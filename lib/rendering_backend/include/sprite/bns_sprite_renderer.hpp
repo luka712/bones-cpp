@@ -4,7 +4,7 @@
 
 #include <string>
 #include "texture/bns_texture2d.hpp"
-#include "Color.hpp"
+#include "bns_color.hpp"
 #include "math/bns_rect.hpp"
 #include "math/bns_vec2.hpp"
 #include "camera/SpriteRendererCamera.hpp"

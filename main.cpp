@@ -25,9 +25,10 @@ bns::Framework *engine;
 bns::SpriteFont *font;
 bns::Texture2D *testTexture;
 bns::BloomEffect *effect;
-bns::WebGPUUnlitMaterialPipeline* testPipeline;
+bns::WebGPUUnlitMaterialPipeline *testPipeline;
 bns::WebGPUPerspectiveCamera *testCamera;
-bns::WebGPUConstantBuffer<bns::Mat4x4f> *testTransformBuffer;
+bns::WebGPUUniformBuffer<bns::Mat4x4f> *testTransformBuffer;
+bns::WebGPUVertexBuffer<bns::f32> *testVertexBuffer;
 
 static bns::f32 rotation = 0.0f;
 
@@ -54,10 +55,10 @@ void Initialize()
 {
     font = engine->GetBitmapSpriteFontLoader().LoadSnowBImpl("assets/SpriteFont.xml", "assets/SpriteFont.png");
     bns::TextureOptions options;
-    options.Format = bns::TextureFormat::RGBA_8_Unorm;
+    options.Format = bns::TextureFormat::BGRA_8_Unorm;
     options.MagFilter = bns::SamplerMagFilter::NEAREST;
     options.MinFilter = bns::SamplerMinFilter::NEAREST;
-    testTexture = engine->GetTextureManager().LoadTexture2D("assets/uv_test.png", "" , &options);
+    testTexture = engine->GetTextureManager().LoadTexture2D("assets/uv_test.png", "", &options);
 
     // effect = engine->GetEffectFactory().CreateBloomEffect();
 
@@ -75,16 +76,26 @@ void Initialize()
 
     testCamera = new bns::WebGPUPerspectiveCamera(renderer, 1.0f);
     testCamera->Initialize();
-    testTransformBuffer = new bns::WebGPUConstantBuffer<bns::Mat4x4f>(renderer);
+    testTransformBuffer = new bns::WebGPUUniformBuffer<bns::Mat4x4f>(renderer);
     testTransformBuffer->Initialize();
+    testTransformBuffer->Update(bns::Mat4x4f::Identity());
     testPipeline = new bns::WebGPUUnlitMaterialPipeline(renderer, testCamera->GetBuffer(), testTransformBuffer);
     testPipeline->Initialize();
     bns::ImageData imageData;
     imageData.Width = 1;
     imageData.Height = 1;
     imageData.Data = new bns::u8[4]{255, 0, 0, 255};
-    bns::Texture2D *texture = new bns::WebGPUTexture2D(renderer, &imageData, bns::TextureUsage::CopyDst_TextureBinding, bns::TextureFormat::RGBA_8_Unorm);
+    bns::Texture2D *texture = new bns::WebGPUTexture2D(renderer, &imageData, bns::TextureUsage::CopyDst_TextureBinding, bns::TextureFormat::BGRA_8_Unorm);
     texture->Initialize();
+
+    testVertexBuffer = new bns::WebGPUVertexBuffer<bns::f32>(renderer, (3 + 4 + 2) * 4 * sizeof(bns::f32), "Attribute Buffer");
+    testVertexBuffer->Initialize();
+    std::vector<bns::f32> data = {
+        -1.f, -1.f, 0.f, 1, 1, 1, 1, 0, 0, // v1
+        -1.f, 1.f, 0.f, 1, 1, 1, 1, 1, 0,  // v2
+        1.f, -1.f, 0.f, 1, 1, 1, 1, 1, 0,  // v3
+    };
+    testVertexBuffer->Update(data);
 }
 
 void Draw()
@@ -98,7 +109,7 @@ void Draw()
         }
         else if (engine->GetCurrentRenderer() == bns::RendererType::OpenGL)
         {
-           // engine->SwitchRenderer(bns::RendererType::Metal);
+            // engine->SwitchRenderer(bns::RendererType::Metal);
         }
     }
 
@@ -128,6 +139,8 @@ void Draw()
 
     // bottom right quadrant
     spriteRenderer->Draw(testTexture, bns::Rect(200, 100, 100, 100), bns::Rect(hw, hh, hw, hh), bns::Color::White(), rotation, rotationOrigin);
+
+    testPipeline->Render(*testVertexBuffer);
 
     // effect->Draw(renderer->GetSwapChainTexture());
 }
