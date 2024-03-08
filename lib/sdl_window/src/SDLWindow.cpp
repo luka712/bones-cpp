@@ -1,6 +1,9 @@
 #include "SDLWindow.hpp"
-#include <iostream>"
+#include <iostream>
+
+#if USE_WEBGPU
 #include "SDL2Extension/SDL2_Extension.h"
+#endif 
 
 // To get correct struct from <SDL2\SDL_syswm.h>, we must define.
 #if WIN32
@@ -134,7 +137,7 @@ namespace bns
 
         NS::String *nsDeviceName = metalLayer->device()->name();
         std::string deviceName = std::string(nsDeviceName->cString(NS::StringEncoding::ASCIIStringEncoding));
-        LOG("SDLWindowManager::InitializeForMetal: Metal Enabled. Metal Device: %s", deviceName.c_str());
+        LOG("SDLWindowManager::InitializeForMetal: Metal Enabled. Metal Device: " << deviceName << ".");
 
         return metalLayer;
     }

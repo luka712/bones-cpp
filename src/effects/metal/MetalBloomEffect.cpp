@@ -2,7 +2,7 @@
 
 #include "effects/metal/MetalBloomEffect.hpp"
 #include "Framework.hpp"
-#include "MetalUtil.hpp"
+#include "bns_metal_util.hpp"
 
 namespace bns
 {
@@ -23,7 +23,7 @@ namespace bns
 
         auto tex = m_framework.GetTextureManager().CreateEmpty(
             bufferSize.X, bufferSize.Y,
-            TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
+            TextureUsage::CopyDst_TextureBinding_RenderAttachment,
             TextureFormat::BGRA_8_Unorm);
 
         m_brightnessTexture = static_cast<MetalTexture2D *>(tex);

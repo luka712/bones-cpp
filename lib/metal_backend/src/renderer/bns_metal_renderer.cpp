@@ -1,9 +1,9 @@
 #if USE_METAL
 
-#include "renderer/Metalbns_renderer.hpp"
+#include "renderer/bns_metal_renderer.hpp"
 #include <simd/simd.h>
-#include "MetalUtil.hpp"
-#include "texture/MetalTexture2D.hpp"
+#include "bns_metal_util.hpp"
+#include "texture/bns_metal_texture2d.hpp"
 
 namespace bns
 {

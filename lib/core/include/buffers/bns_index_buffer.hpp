@@ -17,14 +17,14 @@ namespace bns
     public:
         /// @brief Get the number of indices in the buffer.
         /// @return The number of indices.
-        inline const u32 GetIndicesCount() const
+        inline u32 GetIndicesCount() const
         {
             return m_indicesCount;
         }
 
         /// @brief Get the byte size of the buffer.
         /// @return The byte size.
-        inline const size_t GetByteSize() const
+        inline size_t GetByteSize() const
         {
             return m_byteSize;
         }

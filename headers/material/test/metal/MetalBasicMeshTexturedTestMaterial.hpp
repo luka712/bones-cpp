@@ -6,8 +6,8 @@
 
 #include "material/Material.hpp"
 #include "texture/bns_texture2d.hpp"
-#include "BnsMetal.hpp"
-#include "renderer/Metalbns_renderer.hpp"
+#include "bns_metal.hpp"
+#include "renderer/bns_metal_renderer.hpp"
 
 namespace bns
 {

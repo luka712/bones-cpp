@@ -4,7 +4,7 @@
 
 #define BNS_METAL_VERTEX_BUFFER_LAYOUT_UTIL_HPP
 
-#include "BnsMetal.hpp"
+#include "bns_metal.hpp"
 #include <vector>
 #include <map>
 #include "buffer_layout/BufferLayoutData.hpp"
@@ -28,8 +28,8 @@ namespace bns
             {VertexFormat::Float32x3, MTL::VertexFormatFloat3},
             {VertexFormat::Float32x4, MTL::VertexFormatFloat4}};
 
-        inline static std::map<StepMode, MTL::VertexStepFunction> m_vertexStepModeMap = {
-            {StepMode::Vertex, MTL::VertexStepFunctionPerVertex}};
+        inline static std::map<VertexStepMode, MTL::VertexStepFunction> m_vertexStepModeMap = {
+            {VertexStepMode::Vertex, MTL::VertexStepFunctionPerVertex}};
 
     public:
         /**

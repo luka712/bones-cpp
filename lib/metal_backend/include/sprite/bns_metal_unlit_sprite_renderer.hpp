@@ -1,26 +1,22 @@
 #if USE_METAL 
 
-#ifndef BNS_METAL_SPRITE_RENDERER_HPP
+#ifndef BNS_METAL_UNLIT_SPRITE_RENDERER_HPP
 
-#define BNS_METAL_SPRITE_RENDERER_HPP
+#define BNS_METAL_UNLIT_SPRITE_RENDERER_HPP
 
 #include "bns_types.hpp"
-#include "sprite/metal/MetalSpritePipeline.hpp"
+#include "sprite/bns_metal_unlit_sprite_pipeline.hpp"
 #include "sprite/bns_sprite_renderer.hpp"
 #include "font/SpriteFont.hpp"
-#include "BnsMetal.hpp"
-#include "renderer/Metalbns_renderer.hpp"
+#include "bns_metal.hpp"
+#include "renderer/bns_metal_renderer.hpp"
 #include <map>
 #include <stack>
 
 namespace bns
 {
-    class Framework;
-
-    /**
-     * @brief The Metal implementation of sprite renderer.
-     */
-    class MetalSpriteRenderer final : public SpriteRenderer
+    /// @brief The Metal implementation of sprite renderer.
+    class MetalUnlitSpriteRenderer final : public SpriteRenderer
     {
     private:
         /// @brief The metal renderer.
@@ -29,11 +25,8 @@ namespace bns
         /// @brief The device.
         MTL::Device *m_device;
 
-        /**
-         * @brief The index buffer.
-         */
+        /// @brief The index buffer.
         MTL::Buffer *m_indexBuffer;
-
         
         /// @brief The projection view matrix buffer.
         MTL::Buffer *m_projectionViewMatrixBuffer;
@@ -41,23 +34,17 @@ namespace bns
         /// @brief The brightness threshold buffer.
         MTL::Buffer* m_brightnessThresholdBuffer;
 
-        /// @brief The ambient light buffer.
-        MTL::Buffer* m_ambientLightBuffer;
-
-        /// @brief The point lights buffer.
-        MTL::Buffer* m_pointLightsBuffer;
-
         /**
          * @brief All the allocated pipelines per texture. Pop from this pipeline to current draw pipelines.
          * At the end of frame, push back to this pipeline from current draw pipelines.
          */
-        std::map<u32, std::stack<MetalSpritePipeline *>> m_allocatedPipelines;
+        std::map<u32, std::stack<MetalUnlitSpritePipeline *>> m_allocatedPipelines;
 
         /**
          * @brief The current draw pipelines per texture. At the end of frame pop from this pipeline to allocated pipelines.
          * If there is no allocated pipeline, create a new one and push it here.
          */
-        std::map<u32, std::stack<MetalSpritePipeline *>> m_currentDrawPipelines;
+        std::map<u32, std::stack<MetalUnlitSpritePipeline *>> m_currentDrawPipelines;
 
         /**
          * @brief The stack of vertex buffers.
@@ -73,11 +60,11 @@ namespace bns
          * @brief Gets or creates a pipeline for the texture.
          * Creation is handled internally, so just get reference.
          */
-        MetalSpritePipeline &GetPipeline(MetalTexture2D *texture);
+        MetalUnlitSpritePipeline &GetPipeline(MetalTexture2D *texture);
 
     public:
         /// @brief The default constructor.
-        MetalSpriteRenderer( Renderer* renderer);
+        MetalUnlitSpriteRenderer( Renderer* renderer);
 
         void Initialize() override;
 

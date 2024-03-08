@@ -5,10 +5,10 @@
 #define BNS_METAL_UNLIT_SPRITE_PIPELINE_HPP
 
 #include "Constants.hpp"
-#include "texture/MetalTexture2D.hpp"
+#include "texture/bns_metal_texture2d.hpp"
 #include <vector>
-#include "BnsMetal.hpp"
-#include "renderer/Metalbns_renderer.hpp"
+#include "bns_metal.hpp"
+#include "renderer/bns_metal_renderer.hpp"
 
 #define FLOATS_PER_VERTEX 9
 #define FLOATS_PER_INSTANCE (4 * FLOATS_PER_VERTEX)

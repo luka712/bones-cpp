@@ -1,7 +1,7 @@
 #if USE_METAL
 
-#include "sprite/metal/Metalbns_sprite_renderer.hpp"
-#include "MetalUtil.hpp"
+#include "sprite/metal/bns_metal_sprite_renderer.hpp"
+#include "bns_metal_util.hpp"
 #include "Constants.hpp"
 #include "Framework.hpp"
 #include "Constants.hpp"
@@ -88,17 +88,17 @@ namespace bns
     {
         // setup camera buffer
         m_device = m_renderer->GetDevice();
-        m_projectionViewMatrixBuffer = MetalUtil::Buffer.Create<f32>(m_device, sizeof(Mat4x4f), "Sprite Renderer Camera Buffer");
+        m_projectionViewMatrixBuffer = MetalUtil::Buffer.Create(m_device, sizeof(Mat4x4f), "Sprite Renderer Camera Buffer");
 
         // setup brightness threshold buffer
-        m_brightnessThresholdBuffer = MetalUtil::Buffer.Create<f32>(m_device, sizeof(f32), "Sprite Renderer Brightness Threshold Buffer");
+        m_brightnessThresholdBuffer = MetalUtil::Buffer.Create(m_device, sizeof(f32), "Sprite Renderer Brightness Threshold Buffer");
 
         // setup ambient light buffer
-        m_ambientLightBuffer = MetalUtil::Buffer.Create<f32>(m_device, sizeof(AmbientLight), "Sprite Renderer Ambient Light Buffer");
+        m_ambientLightBuffer = MetalUtil::Buffer.Create(m_device, sizeof(AmbientLight), "Sprite Renderer Ambient Light Buffer");
 
         // setup point lights buffer
         size_t byteSize = sizeof(PointLight) * FORWARD_2D_NUM_OF_POINT_LIGHTS;
-        m_pointLightsBuffer = MetalUtil::Buffer.Create<f32>(m_device, byteSize, "Sprite Renderer Point Lights Buffer");
+        m_pointLightsBuffer = MetalUtil::Buffer.Create(m_device, byteSize, "Sprite Renderer Point Lights Buffer");
 
         // setup camera
         auto size = m_renderer->GetBufferSize();
@@ -318,7 +318,7 @@ namespace bns
                 if (m_vertexBufferStack.empty())
                 {
                     size_t byteSize = SPRITE_RENDERER_MAX_SPRITES_PER_DRAW * FLOATS_PER_INSTANCE * sizeof(float);
-                    vertexBuffer = MetalUtil::Buffer.Create<f32>(m_device, byteSize, "SpriteVertexBuffer");
+                    vertexBuffer = MetalUtil::Buffer.Create(m_device, byteSize, "SpriteVertexBuffer");
                 }
                 else
                 {

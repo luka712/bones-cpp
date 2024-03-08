@@ -176,7 +176,7 @@ namespace bns
 
     void WebGPUTexture2D::Dispose()
     {
-        m_lifecycleState = LifecycleState::Released;
+        m_lifecycleState = LifecycleState::Disposed;
         wgpuSamplerRelease(Sampler);
         wgpuTextureRelease(Texture);
     }
@@ -186,7 +186,7 @@ namespace bns
         u8 *data = new u8[width * height * 4];
         for (u32 i = 0; i < width * height * 4; i++)
         {
-            data[i] = 0;
+            data[i] = 255;
         }
 
         ImageData *imageData = new ImageData(data, width, height, 4);

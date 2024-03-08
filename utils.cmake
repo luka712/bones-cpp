@@ -35,7 +35,10 @@ function(target_link_libraries_util Target)
 
 
 	# Link libraries which are shared between different targets
-	target_link_libraries(${Target} PRIVATE SDL2::SDL2 SDL2Extension BnsCore BnsWindow BnsSDLWindow BnsLoaders BnsRenderingBackend)
+	target_link_libraries(${Target} PRIVATE SDL2::SDL2 BnsCore BnsWindow BnsSDLWindow BnsLoaders BnsRenderingBackend)
+	if(USE_WEBGPU)
+		target_link_libraries(${Target} PRIVATE SDL2Extension)
+	endif()
 
 	if(APPLE)
 		# Link the libraries to the executable (SDL2, Metal, QuartzCore, Foundation) 

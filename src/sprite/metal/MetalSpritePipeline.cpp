@@ -3,7 +3,7 @@
 
 #include "sprite/metal/MetalSpritePipeline.hpp"
 #include "loaders/bns_file_loader.hpp"
-#include "MetalUtil.hpp"
+#include "bns_metal_util.hpp"
 #include "Framework.hpp"
 
 namespace bns
@@ -35,7 +35,7 @@ namespace bns
 
         // BUFFERS
         BufferLayoutDescriptor bufferLayoutDescriptor;
-        bufferLayoutDescriptor.Step = StepMode::Vertex;
+        bufferLayoutDescriptor.Step = VertexStepMode::Vertex;
         bufferLayoutDescriptor.Stride = sizeof(f32) * FLOATS_PER_VERTEX;
         bufferLayoutDescriptor.Attributes.push_back({VertexFormat::Float32x3, 0, 0});
         bufferLayoutDescriptor.Attributes.push_back({VertexFormat::Float32x2, 1, sizeof(f32) * 3});

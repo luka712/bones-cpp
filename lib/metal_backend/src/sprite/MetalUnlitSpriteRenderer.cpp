@@ -1,7 +1,7 @@
 #if USE_METAL
 
-#include "sprite/MetalUnlitbns_sprite_renderer.hpp"
-#include "MetalUtil.hpp"
+#include "sprite/bns_metal_unlit_sprite_renderer.hpp"
+#include "bns_metal_util.hpp"
 #include "Constants.hpp"
 #include "Constants.hpp"
 
@@ -33,7 +33,7 @@ namespace bns
             data[i * 6 + 5] = i * 4 + 0;
         }
 
-        m_indexBuffer = MetalUtil::Buffer.Create(m_device, data, "SpriteRendererIndexBuffer");
+        m_indexBuffer = MetalUtil::Buffer.CreateIndexBuffer(m_device, data, "SpriteRendererIndexBuffer");
     }
 
     MetalUnlitSpritePipeline &MetalUnlitSpriteRenderer::GetPipeline(MetalTexture2D *texture)
@@ -87,10 +87,10 @@ namespace bns
     {
         // setup camera buffer
         m_device = m_renderer->GetDevice();
-        m_projectionViewMatrixBuffer = MetalUtil::Buffer.Create<f32>(m_device, sizeof(Mat4x4f), "Sprite Renderer Camera Buffer");
+        m_projectionViewMatrixBuffer = MetalUtil::Buffer.CreateVertexBuffer(m_device, sizeof(Mat4x4f), "Sprite Renderer Camera Buffer");
 
         // setup brightness threshold buffer
-        m_brightnessThresholdBuffer = MetalUtil::Buffer.Create<f32>(m_device, sizeof(f32), "Sprite Renderer Brightness Threshold Buffer");
+        m_brightnessThresholdBuffer = MetalUtil::Buffer.CreateVertexBuffer(m_device, sizeof(f32), "Sprite Renderer Brightness Threshold Buffer");
 
         // setup camera
         auto size = m_renderer->GetBufferSize();
@@ -308,7 +308,7 @@ namespace bns
                 if (m_vertexBufferStack.empty())
                 {
                     size_t byteSize = SPRITE_RENDERER_MAX_SPRITES_PER_DRAW * FLOATS_PER_INSTANCE * sizeof(float);
-                    vertexBuffer = MetalUtil::Buffer.Create<f32>(m_device, byteSize, "SpriteVertexBuffer");
+                    vertexBuffer = MetalUtil::Buffer.Create(m_device, byteSize, "SpriteVertexBuffer");
                 }
                 else
                 {

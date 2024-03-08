@@ -5,8 +5,8 @@
 #define METAL_BASIC_MESH_TEST_MATERIAL_HPP
 
 #include "material/Material.hpp"
-#include "BnsMetal.hpp"
-#include "renderer/Metalbns_renderer.hpp"
+#include "bns_metal.hpp"
+#include "renderer/bns_metal_renderer.hpp"
 
 namespace bns
 {

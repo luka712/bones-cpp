@@ -4,21 +4,27 @@
 #define NS_PRIVATE_IMPLEMENTATION
 #define CA_PRIVATE_IMPLEMENTATION
 #define MTL_PRIVATE_IMPLEMENTATION
-#include "BnsMetal.hpp"
+#include "bns_metal.hpp"
 
 // for webgpu
-#define WEBGPU_CPP_IMPLEMENTATION
-#include <webgpu/webgpu.hpp>
+// #define WEBGPU_CPP_IMPLEMENTATION
+// #include <webgpu/webgpu.hpp>
 
 #include <iostream>
 #include <SDL2/SDL.h>
 
 #include "Framework.hpp"
 
-#include "pipelines/bns_webgpu_unlit_material_pipeline.hpp"
+#include "pipelines/bns_webgpu_unlit_render_pipeline.hpp"
 #include "camera/bns_webgpu_perspective_camera.hpp"
 #include "texture/bns_webgpu_texture2d.hpp"
 #include "geometry/bns_geometry_builder.hpp"
+
+#include "pipelines/bns_metal_unlit_render_pipeline.hpp"
+#include "buffers/bns_metal_vertex_buffer.hpp"
+#include "math/bns_mat4x4.hpp"
+#include "buffers/bns_metal_uniform_buffer.hpp"
+#include "camera/bns_metal_perspective_camera.hpp"
 
 bns::Framework *engine;
 
@@ -26,11 +32,16 @@ bns::Framework *engine;
 bns::SpriteFont *font;
 bns::Texture2D *testTexture;
 bns::BloomEffect *effect;
-bns::WebGPUUnlitMaterialPipeline *testPipeline;
-bns::WebGPUPerspectiveCamera *testCamera;
-bns::WebGPUUniformBuffer<bns::Mat4x4f> *testTransformBuffer;
-bns::WebGPUVertexBuffer *testVertexBuffer;
-bns::WebGPUIndexBuffer *testIndexBuffer;
+// bns::WebGPUUnlitMaterialPipeline *testPipeline;
+// bns::WebGPUPerspectiveCamera *testCamera;
+// bns::WebGPUUniformBuffer<bns::Mat4x4f> *testTransformBuffer;
+// bns::WebGPUVertexBuffer *testVertexBuffer;
+// bns::WebGPUIndexBuffer *testIndexBuffer;
+
+bns::MetalUnlitRenderPipeline *testPipeline;
+bns::MetalPerspectiveCamera *testCamera;
+bns::MetalVertexBuffer *testVertexBuffer;
+bns::MetalIndexBuffer *testIndexBuffer;
 
 static bns::f32 rotation = 0.0f;
 
@@ -40,7 +51,7 @@ void Draw();
 int main()
 {
     bns::FrameworkDescription desc;
-    desc.RendererType = bns::RendererType::WebGPU;
+    desc.RendererType = bns::RendererType::Metal;
     engine = new bns::Framework(desc);
 
     bns::WindowParameters parameters;
@@ -66,6 +77,8 @@ void Initialize()
 
     bns::Renderer *renderer = engine->GetRenderer();
 
+    bns::Geometry geometry = bns::GeometryBuilder().QuadGeomtry();
+
     //  renderer->SetRenderTexture(effect->GetSourceTexture());
     //  renderer->SetBrightnessTexture(effect->GetBrightnessTexture());
 
@@ -76,28 +89,47 @@ void Initialize()
     // engine->GetSpriteRenderer()->AmbientLight.Intensity = 0.0f;
     // engine->GetSpriteRenderer()->AmbientLight.Color = bns::Color::Black();
 
-    testCamera = new bns::WebGPUPerspectiveCamera(renderer, 800.0f / 600.0f);
+    // testCamera = new bns::WebGPUPerspectiveCamera(renderer, 800.0f / 600.0f);
+    // testCamera->Initialize();
+    // testTransformBuffer = new bns::WebGPUUniformBuffer<bns::Mat4x4f>(renderer);
+    // testTransformBuffer->Initialize();
+    // testTransformBuffer->Update(bns::Mat4x4f::Identity());
+    // testPipeline = new bns::WebGPUUnlitMaterialPipeline(renderer, testCamera->GetBuffer(), testTransformBuffer);
+    // testPipeline->Initialize();
+    // bns::ImageData imageData;
+    // imageData.Width = 1;
+    // imageData.Height = 1;
+    // imageData.Data = new bns::u8[4]{255, 0, 0, 255};
+    // bns::Texture2D *texture = new bns::WebGPUTexture2D(renderer, &imageData, bns::TextureUsage::CopyDst_TextureBinding, bns::TextureFormat::BGRA_8_Unorm);
+    // texture->Initialize();
+
+    // bns::Geometry geometry = bns::GeometryBuilder().QuadGeomtry();
+
+    // testVertexBuffer = new bns::WebGPUVertexBuffer(renderer, "Attribute Buffer");
+    // std::vector<bns::f32> data = geometry.ToInterleaved(bns::GeometryFormat::Pos3_Color4_TextureCoords2);
+    // testVertexBuffer->Initialize(data, true);
+    // testVertexBuffer->Update(data);
+
+    // testIndexBuffer = new bns::WebGPUIndexBuffer(renderer, "Index Buffer");
+    // testIndexBuffer->Initialize(geometry.Indices);
+
+    testCamera = new bns::MetalPerspectiveCamera(renderer, 800.0f / 600.0f);
     testCamera->Initialize();
-    testTransformBuffer = new bns::WebGPUUniformBuffer<bns::Mat4x4f>(renderer);
-    testTransformBuffer->Initialize();
-    testTransformBuffer->Update(bns::Mat4x4f::Identity());
-    testPipeline = new bns::WebGPUUnlitMaterialPipeline(renderer, testCamera->GetBuffer(), testTransformBuffer);
+
+    auto modelBuffer = new bns::MetalUniformBuffer<bns::Mat4x4f>(renderer, 1, "Model Buffer");
+    modelBuffer->Initialize();
+    auto transform = bns::Mat4x4f::Identity();
+    modelBuffer->Update(transform);
+
+    testPipeline = new bns::MetalUnlitRenderPipeline(renderer, static_cast<bns::MetalUniformBuffer<bns::Mat4x4f>*>(testCamera->GetBuffer()), modelBuffer);
     testPipeline->Initialize();
-    bns::ImageData imageData;
-    imageData.Width = 1;
-    imageData.Height = 1;
-    imageData.Data = new bns::u8[4]{255, 0, 0, 255};
-    bns::Texture2D *texture = new bns::WebGPUTexture2D(renderer, &imageData, bns::TextureUsage::CopyDst_TextureBinding, bns::TextureFormat::BGRA_8_Unorm);
-    texture->Initialize();
 
-    bns::Geometry geometry = bns::GeometryBuilder().QuadGeomtry();
-
-    testVertexBuffer = new bns::WebGPUVertexBuffer(renderer, "Attribute Buffer");
+    testVertexBuffer = new bns::MetalVertexBuffer(renderer, "Attribute Buffer");
     std::vector<bns::f32> data = geometry.ToInterleaved(bns::GeometryFormat::Pos3_Color4_TextureCoords2);
     testVertexBuffer->Initialize(data, true);
     testVertexBuffer->Update(data);
 
-    testIndexBuffer = new bns::WebGPUIndexBuffer(renderer, "Index Buffer");
+    testIndexBuffer = new bns::MetalIndexBuffer(renderer, "Index Buffer");
     testIndexBuffer->Initialize(geometry.Indices);
 }
 

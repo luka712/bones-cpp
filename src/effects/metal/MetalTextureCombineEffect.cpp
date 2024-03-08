@@ -2,7 +2,7 @@
 
 #include "effects/metal/MetalTextureCombineEffect.hpp"
 #include "Framework.hpp"
-#include "MetalUtil.hpp"
+#include "bns_metal_util.hpp"
 
 namespace bns
 {
@@ -21,7 +21,7 @@ namespace bns
         
         MetalEffectImpl::Initialize();
         
-        m_mixValueBuffer = MetalUtil::Buffer.Create<f32>(m_device, sizeof(f32), "texture_combine_mix_value_buffer");
+        m_mixValueBuffer = MetalUtil::Buffer.Create(m_device, sizeof(f32), "texture_combine_mix_value_buffer");
     }
 
     void MetalTextureCombineEffectImpl::Draw(void *destinationTexture)

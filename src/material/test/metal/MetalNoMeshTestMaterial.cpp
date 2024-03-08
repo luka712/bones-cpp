@@ -2,7 +2,7 @@
 
 #include "material/test/metal/MetalNoMeshTestMaterial.hpp"
 #include "Framework.hpp"
-#include "MetalUtil.hpp"
+#include "bns_metal_util.hpp"
 
 namespace bns
 {

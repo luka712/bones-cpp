@@ -3,7 +3,7 @@
 #include "Framework.hpp"
 #include "mesh/metal/MetalMesh.hpp"
 #include "material/test/metal/MetalBasicMeshTestMaterial.hpp"
-#include "MetalUtil.hpp"
+#include "bns_metal_util.hpp"
 
 namespace bns
 {

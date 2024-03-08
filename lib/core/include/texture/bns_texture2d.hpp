@@ -4,66 +4,11 @@
 #define BNS_TEXTURE_2D_HPP
 
 #include "bns_types.hpp"
+#include "bns_rendering_backend_types.hpp"
 
 namespace bns
 {
-
-    /// @brief The usage of the texture.
-    /// For WebGPU usage see https://developer.mozilla.org/en-US/docs/Web/API/GPUTexture/usage
-    enum TextureUsage
-    {
-        /// @brief The texture can be used as the source of a copy operation. For example copy texture to buffer.
-        CopySrc = 0x1,
-
-        /// @brief The texture can be used as the destination of a copy operation. For example copy buffer to texture.
-        CopyDst = 0x2,
-
-        /// @brief The texture can be used as a sampled texture in a shader.
-        /// For example as a resource when in bind group entry, which adheres to a entry specified with texture binding layout.
-        TextureBinding = 0x4,
-
-        /// @brief The texture can be used as a storage texture in a shader.
-        /// For example as a resource when in bind group entry, which adheres to a entry specified with storage texture binding layout.
-        TextureStorage = 0x8,
-
-        /// @brief The texture can be used as a color or depth/stencil attachment in render pass.
-        RenderAttachment = 0x10,
-
-        /// @brief Can be used as copy destination and texture binding.
-        CopyDst_TextureBinding = CopyDst | TextureBinding,
-        /// @brief Can be used as copy destination, texture binding and render attachment.
-        CopyDst_TextureBinding_RenderAttachment = CopyDst | TextureBinding | RenderAttachment,
-        CopyDst_CopySrc_TextureBinding_RenderAttachment = CopyDst | CopySrc | TextureBinding | RenderAttachment,
-    };
-
-    /// @brief The format of the texture.
-    enum class TextureFormat
-    {
-        /// @brief Ordinary format with four 8-bit normalized unsigned integer components in RGBA order.
-        RGBA_8_Unorm = 0x1,
-
-        /// @brief Ordinary format with four 8-bit normalized unsigned integer components in BGRA order.
-        BGRA_8_Unorm = 0x2,
-    };
-
-    /// @brief The min filter.
-    enum class SamplerMinFilter
-    {
-        NEAREST = 0x1,
-        LINEAR = 0x2,
-        NEAREST_MIPMAP_NEAREST = 0x3,
-        LINEAR_MIPMAP_NEAREST = 0x4,
-        NEAREST_MIPMAP_LINEAR = 0x5,
-        LINEAR_MIPMAP_LINEAR = 0x6,
-    };
-
-    /// @brief The mag filter.
-    enum class SamplerMagFilter
-    {
-        NEAREST = 0x1,
-        LINEAR = 0x2,
-    };
-
+    /// @brief The texture 2D.
     class Texture2D
     {
     protected:

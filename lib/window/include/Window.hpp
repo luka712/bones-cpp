@@ -10,7 +10,7 @@
 #include <vector>
 
 #if USE_METAL
-#include "BnsMetal.hpp"
+#include "bns_metal.hpp"
 #endif // USE_METAL
 
 #if USE_D3D11
@@ -76,6 +76,9 @@ namespace bns
                 /// @param updateCallback The update callback.
                 /// @param drawCallback The draw callback.
                 WindowManager(Events *events, TimeManager* timeManager, std::function<void(Time)> updateCallback, std::function<void()> drawCallback);
+
+                /// @brief The destructor.
+                virtual ~WindowManager() = default;
 
                 /// @brief Get the window size.
                 virtual Vec2i GetWindowSize() = 0;

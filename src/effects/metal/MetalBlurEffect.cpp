@@ -1,7 +1,7 @@
 #if USE_METAL 
 
 #include "effects/metal/MetalBlurEffect.hpp"
-#include "MetalUtil.hpp"
+#include "bns_metal_util.hpp"
 #include "Framework.hpp"
 
 namespace bns
@@ -31,13 +31,13 @@ namespace bns
         // Textures
         Texture2D *horizontalTexture = m_framework.GetTextureManager()
                                            .CreateEmpty(bufferSize.X, bufferSize.Y,
-                                                        TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
+                                                        TextureUsage::CopyDst_TextureBinding_RenderAttachment,
                                                         TextureFormat::BGRA_8_Unorm);
         m_sourceTexture = static_cast<MetalTexture2D *>(horizontalTexture);
 
         Texture2D *verticalTexture = m_framework.GetTextureManager()
                                          .CreateEmpty(bufferSize.X, bufferSize.Y,
-                                                      TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
+                                                      TextureUsage::CopyDst_TextureBinding_RenderAttachment,
                                                       TextureFormat::BGRA_8_Unorm);
         m_midStepTexture = static_cast<MetalTexture2D *>(verticalTexture);
 

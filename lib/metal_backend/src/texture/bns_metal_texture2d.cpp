@@ -1,6 +1,7 @@
 #if USE_METAL
 
-#include "texture/MetalTexture2D.hpp"
+#include "texture/bns_metal_texture2d.hpp"
+#include "bns_metal_util.hpp"
 
 namespace bns
 {
@@ -21,7 +22,7 @@ namespace bns
     {
         i32 usage = MTL::TextureUsageUnknown;
 
-        if (textureUsageFlags & TextureUsage::COPY_DST)
+        if (textureUsageFlags & TextureUsage::CopyDst)
         {
             usage |= MTL::TextureUsageShaderRead;
         }
@@ -29,15 +30,15 @@ namespace bns
         {
             usage |= MTL::TextureUsageShaderWrite;
         }
-        if (textureUsageFlags & TextureUsage::TEXTURE_BINDING)
+        if (textureUsageFlags & TextureUsage::TextureBinding)
         {
             usage |= MTL::TextureUsageShaderRead;
         }
-        if (textureUsageFlags & TextureUsage::TEXTURE_STORAGE)
+        if (textureUsageFlags & TextureUsage::TextureStorage)
         {
             usage |= MTL::TextureUsageShaderRead;
         }
-        if (textureUsageFlags & TextureUsage::RENDER_ATTACHMENT)
+        if (textureUsageFlags & TextureUsage::RenderAttachment)
         {
             usage |= MTL::TextureUsageRenderTarget;
         }
@@ -45,14 +46,16 @@ namespace bns
         return static_cast<MTL::TextureUsage>(usage);
     }
 
-    MetalTexture2D::MetalTexture2D(MTL::Device *device, ImageData *imageData, i32 textureUsageFlags, TextureFormat format)
-        : Texture2D(imageData->Width, imageData->Height, textureUsageFlags, format), m_device(device), m_imageData(imageData)
+    MetalTexture2D::MetalTexture2D(Renderer *renderer, ImageData *imageData, TextureUsage usage, TextureFormat format)
+        : Texture2D(imageData->Width, imageData->Height, usage, format), m_imageData(imageData)
     {
+        m_renderer = static_cast<MetalRenderer *>(renderer);
+        m_device = m_renderer->GetDevice();
     }
 
     MetalTexture2D::~MetalTexture2D()
     {
-        Release();
+        Dispose();
     }
 
     void MetalTexture2D::Initialize()
@@ -62,8 +65,8 @@ namespace bns
         NS::UInteger texWidth = m_imageData->Width;
         NS::UInteger texHeight = m_imageData->Height;
 
-        MTL::PixelFormat pixelFormat = Convert(m_format);
-        MTL::TextureUsage textureUsage = Convert(m_textureUsageFlags);
+        MTL::PixelFormat pixelFormat = MetalUtil::Converter.Convert(m_format);
+        MTL::TextureUsage textureUsage = MetalUtil::Converter.Convert(m_textureUsage);
 
         MTL::TextureDescriptor *textureDescriptor = MTL::TextureDescriptor::alloc()->init();
         textureDescriptor->setTextureType(MTL::TextureType2D);
@@ -92,11 +95,27 @@ namespace bns
         Texture = texture;
     }
 
-    void MetalTexture2D::Release()
+    void MetalTexture2D::Dispose()
     {
-        m_lifecycleState = LifecycleState::Released;
+        m_lifecycleState = LifecycleState::Disposed;
         Sampler->release();
         Texture->release();
+    }
+
+    Texture2D *MetalTexture2D::CreateEmpty(Renderer *renderer, i32 width, i32 height)
+    {
+        std::vector<u8> data(width * height * 4, 255);
+        for(i32 i = 0; i < width * height * 4; i++)
+        {
+            data[i] = 255;
+        }
+
+        ImageData imageData = ImageData(data.data(), width, height, 4);
+        Texture2D* texture = new MetalTexture2D(renderer, &imageData, TextureUsage::TextureBinding, TextureFormat::BGRA_8_Unorm);
+        texture->Initialize();
+        imageData.Data = nullptr;
+
+        return texture;
     }
 
 }

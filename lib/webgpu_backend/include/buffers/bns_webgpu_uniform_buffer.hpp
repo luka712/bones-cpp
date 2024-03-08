@@ -55,7 +55,7 @@ namespace bns
 
         void Update(T &data) override
         {
-            WebGPUUtil::Buffer.UpdateUniformBuffer(m_queue, m_uniformBuffer, sizeof(T), & data);
+            WebGPUUtil::Buffer.UpdateUniformBuffer(m_queue, m_uniformBuffer, sizeof(T), &data);
         } 
 
         void Dispose() override

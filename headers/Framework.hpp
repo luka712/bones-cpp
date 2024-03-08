@@ -2,7 +2,7 @@
 
 #define BNS_ENGINE_H
 
-#include "BnsMetal.hpp"
+#include "bns_metal.hpp"
 
 #include "Window.hpp"
 #include "loaders/bns_file_loader.hpp"
@@ -13,7 +13,6 @@
 #include "mesh/MeshFactory.hpp"
 #include "sprite/bns_sprite_renderer.hpp"
 #include "texture/bns_texture_manager.hpp"
-#include <webgpu/webgpu.h>
 #include "math/bns_vec2.hpp"
 #include "renderer/bns_renderer.hpp"
 #include "effects/EffectFactory.hpp"

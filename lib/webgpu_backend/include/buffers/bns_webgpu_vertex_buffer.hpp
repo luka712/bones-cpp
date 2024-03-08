@@ -14,7 +14,6 @@ namespace bns
     private:
         WebGPURenderer *m_renderer;
         std::string m_label;
-        size_t m_byteSize;
 
         // The buffer
         WGPUBuffer m_buffer;
@@ -27,9 +26,6 @@ namespace bns
 
         /// @brief Gets the buffer.
         inline WGPUBuffer GetBuffer() const { return m_buffer; }
-
-        /// @brief Gets the byte size of the buffer.
-        inline size_t GetByteSize() const { return m_byteSize; }
 
         void Initialize(size_t byteSize) override;
         void Initialize(std::vector<f32> &data, bool isWritable = false) override;

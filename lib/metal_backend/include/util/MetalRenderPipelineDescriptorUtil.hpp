@@ -4,7 +4,7 @@
 
 #define BNS_METAL_RENDER_PIPELINE_UTIL_HPP
 
-#include "BnsMetal.hpp"
+#include "bns_metal.hpp"
 
 namespace bns
 {

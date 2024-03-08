@@ -2,7 +2,7 @@
 
 #define BNS_METAL_COLOR_ATTACHMENT_UTIL_HPP
 
-#include "BnsMetal.hpp"
+#include "bns_metal.hpp"
 
 namespace bns
 {

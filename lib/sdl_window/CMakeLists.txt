@@ -20,10 +20,12 @@ target_compile_options(BnsSDLWindow PRIVATE
 )
 
 # Custom extension for WebGPU and SDL2
-if(APPLE)
-    target_compile_options(SDL2Extension PRIVATE -x objective-c)
-else()
-    target_compile_options(SDL2Extension PRIVATE)
+if(USE_WEBGPU)
+    if(APPLE)
+        target_compile_options(SDL2Extension PRIVATE -x objective-c)
+    else()
+        target_compile_options(SDL2Extension PRIVATE)
+    endif()
 endif()
 
 # LINK DIRECTORIES

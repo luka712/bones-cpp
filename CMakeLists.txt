@@ -19,7 +19,7 @@ endif()
 
 # BACKEND RENDERER FLIPS, also used by /lib
 # Multiplatform
-set(USE_WEBGPU 1)
+set(USE_WEBGPU 0)
 
 # Windows/Linux/Mac 
 set(USE_OPENGL 0) 
@@ -29,7 +29,7 @@ set(USE_OPENGLES 0)
 set(USE_VULKAN 0)
 
 # Mac specific
-set(USE_METAL 0)
+set(USE_METAL 1)
 # Windows specific
 set(USE_D3D11 0)
 
@@ -59,8 +59,11 @@ find_package(OpenGL REQUIRED)
 endif()
 
 # VENDOR LIBRARIES
-add_subdirectory(vendor/webgpu)
-add_subdirectory(vendor/SDL2Extension)
+if(USE_WEBGPU)
+    add_subdirectory(vendor/webgpu)
+    # Contains the SDL2 extension for WebGPU
+    add_subdirectory(vendor/SDL2Extension)
+endif()
 if(USE_OPENGL)
 add_subdirectory(vendor/glad EXCLUDE_FROM_ALL)
 endif()
@@ -197,10 +200,12 @@ add_library(BonesFrameworkStatic STATIC ${SOURCES})
 
 # COMPILE OPTIONS
 # Custom extension for WebGPU and SDL2
-if(APPLE)
-    target_compile_options(SDL2Extension PRIVATE -x objective-c)
-else()
-    target_compile_options(SDL2Extension PRIVATE)
+if(USE_WEBGPU)
+    if(APPLE)
+        target_compile_options(SDL2Extension PRIVATE -x objective-c)
+    else()
+        target_compile_options(SDL2Extension PRIVATE)
+    endif()
 endif()
 
 if(USE_OPENGL)
@@ -231,9 +236,12 @@ target_compile_options(BonesFrameworkStatic PRIVATE
 link_directories({WINDOWS_SDK})
 
 target_link_directories(BonesFrameworkExe PRIVATE ${VULKAN_LIB_DIR})
-target_link_directories(BonesFrameworkExe PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/webgpu)
 target_link_directories(BonesFrameworkStatic PRIVATE ${VULKAN_LIB_DIR})
+if(USE_WEBGPU)
+target_link_directories(BonesFrameworkExe PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/webgpu)
 target_link_directories(BonesFrameworkStatic PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor/webgpu)
+endif()
+
 
 # LINK LIBRARIES
 target_link_libraries_util(BonesFrameworkExe)
@@ -279,7 +287,9 @@ endif()
 
 
 # set 
-set_target_properties(webgpu PROPERTIES IMPORTED_LOCATION webgpu)
+if(USE_WEBGPU)
+    set_target_properties(webgpu PROPERTIES IMPORTED_LOCATION webgpu)
+endif()
 set_target_properties(BonesFrameworkExe PROPERTIES VS_DEBUGGER_ENVIRONMENT "DAWN_DEBUG_BREAK_ON_ERROR=1")
 set_target_properties(BonesFrameworkStatic PROPERTIES VS_DEBUGGER_ENVIRONMENT "DAWN_DEBUG_BREAK_ON_ERROR=1")
 
@@ -289,8 +299,10 @@ set_target_properties(BonesFrameworkStatic PROPERTIES VS_DEBUGGER_ENVIRONMENT "D
 # The application's binary must find wgpu.dll or libwgpu.so at runtime,
 # so we automatically copy it (it's called WGPU_RUNTIME_LIB in general)
 # next to the binary.
-target_copy_webgpu_binaries(BonesFrameworkExe)
-target_copy_webgpu_binaries(BonesFrameworkStatic)
+if(USE_WEBGPU)
+    target_copy_webgpu_binaries(BonesFrameworkExe)
+    target_copy_webgpu_binaries(BonesFrameworkStatic)
+endif()
 
 if(WIN32)
     # copy SDL2.dll, SDL2_image.dll to the output directory

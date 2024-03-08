@@ -74,7 +74,7 @@ namespace bns
         const Vec2i &GetBufferSize() const { return m_bufferSize; }
 
         /// @brief The number of frames in flight.
-        const u32 GetFramesInFlight() const { return m_framesInFlight; }
+        u32 GetFramesInFlight() const { return m_framesInFlight; }
 
         /// @brief Gets the renderer type.
         /// @return The renderer type.

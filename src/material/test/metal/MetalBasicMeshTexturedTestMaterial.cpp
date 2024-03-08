@@ -3,8 +3,8 @@
 #include "Framework.hpp"
 #include "mesh/metal/MetalMesh.hpp"
 #include "material/test/metal/MetalBasicMeshTexturedTestMaterial.hpp"
-#include "MetalUtil.hpp"
-#include "texture/MetalTexture2D.hpp"
+#include "bns_metal_util.hpp"
+#include "texture/bns_metal_texture2d.hpp"
 
 namespace bns
 {

@@ -11,11 +11,13 @@
 #include "math/bns_mat4x4.hpp"
 #include "renderer/bns_webgpu_renderer.hpp"
 #include "texture/bns_webgpu_texture2d.hpp"
+#include "pipelines/bns_unlit_render_pipeline.hpp"
 
 
 namespace bns
 {
-    class WebGPUUnlitMaterialPipeline
+    /// @brief The unlit material pipeline.
+    class WebGPUUnlitRenderPipeline : public UnlitRenderPipeline
     {
     private:
         WebGPURenderer *m_renderer;
@@ -48,10 +50,6 @@ namespace bns
         WGPUBindGroup m_textureBindGroup;
         WGPUBindGroup m_materialBindGroup;
 
-        WebGPUTexture2D *m_diffuseTexture;
-        Color m_diffuseColor;
-        Vec2f m_textureTilling;
-
         /// @brief Create the shader module.
         void CreateShaderModule();
 
@@ -78,28 +76,22 @@ namespace bns
         /// @param renderer The renderer.
         /// @param cameraBuffer The camera buffer.
         /// @param modelBuffer The model buffer.
-        WebGPUUnlitMaterialPipeline(Renderer *renderer, UniformBuffer<Mat4x4f> *cameraBuffer, UniformBuffer<Mat4x4f> *modelBuffer);
+        WebGPUUnlitRenderPipeline(Renderer *renderer, UniformBuffer<Mat4x4f> *cameraBuffer, UniformBuffer<Mat4x4f> *modelBuffer);
 
         /// @brief Set the diffuse texture.
-        inline Color GetDiffuseColor() const { return m_diffuseColor; }
-
-        /// @brief Set the diffuse texture.
-        void SetDiffuseColor(Color color);
+        void SetDiffuseColor(Color color) override;
 
         /// @brief Get the texture tilling.
         inline Vec2f GetTextureTilling() const { return m_textureTilling; }
 
         /// @brief Set the texture tilling.
-        void SetTextureTilling(Vec2f tilling);
-
-        /// @brief Get the diffuse texture.
-        inline WebGPUTexture2D *GetDiffuseTexture() const { return m_diffuseTexture; }
+        void SetTextureTilling(Vec2f tilling) override;
 
         /// @brief Set the diffuse texture.
-        void SetDiffuseTexture(WebGPUTexture2D *texture);
+        void SetDiffuseTexture(Texture2D *texture) override;
 
         /// @brief Initialize the pipeline.
-        void Initialize();
+        void Initialize() override;
 
         /// @brief Render the pipeline.
         /// @param vertexBuffer The vertex buffer.

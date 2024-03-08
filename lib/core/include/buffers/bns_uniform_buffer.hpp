@@ -10,7 +10,8 @@ namespace bns
     template <typename T>
     class UniformBuffer
     {
-    private:
+    protected:
+        /// @brief The number of instances that buffer supoorts. 1 by default.
         u32 m_instanceCount;
 
     public:
@@ -20,7 +21,7 @@ namespace bns
 
         /// @brief The number of instances that buffer supoorts. 1 by default.
         /// @return The instace count.
-        inline const u32 GetInstanceCount() const
+        inline u32 GetInstanceCount() const
         {
             return m_instanceCount;
         }

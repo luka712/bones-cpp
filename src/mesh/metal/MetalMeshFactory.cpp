@@ -17,19 +17,18 @@ namespace bns
 
     Mesh *MetalMeshFactory::CreateTriangleMesh()
     {
-        Geometry geometry = m_framework.GetGeometryBuilder().CreateTriangleGeometry();
-        Mesh *mesh = new MetalMesh(m_framework, geometry);
-        mesh->Initialize();
-        return mesh;
+        // TODO:
+        //Geometry geometry = m_framework.GetGeometryBuilder().CreateTriangleGeometry();
+        //Mesh *mesh = new MetalMesh(m_framework, geometry);
+        //mesh->Initialize();
+        return nullptr;
     }
 
     Mesh *MetalMeshFactory::CreateQuadMesh(bool interleaved)
     {
         auto geometryBuilder = m_framework.GetGeometryBuilder();
 
-        Geometry geometry = interleaved
-                                ? geometryBuilder.CreateInterleavedQuadGeometry()
-                                : geometryBuilder.CreateQuadGeometry();
+        Geometry geometry = geometryBuilder.QuadGeomtry();
 
         Mesh *mesh = new MetalMesh(m_framework, geometry);
         mesh->Initialize();

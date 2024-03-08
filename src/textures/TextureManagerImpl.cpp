@@ -2,8 +2,8 @@
 #include "Framework.hpp"
 
 #if USE_METAL
-#include "renderer/Metalbns_renderer.hpp"
-#include "texture/MetalTexture2D.hpp"
+#include "renderer/bns_metal_renderer.hpp"
+#include "texture/bns_metal_texture2d.hpp"
 #endif
 
 #if USE_VULKAN
@@ -45,7 +45,7 @@ namespace bns
 		if (m_renderer->GetRendererType() == RendererType::Metal)
 		{
 			MetalRenderer *renderer = static_cast<MetalRenderer *>(m_renderer);
-			return new MetalTexture2D(renderer->GetDevice(), imageData, textureUsageFlags, format);
+			return new MetalTexture2D(renderer, imageData, textureUsage, format);
 		}
 #endif
 

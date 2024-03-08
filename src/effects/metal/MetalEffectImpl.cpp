@@ -4,8 +4,8 @@
 
 
 #include "effects/metal/MetalEffectImpl.hpp"
-#include "texture/MetalTexture2D.hpp"
-#include "MetalUtil.hpp"
+#include "texture/bns_metal_texture2d.hpp"
+#include "bns_metal_util.hpp"
 #include "Framework.hpp"
 #include "buffer_layout/BufferLayoutData.hpp"
 
@@ -46,7 +46,7 @@ namespace bns
 
         // BUFFERS
         BufferLayoutDescriptor bufferLayoutDescriptor;
-        bufferLayoutDescriptor.Step = StepMode::Vertex;
+        bufferLayoutDescriptor.Step = VertexStepMode::Vertex;
         bufferLayoutDescriptor.Stride = sizeof(f32) * 5;
         bufferLayoutDescriptor.Attributes.push_back({VertexFormat::Float32x3, 0, 0});
         bufferLayoutDescriptor.Attributes.push_back({VertexFormat::Float32x2, 1, sizeof(f32) * 3});
@@ -123,7 +123,7 @@ namespace bns
         Vec2i bufferSize = m_framework.GetRenderer()->GetBufferSize();
         Texture2D *texture = m_framework.GetTextureManager()
                                  .CreateEmpty(bufferSize.X, bufferSize.Y,
-                                              TextureUsage::TEXTURE_BINDING | TextureUsage::COPY_DST | TextureUsage::RENDER_ATTACHMENT,
+                                              TextureUsage::CopyDst_TextureBinding_RenderAttachment,
                                               TextureFormat::BGRA_8_Unorm);
         m_sourceTexture = static_cast<MetalTexture2D *>(texture);
 

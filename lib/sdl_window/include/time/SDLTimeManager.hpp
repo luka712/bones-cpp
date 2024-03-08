@@ -11,6 +11,7 @@ namespace bns
     {
     public:
         SDLTimeManager(f32 desiredFPS);
+        ~SDLTimeManager() = default;
 
         void PrepareStart() override;
         void Start() override;

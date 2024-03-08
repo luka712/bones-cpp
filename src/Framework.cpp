@@ -1,8 +1,8 @@
 #include "Framework.hpp"
 #include <vector>
 #if USE_METAL
-#include "renderer/Metalbns_renderer.hpp"
-#include "sprite/MetalUnlitbns_sprite_renderer.hpp"
+#include "renderer/bns_metal_renderer.hpp"
+#include "sprite/bns_metal_unlit_sprite_renderer.hpp"
 #endif
 #if USE_WEBGPU
 #include "renderer/bns_webgpu_renderer.hpp"
@@ -40,7 +40,7 @@
 #include "material/test/metal/MetalNoMeshTestMaterial.hpp"
 #include "material/test/metal/MetalBasicMeshTestMaterial.hpp"
 #include "material/test/metal/MetalBasicMeshTexturedTestMaterial.hpp"
-#include "texture/MetalTexture2D.hpp"
+#include "texture/bns_metal_texture2d.hpp"
 #include "sprite/wgpu/bns_webgpu_sprite_renderer.hpp"
 #include "time/SDLTimeManager.hpp"
 

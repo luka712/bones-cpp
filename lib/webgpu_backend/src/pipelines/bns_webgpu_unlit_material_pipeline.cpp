@@ -1,13 +1,13 @@
 #if USE_WEBGPU
 
-#include "pipelines/bns_webgpu_unlit_material_pipeline.hpp"
+#include "pipelines/bns_webgpu_unlit_render_pipeline.hpp"
 #include "renderer/bns_webgpu_renderer.hpp"
 #include "loaders/bns_file_loader.hpp"
 #include "bns_webgpu_util.hpp"
 
 namespace bns
 {
-    WebGPUUnlitMaterialPipeline::WebGPUUnlitMaterialPipeline(Renderer *renderer, UniformBuffer<Mat4x4f> *cameraBuffer, UniformBuffer<Mat4x4f> *modelBuffer)
+    WebGPUUnlitRenderPipeline::WebGPUUnlitRenderPipeline(Renderer *renderer, UniformBuffer<Mat4x4f> *cameraBuffer, UniformBuffer<Mat4x4f> *modelBuffer)
     {
         m_device = static_cast<WebGPURenderer *>(renderer)->GetDevice();
         m_renderer = static_cast<WebGPURenderer *>(renderer);
@@ -15,24 +15,25 @@ namespace bns
         m_modelBuffer = static_cast<WebGPUUniformBuffer<Mat4x4f> *>(modelBuffer);
     }
 
-    void WebGPUUnlitMaterialPipeline::SetDiffuseColor(Color diffuseColor)
+    void WebGPUUnlitRenderPipeline::SetDiffuseColor(Color diffuseColor)
     {
         m_diffuseColor = diffuseColor;
         m_diffuseColorBuffer->Update(diffuseColor);
     }
 
-    void WebGPUUnlitMaterialPipeline::SetTextureTilling(Vec2f textureTilling)
+    void WebGPUUnlitRenderPipeline::SetTextureTilling(Vec2f textureTilling)
     {
         m_textureTilling = textureTilling;
         m_textureTillingBuffer->Update(textureTilling);
     }
 
-    void WebGPUUnlitMaterialPipeline::SetDiffuseTexture(WebGPUTexture2D *diffuseTexture)
+    void WebGPUUnlitRenderPipeline::SetDiffuseTexture(Texture2D *diffuseTexture)
     {
-        m_diffuseTexture = static_cast<WebGPUTexture2D *>(diffuseTexture);
+        m_diffuseTexture = diffuseTexture;
+        CreateDiffuseTextureBindGroup();
     }
 
-    void WebGPUUnlitMaterialPipeline::CreateShaderModule()
+    void WebGPUUnlitRenderPipeline::CreateShaderModule()
     {
         // Get shader module.
         FileLoader fileLoader;
@@ -42,7 +43,7 @@ namespace bns
         LOG("WebGPUUnlitMaterialPipeline: Shader module created.");
     }
 
-    void WebGPUUnlitMaterialPipeline::CreateBindGroupLayouts()
+    void WebGPUUnlitRenderPipeline::CreateBindGroupLayouts()
     {
         // Transforms and texture tilling.
         std::vector<WebGPUBindGroupLayoutEntry> webGPUBindGroupLayoutEntry = {
@@ -73,7 +74,7 @@ namespace bns
         LOG("WebGPUUnlitMaterialPipeline: Bind group layouts created.");
     }
 
-    void WebGPUUnlitMaterialPipeline::CreatePipelineLayout()
+    void WebGPUUnlitRenderPipeline::CreatePipelineLayout()
     {
         std::vector<WGPUBindGroupLayout> bindGroupLayouts = {
             m_modelBindGroupLayout,
@@ -86,7 +87,7 @@ namespace bns
         LOG("WebGPUUnlitMaterialPipeline: Pipeline layout created.");
     }
 
-    void WebGPUUnlitMaterialPipeline::CreateResources()
+    void WebGPUUnlitRenderPipeline::CreateResources()
     {
         m_textureTillingBuffer = new WebGPUUniformBuffer<Vec2f>(m_renderer);
         m_textureTillingBuffer->Initialize();
@@ -101,10 +102,10 @@ namespace bns
         SetTextureTilling(Vec2f::One());
         SetDiffuseColor(Color::White())
 
-            LOG("WebGPUUnlitMaterialPipeline: Buffers created.");
+        LOG("WebGPUUnlitMaterialPipeline: Resources created created.");
     }
 
-    void WebGPUUnlitMaterialPipeline::CreatePipeline()
+    void WebGPUUnlitRenderPipeline::CreatePipeline()
     {
         std::vector<BufferLayoutDescriptor> bufferLayoutDescriptors(1);
         bufferLayoutDescriptors[0].Step = VertexStepMode::Vertex;
@@ -118,7 +119,7 @@ namespace bns
         LOG("WebGPUUnlitMaterialPipeline: Pipeline created.");
     }
 
-    void WebGPUUnlitMaterialPipeline::CreateBindGroups()
+    void WebGPUUnlitRenderPipeline::CreateBindGroups()
     {
         CreateDiffuseTextureBindGroup();
 
@@ -150,18 +151,20 @@ namespace bns
         m_materialBindGroup = WebGPUUtil::BindGroup.Create(m_device, m_materialBindGroupLayout, bindGroupEntries, "Unlit Render Pipeline Material Bind Group");
     }
 
-    void WebGPUUnlitMaterialPipeline::CreateDiffuseTextureBindGroup()
+    void WebGPUUnlitRenderPipeline::CreateDiffuseTextureBindGroup()
     {
+        WebGPUTexture2D* wgpuTexture = static_cast<WebGPUTexture2D*>(m_diffuseTexture);
+
         std::vector<WebGPUBindGroupEntry> bindGroupEntries(2);
         bindGroupEntries[0].Binding = 0;
-        bindGroupEntries[0].TextureView = m_diffuseTexture->CreateView("Unlit Render Pipeline Diffuse Texture");
+        bindGroupEntries[0].TextureView = wgpuTexture->CreateView("Unlit Render Pipeline Diffuse Texture");
         bindGroupEntries[1].Binding = 1;
-        bindGroupEntries[1].Sampler = m_diffuseTexture->Sampler;
+        bindGroupEntries[1].Sampler = wgpuTexture->Sampler;
 
         m_textureBindGroup = WebGPUUtil::BindGroup.Create(m_device, m_textureBindGroupLayout, bindGroupEntries, "Unlit Render Pipeline Diffuse Texture Bind Group");
     }
 
-    void WebGPUUnlitMaterialPipeline::Initialize()
+    void WebGPUUnlitRenderPipeline::Initialize()
     {
         CreateShaderModule();
         CreateBindGroupLayouts();
@@ -175,7 +178,7 @@ namespace bns
         WebGPUUtil::PipelineLayout.Dispose(m_pipelineLayout);
     }
 
-    void WebGPUUnlitMaterialPipeline::Render(WebGPUVertexBuffer &vertexBuffer, WebGPUIndexBuffer &indexBuffer, u32 instanceCount )
+    void WebGPUUnlitRenderPipeline::Render(WebGPUVertexBuffer &vertexBuffer, WebGPUIndexBuffer &indexBuffer, u32 instanceCount)
     {
         WGPURenderPassEncoder pass = m_renderer->GetCurrentRenderPassEncoder();
 
@@ -194,7 +197,7 @@ namespace bns
         wgpuRenderPassEncoderDrawIndexed(pass, indexBuffer.GetIndicesCount(), instanceCount, 0, 0, 0);
     }
 
-    void WebGPUUnlitMaterialPipeline::Dispose()
+    void WebGPUUnlitRenderPipeline::Dispose()
     {
         m_textureTillingBuffer->Dispose();
         delete m_textureTillingBuffer;

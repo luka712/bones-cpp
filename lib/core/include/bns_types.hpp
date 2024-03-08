@@ -33,7 +33,7 @@ enum class LifecycleState
 {
    Created,
    Initialized,
-   Released,
+   Disposed,
    Destroyed,
 };
 

@@ -28,6 +28,9 @@ namespace bns
         /// @param desiredFPS The desired frames per second.
         TimeManager(f32 desiredFPS);
 
+        /// @brief The destructor.
+        virtual ~TimeManager() = default;
+
         /// @brief Gets the time information.
         /// @return The time information.
         inline Time GetTime() const { return m_time; }

@@ -3,7 +3,7 @@
 #include "mesh/metal/MetalMesh.hpp"
 #include "Framework.hpp"
 #include "bns_types.hpp"
-#include "MetalUtil.hpp"
+#include "bns_metal_util.hpp"
 
 namespace bns
 {
@@ -12,7 +12,7 @@ namespace bns
         : Mesh(framework), m_geometry(geometry)
     {
         m_renderer = static_cast<MetalRenderer *>(framework.GetRenderer());
-        m_numOfVertices = geometry.NumOfVertices;
+        // m_numOfVertices = geometry.NumOfVertices;
         IndicesCount = geometry.Indices.size();
         IndexBuffer = nullptr;
         VertexBuffer = nullptr;
@@ -27,7 +27,8 @@ namespace bns
 
         if (m_geometry.Indices.size() > 0)
         {
-            IndexBuffer = MetalUtil::Buffer.Create(m_device, m_geometry.Indices, "IndexBuffer");
+            std::vector<u16> indices = m_geometry.Indices;
+            IndexBuffer = MetalUtil::Buffer.CreateIndexBuffer(m_device, indices, "IndexBuffer");
             
             IndexFormat = MTL::IndexTypeUInt32;
             if(sizeof(m_geometry.Indices[0]) == 2)
@@ -36,6 +37,7 @@ namespace bns
             }
         }
 
+        /*
         if (m_geometry.IsInterleaved)
         {
             VertexBuffer = MetalUtil::Buffer.Create(m_device, m_geometry.Data, "VertexBuffer");
@@ -46,7 +48,7 @@ namespace bns
             InitializeVertexPositionsBuffer();
             InitializeVertexColorsBuffer();
             InitializeTextureCoordinatesBuffer();
-        }
+        }*/
     }
 
     void MetalMesh::Delete()
@@ -59,14 +61,16 @@ namespace bns
 
     void MetalMesh::InitializeVertexPositionsBuffer()
     {
+        /*
         IndexBuffer = MetalBufferUtil::Create(m_device,
                                                     m_geometry.VertexPositions,
                                                     "VertexPositionsBuffer");
+         */
     }
 
     void MetalMesh::InitializeVertexColorsBuffer()
     {
-        std::vector<f32> colors = m_geometry.VertexColors;
+        std::vector<f32> colors = m_geometry.Colors;
 
         // if empty initialize all to white
         if (colors.empty())
@@ -80,15 +84,15 @@ namespace bns
             }
         }
 
-        VertexColorsBuffer = MetalBufferUtil::Create(m_device,
+        VertexColorsBuffer = MetalUtil::Buffer.CreateVertexBuffer(m_device,
                                                            colors,
                                                            "VertexColorsBuffer");
     }
 
     void MetalMesh::InitializeTextureCoordinatesBuffer()
     {
-        std::vector<f32> texCoords = m_geometry.TextureCoordinates;
-        MTL::Buffer *buffer = MetalBufferUtil::Create(m_device,
+        std::vector<f32> texCoords = m_geometry.TextureCoords;
+        MTL::Buffer *buffer = MetalUtil::Buffer.CreateVertexBuffer(m_device,
                                                             texCoords,
                                                             "TextureCoordinatesBuffer");
         TextureCoordsBuffer = buffer;

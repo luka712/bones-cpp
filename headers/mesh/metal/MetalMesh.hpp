@@ -4,10 +4,10 @@
 
 #define BNS_METAL_MESH_HPP
 
-#include "BnsMetal.hpp"
+#include "bns_metal.hpp"
 #include "mesh/Mesh.hpp"
-#include "geometry/Geometry.hpp"
-#include "renderer/Metalbns_renderer.hpp"
+#include "geometry/bns_geometry.hpp"
+#include "renderer/bns_metal_renderer.hpp"
 
 namespace bns
 {
