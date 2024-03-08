@@ -32,16 +32,21 @@ bns::Framework *engine;
 bns::SpriteFont *font;
 bns::Texture2D *testTexture;
 bns::BloomEffect *effect;
-// bns::WebGPUUnlitMaterialPipeline *testPipeline;
-// bns::WebGPUPerspectiveCamera *testCamera;
-// bns::WebGPUUniformBuffer<bns::Mat4x4f> *testTransformBuffer;
-// bns::WebGPUVertexBuffer *testVertexBuffer;
-// bns::WebGPUIndexBuffer *testIndexBuffer;
 
+#if USE_WEBGPU
+bns::WebGPUUnlitRenderPipeline *testPipeline;
+bns::WebGPUPerspectiveCamera *testCamera;
+bns::WebGPUUniformBuffer<bns::Mat4x4f> *testTransformBuffer;
+bns::WebGPUVertexBuffer *testVertexBuffer;
+bns::WebGPUIndexBuffer *testIndexBuffer;
+#endif
+
+#if USE_METAL
 bns::MetalUnlitRenderPipeline *testPipeline;
 bns::MetalPerspectiveCamera *testCamera;
 bns::MetalVertexBuffer *testVertexBuffer;
 bns::MetalIndexBuffer *testIndexBuffer;
+#endif
 
 static bns::f32 rotation = 0.0f;
 
@@ -51,7 +56,7 @@ void Draw();
 int main()
 {
     bns::FrameworkDescription desc;
-    desc.RendererType = bns::RendererType::Metal;
+    desc.RendererType = bns::RendererType::WebGPU;
     engine = new bns::Framework(desc);
 
     bns::WindowParameters parameters;
@@ -88,31 +93,31 @@ void Initialize()
     // engine->GetSpriteRenderer()->PointLights[0].Attenuation.Unit = 100.0f;
     // engine->GetSpriteRenderer()->AmbientLight.Intensity = 0.0f;
     // engine->GetSpriteRenderer()->AmbientLight.Color = bns::Color::Black();
+    
 
-    // testCamera = new bns::WebGPUPerspectiveCamera(renderer, 800.0f / 600.0f);
-    // testCamera->Initialize();
-    // testTransformBuffer = new bns::WebGPUUniformBuffer<bns::Mat4x4f>(renderer);
-    // testTransformBuffer->Initialize();
-    // testTransformBuffer->Update(bns::Mat4x4f::Identity());
-    // testPipeline = new bns::WebGPUUnlitMaterialPipeline(renderer, testCamera->GetBuffer(), testTransformBuffer);
-    // testPipeline->Initialize();
-    // bns::ImageData imageData;
-    // imageData.Width = 1;
-    // imageData.Height = 1;
-    // imageData.Data = new bns::u8[4]{255, 0, 0, 255};
-    // bns::Texture2D *texture = new bns::WebGPUTexture2D(renderer, &imageData, bns::TextureUsage::CopyDst_TextureBinding, bns::TextureFormat::BGRA_8_Unorm);
-    // texture->Initialize();
+#if USE_WEBGPU
+    testCamera = new bns::WebGPUPerspectiveCamera(renderer, 800.0f / 600.0f);
+    testCamera->Initialize();
+    testTransformBuffer = new bns::WebGPUUniformBuffer<bns::Mat4x4f>(renderer);
+    testTransformBuffer->Initialize();
+    bns::Mat4x4f transform = bns::Mat4x4f::Identity();
+    testTransformBuffer->Update(transform);
+    testPipeline = new bns::WebGPUUnlitRenderPipeline(renderer, testCamera->GetBuffer(), testTransformBuffer);
+    testPipeline->Initialize();
 
-    // bns::Geometry geometry = bns::GeometryBuilder().QuadGeomtry();
+    testVertexBuffer = new bns::WebGPUVertexBuffer(renderer, "Attribute Buffer");
+    std::vector<bns::f32> data = geometry.ToInterleaved(bns::GeometryFormat::Pos3_Color4_TextureCoords2);
+    testVertexBuffer->Initialize(data, true);
+    testVertexBuffer->Update(data);
 
-    // testVertexBuffer = new bns::WebGPUVertexBuffer(renderer, "Attribute Buffer");
-    // std::vector<bns::f32> data = geometry.ToInterleaved(bns::GeometryFormat::Pos3_Color4_TextureCoords2);
-    // testVertexBuffer->Initialize(data, true);
-    // testVertexBuffer->Update(data);
+    testIndexBuffer = new bns::WebGPUIndexBuffer(renderer, "Index Buffer");
+    testIndexBuffer->Initialize(geometry.Indices);
 
-    // testIndexBuffer = new bns::WebGPUIndexBuffer(renderer, "Index Buffer");
-    // testIndexBuffer->Initialize(geometry.Indices);
+#endif
+    
 
+
+#if USE_METAL
     testCamera = new bns::MetalPerspectiveCamera(renderer, 800.0f / 600.0f);
     testCamera->Initialize();
 
@@ -131,6 +136,7 @@ void Initialize()
 
     testIndexBuffer = new bns::MetalIndexBuffer(renderer, "Index Buffer");
     testIndexBuffer->Initialize(geometry.Indices);
+#endif
 }
 
 void Draw()
@@ -157,6 +163,8 @@ void Draw()
     rotation += 0.001;
     bns::Vec2f rotationOrigin = bns::Vec2f(0.5f, 0.5f);
 
+        testPipeline->Render(*testVertexBuffer, *testIndexBuffer);
+
     engine->GetSpriteRenderer()->PointLights[0].Intensity += 0.1f;
     spriteRenderer->DrawString(font, "Hello World!", bns::Vec2f(300, 300), bns::Color::White(), 1.0f);
 
@@ -175,7 +183,7 @@ void Draw()
     // bottom right quadrant
     spriteRenderer->Draw(testTexture, bns::Rect(200, 100, 100, 100), bns::Rect(hw, hh, hw, hh), bns::Color::White(), rotation, rotationOrigin);
 
-    testPipeline->Render(*testVertexBuffer, *testIndexBuffer);
+
 
     // effect->Draw(renderer->GetSwapChainTexture());
 }

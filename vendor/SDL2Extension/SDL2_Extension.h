@@ -1,10 +1,6 @@
-
-#if USE_WEBGPU
-
 #ifndef BNS_SDL2_EXTENSION_H
 
 #define BNS_SDL2_EXTENSION_H
-
 
 #include <webgpu/webgpu.h>
 
@@ -22,6 +18,4 @@ extern "C"
 }
 #endif
 
-#endif
-
-#endif // 
+#endif 

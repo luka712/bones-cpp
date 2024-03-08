@@ -31,7 +31,7 @@ namespace bns
 
         WGPUDevice m_device;
 
-        size_t m_numOfVertices;
+        // size_t m_numOfVertices;
 
         const Geometry &m_geometry;
 

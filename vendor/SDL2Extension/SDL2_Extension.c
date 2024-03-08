@@ -12,9 +12,11 @@
 #endif // _WIN32
 
 
+    #include "webgpu/webgpu.h"
+
+
 #include "SDL2_Extension.h"
 #include "SDL2/SDL_syswm.h"
-
 
 WGPUSurface GetWGPUSurface(WGPUInstance instance, SDL_Window *window)
 {
