@@ -313,5 +313,10 @@ namespace bns
 		delete m_bitmapSpriteFontLoader;
 		delete m_effectFactory;
 		delete m_windowManager;
+		delete m_bufferFactory;
+		delete m_cameraFactory;
+		delete m_textureFactory;
+		delete m_meshFactory;
+		delete m_renderer;
 	}
 } // namespace BNS
