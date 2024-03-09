@@ -4,7 +4,7 @@
 
 #define BNS_OPENGL_VAO_UTIL_HPP
 
-#include "BnsOpenGL.hpp"
+#include "bns_opengl.hpp"
 #include <map>
 #include "buffer_layout/BufferLayoutData.hpp"
 

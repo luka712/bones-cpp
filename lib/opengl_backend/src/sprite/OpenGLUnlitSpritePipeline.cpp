@@ -1,7 +1,7 @@
 #if USE_OPENGL
 
 #include "sprite/OpenGLUnlitSpritePipeline.hpp"
-#include "OpenGLUtil.hpp"
+#include "bns_opengl_util.hpp"
 
 namespace bns
 {

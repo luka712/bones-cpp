@@ -13,12 +13,12 @@
 #include "sprite/D3D11Unlitbns_sprite_renderer.hpp"
 #endif
 #if USE_OPENGL
-#include "renderer/OpenGLbns_renderer.hpp"
+#include "renderer/bns_opengl_renderer.hpp"
 // for apple machine use 400 version, since 450 is not available/supported
 #if __APPLE__
 #include "sprite/400/OpenGL400Unlitbns_sprite_renderer.hpp"
 #else
-#include "sprite/OpenGLUnlitbns_sprite_renderer.hpp"
+#include "sprite/OpenGLUnlitSpriteRenderer.hpp"
 #endif
 #endif // USE_OPENGL
 #if USE_OPENGLES

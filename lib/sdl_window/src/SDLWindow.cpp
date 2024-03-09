@@ -190,7 +190,8 @@ namespace bns
         *outMajorVersion = GLVersion.major;
         *outMinorVersion = GLVersion.minor;
 
-        LOG("SDLWindowManager::InitializeForOpenGL: OpenGL Version: %s", glGetString(GL_VERSION));
+        std::string log = "SDLWindowManager::InitializeForOpenGL: OpenGL Version: " + std::string((const char *)glGetString(GL_VERSION));
+        LOG(log);
     }
 #endif // USE_OPENGL
 

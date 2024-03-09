@@ -1,6 +1,6 @@
 #if USE_OPENGL
 
-#include "util/OpenGLShaderUtil.hpp"
+#include "util/bns_opengl_shader_util.hpp"
 #include "loaders/bns_file_loader.hpp"
 #include <stdexcept>
 #include "bns_types.hpp"
@@ -27,7 +27,7 @@ namespace bns
 
             glDeleteShader(shader);
 
-            LOG("%s", msg.c_str());
+            LOG(msg);
             BREAKPOINT();
             throw std::runtime_error(msg.c_str());
         }

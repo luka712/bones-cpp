@@ -22,7 +22,7 @@
 #endif
 
 #if USE_OPENGL
-#include "BnsOpenGL.hpp"
+#include "bns_opengl.hpp"
 #endif // USE_OPENGL
 
 #if USE_OPENGLES

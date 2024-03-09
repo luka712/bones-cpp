@@ -1,8 +1,8 @@
 #if USE_OPENGL
 
-#include "util/OpenGLBufferUtil.hpp"
+#include "util/bns_opengl_buffer_util.hpp"
 #include <stdexcept>
-#include "OpenGLUtil.hpp"
+#include "bns_opengl_util.hpp"
 
 namespace bns
 {

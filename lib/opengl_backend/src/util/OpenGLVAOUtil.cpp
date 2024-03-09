@@ -2,7 +2,7 @@
 
 #include "util/OpenGLVAOUtil.hpp"
 #include <string>
-#include "OpenGLUtil.hpp"
+#include "bns_opengl_util.hpp"
 
 namespace bns
 {

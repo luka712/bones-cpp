@@ -4,7 +4,7 @@
 
 #define BNS_OPENGL_PROGRAM_UTIL_HPP
 
-#include "BnsOpenGL.hpp"
+#include "bns_opengl.hpp"
 #include <string>
 
 namespace bns

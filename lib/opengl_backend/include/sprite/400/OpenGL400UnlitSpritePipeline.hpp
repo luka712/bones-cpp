@@ -7,8 +7,8 @@
 #include "Constants.hpp"
 #include <vector>
 #include "bns_types.hpp"
-#include "renderer/OpenGLbns_renderer.hpp"
-#include "texture/OpenGLTexture2D.hpp"
+#include "renderer/bns_opengl_renderer.hpp"
+#include "texture/bns_opengl_texture2d.hpp"
 
 #define FLOATS_PER_VERTEX 9
 #define FLOATS_PER_INSTANCE (4 * FLOATS_PER_VERTEX)

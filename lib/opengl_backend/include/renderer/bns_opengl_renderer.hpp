@@ -4,7 +4,7 @@
 
 #define BNS_OPENGL_RENDERER_HPP
 
-#include "BnsOpenGL.hpp"
+#include "bns_opengl.hpp"
 #include "renderer/bns_renderer.hpp"
 #include "Window.hpp"
 

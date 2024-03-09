@@ -22,12 +22,12 @@
 #endif
 
 #if USE_OPENGL
-#include "renderer/OpenGLbns_renderer.hpp"
-#include "texture/OpenGLTexture2D.hpp"
+#include "renderer/bns_opengl_renderer.hpp"
+#include "texture/bns_opengl_texture2d.hpp"
 #endif
 
 #if USE_OPENGLES
-#include "renderer/OpenGLESbns_renderer.hpp"
+#include "renderer/OpenGLESRenderer.hpp"
 #include "texture/OpenGLESTexture2D.hpp"
 #endif
 
@@ -82,7 +82,7 @@ namespace bns
 
 #if USE_OPENGL
 		OpenGLRenderer *renderer = static_cast<OpenGLRenderer *>(m_renderer);
-		return new OpenGLTexture2D(imageData, textureUsageFlags, format, samplerMinFilter, samplerMagFilter);
+		return new OpenGLTexture2D(imageData, textureUsage, format, samplerMinFilter, samplerMagFilter);
 #endif
 
 #if USE_OPENGLES

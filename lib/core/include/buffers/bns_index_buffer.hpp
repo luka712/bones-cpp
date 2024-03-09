@@ -32,6 +32,9 @@ namespace bns
         /// @brief Initialize the index buffer.
         /// @param data The data to be copied to the buffer.
         virtual void Initialize(std::vector<u16> &data) = 0;
+
+        /// @brief Dispose the index buffer.
+        virtual void Dispose() = 0;
     };
 }
 

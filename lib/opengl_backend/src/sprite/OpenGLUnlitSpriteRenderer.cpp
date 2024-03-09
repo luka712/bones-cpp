@@ -1,8 +1,8 @@
 #if USE_OPENGL
 
-#include "sprite/OpenGLUnlitbns_sprite_renderer.hpp"
+#include "sprite/OpenGLUnlitSpriteRenderer.hpp"
 #include <vector>
-#include "OpenGLUtil.hpp"
+#include "bns_opengl_util.hpp"
 
 namespace bns
 {

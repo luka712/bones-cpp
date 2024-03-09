@@ -1,13 +1,13 @@
 #if USE_OPENGL
 
 #include <stdexcept>
-#include "texture/OpenGLTexture2D.hpp"
+#include "texture/bns_opengl_texture2d.hpp"
 
 namespace bns
 {
-    OpenGLTexture2D::OpenGLTexture2D(ImageData *imageData, i32 textureUsageFlags, TextureFormat format, SamplerMinFilter samplerMinFilter,
+    OpenGLTexture2D::OpenGLTexture2D(ImageData *imageData, TextureUsage textureUsage, TextureFormat format, SamplerMinFilter samplerMinFilter,
                                      SamplerMagFilter samplerMagFilter)
-        : Texture2D(imageData->Width, imageData->Height, textureUsageFlags, format, samplerMinFilter, samplerMagFilter), m_imageData(imageData)
+        : Texture2D(imageData->Width, imageData->Height, textureUsage, format, samplerMinFilter, samplerMagFilter), m_imageData(imageData)
     {
     }
 

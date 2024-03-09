@@ -6,9 +6,9 @@
 
 
 #include "util/OpenGLProgramUtil.hpp"
-#include "util/OpenGLShaderUtil.hpp"
+#include "util/bns_opengl_shader_util.hpp"
 #include "util/OpenGLVAOUtil.hpp"
-#include "util/OpenGLBufferUtil.hpp"
+#include "util/bns_opengl_buffer_util.hpp"
 
 namespace bns 
 {

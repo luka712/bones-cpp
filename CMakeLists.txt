@@ -19,10 +19,10 @@ endif()
 
 # BACKEND RENDERER FLIPS, also used by /lib
 # Multiplatform
-set(USE_WEBGPU 1)
+set(USE_WEBGPU 0)
 
 # Windows/Linux/Mac 
-set(USE_OPENGL 0) 
+set(USE_OPENGL 1) 
 
 # Windows/Linux 
 set(USE_OPENGLES 0)

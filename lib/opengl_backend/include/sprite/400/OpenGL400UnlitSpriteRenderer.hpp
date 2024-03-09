@@ -7,9 +7,9 @@
 #define BNS_UNLIT_SPRITE_RENDERER_OPENGL_HPP_400
 
 #include "sprite/bns_sprite_renderer.hpp"
-#include "renderer/OpenGLbns_renderer.hpp"
+#include "renderer/bns_opengl_renderer.hpp"
 #include "sprite/400/OpenGL400UnlitSpritePipeline.hpp"
-#include "texture/OpenGLTexture2D.hpp"
+#include "texture/bns_opengl_texture2d.hpp"
 #include <unordered_map>
 #include <stack>
 

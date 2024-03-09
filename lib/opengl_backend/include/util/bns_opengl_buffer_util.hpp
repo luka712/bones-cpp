@@ -4,7 +4,7 @@
 
 #define BNS_OPENGL_BUFFER_UTIL_HPP
 
-#include "BnsOpenGL.hpp"
+#include "bns_opengl.hpp"
 #include "buffer_layout/BufferLayoutData.hpp"
 #include "bns_types.hpp"
 #include <vector>

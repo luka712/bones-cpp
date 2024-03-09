@@ -163,7 +163,7 @@ void Draw()
     rotation += 0.001;
     bns::Vec2f rotationOrigin = bns::Vec2f(0.5f, 0.5f);
 
-        testPipeline->Render(*testVertexBuffer, *testIndexBuffer);
+    //     testPipeline->Render(*testVertexBuffer, *testIndexBuffer);
 
     engine->GetSpriteRenderer()->PointLights[0].Intensity += 0.1f;
     spriteRenderer->DrawString(font, "Hello World!", bns::Vec2f(300, 300), bns::Color::White(), 1.0f);

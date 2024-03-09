@@ -6,7 +6,7 @@
 
 #include "texture/bns_texture2d.hpp"
 #include "ImageData.hpp"
-#include "BnsOpenGL.hpp"
+#include "bns_opengl.hpp"
 
 namespace bns
 {
@@ -35,12 +35,12 @@ namespace bns
 
         /// @brief The constructor.
         /// @param imageData The image data.
-        /// @param textureUsageFlags The texture usage flags.
+        /// @param textureUsage The texture usage.
         /// @param format The texture format.
         /// @param samplerMinFilter The sampler min filter.
         /// @param samplerMagFilter The sampler mag filter.
         OpenGLTexture2D(ImageData *imageData, 
-             i32 textureUsageFlags,
+             TextureUsage textureUsage,
              TextureFormat format,
              SamplerMinFilter samplerMinFilter,
              SamplerMagFilter samplerMagFilter);

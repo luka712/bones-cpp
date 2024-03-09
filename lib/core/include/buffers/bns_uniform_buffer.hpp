@@ -1,6 +1,6 @@
-#ifndef bns_uniform_buffer
+#ifndef BNS_UNIFORM_BUFFER
 
-#define bns_uniform_buffer
+#define BNS_UNIFORM_BUFFER
 
 #include "bns_types.hpp"
 
@@ -10,22 +10,7 @@ namespace bns
     template <typename T>
     class UniformBuffer
     {
-    protected:
-        /// @brief The number of instances that buffer supoorts. 1 by default.
-        u32 m_instanceCount;
-
     public:
-        /// @brief Constructor for the constant buffer
-        /// @param instanceCount The number of instances that buffer supoorts. 1 by default.
-        UniformBuffer(u32 instanceCount = 1) : m_instanceCount(instanceCount) {}
-
-        /// @brief The number of instances that buffer supoorts. 1 by default.
-        /// @return The instace count.
-        inline u32 GetInstanceCount() const
-        {
-            return m_instanceCount;
-        }
-
         /// @brief Initialize the constant buffer.
         virtual void Initialize() = 0;
 
