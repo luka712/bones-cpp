@@ -103,10 +103,10 @@ namespace bns
     void OpenGLESUnlitSpriteRenderer::Initialize()
     {
         // setup projection view buffer
-        m_projectionViewMatrixBuffer = OpenGLESUtil::Buffer.CreateConstantBuffer(sizeof(Mat4x4f));
+        m_projectionViewMatrixBuffer = OpenGLESUtil::Buffer.CreateUniformBuffer(sizeof(Mat4x4f));
 
         // setup brightness threshold buffer
-        m_brightnessThresholdBuffer = OpenGLESUtil::Buffer.CreateConstantBuffer(sizeof(f32));
+        m_brightnessThresholdBuffer = OpenGLESUtil::Buffer.CreateUniformBuffer(sizeof(f32));
 
         // setup camera
         auto size = m_renderer->GetBufferSize();

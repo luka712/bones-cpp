@@ -1,8 +1,8 @@
 #if USE_WEBGPU
 
-#ifndef bns_webgpu_uniform_buffer_HPP
+#ifndef BNS_WEBGPU_UNIFORM_BUFFER_HPP
 
-#define bns_webgpu_uniform_buffer_HPP
+#define BNS_WEBGPU_UNIFORM_BUFFER_HPP
 
 #include "buffers/bns_uniform_buffer.hpp"
 #include "renderer/bns_webgpu_renderer.hpp"

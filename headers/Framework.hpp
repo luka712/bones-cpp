@@ -19,6 +19,7 @@
 #include <functional>
 #include "time/TimeManager.hpp"
 #include "buffers/bns_buffer_factory.hpp"
+#include "camera/bns_camera_factory.hpp"
 
 namespace bns
 {
@@ -55,6 +56,7 @@ namespace bns
         TextureManager *m_textureFactory;
         EffectFactory *m_effectFactory;
         BufferFactory *m_bufferFactory;
+        CameraFactory *m_cameraFactory;
 
         /// @brief Setup the framework render objects. OpenGL, WebGPU, Metal etc...
         void CreateRenderObjects();
@@ -129,6 +131,9 @@ namespace bns
 
         /// @brief Get the buffer factory.
         inline BufferFactory &GetBufferFactory() const { return *m_bufferFactory; }
+
+        /// @brief Get the camera factory.
+        inline CameraFactory &GetCameraFactory() const { return *m_cameraFactory; }
 
         /**
          * @brief Get the mesh factory.

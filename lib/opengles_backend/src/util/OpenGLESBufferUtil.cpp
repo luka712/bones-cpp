@@ -6,7 +6,7 @@
 
 namespace bns
 {
-    GLuint OpenGLESBufferUtil::CreateConstantBuffer(size_t byteSize, GLenum usage)
+    GLuint OpenGLESBufferUtil::CreateUniformBuffer(size_t byteSize, GLenum usage)
     {
         GLuint buffer;
         glGenBuffers(1, &buffer);

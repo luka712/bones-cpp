@@ -46,7 +46,7 @@ namespace bns
         /// @param byteSize The size of the buffer in bytes
         /// @param usage The usage of the buffer. One of GL_STATIC_DRAW, GL_DYNAMIC_DRAW, GL_STREAM_DRAW. By default it is GL_STATIC_DRAW
         /// @return The constant buffer
-        static GLuint CreateConstantBuffer(size_t byteSize, GLenum usage = GL_STATIC_DRAW);
+        static GLuint CreateUniformBuffer(size_t byteSize, GLenum usage = GL_STATIC_DRAW);
 
         /// @brief Creates a vertex array object.
         /// @param descriptors The buffer layout descriptors.

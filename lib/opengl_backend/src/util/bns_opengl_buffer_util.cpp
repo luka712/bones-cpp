@@ -6,28 +6,17 @@
 
 namespace bns
 {
-    GLuint OpenGLBufferUtil::CreateConstantBuffer(size_t byteSize, GLenum usage)
+    GLuint OpenGLBufferUtil::CreateUniformBuffer(size_t byteSize, std::string label, GLenum usage)
     {
         GLuint buffer;
         glGenBuffers(1, &buffer);
         glBindBuffer(GL_UNIFORM_BUFFER, buffer);
         glBufferData(GL_UNIFORM_BUFFER, byteSize, nullptr, usage);
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
-        return buffer;
-    }
-
-    GLuint OpenGLBufferUtil::CreateVertexBuffer(std::vector<f32> data, GLenum usage, std::string label)
-    {
-        GLuint buffer;
-        glGenBuffers(1, &buffer);
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(f32), data.data(), usage);
         if (label.length() > 0)
         {
             glObjectLabel(GL_BUFFER, buffer, label.length(), label.c_str());
         }
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
         return buffer;
     }
 
@@ -130,6 +119,11 @@ namespace bns
         CreateVertexBuffers(descriptors, outBuffers.data(), usage);
     }
 
-}
+    void OpenGLBufferUtil::Dispose(GLuint buffer)
+    {
+        glDeleteBuffers(1, &buffer);
+    }
+
+} // namespace bns
 
 #endif

@@ -50,6 +50,12 @@ bns::MetalIndexBuffer *testIndexBuffer;
 
 bns::IndexBuffer* paddleIndexBuffer;
 bns::VertexBuffer* paddleVertexBuffer;
+bns::InstanceBuffer<bns::Mat4x4f>* paddleTransformBuffer;
+std::vector<bns::Mat4x4f> paddleTransforms = {
+    bns::Mat4x4f::Identity(),
+    bns::Mat4x4f::Identity(),
+};
+bns::PerspectiveCamera* perspectiveCamera;
 
 static bns::f32 rotation = 0.0f;
 
@@ -59,7 +65,7 @@ void Draw();
 int main()
 {
     bns::FrameworkDescription desc;
-    desc.RendererType = bns::RendererType::OpenGL;
+    desc.RendererType = bns::RendererType::WebGPU;
     engine = new bns::Framework(desc);
 
     bns::WindowParameters parameters;
@@ -145,6 +151,8 @@ void Initialize()
     std::vector<bns::f32> paddleVertexData = paddleGeometry.ToInterleaved(bns::GeometryFormat::Pos3_Color4_TextureCoords2);
     paddleIndexBuffer = engine->GetBufferFactory().CreateIndexBuffer(paddleGeometry.Indices, "Paddle Index Buffer");
     paddleVertexBuffer = engine->GetBufferFactory().CreateVertexBuffer(paddleVertexData, "Paddle Vertex Buffer");
+    paddleTransformBuffer = engine->GetBufferFactory().CreateInstanceBuffer<bns::Mat4x4f>(paddleTransforms, 2, true, "Paddle Transform Buffer");
+    perspectiveCamera = engine->GetCameraFactory().CreatePerspectiveCamera();
 }
 
 void Draw()

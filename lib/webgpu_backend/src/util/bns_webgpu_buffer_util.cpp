@@ -26,7 +26,7 @@ namespace bns
         WGPUBuffer buffer = wgpuDeviceCreateBuffer(device, &bufferDescriptor);
 
         // Get pointer to gpu memory.
-        void* gpuBufferPtr = wgpuBufferGetMappedRange(buffer, 0, byteSize);
+        void *gpuBufferPtr = wgpuBufferGetMappedRange(buffer, 0, byteSize);
         // copy to gpu memory.
         memcpy(gpuBufferPtr, data.data(), byteSize);
         // Unmap the buffer.
@@ -36,8 +36,8 @@ namespace bns
     }
 
     WGPUBuffer WebGPUBufferUtil::CreateVertexBuffer(WGPUDevice device,
-                                  size_t byteSize,
-                                  std::string label)
+                                                    size_t byteSize,
+                                                    std::string label)
     {
         WGPUBufferDescriptor bufferDescriptor = {};
         bufferDescriptor.nextInChain = nullptr;
@@ -52,12 +52,18 @@ namespace bns
 
     WGPUBuffer WebGPUBufferUtil::CreateUniformBuffer(WGPUDevice device,
                                                      size_t byteSize,
-                                                     std::string label)
+                                                     std::string label,
+                                                     WGPUBufferUsageFlags usage)
     {
+        WGPUBufferUsageFlags usageFlags = WGPUBufferUsage_Uniform;
+
+        // Combine the usage.
+        usageFlags |= usage;
+
         WGPUBufferDescriptor bufferDescriptor;
         bufferDescriptor.label = label.c_str();
         bufferDescriptor.size = byteSize;
-        bufferDescriptor.usage = WGPUBufferUsage_Uniform | WGPUBufferUsage_CopyDst;
+        bufferDescriptor.usage = usageFlags;
         bufferDescriptor.mappedAtCreation = false;
         bufferDescriptor.nextInChain = nullptr;
         WGPUBuffer buffer = wgpuDeviceCreateBuffer(device, &bufferDescriptor);
@@ -66,10 +72,10 @@ namespace bns
     }
 
     void WebGPUBufferUtil::UpdateUniformBuffer(WGPUQueue queue,
-                                                     WGPUBuffer buffer,
-                                                     size_t byteSize,
-                                                     void *data,
-                                                     size_t offset)
+                                               WGPUBuffer buffer,
+                                               size_t byteSize,
+                                               void *data,
+                                               size_t offset)
     {
         wgpuQueueWriteBuffer(queue, buffer, offset, data, byteSize);
     }

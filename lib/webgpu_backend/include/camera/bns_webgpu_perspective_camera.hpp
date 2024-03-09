@@ -22,8 +22,11 @@ namespace bns
     public:
         /// @brief Constructor for the perspective camera.
         /// @param renderer The renderer.
+        /// @param fov The field of view of the camera. In degrees.
         /// @param aspectRatio The aspect ratio of the camera.
-        WebGPUPerspectiveCamera(Renderer *renderer, f32 aspectRatio);
+        /// @param near The near plane of the camera.
+        /// @param far The far plane of the camera.
+        WebGPUPerspectiveCamera(Renderer *renderer, f32 fov, f32 aspectRatio, f32 near, f32 far);
 
         /// @brief Get the buffer of the camera.
         inline UniformBuffer<Mat4x4f> *GetBuffer() const

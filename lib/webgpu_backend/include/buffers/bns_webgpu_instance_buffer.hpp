@@ -6,14 +6,15 @@
 
 #include "buffers/bns_instance_buffer.hpp"
 #include "bns_webgpu.hpp"
+#include "renderer/bns_webgpu_renderer.hpp"
 
-namespace bns 
+namespace bns
 {
     /// @brief The webgpu instances buffer.
     template <typename T>
     class WebGPUInstanceBuffer : public InstanceBuffer<T>
     {
-   private:
+    private:
         WGPUDevice m_device;
         WGPUQueue m_queue;
         WGPUBuffer m_uniformBuffer;
@@ -25,7 +26,7 @@ namespace bns
         /// @param instanceCount The number of instances that buffer supoorts. 1 by default.
         /// @param label The label of the buffer. By default, it is empty.
         WebGPUInstanceBuffer(Renderer *renderer, u32 instanceCount = 1, std::string label = "")
-            : InstanceBuffer<T>(instanceCount, label)
+            : InstanceBuffer<T>(label, instanceCount)
         {
             m_device = static_cast<WebGPURenderer *>(renderer)->GetDevice();
             m_queue = static_cast<WebGPURenderer *>(renderer)->GetQueue();
@@ -42,18 +43,17 @@ namespace bns
             return m_uniformBuffer;
         }
 
-        void Initialize() override
+        void Initialize(std::vector<T> &data, bool isWritable = false) override
         {
-            m_uniformBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(
-                m_device,
-                sizeof(T),
-                "ConstantBuffer");
+            WGPUBufferUsageFlags usage = isWritable ? WGPUBufferUsage_CopyDst : WGPUBufferUsage_None;
+
+            m_uniformBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device, data, m_label, usage);
         }
 
-        void Update(T &data) override
+        void Update(std::vector<T> &data, i32 instance = 1) override
         {
             WebGPUUtil::Buffer.UpdateUniformBuffer(m_queue, m_uniformBuffer, sizeof(T), &data);
-        } 
+        }
 
         void Dispose() override
         {
@@ -66,6 +66,6 @@ namespace bns
     };
 }
 
-#endif 
+#endif
 
-#endif 
+#endif

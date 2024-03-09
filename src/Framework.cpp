@@ -66,6 +66,7 @@ namespace bns
 		m_imageLoader = new ImageLoader();
 		m_bitmapSpriteFontLoader = new BitmapSpriteFontLoader(*this);
 		m_bufferFactory = new BufferFactory(this);
+		m_cameraFactory = new CameraFactory(this);
 		m_effectFactory = new EffectFactory(*this);
 		m_windowManager = new SDLWindowManager(m_events, m_timeManager,
 			[=](Time time) { UpdateCallback(time); },

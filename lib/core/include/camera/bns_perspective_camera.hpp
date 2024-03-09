@@ -18,7 +18,12 @@ namespace bns
         void UpdateMatrices();
 
     public:
-        PerspectiveCamera(f32 apectRatio);
+        /// @brief The constructor for the perspective camera.
+        /// @param fov The field of view. In degrees.
+        /// @param aspectRatio The aspect ratio.
+        /// @param near The near plane.
+        /// @param far The far plane.
+        PerspectiveCamera(f32 fov, f32 apectRatio, f32 near, f32 far);
 
         /// @brief The eye position of the camera.
         Vec3f Eye;

@@ -103,10 +103,10 @@ namespace bns
     void OpenGLUnlitSpriteRenderer::Initialize()
     {
         // setup projection view buffer
-        m_projectionViewMatrixBuffer = OpenGLUtil::Buffer.CreateConstantBuffer(sizeof(Mat4x4f));
+        m_projectionViewMatrixBuffer = OpenGLUtil::Buffer.CreateUniformBuffer(sizeof(Mat4x4f), "Projection View Matrix Buffer");
 
         // setup brightness threshold buffer
-        m_brightnessThresholdBuffer = OpenGLUtil::Buffer.CreateConstantBuffer(sizeof(f32));
+        m_brightnessThresholdBuffer = OpenGLUtil::Buffer.CreateUniformBuffer(sizeof(f32), "Brightness Threshold Buffer");
 
         // setup camera
         auto size = m_renderer->GetBufferSize();

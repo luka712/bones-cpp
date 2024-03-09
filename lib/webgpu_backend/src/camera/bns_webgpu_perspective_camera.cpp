@@ -5,8 +5,8 @@
 
 namespace bns
 {
-    WebGPUPerspectiveCamera::WebGPUPerspectiveCamera(Renderer *renderer, f32 aspectRatio)
-        : PerspectiveCamera(aspectRatio)
+    WebGPUPerspectiveCamera::WebGPUPerspectiveCamera(Renderer *renderer, f32 fov, f32 aspectRatio, f32 near, f32 far)
+        : PerspectiveCamera(fov, aspectRatio, near, far)
     {
         m_renderer = renderer;
         m_device = static_cast<WebGPURenderer *>(m_renderer)->GetDevice();

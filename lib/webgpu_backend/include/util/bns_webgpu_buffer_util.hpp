@@ -17,7 +17,7 @@ namespace bns
         /// @param data The data to be copied to the buffer.
         /// @param label The label of the buffer.
         /// @param usage The usage of the buffer. By default WGPUBufferUsage_None.
-        /// @return The vertex buffer. 
+        /// @return The vertex buffer.
         /// @note This buffer is mapped at creation and cannot be written into unless BufferUsage is set appropriately.
         /// @note The data is copied to the buffer at creation.
         static WGPUBuffer CreateVertexBuffer(WGPUDevice device,
@@ -25,7 +25,7 @@ namespace bns
                                              std::string label,
                                              WGPUBufferUsageFlags usage = WGPUBufferUsage_None);
 
-        /// @brief Create a vertex buffer. 
+        /// @brief Create a vertex buffer.
         /// Buffer usage is set to Vertex and CopyDst by default. Must by CopyDst since there is no data to write at creation.
         /// @param device The webgpu device.
         /// @param byteSize The size of the buffer in bytes.
@@ -35,7 +35,6 @@ namespace bns
                                              size_t byteSize,
                                              std::string label);
 
-        
         /// @brief Create a index buffer.
         /// @param The webgpu device.
         /// @param The data to be copied to the buffer.
@@ -70,7 +69,39 @@ namespace bns
         /// @return The uniform buffer
         static WGPUBuffer CreateUniformBuffer(WGPUDevice device,
                                               size_t byteSize,
-                                              std::string label);
+                                              std::string label = "",
+                                              WGPUBufferUsageFlags usage = WGPUBufferUsage_None);
+
+        /// @brief Create a uniform buffer.
+        /// @param device The webgpu device.
+        /// @param data The data to be copied to the buffer.
+        /// @param label The label of the buffer.
+        /// @return The uniform buffer.
+        template <typename T>
+        static WGPUBuffer CreateUniformBuffer(WGPUDevice device,
+                                              std::vector<T> data,
+                                              std::string label = "",
+                                              WGPUBufferUsageFlags usage = WGPUBufferUsage_None)
+        {
+            size_t byteSize = data.size() * sizeof(T);
+            WGPUBufferUsageFlags usageFlags = WGPUBufferUsage_Uniform;
+
+            // Combine the usage.
+            usageFlags |= usage;
+
+            WGPUBufferDescriptor bufferDescriptor;
+            bufferDescriptor.label = label.c_str();
+            bufferDescriptor.size = byteSize;
+            bufferDescriptor.usage = usageFlags;
+            bufferDescriptor.mappedAtCreation = true;
+            bufferDescriptor.nextInChain = nullptr;
+
+            WGPUBuffer buffer = wgpuDeviceCreateBuffer(device, &bufferDescriptor);
+            memcpy(wgpuBufferGetMappedRange(buffer, 0, byteSize), data.data(), byteSize);
+            wgpuBufferUnmap(buffer);
+
+            return buffer;
+        }
 
         /// @brief Update the uniform buffer
         /// @param queue The webgpu queue.
@@ -91,7 +122,7 @@ namespace bns
         /// @param data The data to be copied to the buffer.
         /// @param offset The offset of the buffer in bytes. By default 0.
         template <typename T>
-        static void Write(WGPUQueue queue, WGPUBuffer buffer, size_t byteSize, std::vector<T>& data, size_t offset = 0)
+        static void Write(WGPUQueue queue, WGPUBuffer buffer, size_t byteSize, std::vector<T> &data, size_t offset = 0)
         {
             wgpuQueueWriteBuffer(queue, buffer, offset, data.data(), byteSize);
         }
