@@ -165,7 +165,7 @@ namespace bns
         // engine automatically tries the highest version of OpenGL, but it not guaranteed to work.
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE); // OpenGL core profile
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);                          // we want OpenGL 4.6
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
 
         SDL_GLContext glContext = SDL_GL_CreateContext(m_window);
 

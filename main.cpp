@@ -34,11 +34,11 @@ bns::Texture2D *testTexture;
 bns::BloomEffect *effect;
 
 #if USE_WEBGPU
-bns::WebGPUUnlitRenderPipeline *testPipeline;
-bns::WebGPUPerspectiveCamera *testCamera;
-bns::WebGPUUniformBuffer<bns::Mat4x4f> *testTransformBuffer;
-bns::WebGPUVertexBuffer *testVertexBuffer;
-bns::WebGPUIndexBuffer *testIndexBuffer;
+// bns::WebGPUUnlitRenderPipeline *testPipeline;
+// bns::WebGPUPerspectiveCamera *testCamera;
+// bns::WebGPUUniformBuffer<bns::Mat4x4f> *testTransformBuffer;
+// bns::WebGPUVertexBuffer *testVertexBuffer;
+// bns::WebGPUIndexBuffer *testIndexBuffer;
 #endif
 
 #if USE_METAL
@@ -48,6 +48,9 @@ bns::MetalVertexBuffer *testVertexBuffer;
 bns::MetalIndexBuffer *testIndexBuffer;
 #endif
 
+bns::IndexBuffer* paddleIndexBuffer;
+bns::VertexBuffer* paddleVertexBuffer;
+
 static bns::f32 rotation = 0.0f;
 
 void Initialize();
@@ -56,7 +59,7 @@ void Draw();
 int main()
 {
     bns::FrameworkDescription desc;
-    desc.RendererType = bns::RendererType::WebGPU;
+    desc.RendererType = bns::RendererType::OpenGL;
     engine = new bns::Framework(desc);
 
     bns::WindowParameters parameters;
@@ -82,7 +85,6 @@ void Initialize()
 
     bns::Renderer *renderer = engine->GetRenderer();
 
-    bns::Geometry geometry = bns::GeometryBuilder().QuadGeomtry();
 
     //  renderer->SetRenderTexture(effect->GetSourceTexture());
     //  renderer->SetBrightnessTexture(effect->GetBrightnessTexture());
@@ -96,22 +98,22 @@ void Initialize()
     
 
 #if USE_WEBGPU
-    testCamera = new bns::WebGPUPerspectiveCamera(renderer, 800.0f / 600.0f);
-    testCamera->Initialize();
-    testTransformBuffer = new bns::WebGPUUniformBuffer<bns::Mat4x4f>(renderer);
-    testTransformBuffer->Initialize();
-    bns::Mat4x4f transform = bns::Mat4x4f::Identity();
-    testTransformBuffer->Update(transform);
-    testPipeline = new bns::WebGPUUnlitRenderPipeline(renderer, testCamera->GetBuffer(), testTransformBuffer);
-    testPipeline->Initialize();
+    // testCamera = new bns::WebGPUPerspectiveCamera(renderer, 800.0f / 600.0f);
+    // testCamera->Initialize();
+    // testTransformBuffer = new bns::WebGPUUniformBuffer<bns::Mat4x4f>(renderer);
+    // testTransformBuffer->Initialize();
+    // bns::Mat4x4f transform = bns::Mat4x4f::Identity();
+    // testTransformBuffer->Update(transform);
+    // testPipeline = new bns::WebGPUUnlitRenderPipeline(renderer, testCamera->GetBuffer(), testTransformBuffer);
+    // testPipeline->Initialize();
 
-    testVertexBuffer = new bns::WebGPUVertexBuffer(renderer, "Attribute Buffer");
-    std::vector<bns::f32> data = geometry.ToInterleaved(bns::GeometryFormat::Pos3_Color4_TextureCoords2);
-    testVertexBuffer->Initialize(data, true);
-    testVertexBuffer->Update(data);
+    // testVertexBuffer = new bns::WebGPUVertexBuffer(renderer, "Attribute Buffer");
+    // std::vector<bns::f32> data = geometry.ToInterleaved(bns::GeometryFormat::Pos3_Color4_TextureCoords2);
+    // testVertexBuffer->Initialize(data, true);
+    // testVertexBuffer->Update(data);
 
-    testIndexBuffer = new bns::WebGPUIndexBuffer(renderer, "Index Buffer");
-    testIndexBuffer->Initialize(geometry.Indices);
+    // testIndexBuffer = new bns::WebGPUIndexBuffer(renderer, "Index Buffer");
+    // testIndexBuffer->Initialize(geometry.Indices);
 
 #endif
     
@@ -137,6 +139,12 @@ void Initialize()
     testIndexBuffer = new bns::MetalIndexBuffer(renderer, "Index Buffer");
     testIndexBuffer->Initialize(geometry.Indices);
 #endif
+
+    // PONG
+    bns::Geometry paddleGeometry = bns::GeometryBuilder().QuadGeomtry();
+    std::vector<bns::f32> paddleVertexData = paddleGeometry.ToInterleaved(bns::GeometryFormat::Pos3_Color4_TextureCoords2);
+    paddleIndexBuffer = engine->GetBufferFactory().CreateIndexBuffer(paddleGeometry.Indices, "Paddle Index Buffer");
+    paddleVertexBuffer = engine->GetBufferFactory().CreateVertexBuffer(paddleVertexData, "Paddle Vertex Buffer");
 }
 
 void Draw()
@@ -144,11 +152,11 @@ void Draw()
     bns::Event event;
     if (engine->GetEvents().HasEvent(bns::EventType::KeyDown, &event))
     {
-        if (engine->GetCurrentRenderer() == bns::RendererType::Metal)
+        if (engine->GetRendererType() == bns::RendererType::Metal)
         {
             // engine->SwitchRenderer(bns::RendererType::OpenGL);
         }
-        else if (engine->GetCurrentRenderer() == bns::RendererType::OpenGL)
+        else if (engine->GetRendererType() == bns::RendererType::OpenGL)
         {
             // engine->SwitchRenderer(bns::RendererType::Metal);
         }
@@ -165,6 +173,7 @@ void Draw()
 
     //     testPipeline->Render(*testVertexBuffer, *testIndexBuffer);
 
+/*
     engine->GetSpriteRenderer()->PointLights[0].Intensity += 0.1f;
     spriteRenderer->DrawString(font, "Hello World!", bns::Vec2f(300, 300), bns::Color::White(), 1.0f);
 
@@ -182,8 +191,11 @@ void Draw()
 
     // bottom right quadrant
     spriteRenderer->Draw(testTexture, bns::Rect(200, 100, 100, 100), bns::Rect(hw, hh, hw, hh), bns::Color::White(), rotation, rotationOrigin);
-
-
+    */
+    
 
     // effect->Draw(renderer->GetSwapChainTexture());
 }
+
+
+// TODO: dispose

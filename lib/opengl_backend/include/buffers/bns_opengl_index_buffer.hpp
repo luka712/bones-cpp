@@ -13,9 +13,16 @@ namespace bns
     class OpenGLIndexBuffer : public IndexBuffer
     {
     private:
-        u32 m_bufferId;
+        u32 m_buffer;
 
     public:
+        /// @brief The constructor for the OpenGL index buffer.
+        /// @param label The label of the buffer.
+        OpenGLIndexBuffer(std::string label = "");
+
+        /// @brief Get the buffer.
+        u32 GetBuffer() const{ return m_buffer; }
+
         /// @brief Initialize the index buffer.
         /// @param data The data to be copied to the buffer.
         void Initialize(std::vector<u16> &data) override;

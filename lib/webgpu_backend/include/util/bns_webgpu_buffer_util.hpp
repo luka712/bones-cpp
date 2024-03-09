@@ -35,14 +35,13 @@ namespace bns
                                              size_t byteSize,
                                              std::string label);
 
-        /**
-         * @brief Create a index buffer
-         * @param device The webgpu device
-         * @param data The data to be copied to the buffer
-         * @param label The label of the buffer
-         * @return The index buffer
-         * @note The data is copied to the buffer
-         */
+        
+        /// @brief Create a index buffer.
+        /// @param The webgpu device.
+        /// @param The data to be copied to the buffer.
+        /// @param The label of the buffer.
+        /// @return The index buffer.
+        /// @note The data is copied to the buffer.
         template <typename T>
         static WGPUBuffer CreateIndexBuffer(WGPUDevice device,
                                             std::vector<T> data,
@@ -53,8 +52,7 @@ namespace bns
             WGPUBufferDescriptor bufferDescriptor;
             bufferDescriptor.label = label.c_str();
             bufferDescriptor.size = data.size() * sizeof(T);
-            // TODO: for copy dst create empty one, that is another overload
-            bufferDescriptor.usage = WGPUBufferUsage_Index | WGPUBufferUsage_CopyDst;
+            bufferDescriptor.usage = WGPUBufferUsage_Index;
             bufferDescriptor.mappedAtCreation = true;
             bufferDescriptor.nextInChain = nullptr;
             WGPUBuffer buffer = wgpuDeviceCreateBuffer(device, &bufferDescriptor);

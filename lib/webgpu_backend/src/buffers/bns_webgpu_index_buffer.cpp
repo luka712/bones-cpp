@@ -17,6 +17,11 @@ namespace bns
         m_indicesCount = data.size();
         m_buffer = WebGPUUtil::Buffer.CreateIndexBuffer(m_renderer->GetDevice(), data, m_label);
     }
+
+    void WebGPUIndexBuffer::Dispose()
+    {
+       WebGPUUtil::Buffer.Dispose(m_buffer);
+    }
 }
 
 #endif 

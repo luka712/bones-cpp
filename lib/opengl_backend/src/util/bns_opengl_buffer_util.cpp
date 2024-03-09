@@ -16,24 +16,40 @@ namespace bns
         return buffer;
     }
 
-    GLuint OpenGLBufferUtil::CreateVertexBuffer(std::vector<f32> data, GLenum usage)
+    GLuint OpenGLBufferUtil::CreateVertexBuffer(std::vector<f32> data, GLenum usage, std::string label)
     {
         GLuint buffer;
         glGenBuffers(1, &buffer);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
         glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(f32), data.data(), usage);
+        if (label.length() > 0)
+        {
+            glObjectLabel(GL_BUFFER, buffer, label.length(), label.c_str());
+        }
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+
         return buffer;
     }
 
-    GLuint OpenGLBufferUtil::CreateVertexBuffer(size_t byteSize, GLenum usage)
+    GLuint OpenGLBufferUtil::CreateVertexBuffer(size_t byteSize, GLenum usage, std::string label)
     {
         GLuint buffer;
         glGenBuffers(1, &buffer);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
         glBufferData(GL_ARRAY_BUFFER, byteSize, nullptr, usage);
+        if (label.length() > 0)
+        {
+            glObjectLabel(GL_BUFFER, buffer, label.length(), label.c_str());
+        }
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         return buffer;
+    }
+
+    void OpenGLBufferUtil::WriteVertexBuffer(GLuint buffer, size_t byteSize, std::vector<f32> data, u32 offset)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, buffer);
+        glBufferSubData(GL_ARRAY_BUFFER, offset, byteSize, data.data());
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     void OpenGLBufferUtil::Convert(VertexFormat vertexFormat, GLenum *outType, GLint *outSize, GLboolean *outNormalized)

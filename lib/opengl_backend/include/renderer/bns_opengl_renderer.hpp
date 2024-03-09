@@ -24,6 +24,17 @@ namespace bns
         /// @brief Resizes the swap chain.
         void Resize();
 
+        /// @brief Create the debug callback.
+        void CreateDebugCallback();
+
+        /// @brief The debug OpenGL callback.
+        static void GLAPIENTRY DebugCallback(GLenum source,
+                                             GLenum type,
+                                             GLuint id,
+                                             GLenum severity,
+                                             GLsizei length,
+                                             const GLchar *message,
+                                             const void *userParam);
     public:
         OpenGLRenderer(WindowManager *window);
 

@@ -8,10 +8,12 @@
 #include "buffers/bns_webgpu_uniform_buffer.hpp"
 #include "buffers/bns_webgpu_vertex_buffer.hpp"
 #include "buffers/bns_webgpu_index_buffer.hpp"
+#include "buffers/bns_webgpu_instance_buffer.hpp"
 #include "math/bns_mat4x4.hpp"
 #include "renderer/bns_webgpu_renderer.hpp"
 #include "texture/bns_webgpu_texture2d.hpp"
 #include "pipelines/bns_unlit_render_pipeline.hpp"
+
 
 
 namespace bns
@@ -40,7 +42,7 @@ namespace bns
 
         // Buffers
         WebGPUUniformBuffer<Mat4x4f> *m_cameraBuffer;
-        WebGPUUniformBuffer<Mat4x4f> *m_modelBuffer;
+        WebGPUInstanceBuffer<Mat4x4f> *m_modelBuffer;
         WebGPUUniformBuffer<Vec2f> *m_textureTillingBuffer;
         WebGPUUniformBuffer<Color> *m_diffuseColorBuffer;
 
@@ -76,7 +78,7 @@ namespace bns
         /// @param renderer The renderer.
         /// @param cameraBuffer The camera buffer.
         /// @param modelBuffer The model buffer.
-        WebGPUUnlitRenderPipeline(Renderer *renderer, UniformBuffer<Mat4x4f> *cameraBuffer, UniformBuffer<Mat4x4f> *modelBuffer);
+        WebGPUUnlitRenderPipeline(Renderer *renderer, UniformBuffer<Mat4x4f> *cameraBuffer, InstanceBuffer<Mat4x4f> *modelBuffer);
 
         /// @brief Set the diffuse texture.
         void SetDiffuseColor(Color color) override;

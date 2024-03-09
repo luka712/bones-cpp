@@ -4,6 +4,7 @@
 
 #include "bns_types.hpp"
 #include <vector>
+#include <string>
 
 namespace bns
 {
@@ -16,7 +17,14 @@ namespace bns
         /// @brief The size of the buffer in bytes.
         size_t m_byteSize;
 
+        /// @brief The label of the buffer.
+        std::string m_label;
+
     public:
+        /// @brief Constructor for the vertex buffer.
+        /// @param label The label of the buffer.
+        VertexBuffer(std::string label = "");
+
         /// @brief Gets the byte size of the buffer.
         inline size_t GetByteSize() const { return m_byteSize; }
 

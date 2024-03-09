@@ -18,6 +18,7 @@
 #include "effects/EffectFactory.hpp"
 #include <functional>
 #include "time/TimeManager.hpp"
+#include "buffers/bns_buffer_factory.hpp"
 
 namespace bns
 {
@@ -53,6 +54,7 @@ namespace bns
         BitmapSpriteFontLoader *m_bitmapSpriteFontLoader;
         TextureManager *m_textureFactory;
         EffectFactory *m_effectFactory;
+        BufferFactory *m_bufferFactory;
 
         /// @brief Setup the framework render objects. OpenGL, WebGPU, Metal etc...
         void CreateRenderObjects();
@@ -104,7 +106,7 @@ namespace bns
 
         /// @brief Gets the type of the current renderer.
         /// @return The type of the current renderer.
-        inline RendererType GetCurrentRenderer() const
+        inline RendererType GetRendererType() const
         {
             return m_currentRendererType;
         }
@@ -124,6 +126,9 @@ namespace bns
 
         /// @brief Get the geometry builder.
         inline GeometryBuilder &GetGeometryBuilder() const { return *m_geometryBuilder; }
+
+        /// @brief Get the buffer factory.
+        inline BufferFactory &GetBufferFactory() const { return *m_bufferFactory; }
 
         /**
          * @brief Get the mesh factory.

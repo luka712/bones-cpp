@@ -29,6 +29,8 @@ namespace bns
         inline WGPUBuffer GetBuffer() const { return m_buffer; }
 
         void Initialize(std::vector<u16> &data) override;
+
+        void Dispose() override;
     };
 }
 

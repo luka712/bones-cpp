@@ -65,7 +65,7 @@ namespace bns
 		m_geometryBuilder = new GeometryBuilder();
 		m_imageLoader = new ImageLoader();
 		m_bitmapSpriteFontLoader = new BitmapSpriteFontLoader(*this);
-
+		m_bufferFactory = new BufferFactory(this);
 		m_effectFactory = new EffectFactory(*this);
 		m_windowManager = new SDLWindowManager(m_events, m_timeManager,
 			[=](Time time) { UpdateCallback(time); },
@@ -279,11 +279,11 @@ namespace bns
 	void Framework::OnDraw()
 	{
 		m_renderer->BeginDraw();
-		m_spriteRenderer->BeginFrame();
+		// m_spriteRenderer->BeginFrame();
 
 		DrawCallback();
 
-		m_spriteRenderer->EndFrame();
+		// m_spriteRenderer->EndFrame();
 		m_renderer->EndDraw();
 	}
 

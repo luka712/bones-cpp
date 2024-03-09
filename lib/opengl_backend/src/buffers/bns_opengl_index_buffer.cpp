@@ -5,16 +5,19 @@
 
 namespace bns 
 {
+    OpenGLIndexBuffer::OpenGLIndexBuffer(std::string label)
+    : IndexBuffer(label)
+    {
+    }
+
     void OpenGLIndexBuffer::Initialize(std::vector<u16> &data)
     {
-        glGenBuffers(1, &m_bufferId);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_bufferId);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.size() * sizeof(u16), data.data(), GL_STATIC_DRAW);
+        m_buffer = OpenGLUtil::Buffer.CreateIndexBuffer(data, m_label);
     }
 
     void OpenGLIndexBuffer::Dispose()
     {
-        glDeleteBuffers(1, &m_bufferId);
+        glDeleteBuffers(1, &m_buffer);
     }
 }
 

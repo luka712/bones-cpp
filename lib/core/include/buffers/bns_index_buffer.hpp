@@ -4,6 +4,7 @@
 
 #include "bns_types.hpp"
 #include <vector>
+#include <string>
 
 namespace bns
 {
@@ -13,8 +14,12 @@ namespace bns
     protected:
         u32 m_indicesCount;
         size_t m_byteSize;
+        std::string m_label;
 
     public:
+        /// @brief Constructor for the index buffer.
+        IndexBuffer(std::string label = "");
+
         /// @brief Get the number of indices in the buffer.
         /// @return The number of indices.
         inline u32 GetIndicesCount() const
@@ -27,6 +32,13 @@ namespace bns
         inline size_t GetByteSize() const
         {
             return m_byteSize;
+        }
+
+        /// @brief Get the label of the buffer.
+        /// @return The label.
+        inline const std::string& GetLabel() const
+        {
+            return m_label;
         }
 
         /// @brief Initialize the index buffer.

@@ -7,12 +7,12 @@
 
 namespace bns
 {
-    WebGPUUnlitRenderPipeline::WebGPUUnlitRenderPipeline(Renderer *renderer, UniformBuffer<Mat4x4f> *cameraBuffer, UniformBuffer<Mat4x4f> *modelBuffer)
+    WebGPUUnlitRenderPipeline::WebGPUUnlitRenderPipeline(Renderer *renderer, UniformBuffer<Mat4x4f> *cameraBuffer, InstanceBuffer<Mat4x4f> *modelBuffer)
     {
         m_device = static_cast<WebGPURenderer *>(renderer)->GetDevice();
         m_renderer = static_cast<WebGPURenderer *>(renderer);
         m_cameraBuffer = static_cast<WebGPUUniformBuffer<Mat4x4f> *>(cameraBuffer);
-        m_modelBuffer = static_cast<WebGPUUniformBuffer<Mat4x4f> *>(modelBuffer);
+        m_modelBuffer = static_cast<WebGPUInstanceBuffer<Mat4x4f> *>(modelBuffer);
     }
 
     void WebGPUUnlitRenderPipeline::SetDiffuseColor(Color diffuseColor)
