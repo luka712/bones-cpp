@@ -4,6 +4,7 @@
 
 #include "math/bns_mat4x4.hpp"
 #include "math/bns_vec3.hpp"
+#include "buffers/bns_uniform_buffer.hpp"
 
 namespace bns
 {
@@ -24,6 +25,10 @@ namespace bns
         /// @param near The near plane.
         /// @param far The far plane.
         PerspectiveCamera(f32 fov, f32 apectRatio, f32 near, f32 far);
+
+        /// @brief Get the camera buffer.
+        /// @return The camera buffer.
+        virtual UniformBuffer<Mat4x4f> *GetBuffer() const = 0;
 
         /// @brief The eye position of the camera.
         Vec3f Eye;

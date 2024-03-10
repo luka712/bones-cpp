@@ -1,5 +1,6 @@
 #include "camera/bns_camera_factory.hpp"
 #include "Framework.hpp"
+#include "bns_math.hpp"
 
 #if USE_WEBGPU
 #include "camera/bns_webgpu_perspective_camera.hpp"
@@ -23,6 +24,7 @@ namespace bns
     PerspectiveCamera *CameraFactory::CreatePerspectiveCamera(f32 fov, f32 aspectRatio, f32 nearZ, f32 farZ)
     {
         PerspectiveCamera *camera = nullptr;
+        fov = ToRadians(fov);
 
 #if USE_WEBGPU
         if (m_framework->GetRendererType() == RendererType::WebGPU)
@@ -44,6 +46,8 @@ namespace bns
             camera = new OpenGLPerspectiveCamera(fov, aspectRatio, nearZ, farZ);
         }
 #endif
+
+        camera->Initialize();
 
         return camera;
     }

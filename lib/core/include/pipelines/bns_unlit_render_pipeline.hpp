@@ -6,6 +6,8 @@
 #include "texture/bns_texture2d.hpp"
 #include "math/bns_vec2.hpp"
 #include "bns_color.hpp"
+#include "buffers/bns_vertex_buffer.hpp"
+#include "buffers/bns_index_buffer.hpp"
 
 namespace bns
 {
@@ -38,6 +40,12 @@ namespace bns
 
         /// @brief Set the diffuse texture.
         virtual void SetDiffuseTexture(Texture2D *texture) = 0;
+
+        /// @brief Render the pipeline.
+        /// @param vertexBuffer The vertex buffer.
+        /// @param indexBuffer The index buffer.
+        /// @param instanceCount The instance count.
+        virtual void Render(VertexBuffer *vertexBuffer, IndexBuffer *indexBuffer, u32 instanceCount = 1) = 0;
     };
 } // namespace bns
 

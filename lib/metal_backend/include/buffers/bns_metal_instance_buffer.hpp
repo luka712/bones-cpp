@@ -41,7 +41,7 @@ namespace bns
         /// @brief Initialize the constant buffer.
         void Initialize(std::vector<T> &data, bool isWritable = false) override
         {
-            if(isWritable)
+            if(!isWritable)
             {
                 m_renderer->OnBlitCommandEncoderAvailable([this, &data](MTL::BlitCommandEncoder *blitCommandEncoder)
                 {

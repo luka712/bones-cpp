@@ -6,10 +6,12 @@
 #include "loaders/bns_file_loader.hpp"
 #include <functional>
 #include "texture/bns_metal_texture2d.hpp"
+#include "buffers/bns_metal_vertex_buffer.hpp"
+#include "buffers/bns_metal_index_buffer.hpp"
 
 namespace bns
 {
-    MetalUnlitRenderPipeline::MetalUnlitRenderPipeline(Renderer *renderer, MetalUniformBuffer<Mat4x4f> *cameraBuffer, MetalUniformBuffer<Mat4x4f> *modelBuffer)
+    MetalUnlitRenderPipeline::MetalUnlitRenderPipeline(Renderer *renderer, MetalUniformBuffer<Mat4x4f> *cameraBuffer, MetalInstanceBuffer<Mat4x4f> *modelBuffer)
         : m_cameraBuffer(cameraBuffer), m_modelBuffer(modelBuffer)
     {
         m_renderer = static_cast<MetalRenderer *>(renderer);
@@ -75,15 +77,16 @@ namespace bns
         m_diffuseTexture = texture;
     }
 
-    void MetalUnlitRenderPipeline::Render(MetalVertexBuffer &vertexBuffer, MetalIndexBuffer &indexBuffer, u32 instanceCount)
+    void MetalUnlitRenderPipeline::Render(VertexBuffer *vertexBuffer, IndexBuffer *indexBuffer, u32 instanceCount)
     {
+        MetalVertexBuffer *metalVertexBuffer = static_cast<MetalVertexBuffer *>(vertexBuffer);
+        MetalIndexBuffer *metalIndexBuffer = static_cast<MetalIndexBuffer *>(indexBuffer);
         MetalTexture2D *metalDiffuseTexture = static_cast<MetalTexture2D *>(m_diffuseTexture);
-
         MTL::RenderCommandEncoder *renderCommandEncoder = m_renderer->GetRenderCommandEncoder();
         renderCommandEncoder->setRenderPipelineState(m_pipeline);
 
         // Set the vertex buffer.
-        renderCommandEncoder->setVertexBuffer(vertexBuffer.GetBuffer(), 0, 0);
+        renderCommandEncoder->setVertexBuffer(metalVertexBuffer->GetBuffer(), 0, 0);
 
         // Set uniform/constant vertex buffers
         renderCommandEncoder->setVertexBuffer(m_modelBuffer->GetBuffer(), 0, 1);
@@ -98,7 +101,7 @@ namespace bns
         renderCommandEncoder->setFragmentSamplerState(metalDiffuseTexture->Sampler, 0);
 
         // Set the index buffer.
-        renderCommandEncoder->drawIndexedPrimitives(MTL::PrimitiveTypeTriangle, indexBuffer.GetIndicesCount(), MTL::IndexTypeUInt16, indexBuffer.GetBuffer(), 0, instanceCount);
+        renderCommandEncoder->drawIndexedPrimitives(MTL::PrimitiveTypeTriangle, metalIndexBuffer->GetIndicesCount(), MTL::IndexTypeUInt16, metalIndexBuffer->GetBuffer(), 0, instanceCount);
     }
 
     void MetalUnlitRenderPipeline::Dispose()

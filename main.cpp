@@ -41,13 +41,6 @@ bns::BloomEffect *effect;
 // bns::WebGPUIndexBuffer *testIndexBuffer;
 #endif
 
-#if USE_METAL
-bns::MetalUnlitRenderPipeline *testPipeline;
-bns::MetalPerspectiveCamera *testCamera;
-bns::MetalVertexBuffer *testVertexBuffer;
-bns::MetalIndexBuffer *testIndexBuffer;
-#endif
-
 bns::IndexBuffer* paddleIndexBuffer;
 bns::VertexBuffer* paddleVertexBuffer;
 bns::InstanceBuffer<bns::Mat4x4f>* paddleTransformBuffer;
@@ -56,6 +49,7 @@ std::vector<bns::Mat4x4f> paddleTransforms = {
     bns::Mat4x4f::Identity(),
 };
 bns::PerspectiveCamera* perspectiveCamera;
+bns::UnlitRenderPipeline* paddlePipeline;
 
 static bns::f32 rotation = 0.0f;
 
@@ -148,12 +142,13 @@ void Initialize()
  */
 
     // PONG
-    bns::Geometry paddleGeometry = bns::GeometryBuilder().QuadGeomtry();
+    bns::Geometry paddleGeometry = bns::GeometryBuilder().CubeGeometry();
     std::vector<bns::f32> paddleVertexData = paddleGeometry.ToInterleaved(bns::GeometryFormat::Pos3_Color4_TextureCoords2);
     paddleIndexBuffer = engine->GetBufferFactory().CreateIndexBuffer(paddleGeometry.Indices, "Paddle Index Buffer");
     paddleVertexBuffer = engine->GetBufferFactory().CreateVertexBuffer(paddleVertexData, "Paddle Vertex Buffer");
-    paddleTransformBuffer = engine->GetBufferFactory().CreateInstanceBuffer<bns::Mat4x4f>(paddleTransforms, 2, true, "Paddle Transform Buffer");
-    perspectiveCamera = engine->GetCameraFactory().CreatePerspectiveCamera();
+    paddleTransformBuffer = engine->GetBufferFactory().CreateInstanceBuffer<bns::Mat4x4f>(paddleTransforms, 2, false, "Paddle Transform Buffer");
+    perspectiveCamera = engine->GetCameraFactory().CreatePerspectiveCamera(60, 800.0f/600.0f);
+    paddlePipeline = engine->GetPipelineFactory().CreateUnlitRenderPipeline(perspectiveCamera->GetBuffer(), paddleTransformBuffer);
 }
 
 void Draw()
@@ -171,6 +166,7 @@ void Draw()
         }
     }
 
+
     bns::Renderer *renderer = engine->GetRenderer();
     bns::SpriteRenderer *spriteRenderer = engine->GetSpriteRenderer();
 
@@ -180,7 +176,7 @@ void Draw()
     rotation += 0.001;
     bns::Vec2f rotationOrigin = bns::Vec2f(0.5f, 0.5f);
 
-    //     testPipeline->Render(*testVertexBuffer, *testIndexBuffer);
+    // testPipeline->Render(*testVertexBuffer, *testIndexBuffer);
 
 /*
     engine->GetSpriteRenderer()->PointLights[0].Intensity += 0.1f;
@@ -203,7 +199,7 @@ void Draw()
     */
     
 
-    // effect->Draw(renderer->GetSwapChainTexture());
+    paddlePipeline->Render(paddleVertexBuffer, paddleIndexBuffer, 2);
 }
 
 

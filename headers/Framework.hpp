@@ -20,6 +20,7 @@
 #include "time/TimeManager.hpp"
 #include "buffers/bns_buffer_factory.hpp"
 #include "camera/bns_camera_factory.hpp"
+#include "pipelines/bns_pipeline_factory.hpp"
 
 namespace bns
 {
@@ -57,6 +58,7 @@ namespace bns
         EffectFactory *m_effectFactory;
         BufferFactory *m_bufferFactory;
         CameraFactory *m_cameraFactory;
+        PipelineFactory *m_pipelineFactory;
 
         /// @brief Setup the framework render objects. OpenGL, WebGPU, Metal etc...
         void CreateRenderObjects();
@@ -134,6 +136,9 @@ namespace bns
 
         /// @brief Get the camera factory.
         inline CameraFactory &GetCameraFactory() const { return *m_cameraFactory; }
+
+        /// @brief Get the pipeline factory.
+        inline PipelineFactory &GetPipelineFactory() const { return *m_pipelineFactory; }
 
         /**
          * @brief Get the mesh factory.

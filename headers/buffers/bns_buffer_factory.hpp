@@ -49,7 +49,7 @@ namespace bns
         /// @param label The label of the buffer. By default, it is an empty string.
         /// @return The instance buffer.
         template <typename T>
-        InstanceBuffer<T> *CreateInstanceBuffer(std::vector<T> &data, i32 numberOfInstances = 1, bool isWritable = true, std::string label = "")
+        InstanceBuffer<T> *CreateInstanceBuffer(std::vector<T> &data, i32 numberOfInstances = 1, bool isWritable = false, std::string label = "")
         {
             InstanceBuffer<T> *instanceBuffer = nullptr;
 

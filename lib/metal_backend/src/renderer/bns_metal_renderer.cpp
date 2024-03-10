@@ -38,10 +38,10 @@ namespace bns
 
 	void MetalRenderer::HandleBlitCommands()
 	{
+		BREAKPOINT();
 		if (m_onBlitCommandEncoderAvailable.size() > 0)
 		{
 			m_blitCommandEncoder = m_commandBuffer->blitCommandEncoder();
-
 			// Blit commander is now available. Call methods that require blit command encoder and clear them.
 			for (auto &callback : m_onBlitCommandEncoderAvailable)
 			{
@@ -49,7 +49,6 @@ namespace bns
 			}
 			m_onBlitCommandEncoderAvailable.clear();
 			m_blitCommandEncoder->endEncoding();
-			m_blitCommandEncoder->release();
 		}
 	}
 
@@ -105,7 +104,6 @@ namespace bns
 		// stencilAttachment->setStoreAction(MTL::StoreAction::StoreActionStore);
 		// stencilAttachment->setClearStencil(0);
 
-		m_commandBuffer = m_queue->commandBuffer();
 		m_renderCommandEncoder = m_commandBuffer->renderCommandEncoder(pRenderPassDesc);
 		// MTL::ResourceStateCommandEncoder *updateEncoder = m_commandBuffer->resourceStateCommandEncoder();
 
@@ -136,9 +134,16 @@ namespace bns
 		m_renderCommandEncoder->endEncoding();
 		m_commandBuffer->presentDrawable(m_currentDrawable);
 		m_commandBuffer->commit();
+		m_commandBuffer->waitUntilCompleted();
 
 		m_commandBuffer->release();
 		m_renderCommandEncoder->release();
+
+		if (m_blitCommandEncoder != nullptr)
+		{
+			m_blitCommandEncoder->release();
+			m_blitCommandEncoder = nullptr;
+		}
 	}
 
 	void MetalRenderer::Destroy()

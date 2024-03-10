@@ -8,7 +8,7 @@ namespace bns
           Target(Vec3f(0.0f, 0.0f, 0.0f)),
           Up(Vec3f(0.0f, 1.0f, 0.0f))
     {
-        FieldOfView = ToRadians(fov);
+        FieldOfView = fov;
         AspectRatio = aspectRatio;
         NearPlane = near;
         FarPlane = far;

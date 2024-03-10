@@ -65,6 +65,8 @@ namespace bns
             // Copy data from tempBuffer to buffer
             blitCommandEncoder->copyFromBuffer(tempBuffer, 0, buffer, 0, byteSize);
 
+            tempBuffer->release();
+
             return buffer;
         }
 

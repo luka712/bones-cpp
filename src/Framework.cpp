@@ -75,7 +75,7 @@ namespace bns
         
         // Depends on render object.
         m_bufferFactory = new BufferFactory(this->m_renderer);
-
+		m_pipelineFactory = new PipelineFactory(this->m_renderer);
 	}
 
 	void Framework::CreateRenderObjects()
