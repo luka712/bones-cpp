@@ -17,6 +17,7 @@
 
 namespace bns
 {
+    /// @brief The metal renderer.
     class MetalRenderer final : public Renderer
     {
     private:
@@ -33,6 +34,11 @@ namespace bns
         MTL::Device *m_device;
         MTL::CommandQueue *m_queue;
         MTL::RenderCommandEncoder *m_renderCommandEncoder;
+
+        /// @brief Blit command encoder is used for operations that require blit command encoder, such as copying textures, copying buffers, etc.
+        /// For example for creating GPU only buffer, we create shared CPU/GPU buffer and then copy it to GPU only buffer.
+        /// Blit command encoder is available at start of frame in our case and destroyed as soon as all events registered by OnBlitCommandEncoderAvailable
+        /// are called. That way it ensures that no too command encoders are created. Render command encoder cannot exists if blit command encoder is not finished.
         MTL::BlitCommandEncoder *m_blitCommandEncoder;
         MTL::CommandBuffer *m_commandBuffer;
 
@@ -41,6 +47,9 @@ namespace bns
         std::vector<std::function<void(MTL::BlitCommandEncoder*)>> m_onBlitCommandEncoderAvailable;
 
         /// @brief On start of frame blit command encoder is available and all registered callbacks are called.
+        /// Called at start of frame and endeded after all registered callbacks are called at start of frame. Always should
+        /// run at start of frame before rendering command encoder and then BlitCommandEncoder is available to registered 
+        /// callbacks. After all callbacks are called, BlitCommandEncoder is ended and released.
         void HandleBlitCommands();
 
         void Resize();

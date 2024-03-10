@@ -42,7 +42,7 @@ namespace bns
 		{
 			m_blitCommandEncoder = m_commandBuffer->blitCommandEncoder();
 
-			// Blit commander is now available. Call methods that require blit command encoder.
+			// Blit commander is now available. Call methods that require blit command encoder and clear them.
 			for (auto &callback : m_onBlitCommandEncoderAvailable)
 			{
 				callback(m_blitCommandEncoder);
@@ -57,7 +57,8 @@ namespace bns
 	{
 		m_commandBuffer = m_queue->commandBuffer();
 
-		// Handle all blit commands.
+		// Handle all blit commands. Need to be done before render command encoder is created.
+		// Handle here, call all registered events and release events and blit command encoder.
 		HandleBlitCommands();
 
 		// Render or update your game/application here
