@@ -29,6 +29,9 @@ namespace bns
         inline MTL::Buffer *GetBuffer() const { return m_buffer; }
 
         void Initialize(std::vector<u16> &data) override;
+
+        /// @brief Dispose the index buffer.
+        void Dispose() override;
     };
 }
 

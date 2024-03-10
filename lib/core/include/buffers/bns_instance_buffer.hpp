@@ -22,7 +22,10 @@ namespace bns
         /// @param label The label of the buffer.
         /// @param instanceCount The number of instances that buffer supoorts. 1 by default.
         InstanceBuffer(std::string label, u32 instanceCount = 1) 
-        : m_label(label), m_instanceCount(instanceCount) {}
+        {
+            m_label = label;
+            m_instanceCount = instanceCount;
+        }
 
         /// @brief The number of instances that buffer supoorts. 1 by default.
         /// @return The instace count.

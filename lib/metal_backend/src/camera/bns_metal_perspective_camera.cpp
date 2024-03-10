@@ -4,8 +4,8 @@
 
 namespace bns
 {
-    MetalPerspectiveCamera::MetalPerspectiveCamera(Renderer *renderer, f32 aspectRatio)
-        : PerspectiveCamera(aspectRatio)
+    MetalPerspectiveCamera::MetalPerspectiveCamera(Renderer *renderer, f32 fov, f32 aspectRatio, f32 nearZ, f32 farZ)
+        : PerspectiveCamera(fov, aspectRatio, nearZ, farZ)
     {
         m_renderer = static_cast<MetalRenderer *>(renderer);
         m_device = m_renderer->GetDevice();
@@ -13,7 +13,7 @@ namespace bns
 
     void MetalPerspectiveCamera::Initialize()
     {
-        m_buffer = new MetalUniformBuffer<Mat4x4f>(m_renderer, 1, "Perspective Camera Buffer");
+        m_buffer = new MetalUniformBuffer<Mat4x4f>(m_renderer, "Perspective Camera Buffer");
         m_buffer->Initialize();
         Update();
     }

@@ -35,9 +35,9 @@ namespace bns
     void MetalUnlitRenderPipeline::CreateResources()
     {
         // Create the resources.
-        m_diffuseColorBuffer = new MetalUniformBuffer<Color>(m_renderer, 1, "Diffuse Color Buffer");
+        m_diffuseColorBuffer = new MetalUniformBuffer<Color>(m_renderer, "Diffuse Color Buffer");
         m_diffuseColorBuffer->Initialize();
-        m_textureTillingBuffer = new MetalUniformBuffer<Vec2f>(m_renderer, 1, "Texture Tilling Buffer");
+        m_textureTillingBuffer = new MetalUniformBuffer<Vec2f>(m_renderer, "Texture Tilling Buffer");
         m_textureTillingBuffer->Initialize();
 
         m_diffuseTexture = MetalTexture2D::CreateEmpty(m_renderer, 1, 1);

@@ -65,7 +65,6 @@ namespace bns
 		m_geometryBuilder = new GeometryBuilder();
 		m_imageLoader = new ImageLoader();
 		m_bitmapSpriteFontLoader = new BitmapSpriteFontLoader(*this);
-		m_bufferFactory = new BufferFactory(this);
 		m_cameraFactory = new CameraFactory(this);
 		m_effectFactory = new EffectFactory(*this);
 		m_windowManager = new SDLWindowManager(m_events, m_timeManager,
@@ -73,6 +72,10 @@ namespace bns
 			std::bind(&Framework::OnDraw, this));
 
 		CreateRenderObjects();
+        
+        // Depends on render object.
+        m_bufferFactory = new BufferFactory(this->m_renderer);
+
 	}
 
 	void Framework::CreateRenderObjects()
@@ -315,8 +318,5 @@ namespace bns
 		delete m_windowManager;
 		delete m_bufferFactory;
 		delete m_cameraFactory;
-		delete m_textureFactory;
-		delete m_meshFactory;
-		delete m_renderer;
 	}
 } // namespace BNS

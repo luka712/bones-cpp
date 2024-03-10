@@ -22,8 +22,11 @@ namespace bns
     public:
         /// @brief Constructor for the perspective camera.
         /// @param renderer The renderer.
+        /// @param fov The field of view of the camera.
         /// @param aspectRatio The aspect ratio of the camera.
-        MetalPerspectiveCamera(Renderer *renderer, f32 aspectRatio);
+        /// @param nearZ The near plane of the camera.
+        /// @param farZ The far plane of the camera.
+        MetalPerspectiveCamera(Renderer *renderer, f32 fov, f32 aspectRatio, f32 nearZ, f32 farZ);
 
         /// @brief Get the buffer of the camera.
         inline UniformBuffer<Mat4x4f> *GetBuffer() const

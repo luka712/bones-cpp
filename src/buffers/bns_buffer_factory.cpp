@@ -11,17 +11,22 @@
 #include "buffers/bns_webgpu_vertex_buffer.hpp"
 #endif
 
+#if USE_METAL
+#include "buffers/bns_metal_index_buffer.hpp"
+#include "buffers/bns_metal_vertex_buffer.hpp"
+#endif
+
 namespace bns
 {
-    BufferFactory::BufferFactory(Framework *framework)
-        : m_framework(framework)
+    BufferFactory::BufferFactory(Renderer *renderer)
+        : m_renderer(renderer)
     {
     }
 
     IndexBuffer *BufferFactory::CreateIndexBuffer(std::vector<u16> &data, std::string label)
     {
         IndexBuffer *indexBuffer = nullptr;
-        RendererType rendererType = m_framework->GetRendererType();
+        RendererType rendererType = m_renderer->GetRendererType();
 
 #if USE_OPENGL
         if (rendererType == RendererType::OpenGL)
@@ -33,8 +38,15 @@ namespace bns
 #if USE_WEBGPU
         if (rendererType == RendererType::WebGPU)
         {
-            indexBuffer = new WebGPUIndexBuffer(m_framework->GetRenderer(), label);
+            indexBuffer = new WebGPUIndexBuffer(m_renderer, label);
         }
+#endif
+        
+#if USE_METAL
+       if(rendererType == RendererType::Metal)
+       {
+           indexBuffer = new MetalIndexBuffer(m_renderer, label);
+       }
 #endif
 
         indexBuffer->Initialize(data);
@@ -44,7 +56,7 @@ namespace bns
     VertexBuffer *BufferFactory::CreateVertexBuffer(std::vector<f32> &data, std::string label)
     {
         VertexBuffer *vertexBuffer = nullptr;
-        RendererType rendererType = m_framework->GetRendererType();
+        RendererType rendererType = m_renderer->GetRendererType();
 
 #if USE_OPENGL
         if (rendererType == RendererType::OpenGL)
@@ -56,7 +68,14 @@ namespace bns
 #if USE_WEBGPU
         if (rendererType == RendererType::WebGPU)
         {
-            vertexBuffer = new WebGPUVertexBuffer(m_framework->GetRenderer(), label);
+            vertexBuffer = new WebGPUVertexBuffer(m_renderer, label);
+        }
+#endif
+        
+#if USE_METAL
+        if (rendererType == RendererType::Metal)
+        {
+            vertexBuffer = new MetalVertexBuffer(m_renderer, label);
         }
 #endif
 

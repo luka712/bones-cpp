@@ -12,20 +12,23 @@
 #if USE_OPENGL
 #include "buffers/bns_opengl_instance_buffer.hpp"
 #endif
+
+#if USE_METAL
+#include "buffers/bns_metal_instance_buffer.hpp"
+#endif
+
 namespace bns
 {
-    class Framework;
-
     /// @brief The buffer factory.
     class BufferFactory
     {
     private:
-        Framework *m_framework;
+        Renderer *m_renderer;
 
     public:
         /// @brief The constructor for the buffer factory.
         /// @param framework The framework.
-        BufferFactory(Framework *framework);
+        BufferFactory(Renderer *renderer);
 
         /// @brief Creates a new instance of index buffer.
         /// @param data The data to be copied to the buffer.
@@ -51,16 +54,23 @@ namespace bns
             InstanceBuffer<T> *instanceBuffer = nullptr;
 
 #if USE_WEBGPU
-            if (m_framework->GetRendererType() == RendererType::WebGPU)
+            if (m_renderer->GetRendererType() == RendererType::WebGPU)
             {
-                instanceBuffer = new WebGPUInstanceBuffer<T>(m_framework->GetRenderer(), numberOfInstances, label);
+                instanceBuffer = new WebGPUInstanceBuffer<T>(m_renderer, numberOfInstances, label);
             }
 #endif
 
 #if USE_OPENGL
-            if (m_framework->GetRendererType() == RendererType::OpenGL)
+            if (m_renderer->GetRendererType() == RendererType::OpenGL)
             {
                 instanceBuffer = new OpenGLInstanceBuffer<T>(numberOfInstances,label);
+            }
+#endif
+            
+#if USE_METAL
+            if (m_renderer->GetRendererType() == RendererType::Metal)
+            {
+                instanceBuffer = new MetalInstanceBuffer<T>(m_renderer, numberOfInstances,label);
             }
 #endif
 

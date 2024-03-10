@@ -65,7 +65,7 @@ void Draw();
 int main()
 {
     bns::FrameworkDescription desc;
-    desc.RendererType = bns::RendererType::WebGPU;
+    desc.RendererType = bns::RendererType::Metal;
     engine = new bns::Framework(desc);
 
     bns::WindowParameters parameters;
@@ -124,7 +124,7 @@ void Initialize()
 #endif
     
 
-
+/*
 #if USE_METAL
     testCamera = new bns::MetalPerspectiveCamera(renderer, 800.0f / 600.0f);
     testCamera->Initialize();
@@ -145,6 +145,7 @@ void Initialize()
     testIndexBuffer = new bns::MetalIndexBuffer(renderer, "Index Buffer");
     testIndexBuffer->Initialize(geometry.Indices);
 #endif
+ */
 
     // PONG
     bns::Geometry paddleGeometry = bns::GeometryBuilder().QuadGeomtry();

@@ -7,21 +7,20 @@
 
 namespace bns
 {
-	MetalRenderer::MetalRenderer(WindowManager* windowManager)
+	MetalRenderer::MetalRenderer(WindowManager *windowManager)
 		: Renderer(), m_windowManager(windowManager)
 	{
-
 	}
 
 	/**
 	 * @brief Gets the view into swap chain texture.
 	 */
-	void* MetalRenderer::GetSwapChainTexture()
+	void *MetalRenderer::GetSwapChainTexture()
 	{
 		return m_currentDrawable->texture();
 	}
 
-	void MetalRenderer::Initialize(CA::MetalLayer* metalLayer)
+	void MetalRenderer::Initialize(CA::MetalLayer *metalLayer)
 	{
 		m_metalLayer = metalLayer;
 
@@ -35,27 +34,48 @@ namespace bns
 
 	void MetalRenderer::Resize()
 	{
+	}
 
+	void MetalRenderer::HandleBlitCommands()
+	{
+		if (m_onBlitCommandEncoderAvailable.size() > 0)
+		{
+			m_blitCommandEncoder = m_commandBuffer->blitCommandEncoder();
+
+			// Blit commander is now available. Call methods that require blit command encoder.
+			for (auto &callback : m_onBlitCommandEncoderAvailable)
+			{
+				callback(m_blitCommandEncoder);
+			}
+			m_onBlitCommandEncoderAvailable.clear();
+			m_blitCommandEncoder->endEncoding();
+			m_blitCommandEncoder->release();
+		}
 	}
 
 	void MetalRenderer::BeginDraw()
 	{
+		m_commandBuffer = m_queue->commandBuffer();
+
+		// Handle all blit commands.
+		HandleBlitCommands();
+
 		// Render or update your game/application here
 		m_currentDrawable = m_metalLayer->nextDrawable();
 
 		MTL::ClearColor clearColor(ClearColor.R, ClearColor.G, ClearColor.B, 1.0);
 
-		MTL::RenderPassDescriptor* pRenderPassDesc = MTL::RenderPassDescriptor::renderPassDescriptor();
+		MTL::RenderPassDescriptor *pRenderPassDesc = MTL::RenderPassDescriptor::renderPassDescriptor();
 
 		// Get texture from current drawable or if there is render texture use that instead.
-		MTL::Texture* drawToTexture = m_currentDrawable->texture();
+		MTL::Texture *drawToTexture = m_currentDrawable->texture();
 		if (m_renderTexture != nullptr)
 		{
-			MTL::Texture* mtlTexture = static_cast<MetalTexture2D*>(m_renderTexture)->Texture;
+			MTL::Texture *mtlTexture = static_cast<MetalTexture2D *>(m_renderTexture)->Texture;
 			drawToTexture = mtlTexture;
 		}
 
-		MTL::RenderPassColorAttachmentDescriptor* colorAttachment = pRenderPassDesc->colorAttachments()->object(0);
+		MTL::RenderPassColorAttachmentDescriptor *colorAttachment = pRenderPassDesc->colorAttachments()->object(0);
 		colorAttachment->setClearColor(clearColor);
 		colorAttachment->setLoadAction(MTL::LoadAction::LoadActionClear);
 		colorAttachment->setStoreAction(MTL::StoreAction::StoreActionStore);
@@ -64,8 +84,8 @@ namespace bns
 		// if there is a brightness texture, use that as well as a second color attachment
 		if (m_brightnessTexture != nullptr)
 		{
-			MTL::Texture* mtlTexture = static_cast<MetalTexture2D*>(m_brightnessTexture)->Texture;
-			MTL::RenderPassColorAttachmentDescriptor* colorAttachment2 = pRenderPassDesc->colorAttachments()->object(1);
+			MTL::Texture *mtlTexture = static_cast<MetalTexture2D *>(m_brightnessTexture)->Texture;
+			MTL::RenderPassColorAttachmentDescriptor *colorAttachment2 = pRenderPassDesc->colorAttachments()->object(1);
 			colorAttachment2->setClearColor(clearColor);
 			colorAttachment2->setLoadAction(MTL::LoadAction::LoadActionClear);
 			colorAttachment2->setStoreAction(MTL::StoreAction::StoreActionStore);
@@ -84,7 +104,6 @@ namespace bns
 		// stencilAttachment->setStoreAction(MTL::StoreAction::StoreActionStore);
 		// stencilAttachment->setClearStencil(0);
 
-
 		m_commandBuffer = m_queue->commandBuffer();
 		m_renderCommandEncoder = m_commandBuffer->renderCommandEncoder(pRenderPassDesc);
 		// MTL::ResourceStateCommandEncoder *updateEncoder = m_commandBuffer->resourceStateCommandEncoder();
@@ -93,7 +112,7 @@ namespace bns
 		m_renderCommandEncoder->setViewport(MTL::Viewport{
 			0.0f, 0.0f,
 			(double)m_bufferSize.X, (double)m_bufferSize.Y,
-			0.0f, 1.0f });
+			0.0f, 1.0f});
 
 		// scissor test
 		MTL::ScissorRect scissorRect;
@@ -123,7 +142,11 @@ namespace bns
 
 	void MetalRenderer::Destroy()
 	{
+	}
 
+	void MetalRenderer::OnBlitCommandEncoderAvailable(std::function<void(MTL::BlitCommandEncoder *)> onBlitCommandEncoderAvailable)
+	{
+		m_onBlitCommandEncoderAvailable.push_back(onBlitCommandEncoderAvailable);
 	}
 }
 #endif // __APPLE__

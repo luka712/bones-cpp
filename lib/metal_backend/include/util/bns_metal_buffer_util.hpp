@@ -25,17 +25,49 @@ namespace bns
         /// @param label The label for the buffer.
         /// @return The Metal buffer. This buffer is in private mode.
         template <typename T>
-        static MTL::Buffer *Create(MTL::Device *device, std::vector<T> &data, std::string label = "")
+        static MTL::Buffer *Create(MTL::Device *device,
+                                   std::vector<T> &data,
+                                   std::string label = "")
         {
             size_t byteSize = data.size() * sizeof(T);
 
-            MTL::Buffer *buffer = device->newBuffer(data.data(), byteSize, MTL::ResourceCPUCacheModeDefaultCache);
+            MTL::Buffer *buffer = device->newBuffer(data.data(), byteSize, MTL::ResourceOptionCPUCacheModeDefault);
             NS::String *nsLabel = NS::String::string(label.c_str(), NS::StringEncoding::UTF8StringEncoding);
             buffer->setLabel(nsLabel);
             nsLabel->release();
 
             return buffer;
         }
+
+        /// @brief Creates buffer and writes data to it.
+        /// @param device The Metal device.
+        /// @param data The data to be written to the buffer.
+        /// @param label The label for the buffer.
+        /// @return The Metal buffer. This buffer is in private mode.
+        template <typename T>
+        static MTL::Buffer *CreateWithGPUOnlyAccess(
+                                   MTL::BlitCommandEncoder *blitCommandEncoder,
+                                   MTL::Device *device,
+                                   std::vector<T> &data,
+                                   std::string label = "")
+        {
+            size_t byteSize = data.size() * sizeof(T);
+
+            // https://developer.apple.com/documentation/metal/resource_fundamentals/choosing_a_resource_storage_mode_for_apple_gpus?language=objc
+            MTL::Buffer *tempBuffer = device->newBuffer(data.data(), byteSize, MTL::ResourceOptionCPUCacheModeDefault); // Created by default as MTLResourceStorageModeShared
+
+            // Create buffer that can be only accessed by GPU
+            MTL::Buffer *buffer = device->newBuffer(byteSize, MTL::ResourceOptionCPUCacheModeDefault | MTL::ResourceStorageModePrivate);
+            NS::String *nsLabel = NS::String::string(label.c_str(), NS::StringEncoding::UTF8StringEncoding);
+            buffer->setLabel(nsLabel);
+            nsLabel->release();
+
+            // Copy data from tempBuffer to buffer
+            blitCommandEncoder->copyFromBuffer(tempBuffer, 0, buffer, 0, byteSize);
+
+            return buffer;
+        }
+
 
         /// @brief Creates buffer with a given size and no data written to it.
         /// @param device The Metal device.
@@ -85,6 +117,10 @@ namespace bns
             char *gpuOffsetMemoryPtr = &gpuMemoryPtr[byteOffset];
             std::memcpy(gpuOffsetMemoryPtr, data.data(), byteSize);
         }
+
+        /// @brief Disposes the buffer.
+        /// @param buffer The Metal buffer.
+        static void Dispose(MTL::Buffer *buffer);
     };
 }
 

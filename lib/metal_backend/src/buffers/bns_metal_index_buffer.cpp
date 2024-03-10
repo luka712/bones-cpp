@@ -16,6 +16,11 @@ namespace bns
         m_buffer = MetalUtil::Buffer.CreateIndexBuffer(m_renderer->GetDevice(), data, m_label);
         m_indicesCount = data.size();
     }
+
+    void MetalIndexBuffer::Dispose()
+    {
+        MetalUtil::Buffer.Dispose(m_buffer);
+    }
 }
 
 #endif 

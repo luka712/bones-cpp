@@ -13,6 +13,7 @@
 #include "bns_metal.hpp"
 #include "math/bns_vec2.hpp"
 #include "bns_color.hpp"
+#include <functional>
 
 namespace bns
 {
@@ -32,7 +33,15 @@ namespace bns
         MTL::Device *m_device;
         MTL::CommandQueue *m_queue;
         MTL::RenderCommandEncoder *m_renderCommandEncoder;
+        MTL::BlitCommandEncoder *m_blitCommandEncoder;
         MTL::CommandBuffer *m_commandBuffer;
+
+        // Used for operations that require blit command encoder. For example, copying textures, copying buffers, etc.
+        // This will be cleared after the operation is done and persist only for the first frame.
+        std::vector<std::function<void(MTL::BlitCommandEncoder*)>> m_onBlitCommandEncoderAvailable;
+
+        /// @brief On start of frame blit command encoder is available and all registered callbacks are called.
+        void HandleBlitCommands();
 
         void Resize();
 
@@ -64,6 +73,12 @@ namespace bns
     
         /// @brief Gets the view into swap chain texture.
         void *GetSwapChainTexture() override;
+
+        /// @brief On blit command encoder available.
+        // This is used for operations that require blit command encoder. For example, copying textures, copying buffers, etc.
+        // Persist only for one frame and it cleared when called.
+        /// @param onBlitCommandEncoderAvailable The function to call when the blit command encoder is available.
+        void OnBlitCommandEncoderAvailable(std::function<void(MTL::BlitCommandEncoder*)> onBlitCommandEncoderAvailable);
     };
 } // namespace BNS
 

@@ -31,6 +31,10 @@ namespace bns
         return Create(device, byteSize, label);
     }
 
+    void MetalBufferUtil::Dispose(MTL::Buffer *buffer)
+    {
+        buffer->release();
+    }
 }
 
 #endif

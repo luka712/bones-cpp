@@ -34,7 +34,7 @@ namespace bns
 #if USE_METAL
         if (m_framework->GetRendererType() == RendererType::Metal)
         {
-            camera = new MetalPerspectiveCamera(m_framework, fov, aspectRatio, nearZ, farZ);
+            camera = new MetalPerspectiveCamera(m_framework->GetRenderer(), fov, aspectRatio, nearZ, farZ);
         }
 #endif
 
