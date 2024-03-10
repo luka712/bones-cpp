@@ -41,15 +41,14 @@ bns::BloomEffect *effect;
 // bns::WebGPUIndexBuffer *testIndexBuffer;
 #endif
 
-bns::IndexBuffer* paddleIndexBuffer;
-bns::VertexBuffer* paddleVertexBuffer;
-bns::InstanceBuffer<bns::Mat4x4f>* paddleTransformBuffer;
+bns::IndexBuffer *paddleIndexBuffer;
+bns::VertexBuffer *paddleVertexBuffer;
+bns::InstanceBuffer<bns::Mat4x4f> *paddleTransformBuffer;
 std::vector<bns::Mat4x4f> paddleTransforms = {
-    bns::Mat4x4f::Identity(),
-    bns::Mat4x4f::Identity(),
-};
-bns::PerspectiveCamera* perspectiveCamera;
-bns::UnlitRenderPipeline* paddlePipeline;
+    bns::Mat4x4f::ScaleMatrix(1, 5, 1),
+    bns::Mat4x4f::ScaleMatrix(1, 5, 1)};
+bns::PerspectiveCamera *perspectiveCamera;
+bns::UnlitRenderPipeline *paddlePipeline;
 
 static bns::f32 rotation = 0.0f;
 
@@ -85,7 +84,6 @@ void Initialize()
 
     bns::Renderer *renderer = engine->GetRenderer();
 
-
     //  renderer->SetRenderTexture(effect->GetSourceTexture());
     //  renderer->SetBrightnessTexture(effect->GetBrightnessTexture());
 
@@ -95,7 +93,6 @@ void Initialize()
     // engine->GetSpriteRenderer()->PointLights[0].Attenuation.Unit = 100.0f;
     // engine->GetSpriteRenderer()->AmbientLight.Intensity = 0.0f;
     // engine->GetSpriteRenderer()->AmbientLight.Color = bns::Color::Black();
-    
 
 #if USE_WEBGPU
     // testCamera = new bns::WebGPUPerspectiveCamera(renderer, 800.0f / 600.0f);
@@ -116,38 +113,41 @@ void Initialize()
     // testIndexBuffer->Initialize(geometry.Indices);
 
 #endif
-    
 
-/*
-#if USE_METAL
-    testCamera = new bns::MetalPerspectiveCamera(renderer, 800.0f / 600.0f);
-    testCamera->Initialize();
+    /*
+    #if USE_METAL
+        testCamera = new bns::MetalPerspectiveCamera(renderer, 800.0f / 600.0f);
+        testCamera->Initialize();
 
-    auto modelBuffer = new bns::MetalUniformBuffer<bns::Mat4x4f>(renderer, 1, "Model Buffer");
-    modelBuffer->Initialize();
-    auto transform = bns::Mat4x4f::Identity();
-    modelBuffer->Update(transform);
+        auto modelBuffer = new bns::MetalUniformBuffer<bns::Mat4x4f>(renderer, 1, "Model Buffer");
+        modelBuffer->Initialize();
+        auto transform = bns::Mat4x4f::Identity();
+        modelBuffer->Update(transform);
 
-    testPipeline = new bns::MetalUnlitRenderPipeline(renderer, static_cast<bns::MetalUniformBuffer<bns::Mat4x4f>*>(testCamera->GetBuffer()), modelBuffer);
-    testPipeline->Initialize();
+        testPipeline = new bns::MetalUnlitRenderPipeline(renderer, static_cast<bns::MetalUniformBuffer<bns::Mat4x4f>*>(testCamera->GetBuffer()), modelBuffer);
+        testPipeline->Initialize();
 
-    testVertexBuffer = new bns::MetalVertexBuffer(renderer, "Attribute Buffer");
-    std::vector<bns::f32> data = geometry.ToInterleaved(bns::GeometryFormat::Pos3_Color4_TextureCoords2);
-    testVertexBuffer->Initialize(data, true);
-    testVertexBuffer->Update(data);
+        testVertexBuffer = new bns::MetalVertexBuffer(renderer, "Attribute Buffer");
+        std::vector<bns::f32> data = geometry.ToInterleaved(bns::GeometryFormat::Pos3_Color4_TextureCoords2);
+        testVertexBuffer->Initialize(data, true);
+        testVertexBuffer->Update(data);
 
-    testIndexBuffer = new bns::MetalIndexBuffer(renderer, "Index Buffer");
-    testIndexBuffer->Initialize(geometry.Indices);
-#endif
- */
+        testIndexBuffer = new bns::MetalIndexBuffer(renderer, "Index Buffer");
+        testIndexBuffer->Initialize(geometry.Indices);
+    #endif
+     */
 
     // PONG
     bns::Geometry paddleGeometry = bns::GeometryBuilder().CubeGeometry();
     std::vector<bns::f32> paddleVertexData = paddleGeometry.ToInterleaved(bns::GeometryFormat::Pos3_Color4_TextureCoords2);
     paddleIndexBuffer = engine->GetBufferFactory().CreateIndexBuffer(paddleGeometry.Indices, "Paddle Index Buffer");
     paddleVertexBuffer = engine->GetBufferFactory().CreateVertexBuffer(paddleVertexData, "Paddle Vertex Buffer");
-    paddleTransformBuffer = engine->GetBufferFactory().CreateInstanceBuffer<bns::Mat4x4f>(paddleTransforms, 2, false, "Paddle Transform Buffer");
-    perspectiveCamera = engine->GetCameraFactory().CreatePerspectiveCamera(60, 800.0f/600.0f);
+    paddleTransforms[0] *= bns::Mat4x4f::TranslationMatrix(-5, 0, 0);
+    paddleTransforms[1] *= bns::Mat4x4f::TranslationMatrix(5, 0, 0);
+    paddleTransformBuffer = engine->GetBufferFactory().CreateInstanceBuffer<bns::Mat4x4f>(paddleTransforms, 2, true, "Paddle Transform Buffer");
+    perspectiveCamera = engine->GetCameraFactory().CreatePerspectiveCamera(60, 800.0f / 600.0f);
+    perspectiveCamera->Eye = bns::Vec3f(0, 0, -10);
+    perspectiveCamera->Update();
     paddlePipeline = engine->GetPipelineFactory().CreateUnlitRenderPipeline(perspectiveCamera->GetBuffer(), paddleTransformBuffer);
 }
 
@@ -166,7 +166,6 @@ void Draw()
         }
     }
 
-
     bns::Renderer *renderer = engine->GetRenderer();
     bns::SpriteRenderer *spriteRenderer = engine->GetSpriteRenderer();
 
@@ -178,29 +177,27 @@ void Draw()
 
     // testPipeline->Render(*testVertexBuffer, *testIndexBuffer);
 
-/*
-    engine->GetSpriteRenderer()->PointLights[0].Intensity += 0.1f;
-    spriteRenderer->DrawString(font, "Hello World!", bns::Vec2f(300, 300), bns::Color::White(), 1.0f);
+    /*
+        engine->GetSpriteRenderer()->PointLights[0].Intensity += 0.1f;
+        spriteRenderer->DrawString(font, "Hello World!", bns::Vec2f(300, 300), bns::Color::White(), 1.0f);
 
-    // whole texture
-    spriteRenderer->Draw(testTexture, bns::Rect(0, 0, 100, 100));
+        // whole texture
+        spriteRenderer->Draw(testTexture, bns::Rect(0, 0, 100, 100));
 
-    // top left quadrant
-    spriteRenderer->Draw(testTexture, bns::Rect(100, 0, 100, 100), bns::Rect(0, 0, hw, hh), bns::Color::White(), rotation, rotationOrigin);
+        // top left quadrant
+        spriteRenderer->Draw(testTexture, bns::Rect(100, 0, 100, 100), bns::Rect(0, 0, hw, hh), bns::Color::White(), rotation, rotationOrigin);
 
-    // top right quadrant
-    spriteRenderer->Draw(testTexture, bns::Rect(200, 0, 100, 100), bns::Rect(hw, 0, hw, hh), bns::Color::White(), rotation, rotationOrigin);
+        // top right quadrant
+        spriteRenderer->Draw(testTexture, bns::Rect(200, 0, 100, 100), bns::Rect(hw, 0, hw, hh), bns::Color::White(), rotation, rotationOrigin);
 
-    // bottom left quadrant
-    spriteRenderer->Draw(testTexture, bns::Rect(100, 100, 100, 100), bns::Rect(0, hh, hw, hh), bns::Color::White(), rotation, rotationOrigin);
+        // bottom left quadrant
+        spriteRenderer->Draw(testTexture, bns::Rect(100, 100, 100, 100), bns::Rect(0, hh, hw, hh), bns::Color::White(), rotation, rotationOrigin);
 
-    // bottom right quadrant
-    spriteRenderer->Draw(testTexture, bns::Rect(200, 100, 100, 100), bns::Rect(hw, hh, hw, hh), bns::Color::White(), rotation, rotationOrigin);
-    */
-    
+        // bottom right quadrant
+        spriteRenderer->Draw(testTexture, bns::Rect(200, 100, 100, 100), bns::Rect(hw, hh, hw, hh), bns::Color::White(), rotation, rotationOrigin);
+        */
 
     paddlePipeline->Render(paddleVertexBuffer, paddleIndexBuffer, 2);
 }
-
 
 // TODO: dispose

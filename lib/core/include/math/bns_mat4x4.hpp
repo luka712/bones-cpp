@@ -83,9 +83,9 @@ namespace bns
 		 */
 		Mat4x4()
 			: Mat4x4(1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				0, 0, 0, 1)
+					 0, 1, 0, 0,
+					 0, 0, 1, 0,
+					 0, 0, 0, 1)
 		{
 		}
 
@@ -104,7 +104,7 @@ namespace bns
 		 * @param const Vec3<T>& scale_vector
 		 * @return Mat4x4<T>
 		 */
-		Mat4x4<T> ScaleMatrix(const Vec3<T>& scale_vector)
+		Mat4x4<T> ScaleMatrix(const Vec3<T> &scale_vector)
 		{
 			Mat4x4<f32> r;
 			r.R0C0 = scale_vector.X;
@@ -113,14 +113,11 @@ namespace bns
 			return r;
 		}
 
-		/**
-		 * @brief Create the scale matrix.
-		 *
-		 * @param T x
-		 * @param T y
-		 * @param T z
-		 * @return Mat4x4<T>
-		 */
+		/// @brief Create the scale matrix
+		/// @param T x scale.
+		/// @param T y scale.
+		/// @param T z scale.
+		/// @return Scale matrix.
 		static Mat4x4<T> ScaleMatrix(T x, T y, T z)
 		{
 			Mat4x4<T> r;
@@ -130,14 +127,11 @@ namespace bns
 			return r;
 		}
 
-		/**
-		 * @brief Create a translation matrix.
-		 *
-		 * @param T x - translation in x axis.
-		 * @param T y - translation in y axis.
-		 * @param T z - translation in z axis.
-		 * @return Mat4x4<T>
-		 */
+		/// @brief Create the translation matrix.
+		/// @param x The x component of the translation.
+		/// @param y The y component of the translation.
+		/// @param z The z component of the translation.
+		/// @return The translation matrix.
 		static Mat4x4<T> TranslationMatrix(T x, T y, T z)
 		{
 			Mat4x4<T> r;
@@ -195,7 +189,6 @@ namespace bns
 			return Mat4x4::From(sum);
 		}
 
-
 		/// @brief Create a perspective projection matrix.
 		/// @param fovRadians Field of view in radians.
 		/// @param aspectRatio Aspect ratio of the screen.
@@ -211,7 +204,7 @@ namespace bns
 			T r1c1 = 1.0 / t;
 
 			// normaly we have depth that's in range [0, 1]. But if we want 2 units depth [-1,1] we can override.
-			T r2c2 = -far / (near - far); // scale 
+			T r2c2 = -far / (near - far);		  // scale
 			T r2c3 = (near * far) / (near - far); // translate
 
 			return Mat4x4<T>(
@@ -277,7 +270,6 @@ namespace bns
 				up.X, up.Y, up.Z, -eye.Dot(up),
 				forward.X, forward.Y, forward.Z, -eye.Dot(forward),
 				0, 0, 0, 1);
-
 		}
 
 		/**
@@ -297,7 +289,7 @@ namespace bns
 
 		/// @brief Transpose the matrix.
 		/// @return Transposed matrix.
-		static Mat4x4<T> Transpose(Mat4x4<T>& other)
+		static Mat4x4<T> Transpose(Mat4x4<T> &other)
 		{
 			return Mat4x4<T>(
 				other.R0C0, other.R1C0, other.R2C0, other.R3C0,
@@ -305,10 +297,18 @@ namespace bns
 				other.R0C2, other.R1C2, other.R2C2, other.R3C2,
 				other.R0C3, other.R1C3, other.R2C3, other.R3C3);
 		}
+
+		/// @brief Multiply matrix and assign to self.
+		constexpr Mat4x4<T> &operator*=(const Mat4x4<T> &b)
+		{
+			*this = *this * b;
+			return *this;
+		}
 	};
 
+	/// @brief Multiply two matrices.
 	template <typename T>
-	Mat4x4<T> operator*(const Mat4x4<T>& a, const Mat4x4<T>& b)
+	Mat4x4<T> operator*(const Mat4x4<T> &a, const Mat4x4<T> &b)
 	{
 		Mat4x4<T> r(
 			a.R0C0 * b.R0C0 + a.R0C1 * b.R1C0 + a.R0C2 * b.R2C0 + a.R0C3 * b.R3C0,

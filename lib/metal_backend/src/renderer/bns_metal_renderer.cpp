@@ -38,7 +38,6 @@ namespace bns
 
 	void MetalRenderer::HandleBlitCommands()
 	{
-		BREAKPOINT();
 		if (m_onBlitCommandEncoderAvailable.size() > 0)
 		{
 			m_blitCommandEncoder = m_commandBuffer->blitCommandEncoder();
@@ -54,6 +53,7 @@ namespace bns
 
 	void MetalRenderer::BeginDraw()
 	{
+		// Create command buffer for this frame.
 		m_commandBuffer = m_queue->commandBuffer();
 
 		// Handle all blit commands. Need to be done before render command encoder is created.
