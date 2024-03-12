@@ -1,7 +1,7 @@
 #if USE_METAL
 
 #include "material/test/metal/MetalNoMeshTestMaterial.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 #include "bns_metal_util.hpp"
 
 namespace bns

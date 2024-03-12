@@ -1,6 +1,6 @@
 #if USE_WEBGPU
 
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 #include "material/basic/wgpu/WebGPUBasicMaterial.hpp"
 #include "util/WebGPUShaderModuleUtil.hpp"
 #include "bns_webgpu_util.hpp"

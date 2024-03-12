@@ -4,7 +4,7 @@
 #include "sprite/metal/MetalSpritePipeline.hpp"
 #include "loaders/bns_file_loader.hpp"
 #include "bns_metal_util.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 
 namespace bns
 {

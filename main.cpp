@@ -13,7 +13,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 
 #include "pipelines/bns_webgpu_unlit_render_pipeline.hpp"
 #include "camera/bns_webgpu_perspective_camera.hpp"
@@ -62,6 +62,7 @@ int main()
     engine = new bns::Framework(desc);
 
     bns::WindowParameters parameters;
+    parameters.Resizable = true;
     engine->DrawCallback = [&]()
     { Draw(); };
 

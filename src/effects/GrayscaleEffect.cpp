@@ -1,5 +1,5 @@
 #include "effects/GrayscaleEffect.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 
 namespace bns
 {

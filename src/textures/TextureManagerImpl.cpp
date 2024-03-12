@@ -1,5 +1,5 @@
 #include "textures/TextureManagerImpl.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 
 #if USE_METAL
 #include "renderer/bns_metal_renderer.hpp"

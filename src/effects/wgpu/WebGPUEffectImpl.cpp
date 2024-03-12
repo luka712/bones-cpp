@@ -1,7 +1,7 @@
 #if USE_WEBGPU
 
 #include "effects/wgpu/WebGPUEffectImpl.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 #include "bns_webgpu_util.hpp"
 #include "buffer_layout/BufferLayoutData.hpp"
 

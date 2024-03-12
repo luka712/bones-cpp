@@ -1,7 +1,7 @@
 #if USE_METAL
 
 #include "effects/metal/MetalBloomEffect.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 #include "bns_metal_util.hpp"
 
 namespace bns

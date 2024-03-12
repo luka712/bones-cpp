@@ -95,7 +95,7 @@ namespace bns
         wgpuTextureRelease(Texture);
     }
 
-    WebGPUTexture2D *WebGPUTexture2D::CreateEmpty(Renderer *renderer, u32 width, u32 height)
+    WebGPUTexture2D *WebGPUTexture2D::CreateEmpty(Renderer *renderer, u32 width, u32 height, TextureUsage usage)
     {
         u8 *data = new u8[width * height * 4];
         for (u32 i = 0; i < width * height * 4; i++)
@@ -104,7 +104,7 @@ namespace bns
         }
 
         ImageData *imageData = new ImageData(data, width, height, 4);
-        WebGPUTexture2D *texture = new WebGPUTexture2D(renderer, imageData, TextureUsage::CopyDst_TextureBinding, TextureFormat::BGRA_8_Unorm);
+        WebGPUTexture2D *texture = new WebGPUTexture2D(renderer, imageData, usage, TextureFormat::BGRA_8_Unorm);
         texture->Initialize();
 
         // delete data;

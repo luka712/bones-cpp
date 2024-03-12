@@ -1,5 +1,5 @@
 #include "camera/bns_camera_factory.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 #include "bns_math.hpp"
 
 #if USE_WEBGPU

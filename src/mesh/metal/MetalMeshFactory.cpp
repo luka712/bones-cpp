@@ -2,7 +2,7 @@
 
 #include "mesh/metal/MetalMeshFactory.hpp"
 #include "mesh/metal/MetalMesh.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 
 namespace bns
 {

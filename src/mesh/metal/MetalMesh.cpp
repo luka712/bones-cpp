@@ -1,7 +1,7 @@
 #if USE_METAL
 
 #include "mesh/metal/MetalMesh.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 #include "bns_types.hpp"
 #include "bns_metal_util.hpp"
 

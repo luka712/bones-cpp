@@ -3,7 +3,7 @@
 #include "material/test/wgpu/WebGPUNoMeshTestMaterial.hpp"
 #include "util/WebGPUShaderModuleUtil.hpp"
 
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 
 namespace bns
 {

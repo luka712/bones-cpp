@@ -2,7 +2,7 @@
 
 #include "effects/wgpu/WebGPUBloomEffect.hpp"
 #include "bns_webgpu_util.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 #include "renderer/bns_webgpu_renderer.hpp"
 
 namespace bns

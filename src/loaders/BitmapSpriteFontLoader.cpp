@@ -1,7 +1,7 @@
 #include "loaders/BitmapSpriteFontLoader.hpp"
 #include "ImageLoader.hpp"
 #include "tinyxml2/tinyxml2.h"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 
 #if WIN32  
 // Macro from windows is causing issue here, fix it like this for now.

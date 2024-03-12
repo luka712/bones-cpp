@@ -6,7 +6,7 @@
 #include "effects/metal/MetalEffectImpl.hpp"
 #include "texture/bns_metal_texture2d.hpp"
 #include "bns_metal_util.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 #include "buffer_layout/BufferLayoutData.hpp"
 
 namespace bns

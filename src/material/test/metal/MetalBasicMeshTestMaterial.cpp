@@ -1,6 +1,6 @@
 #if USE_METAL
 
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 #include "mesh/metal/MetalMesh.hpp"
 #include "material/test/metal/MetalBasicMeshTestMaterial.hpp"
 #include "bns_metal_util.hpp"

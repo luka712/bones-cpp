@@ -101,13 +101,14 @@ namespace bns
         // This will be cleared after the operation is done and persist only for the first frame.
         std::vector<std::function<void(WGPUCommandEncoder)>> m_onBlitCommandEncoderAvailable;
 
-        /**
-         * Creates the webgpu adapter.
-         */
-        WGPUAdapter CreateAdapter();
+        /// @brief Creates the webgpu adapter.
+        void CreateAdapter();
 
         /// @brief Creates the webgpu device.
-        WGPUDevice CreateDevice();
+        void CreateDevice();
+
+        /// @brief Sets up the debug callback.
+        void SetupDebugCallback();
 
         /// @brief Resizes the swap chain.
         void Resize();

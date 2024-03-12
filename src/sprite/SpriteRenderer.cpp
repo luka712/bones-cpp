@@ -1,5 +1,5 @@
 #include "sprite/bns_sprite_renderer.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 
 namespace bns
 {

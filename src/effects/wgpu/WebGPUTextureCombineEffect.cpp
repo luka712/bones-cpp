@@ -2,7 +2,7 @@
 
 #include "effects/wgpu/WebGPUTextureCombineEffect.hpp"
 #include "bns_webgpu_util.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 
 namespace bns
 {

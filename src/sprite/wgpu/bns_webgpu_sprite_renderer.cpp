@@ -3,7 +3,7 @@
 #include "sprite/wgpu/bns_webgpu_sprite_renderer.hpp"
 #include "bns_webgpu_util.hpp"
 #include "Constants.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 
 namespace bns
 {

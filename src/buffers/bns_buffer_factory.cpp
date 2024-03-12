@@ -1,5 +1,5 @@
 #include "buffers/bns_buffer_factory.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 
 #if USE_OPENGL
 #include "buffers/bns_opengl_index_buffer.hpp"

@@ -350,8 +350,6 @@ namespace bns
 
             // End frame
             m_timeManager->End();
-
-            LOG("FPS: " << m_timeManager->GetFPS());
         }
     }
 

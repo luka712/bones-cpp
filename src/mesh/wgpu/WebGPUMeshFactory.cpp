@@ -2,7 +2,7 @@
 
 #include "mesh/wgpu/WebGPUMeshFactory.hpp"
 #include "mesh/wgpu/WebGPUMesh.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 
 namespace bns
 {

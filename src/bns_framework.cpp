@@ -1,4 +1,4 @@
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 #include <vector>
 #if USE_METAL
 #include "renderer/bns_metal_renderer.hpp"
@@ -61,7 +61,7 @@ namespace bns
 		m_currentRendererType = desc.RendererType;
 
 		m_events = new Events();
-		m_timeManager = new SDLTimeManager(60.0f);
+		m_timeManager = new SDLTimeManager(120.0f);
 		m_geometryBuilder = new GeometryBuilder();
 		m_imageLoader = new ImageLoader();
 		m_bitmapSpriteFontLoader = new BitmapSpriteFontLoader(*this);

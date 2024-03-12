@@ -1,5 +1,5 @@
 #include "effects/EffectFactory.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 
 #if __APPLE__ && USE_METAL
 #include "effects/metal/MetalGrayscaleEffect.hpp"

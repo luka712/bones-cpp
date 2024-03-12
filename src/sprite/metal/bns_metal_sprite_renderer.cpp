@@ -3,7 +3,7 @@
 #include "sprite/metal/bns_metal_sprite_renderer.hpp"
 #include "bns_metal_util.hpp"
 #include "Constants.hpp"
-#include "Framework.hpp"
+#include "bns_framework.hpp"
 #include "Constants.hpp"
 
 namespace bns

@@ -25,7 +25,7 @@ namespace bns
 
         /// @brief Convert the sampler mag filter to WebGPU filter mode.
         WGPUFilterMode Convert(SamplerMagFilter magFilter) const;
-        
+
         /// @brief Create the sampler.
         void CreateSampler();
 
@@ -57,8 +57,9 @@ namespace bns
         /// @param renderer The renderer.
         /// @param width The width of the texture.
         /// @param height The height of the texture.
+        /// @param textureUsage The texture usage. By default, it is CopyDst_TextureBinding.
         /// @return The empty texture.
-        static WebGPUTexture2D* CreateEmpty(Renderer* renderer, u32 width, u32 height);
+        static WebGPUTexture2D* CreateEmpty(Renderer* renderer, u32 width, u32 height, TextureUsage textureUsage = TextureUsage::CopyDst_TextureBinding);
     };
 }
 

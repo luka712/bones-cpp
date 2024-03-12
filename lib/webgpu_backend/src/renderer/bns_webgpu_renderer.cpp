@@ -1,7 +1,6 @@
 #include "renderer/bns_webgpu_renderer.hpp"
-#include <iostream>
 #include "texture/bns_webgpu_texture2d.hpp"
-#include <assert.h>
+#include <stdexcept>
 
 namespace bns
 {
@@ -16,14 +15,8 @@ namespace bns
 		return wgpuSwapChainGetCurrentTexture(m_swapChain);
 	}
 
-	WGPUAdapter WebGPURenderer::CreateAdapter()
+	void WebGPURenderer::CreateAdapter()
 	{
-		struct UserData
-		{
-			WGPUAdapter adapter = nullptr;
-			bool isSuccess = false;
-		} outData;
-
 		// Callback called by wgpuInstanceRequestAdapter when the request returns
 		// This is a C++ lambda function, but could be any function defined in the
 		// global scope. It must be non-capturing (the brackets [] are empty) so
@@ -34,17 +27,20 @@ namespace bns
 		// by the callback as its last argument.
 		auto onAdapterRequestEnded = [](WGPURequestAdapterStatus status, WGPUAdapter outAdapter, char const *message, void *pUserData)
 		{
-			UserData &userData = *reinterpret_cast<UserData *>(pUserData);
 			if (status == WGPURequestAdapterStatus_Success)
 			{
-				userData.adapter = outAdapter;
 				LOG("WebGPURenderer::CreateAdapter: WebGPU Adapter created.");
 			}
 			else
 			{
-				LOG("WebGPURenderer::CreateAdapter: Could not get WebGPU adapter: " << message);
+				std::string msg = "WebGPURenderer::CreateAdapter: Could not get WebGPU adapter: " + std::string(message);
+				LOG(msg);
+				BREAKPOINT();
+				throw std::runtime_error(msg.c_str());
 			}
-			userData.isSuccess = true;
+
+			WGPUAdapter* wgpuAdapterPtr = static_cast<WGPUAdapter *>(pUserData);
+			*wgpuAdapterPtr = outAdapter;
 		};
 
 		WGPURequestAdapterOptions options = {};
@@ -62,83 +58,82 @@ namespace bns
 			m_instance /* equivalent of navigator.gpu */,
 			&options,
 			onAdapterRequestEnded,
-			(void *)&outData);
-
-		// In theory we should wait until onAdapterReady has been called, which
-		// could take some time (what the 'await' keyword does in the JavaScript
-		// code). In practice, we know that when the wgpuInstanceRequestAdapter()
-		// function returns its callback has been called.
-		assert(outData.isSuccess);
-
-		m_adapter = outData.adapter;
-		return m_adapter;
+			&m_adapter);
 	}
 
-	WGPUDevice WebGPURenderer::CreateDevice()
+	void WebGPURenderer::CreateDevice()
 	{
-		struct UserData
+		auto onDeviceRequestEnded = [](WGPURequestDeviceStatus status, WGPUDevice device, char const *message, void *ptrDevice)
 		{
-			WGPUDevice device = nullptr;
-			bool isSuccess = false;
-		} userData;
-
-		auto onDeviceRequestEnded = [](WGPURequestDeviceStatus status, WGPUDevice device, char const *message, void *pUserData)
-		{
-			UserData &userData = *reinterpret_cast<UserData *>(pUserData);
 			if (status == WGPURequestDeviceStatus_Success)
 			{
-				userData.device = device;
 				LOG("WebGPURenderer::CreateDevice: WebGPU Device created.");
 			}
 			else
 			{
-				LOG("WebGPURenderer::CreateDevice: Could not get WebGPU adapter: " << message);
+				std::string msg = "WebGPURenderer::CreateDevice: Could not get WebGPU adapter: " + std::string(message);
+				LOG(msg);
 				BREAKPOINT();
+				throw std::runtime_error(msg.c_str());
 			}
-			userData.isSuccess = true;
+			
+			WGPUDevice* wgpuDevicePtr = static_cast<WGPUDevice *>(ptrDevice);
+			*wgpuDevicePtr = device;
 		};
 
 		WGPUDeviceDescriptor deviceDescriptor = {};
 		deviceDescriptor.nextInChain = nullptr;
-		wgpuAdapterRequestDevice(
-			m_adapter,
-			&deviceDescriptor,
-			onDeviceRequestEnded,
-			(void *)&userData);
+		wgpuAdapterRequestDevice(m_adapter,	&deviceDescriptor,	onDeviceRequestEnded, &m_device);
+	}
 
-		assert(userData.isSuccess);
+	void WebGPURenderer::SetupDebugCallback()
+	{
+		auto handleWebGPUError = [](WGPUErrorType type, const char *message, void *userData)
+		{
+			LOG("WebGPU Error: " << message);
+		};
 
-		m_device = userData.device;
-
-		return userData.device;
+		// Set the error callback
+		wgpuDeviceSetUncapturedErrorCallback(m_device, handleWebGPUError, nullptr);
 	}
 
 	void WebGPURenderer::Resize()
 	{
-		// The swap chaing is responsible for creating the buffers that can be drawn on.
+		// The swap chain is responsible for creating the buffers that can be drawn on.
 		WGPUSwapChainDescriptor swapChainDesc;
 		swapChainDesc.nextInChain = nullptr;
+        swapChainDesc.label = "Swapchain";
 		swapChainDesc.format = WGPUTextureFormat_BGRA8Unorm;
 		swapChainDesc.usage = WGPUTextureUsage_RenderAttachment;
 		swapChainDesc.width = m_bufferSize.X;
 		swapChainDesc.height = m_bufferSize.Y;
-		swapChainDesc.presentMode = WGPUPresentMode_Mailbox;
+		swapChainDesc.presentMode = WGPUPresentMode_Fifo;
 
 		// Create the swap chain
 		m_swapChain = wgpuDeviceCreateSwapChain(m_device, m_surface, &swapChainDesc);
 
 		// TODO: depth texture
+        
+        // Create second render attachment.
+        m_brightnessTexture =  WebGPUTexture2D::CreateEmpty(this, m_bufferSize.X, m_bufferSize.Y, TextureUsage::CopyDst_CopySrc_TextureBinding_RenderAttachment);
+        m_brightnessTexture->Initialize();
 	}
 
 	void WebGPURenderer::Initialize(WGPUInstance instance, WGPUSurface surface)
 	{
 		if (instance == nullptr)
 		{
-			std::cout << "WebGPU instance is null" << std::endl;
+			std::string msg = "WebGPURenderer::Initialize: WebGPU instance is null";
+			LOG(msg);
+			BREAKPOINT();
+			throw std::runtime_error(msg.c_str());
 		}
 		if (surface == nullptr)
 		{
-			std::cout << "WebGPU surface is null" << std::endl;
+			std::string msg = "WebGPURenderer::Initialize: WebGPU surface is null";
+			LOG(msg);
+			BREAKPOINT();
+			throw std::runtime_error(msg.c_str());
 		}
 
 		Vec2i windowSize = m_windowManager->GetWindowSize();
@@ -148,41 +143,21 @@ namespace bns
 		m_instance = instance;
 		m_surface = surface;
 
-		m_adapter = CreateAdapter();
-		m_device = CreateDevice();
+		CreateAdapter();
+		CreateDevice();
 		m_queue = wgpuDeviceGetQueue(m_device);
-
-		auto onQueueDone = [](WGPUQueueWorkDoneStatus status, void *userData)
-		{
-			std::cout << "Queued work finished with status: " << status << std::endl;
-		};
-		wgpuQueueOnSubmittedWorkDone(m_queue, 0, onQueueDone, nullptr);
-
-		auto handleWebGPUError = [](WGPUErrorType type, const char *message, void *userData)
-		{
-			// Handle the error here, such as logging or displaying an error message
-			// You can access the error type and message to determine the cause of the error
-
-			// Example: Printing the error message
-			printf("WebGPU Error: %s\n", message);
-		};
-
-		// Set the error callback
-		wgpuDeviceSetUncapturedErrorCallback(m_device, handleWebGPUError, nullptr);
-
+		SetupDebugCallback();
 		Resize(); // creates swap chain
 
-		m_blitCommandEncoder = wgpuDeviceCreateCommandEncoder(m_device, nullptr);
+		// Listen to events
+		std::function<void(Vec2i)> resizeCallback = [this](Vec2i size)
+		{
+			m_bufferSize = size;
+			Resize();
+		};
+		m_windowManager->RegisterToWindowResize(resizeCallback);
 
-		// move to create empty texture method
-		ImageData imageData;
-		imageData.Width = m_bufferSize.X;
-		imageData.Height = m_bufferSize.Y;
-		imageData.Data = new u8[m_bufferSize.X * m_bufferSize.Y * 4];
-		TextureUsage textureUsage = TextureUsage::CopyDst_CopySrc_TextureBinding_RenderAttachment;
-		TextureFormat format = TextureFormat::BGRA_8_Unorm;
-		m_brightnessTexture = new WebGPUTexture2D(this, &imageData, textureUsage, format);
-        m_brightnessTexture->Initialize();
+		
 	}
 
 	void WebGPURenderer::HandleBlitCommands()
@@ -204,7 +179,7 @@ namespace bns
 	{
 		wgpuDeviceTick(m_device);
 
-	    HandleBlitCommands();
+		HandleBlitCommands();
 
 		m_drawCommandEncoder = wgpuDeviceCreateCommandEncoder(m_device, nullptr);
 
@@ -270,7 +245,7 @@ namespace bns
 	{
 		wgpuRenderPassEncoderPopDebugGroup(m_currentPassEncoder);
 
-		if(m_blitCommandEncoder != nullptr)
+		if (m_blitCommandEncoder != nullptr)
 		{
 			wgpuCommandEncoderRelease(m_blitCommandEncoder);
 			m_blitCommandEncoder = nullptr;
