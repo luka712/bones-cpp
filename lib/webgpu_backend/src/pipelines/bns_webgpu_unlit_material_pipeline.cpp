@@ -37,7 +37,9 @@ namespace bns
     {
         // Get shader module.
         FileLoader fileLoader;
-        std::string shaderCode = fileLoader.LoadFile("shaders/webgpu/material/unlit_material.wgsl");
+        std::string shaderCode = fileLoader.LoadFile("shaders/webgpu/material/unlit_material.wgsl", {
+           { "##INSTANCE_COUNT##", std::to_string(m_modelBuffer->GetInstanceCount()) }
+        });
         m_shaderModule = WebGPUUtil::ShaderModule.Create(m_device, shaderCode, "unlit_material");
 
         LOG("WebGPUUnlitMaterialPipeline: Shader module created.");
@@ -95,7 +97,7 @@ namespace bns
         m_diffuseColorBuffer = new WebGPUUniformBuffer<Color>(m_renderer);
         m_diffuseColorBuffer->Initialize();
 
-        m_diffuseTexture = WebGPUTexture2D::CreateEmpty(m_renderer, 1, 1);
+        m_diffuseTexture = WebGPUTexture2D::CreateEmpty(m_renderer, 64, 64);
         m_diffuseTexture->Initialize();
 
         // This will write to buffers
@@ -178,15 +180,20 @@ namespace bns
         WebGPUUtil::PipelineLayout.Dispose(m_pipelineLayout);
     }
 
-    void WebGPUUnlitRenderPipeline::Render(WebGPUVertexBuffer &vertexBuffer, WebGPUIndexBuffer &indexBuffer, u32 instanceCount)
+    void WebGPUUnlitRenderPipeline::Render(VertexBuffer *vertexBuffer, IndexBuffer *indexBuffer, u32 instanceCount)
     {
+        CreateDiffuseTextureBindGroup();
+
+        WebGPUVertexBuffer& wgpuVertexBuffer = *static_cast<WebGPUVertexBuffer*>(vertexBuffer);
+        WebGPUIndexBuffer& wgpuIndexBuffer = *static_cast<WebGPUIndexBuffer*>(indexBuffer);
+        
         WGPURenderPassEncoder pass = m_renderer->GetCurrentRenderPassEncoder();
 
         wgpuRenderPassEncoderSetPipeline(pass, m_pipeline);
 
         // Set attributes
-        wgpuRenderPassEncoderSetVertexBuffer(pass, 0, vertexBuffer.GetBuffer(), 0, vertexBuffer.GetByteSize());
-        wgpuRenderPassEncoderSetIndexBuffer(pass, indexBuffer.GetBuffer(), WGPUIndexFormat_Uint16, 0, indexBuffer.GetByteSize());
+        wgpuRenderPassEncoderSetVertexBuffer(pass, 0, wgpuVertexBuffer.GetBuffer(), 0, wgpuVertexBuffer.GetByteSize());
+        wgpuRenderPassEncoderSetIndexBuffer(pass, wgpuIndexBuffer.GetBuffer(), WGPUIndexFormat_Uint16, 0, wgpuIndexBuffer.GetByteSize());
 
         // Set bind groups
         wgpuRenderPassEncoderSetBindGroup(pass, 0, m_modelBindGroup, 0, nullptr);
@@ -194,7 +201,7 @@ namespace bns
         wgpuRenderPassEncoderSetBindGroup(pass, 2, m_textureBindGroup, 0, nullptr);
         wgpuRenderPassEncoderSetBindGroup(pass, 3, m_materialBindGroup, 0, nullptr);
 
-        wgpuRenderPassEncoderDrawIndexed(pass, indexBuffer.GetIndicesCount(), instanceCount, 0, 0, 0);
+        wgpuRenderPassEncoderDrawIndexed(pass, wgpuIndexBuffer.GetIndicesCount(), instanceCount, 0, 0, 0);
     }
 
     void WebGPUUnlitRenderPipeline::Dispose()

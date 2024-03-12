@@ -58,7 +58,7 @@ void Draw();
 int main()
 {
     bns::FrameworkDescription desc;
-    desc.RendererType = bns::RendererType::Metal;
+    desc.RendererType = bns::RendererType::WebGPU;
     engine = new bns::Framework(desc);
 
     bns::WindowParameters parameters;
@@ -175,27 +175,23 @@ void Draw()
     rotation += 0.001;
     bns::Vec2f rotationOrigin = bns::Vec2f(0.5f, 0.5f);
 
-    // testPipeline->Render(*testVertexBuffer, *testIndexBuffer);
+    engine->GetSpriteRenderer()->PointLights[0].Intensity += 0.1f;
+    spriteRenderer->DrawString(font, "Hello World!", bns::Vec2f(300, 300), bns::Color::White(), 1.0f);
 
-    /*
-        engine->GetSpriteRenderer()->PointLights[0].Intensity += 0.1f;
-        spriteRenderer->DrawString(font, "Hello World!", bns::Vec2f(300, 300), bns::Color::White(), 1.0f);
+    // whole texture
+    spriteRenderer->Draw(testTexture, bns::Rect(0, 0, 100, 100));
 
-        // whole texture
-        spriteRenderer->Draw(testTexture, bns::Rect(0, 0, 100, 100));
+    // top left quadrant
+    spriteRenderer->Draw(testTexture, bns::Rect(100, 0, 100, 100), bns::Rect(0, 0, hw, hh), bns::Color::White(), rotation, rotationOrigin);
 
-        // top left quadrant
-        spriteRenderer->Draw(testTexture, bns::Rect(100, 0, 100, 100), bns::Rect(0, 0, hw, hh), bns::Color::White(), rotation, rotationOrigin);
+    // top right quadrant
+    spriteRenderer->Draw(testTexture, bns::Rect(200, 0, 100, 100), bns::Rect(hw, 0, hw, hh), bns::Color::White(), rotation, rotationOrigin);
 
-        // top right quadrant
-        spriteRenderer->Draw(testTexture, bns::Rect(200, 0, 100, 100), bns::Rect(hw, 0, hw, hh), bns::Color::White(), rotation, rotationOrigin);
+    // bottom left quadrant
+    spriteRenderer->Draw(testTexture, bns::Rect(100, 100, 100, 100), bns::Rect(0, hh, hw, hh), bns::Color::White(), rotation, rotationOrigin);
 
-        // bottom left quadrant
-        spriteRenderer->Draw(testTexture, bns::Rect(100, 100, 100, 100), bns::Rect(0, hh, hw, hh), bns::Color::White(), rotation, rotationOrigin);
-
-        // bottom right quadrant
-        spriteRenderer->Draw(testTexture, bns::Rect(200, 100, 100, 100), bns::Rect(hw, hh, hw, hh), bns::Color::White(), rotation, rotationOrigin);
-        */
+    // bottom right quadrant
+    spriteRenderer->Draw(testTexture, bns::Rect(200, 100, 100, 100), bns::Rect(hw, hh, hw, hh), bns::Color::White(), rotation, rotationOrigin);
 
     paddlePipeline->Render(paddleVertexBuffer, paddleIndexBuffer, 2);
 }

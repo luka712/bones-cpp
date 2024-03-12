@@ -5,8 +5,8 @@
 #define BNS_WEBGPU_INSTANCES_BUFFER_HPP
 
 #include "buffers/bns_instance_buffer.hpp"
-#include "bns_webgpu.hpp"
 #include "renderer/bns_webgpu_renderer.hpp"
+#include "bns_webgpu_util.hpp"
 
 namespace bns
 {

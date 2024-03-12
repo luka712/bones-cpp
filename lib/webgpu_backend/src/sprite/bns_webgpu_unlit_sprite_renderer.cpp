@@ -7,7 +7,7 @@
 namespace bns
 {
     WebGPUUnlitSpriteRenderer::WebGPUUnlitSpriteRenderer(Renderer *m_renderer)
-        : SpriteRenderer(), m_renderer(static_cast<WebGPURenderer*>(m_renderer))
+        : SpriteRenderer(), m_renderer(static_cast<WebGPURenderer *>(m_renderer))
     {
         BrightnessThreshold = 0.3f;
         AmbientLight.Intensity = 1.0f;
@@ -70,9 +70,9 @@ namespace bns
             if (m_allocatedPipelines[textureId].empty())
             {
                 WebGPUUnlitSpritePipeline *pipeline = WebGPUUnlitSpritePipeline::Create(m_device,
-                                                                              texture,
-                                                                              m_projectionViewMatrixBuffer,
-                                                                              m_brightnessThresholdBuffer);
+                                                                                        texture,
+                                                                                        m_projectionViewMatrixBuffer,
+                                                                                        m_brightnessThresholdBuffer);
                 m_currentDrawPipelines[textureId].push(pipeline);
                 m_allocatedPipelines[textureId].push(pipeline);
                 return *pipeline;
@@ -97,12 +97,14 @@ namespace bns
         m_device = m_renderer->GetDevice();
         m_projectionViewMatrixBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device,
                                                                               sizeof(Mat4x4f),
-                                                                              "Sprite Renderer Camera Buffer");
+                                                                              "Sprite Renderer Camera Buffer",
+                                                                              WGPUBufferUsage_CopyDst);
 
         // setup brightness threshold buffer
         m_brightnessThresholdBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device,
                                                                              sizeof(f32),
-                                                                             "Sprite Renderer Brightness Threshold Buffer");
+                                                                             "Sprite Renderer Brightness Threshold Buffer",
+                                                                             WGPUBufferUsage_CopyDst);
 
         SetupIndexBuffer();
     }
@@ -131,7 +133,7 @@ namespace bns
     }
 
     void WebGPUUnlitSpriteRenderer::Draw(Texture2D *texture, const Rect &drawRect, const Rect &sourceRect,
-                                    const Color &tintColor, f32 rotationInRadians, const Vec2f &rotationOrigin)
+                                         const Color &tintColor, f32 rotationInRadians, const Vec2f &rotationOrigin)
     {
         WebGPUTexture2D *wgpuTexture = static_cast<WebGPUTexture2D *>(texture);
         WebGPUUnlitSpritePipeline &pipeline = GetPipeline(wgpuTexture);
@@ -214,7 +216,7 @@ namespace bns
     // TODO: draw without source rect
 
     void WebGPUUnlitSpriteRenderer::DrawString(SpriteFont *font, const std::string &text, const Vec2f &position,
-                                          const Color &tintColor, const f32 scale)
+                                               const Color &tintColor, const f32 scale)
     {
         WebGPUTexture2D *wgpuTexture = static_cast<WebGPUTexture2D *>(font->GetTexture());
 
@@ -368,4 +370,4 @@ namespace bns
     }
 }
 
-#endif 
+#endif

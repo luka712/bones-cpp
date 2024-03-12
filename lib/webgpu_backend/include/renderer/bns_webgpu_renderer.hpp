@@ -9,6 +9,7 @@
 #include "renderer/bns_renderer.hpp"
 #include "texture/bns_texture_manager.hpp"
 #include "Window.hpp"
+#include <functional>
 
 namespace bns
 {
@@ -58,6 +59,11 @@ namespace bns
          */
         WGPUSwapChain m_swapChain;
 
+        /// @brief The blit command encoder. Used to copy textures, buffers, etc.
+        /// Persist only for one frame and it cleared when called. Always should be called at start of frame.
+        /// Mainly used to create GPU only buffer from shared CPU/GPU buffer.
+        WGPUCommandEncoder m_blitCommandEncoder;
+
         /**
          * @brief WGPUCommandEncoder is a class in WebGPU. It is responsible for creating a command encoder.
          * Command encoder in this context is a collection of commands that can be executed.
@@ -90,6 +96,11 @@ namespace bns
         /// Will be null if @ref m_brightnessTexture is null.
         WGPUTextureView m_brightnessTextureView;
 
+
+        // Used for operations that require blit command encoder. For example, copying textures, copying buffers, etc.
+        // This will be cleared after the operation is done and persist only for the first frame.
+        std::vector<std::function<void(WGPUCommandEncoder)>> m_onBlitCommandEncoderAvailable;
+
         /**
          * Creates the webgpu adapter.
          */
@@ -100,6 +111,12 @@ namespace bns
 
         /// @brief Resizes the swap chain.
         void Resize();
+
+        /// @brief On start of frame blit command encoder is available and all registered callbacks are called.
+        /// Called at start of frame and endeded after all registered callbacks are called at start of frame. Always should
+        /// run at start of frame before rendering command encoder and then CommandEncoder is available to registered
+        /// callbacks. After all callbacks are called, CommandEncoder is ended and released.
+        void HandleBlitCommands();
 
     public:
         /// @brief Gets the renderer type.
@@ -119,6 +136,11 @@ namespace bns
         /// @brief Gets the queue.
         /// @return The queue.
         WGPUQueue GetQueue() const { return m_queue; }
+
+        /// @brief Gets the blit command encoder.
+        /// @return The blit command encoder.
+        WGPUCommandEncoder GetBlitCommandEncoder() const { return m_blitCommandEncoder; }
+
         WGPUCommandEncoder GetDrawCommandEncoder() const { return m_drawCommandEncoder; }
 
         /// @brief Gets the current render pass encoder.
@@ -134,6 +156,12 @@ namespace bns
         void BeginDraw() override;
         void EndDraw() override;
         void Destroy() override;
+
+        /// @brief On blit command encoder available.
+        // This is used for operations that require blit command encoder. For example, copying textures, copying buffers, etc.
+        // Persist only for one frame and it cleared when called.
+        /// @param onBlitCommandEncoderAvailable The function to call when the blit command encoder is available.
+        void OnBlitCommandEncoderAvailable(std::function<void(WGPUCommandEncoder)> onBlitCommandEncoderAvailable);
     };
 } // namespace BNS
 

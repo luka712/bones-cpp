@@ -4,11 +4,11 @@
 
 namespace bns
 {
-    WebGPUTexture2D::WebGPUTexture2D(Renderer* renderer, ImageData *imageData, TextureUsage textureUsage, TextureFormat format)
+    WebGPUTexture2D::WebGPUTexture2D(Renderer *renderer, ImageData *imageData, TextureUsage textureUsage, TextureFormat format)
         : Texture2D(imageData->Width, imageData->Height, textureUsage, format),
           m_imageData(imageData)
     {
-        m_renderer = static_cast<WebGPURenderer*>(renderer);
+        m_renderer = static_cast<WebGPURenderer *>(renderer);
         m_lifecycleState = LifecycleState::Created;
     }
 
@@ -16,45 +16,6 @@ namespace bns
     {
         LOG("WebGPUTexture2D::~WebGPUTexture2D()");
         Dispose();
-    }
-
-    WGPUTextureUsage WebGPUTexture2D::Convert(TextureUsage textureUsage) const
-    {
-        i32 usage = WGPUTextureUsage_None;
-
-        if (textureUsage == TextureUsage::CopyDst)
-        {
-            usage |= WGPUTextureUsage_CopyDst;
-        }
-        else if (textureUsage == TextureUsage::CopySrc)
-        {
-            usage |= WGPUTextureUsage_CopySrc;
-        }
-        else if (textureUsage == TextureUsage::TextureBinding)
-        {
-            usage |= WGPUTextureUsage_TextureBinding;
-        }
-        else if (textureUsage == TextureUsage::TextureStorage)
-        {
-            usage |= WGPUTextureUsage_StorageBinding;
-        }
-        else if (textureUsage == TextureUsage::RenderAttachment)
-        {
-            usage |= WGPUTextureUsage_RenderAttachment;
-        }
-        else if(textureUsage == TextureUsage::CopyDst_TextureBinding)
-        {
-            usage |= WGPUTextureUsage_CopyDst | WGPUTextureUsage_TextureBinding;
-        }
-        else if(textureUsage == TextureUsage::CopyDst_CopySrc_TextureBinding_RenderAttachment)
-        {
-            usage |= WGPUTextureUsage_CopyDst | WGPUTextureUsage_CopySrc | WGPUTextureUsage_TextureBinding | WGPUTextureUsage_RenderAttachment;
-        }
-        else
-        {
-            throw std::runtime_error("WebGPUTexture2D::Convert: Unknown texture usage.");
-        }
-        return static_cast<WGPUTextureUsage>(usage);
     }
 
     WGPUFilterMode WebGPUTexture2D::Convert(SamplerMinFilter minFilter) const
@@ -83,57 +44,6 @@ namespace bns
         }
     }
 
-    void WebGPUTexture2D::CreateTexture()
-    {
-        WGPUDevice device = m_renderer->GetDevice();
-
-        WGPUTextureDescriptor textureDescriptor = {};
-        textureDescriptor.sampleCount = 1;
-        textureDescriptor.mipLevelCount = 1;
-        textureDescriptor.dimension = WGPUTextureDimension_2D;
-        textureDescriptor.size = {(u32)m_imageData->Width, (u32)m_imageData->Height, 1};
-
-        // convert convers our custom format to the WebGPU format
-        textureDescriptor.format = WebGPUUtil::Converter.Convert(m_format);
-        textureDescriptor.usage = Convert(m_textureUsage);
-
-        Texture = wgpuDeviceCreateTexture(device, &textureDescriptor);
-
-        if(Texture == nullptr)
-        {
-            std::string msg = "WebGPUTexture2D::CreateTexture: Failed to create texture.";
-            LOG(msg);
-            BREAKPOINT();
-            throw std::runtime_error(msg);
-        }
-
-        LOG("WebGPUTexture2D::CreateTexture: Texture created.")
-    }
-
-    void WebGPUTexture2D::WriteToTexture()
-    {
-        WGPUQueue queue = m_renderer->GetQueue();
-
-        // Arguments telling which part of the texture we upload to
-        WGPUImageCopyTexture destination;
-        destination.texture = Texture;
-        destination.mipLevel = 0;
-        destination.origin = {0, 0, 0};
-        destination.aspect = WGPUTextureAspect_All; // only relevant for depth/stencil textures
-
-        // Arguments telling how the C++ side pixel memory is laid out
-        WGPUTextureDataLayout source;
-        source.offset = 0;
-        source.bytesPerRow = 4 * m_imageData->Width;
-        source.rowsPerImage = m_imageData->Height;
-
-        WGPUExtent3D size = {static_cast<u32>(m_imageData->Width), static_cast<u32>(m_imageData->Height), 1};
-        size_t dataSize = m_imageData->GetSize();
-        wgpuQueueWriteTexture(queue, &destination, m_imageData->Data, dataSize, &source, &size);
-
-        LOG("WebGPUTexture2D::WriteToTexture: Texture written.")
-    }
-
     void WebGPUTexture2D::CreateSampler()
     {
         WGPUSamplerDescriptor samplerDescriptor = {};
@@ -148,7 +58,7 @@ namespace bns
         samplerDescriptor.compare = WGPUCompareFunction_Undefined;
         Sampler = wgpuDeviceCreateSampler(m_renderer->GetDevice(), &samplerDescriptor);
 
-        if(Sampler == nullptr)
+        if (Sampler == nullptr)
         {
             std::string msg = "WebGPUTexture2D::CreateSampler: Failed to create sampler.";
             LOG(msg);
@@ -163,8 +73,12 @@ namespace bns
     {
         m_lifecycleState = LifecycleState::Initialized;
 
-        CreateTexture();
-        WriteToTexture();
+        WGPUDevice device = m_renderer->GetDevice();
+        WGPUQueue queue = m_renderer->GetQueue();
+
+        Texture = WebGPUUtil::Texture.Create(device, queue, m_imageData->Width, m_imageData->Height, m_format, m_textureUsage, m_imageData->Data);
+
+        LOG("WebGPUTexture2D::CreateTexture: Texture created and written.")
         CreateSampler();
     }
 
@@ -181,7 +95,7 @@ namespace bns
         wgpuTextureRelease(Texture);
     }
 
-    WebGPUTexture2D *WebGPUTexture2D::CreateEmpty(Renderer* renderer, u32 width, u32 height)
+    WebGPUTexture2D *WebGPUTexture2D::CreateEmpty(Renderer *renderer, u32 width, u32 height)
     {
         u8 *data = new u8[width * height * 4];
         for (u32 i = 0; i < width * height * 4; i++)
@@ -193,7 +107,7 @@ namespace bns
         WebGPUTexture2D *texture = new WebGPUTexture2D(renderer, imageData, TextureUsage::CopyDst_TextureBinding, TextureFormat::BGRA_8_Unorm);
         texture->Initialize();
 
-        delete data;
+        // delete data;
         return texture;
     }
 }

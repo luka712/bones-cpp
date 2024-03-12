@@ -106,7 +106,7 @@ namespace bns
         WGPUBindGroupEntry bindGroupEntries[1];
 
         // uniform entry
-        m_mixValueBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device, sizeof(float), "combine_texture_mix_value_buffer");
+        m_mixValueBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device, sizeof(float), "combine_texture_mix_value_buffer", WGPUBufferUsage_CopyDst);
         bindGroupEntries[0] = WebGPUUtil::BindGroupEntry.Create(0, m_mixValueBuffer, sizeof(float));
 
         // create bind group

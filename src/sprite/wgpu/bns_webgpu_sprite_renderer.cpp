@@ -102,22 +102,26 @@ namespace bns
         m_device = m_renderer->GetDevice();
         m_projectionViewMatrixBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device,
                                                                               sizeof(Mat4x4f),
-                                                                              "Sprite Renderer Camera Buffer");
+                                                                              "Sprite Renderer Camera Buffer",
+                                                                              WGPUBufferUsage_CopyDst);
 
         // setup brightness threshold buffer
         m_brightnessThresholdBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device,
                                                                              sizeof(f32),
-                                                                             "Sprite Renderer Brightness Threshold Buffer");
+                                                                             "Sprite Renderer Brightness Threshold Buffer",
+                                                                             WGPUBufferUsage_CopyDst);
 
         // setup ambient light buffer
         m_ambientLightBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device,
                                                                       sizeof(AmbientLight),
-                                                                      "Ambient Light Uniform Buffer.");
+                                                                      "Ambient Light Uniform Buffer.",
+                                                                      WGPUBufferUsage_CopyDst);
 
         // setup point light buffer
         m_pointLightBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device,
                                                                     sizeof(PointLight) * FORWARD_2D_NUM_OF_POINT_LIGHTS,
-                                                                    "Point Light Uniform Buffer.");
+                                                                    "Point Light Uniform Buffer.",
+                                                                    WGPUBufferUsage_CopyDst);
 
         SetupIndexBuffer();
     }

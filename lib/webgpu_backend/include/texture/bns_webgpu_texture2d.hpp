@@ -20,21 +20,12 @@ namespace bns
         /// Temporary image data. To be released by user after texture is initialized.
         ImageData *m_imageData;
 
-        /// @brief Convert the texture usage flags to WebGPU texture usage flags.
-        WGPUTextureUsage Convert(TextureUsage textureUsage) const;
-
         /// @brief Convert the sampler min filter to WebGPU filter mode.
         WGPUFilterMode Convert(SamplerMinFilter minFilter) const;
 
         /// @brief Convert the sampler mag filter to WebGPU filter mode.
         WGPUFilterMode Convert(SamplerMagFilter magFilter) const;
-
-        /// @brief Create the texture.
-        void CreateTexture();
-
-        /// @brief Write to the texture.
-        void WriteToTexture();
-
+        
         /// @brief Create the sampler.
         void CreateSampler();
 

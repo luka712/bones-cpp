@@ -12,6 +12,15 @@ namespace bns
     class WebGPUBufferUtil final
     {
     public:
+        /// @brief Create a buffer.
+        /// @param device The webgpu device.
+        /// @param byteSize The size of the buffer in bytes.
+        /// @param data The data to be copied to the buffer.
+        /// @param usage The usage of the buffer. By default WGPUBufferUsage_None.
+        /// @param label The label of the buffer.
+        /// @return The buffer.
+        static WGPUBuffer Create(WGPUDevice device, size_t byteSize, void* data, WGPUBufferUsageFlags usage, std::string label = "");
+
         /// @brief Create a vertex buffer.
         /// @param device The webgpu device.
         /// @param data The data to be copied to the buffer.
@@ -50,7 +59,7 @@ namespace bns
 
             WGPUBufferDescriptor bufferDescriptor;
             bufferDescriptor.label = label.c_str();
-            bufferDescriptor.size = data.size() * sizeof(T);
+            bufferDescriptor.size = byteSize;
             bufferDescriptor.usage = WGPUBufferUsage_Index;
             bufferDescriptor.mappedAtCreation = true;
             bufferDescriptor.nextInChain = nullptr;
@@ -62,11 +71,12 @@ namespace bns
             return buffer;
         }
 
-        /// @brief Create a uniform buffer
-        /// @param device The webgpu device
-        /// @param byteSize The size of the buffer in bytes
-        /// @param label The label of the buffer
-        /// @return The uniform buffer
+        /// @brief Create a uniform buffer.
+        /// @param device The webgpu device.
+        /// @param byteSize The size of the buffer in bytes.
+        /// @param label The label of the buffer.
+        /// @param usage The usage of the buffer. By default WGPUBufferUsage_None.
+        /// @return The uniform buffer.
         static WGPUBuffer CreateUniformBuffer(WGPUDevice device,
                                               size_t byteSize,
                                               std::string label = "",

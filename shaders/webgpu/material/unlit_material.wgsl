@@ -12,7 +12,7 @@ struct VSOutput {
 }
 
 @group(0) @binding(0)
-var<uniform> transforms: array<mat4x4f, 1>;
+var<uniform> transforms: array<mat4x4f, ##INSTANCE_COUNT##>;
 
 @group(0) @binding(1)
 var<uniform> textureTilling: vec2f;

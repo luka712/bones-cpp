@@ -45,16 +45,13 @@ namespace bns
 
         void Initialize() override
         {
-            m_uniformBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(
-                m_device,
-                sizeof(T),
-                "ConstantBuffer");
+            m_uniformBuffer = WebGPUUtil::Buffer.CreateUniformBuffer(m_device, sizeof(T), m_label, WGPUBufferUsage_CopyDst);
         }
 
         void Update(T &data) override
         {
             WebGPUUtil::Buffer.UpdateUniformBuffer(m_queue, m_uniformBuffer, sizeof(T), &data);
-        } 
+        }
 
         void Dispose() override
         {

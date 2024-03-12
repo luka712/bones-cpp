@@ -4,6 +4,10 @@
 #include "pipelines/bns_metal_unlit_render_pipeline.hpp"
 #endif
 
+#if USE_WEBGPU
+#include "pipelines/bns_webgpu_unlit_render_pipeline.hpp"
+#endif
+
 namespace bns
 {
     PipelineFactory::PipelineFactory(Renderer *renderer)
@@ -23,6 +27,16 @@ namespace bns
                 static_cast<MetalRenderer*>(m_renderer),
                 static_cast<MetalUniformBuffer<Mat4x4f> *>(cameraBuffer),
                 static_cast<MetalInstanceBuffer<Mat4x4f> *>(modelBuffer));
+        }
+#endif
+
+#if USE_WEBGPU
+        if(m_renderer->GetRendererType() == RendererType::WebGPU)
+        {
+            pipeline = new WebGPUUnlitRenderPipeline(
+                static_cast<WebGPURenderer*>(m_renderer),
+                static_cast<WebGPUUniformBuffer<Mat4x4f> *>(cameraBuffer),
+                static_cast<WebGPUInstanceBuffer<Mat4x4f> *>(modelBuffer));
         }
 #endif
 

@@ -22,6 +22,7 @@
 #include "util/bns_webgpu_texture_view_util.hpp"
 #include "util/bns_webgpu_converter.hpp"
 #include "util/bns_webgpu_bind_group_util.hpp"
+#include "util/bns_webgpu_texture_util.hpp"
 
 namespace bns
 {
@@ -47,8 +48,12 @@ namespace bns
         /// @brief The bind group util.
         static WebGPUBindGroupUtil BindGroup;
 
+        /// @brief The texture util.
+        static WebGPUTextureUtil Texture;
+
         /// @brief The texture view util.
         static WebGPUTextureViewUtil TextureView;
+
 
         static WebGPUBufferUtil Buffer;
         static WebGPUFragmentStateUtil FragmentState;

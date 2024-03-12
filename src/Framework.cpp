@@ -283,11 +283,11 @@ namespace bns
 	void Framework::OnDraw()
 	{
 		m_renderer->BeginDraw();
-		// m_spriteRenderer->BeginFrame();
+		m_spriteRenderer->BeginFrame();
 
 		DrawCallback();
 
-		// m_spriteRenderer->EndFrame();
+		m_spriteRenderer->EndFrame();
 		m_renderer->EndDraw();
 	}
 

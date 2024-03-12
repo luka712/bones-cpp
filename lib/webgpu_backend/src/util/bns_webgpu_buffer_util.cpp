@@ -2,37 +2,32 @@
 
 namespace bns
 {
-    WGPUBuffer WebGPUBufferUtil::CreateVertexBuffer(WGPUDevice device,
-                                                    std::vector<f32> data,
-                                                    std::string label,
-                                                    WGPUBufferUsageFlags bufferUsage)
+    WGPUBuffer WebGPUBufferUtil::Create(WGPUDevice device, size_t byteSize, void* data, WGPUBufferUsageFlags usage, std::string label)
     {
-        size_t byteSize = data.size() * sizeof(f32);
-
-        // The default buffer usage. Vertex, no other usage.
-        WGPUBufferUsageFlags usage = WGPUBufferUsage_Vertex;
-
-        // Combine the usage.
-        usage = usage | bufferUsage;
-
-        WGPUBufferDescriptor bufferDescriptor = {};
+        WGPUBufferDescriptor bufferDescriptor;
         bufferDescriptor.nextInChain = nullptr;
         bufferDescriptor.label = label.c_str();
         bufferDescriptor.size = byteSize;
         bufferDescriptor.usage = usage;
         bufferDescriptor.mappedAtCreation = true;
-
-        // Create the buffer.
         WGPUBuffer buffer = wgpuDeviceCreateBuffer(device, &bufferDescriptor);
 
         // Get pointer to gpu memory.
-        void *gpuBufferPtr = wgpuBufferGetMappedRange(buffer, 0, byteSize);
+        void* gpuMemory = wgpuBufferGetMappedRange(buffer, 0, byteSize);
         // copy to gpu memory.
-        memcpy(gpuBufferPtr, data.data(), byteSize);
+        memcpy(gpuMemory, data, byteSize);
         // Unmap the buffer.
         wgpuBufferUnmap(buffer);
 
         return buffer;
+    }
+
+    WGPUBuffer WebGPUBufferUtil::CreateVertexBuffer(WGPUDevice device,
+                                                    std::vector<f32> data,
+                                                    std::string label,
+                                                    WGPUBufferUsageFlags bufferUsage)
+    {
+        return Create(device, data.size() * sizeof(f32), data.data(), WGPUBufferUsage_Vertex | bufferUsage, label);
     }
 
     WGPUBuffer WebGPUBufferUtil::CreateVertexBuffer(WGPUDevice device,

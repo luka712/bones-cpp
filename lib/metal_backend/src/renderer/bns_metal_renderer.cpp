@@ -150,7 +150,7 @@ namespace bns
 	{
 	}
 
-	void MetalRenderer::OnBlitCommandEncoderAvailable(std::function<void(MTL::BlitCommandEncoder *)> onBlitCommandEncoderAvailable)
+	void MetalRenderer::OnBlitCommandEncoderAvailable(std::function<void(MTL::BlitCommandEncoder)> onBlitCommandEncoderAvailable)
 	{
 		m_onBlitCommandEncoderAvailable.push_back(onBlitCommandEncoderAvailable);
 	}

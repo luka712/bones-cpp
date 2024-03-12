@@ -69,7 +69,7 @@ namespace bns
 		// code). In practice, we know that when the wgpuInstanceRequestAdapter()
 		// function returns its callback has been called.
 		assert(outData.isSuccess);
-		
+
 		m_adapter = outData.adapter;
 		return m_adapter;
 	}
@@ -172,6 +172,7 @@ namespace bns
 
 		Resize(); // creates swap chain
 
+		m_blitCommandEncoder = wgpuDeviceCreateCommandEncoder(m_device, nullptr);
 
 		// move to create empty texture method
 		ImageData imageData;
@@ -181,12 +182,30 @@ namespace bns
 		TextureUsage textureUsage = TextureUsage::CopyDst_CopySrc_TextureBinding_RenderAttachment;
 		TextureFormat format = TextureFormat::BGRA_8_Unorm;
 		m_brightnessTexture = new WebGPUTexture2D(this, &imageData, textureUsage, format);
-		m_brightnessTexture->Initialize();
+        m_brightnessTexture->Initialize();
+	}
+
+	void WebGPURenderer::HandleBlitCommands()
+	{
+		if (m_onBlitCommandEncoderAvailable.size() > 0)
+		{
+			m_blitCommandEncoder = wgpuDeviceCreateCommandEncoder(m_device, nullptr);
+			// Blit commander is now available. Call methods that require blit command encoder and clear them.
+			for (auto &callback : m_onBlitCommandEncoderAvailable)
+			{
+				callback(m_blitCommandEncoder);
+			}
+			m_onBlitCommandEncoderAvailable.clear();
+			wgpuCommandEncoderFinish(m_blitCommandEncoder, nullptr);
+		}
 	}
 
 	void WebGPURenderer::BeginDraw()
 	{
 		wgpuDeviceTick(m_device);
+
+	    HandleBlitCommands();
+
 		m_drawCommandEncoder = wgpuDeviceCreateCommandEncoder(m_device, nullptr);
 
 		WGPURenderPassColorAttachment colorAttachment[2];
@@ -251,6 +270,12 @@ namespace bns
 	{
 		wgpuRenderPassEncoderPopDebugGroup(m_currentPassEncoder);
 
+		if(m_blitCommandEncoder != nullptr)
+		{
+			wgpuCommandEncoderRelease(m_blitCommandEncoder);
+			m_blitCommandEncoder = nullptr;
+		}
+
 		// End and release render pass encoder.
 		wgpuRenderPassEncoderEnd(m_currentPassEncoder);
 		wgpuRenderPassEncoderRelease(m_currentPassEncoder);
@@ -278,5 +303,10 @@ namespace bns
 		wgpuDeviceRelease(m_device);
 		wgpuAdapterRelease(m_adapter);
 		wgpuInstanceRelease(m_instance);
+	}
+
+	void WebGPURenderer::OnBlitCommandEncoderAvailable(std::function<void(WGPUCommandEncoder)> callback)
+	{
+		m_onBlitCommandEncoderAvailable.push_back(callback);
 	}
 } // namespace bns

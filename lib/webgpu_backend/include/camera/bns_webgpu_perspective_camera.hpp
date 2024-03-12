@@ -29,10 +29,7 @@ namespace bns
         WebGPUPerspectiveCamera(Renderer *renderer, f32 fov, f32 aspectRatio, f32 near, f32 far);
 
         /// @brief Get the buffer of the camera.
-        inline UniformBuffer<Mat4x4f> *GetBuffer() const
-        {
-            return m_buffer;
-        }
+        inline UniformBuffer<Mat4x4f> *GetBuffer() const override { return m_buffer; }
 
         void Initialize() override;
         void Update() override;

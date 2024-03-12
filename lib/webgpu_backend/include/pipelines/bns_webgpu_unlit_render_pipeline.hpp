@@ -99,7 +99,7 @@ namespace bns
         /// @param vertexBuffer The vertex buffer.
         /// @param indexBuffer The index buffer.
         /// @param instanceCount The number of instances to render. By default, it is 1.
-        void Render(WebGPUVertexBuffer& vertexBuffer, WebGPUIndexBuffer& indexBuffer, u32 instanceCount = 1);
+        void Render(VertexBuffer* vertexBuffer, IndexBuffer* indexBuffer, u32 instanceCount = 1) override;
 
         /// @brief Dispose of pipeline.
         void Dispose();
