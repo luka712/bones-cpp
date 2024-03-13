@@ -29,7 +29,10 @@ namespace bns
 		m_device = m_metalLayer->device();
 		m_queue = m_device->newCommandQueue();
 
-		Resize();
+		// Register to window resize event.
+		m_windowManager->RegisterToWindowResize([this](Vec2i size) {
+			m_bufferSize = size;
+		});
 	}
 
 	void MetalRenderer::Resize()
@@ -150,7 +153,7 @@ namespace bns
 	{
 	}
 
-	void MetalRenderer::OnBlitCommandEncoderAvailable(std::function<void(MTL::BlitCommandEncoder)> onBlitCommandEncoderAvailable)
+	void MetalRenderer::OnBlitCommandEncoderAvailable(std::function<void(MTL::BlitCommandEncoder*)> onBlitCommandEncoderAvailable)
 	{
 		m_onBlitCommandEncoderAvailable.push_back(onBlitCommandEncoderAvailable);
 	}

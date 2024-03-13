@@ -1,11 +1,8 @@
-
-#pragma once
-
 #if USE_METAL
 
-#ifndef BNS_RENDERER_METAL_HPP
+#ifndef BNS_METAL_RENDERER_HPP
 
-#define BNS_RENDERER_METAL_HPP
+#define BNS_METAL_RENDERER_HPP
 
 #include "renderer/bns_renderer.hpp"
 #include "loaders/bns_file_loader.hpp"
