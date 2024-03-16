@@ -24,6 +24,10 @@ namespace bns
         {
         }
 
+        /// @brief Get the buffer.
+        /// @return The buffer.
+        inline GLuint GetBuffer() { return m_buffer; }
+
         /// @brief Initializes the buffer.
         /// @param data The data to be copied to the buffer.
         /// @param isWritable Whether the buffer is writable.

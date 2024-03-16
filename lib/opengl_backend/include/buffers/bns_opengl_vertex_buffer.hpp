@@ -5,6 +5,7 @@
 #define BNS_OPENGL_VERTEX_BUFFER_HPP
 
 #include "buffers/bns_vertex_buffer.hpp"
+#include "bns_opengl.hpp"
 
 namespace bns
 {
@@ -12,12 +13,16 @@ namespace bns
     class OpenGLVertexBuffer : public VertexBuffer
     {
     private:
-        u32 m_buffer;
+        GLuint m_buffer;
 
     public:
         /// @brief The constructor for the OpenGLVertexBuffer.
         /// @param label The label of the buffer.
         OpenGLVertexBuffer(std::string label = "");
+
+        /// @brief Gets the buffer.
+        /// @return The buffer.
+        GLuint GetBuffer() { return m_buffer; }
 
         void Initialize(size_t byteSize) override;
 

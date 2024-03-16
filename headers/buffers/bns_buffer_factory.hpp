@@ -2,6 +2,7 @@
 
 #define BNS_BUFFER_FACTORY
 
+#include "renderer/bns_renderer.hpp"
 #include "buffers/bns_index_buffer.hpp"
 #include "buffers/bns_vertex_buffer.hpp"
 

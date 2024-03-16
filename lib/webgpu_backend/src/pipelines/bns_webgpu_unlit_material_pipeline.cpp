@@ -110,7 +110,7 @@ namespace bns
     void WebGPUUnlitRenderPipeline::CreatePipeline()
     {
         std::vector<BufferLayoutDescriptor> bufferLayoutDescriptors(1);
-        bufferLayoutDescriptors[0].Step = VertexStepMode::Vertex;
+        bufferLayoutDescriptors[0].StepMode = VertexStepMode::Vertex;
         bufferLayoutDescriptors[0].Stride = (3 + 4 + 2) * sizeof(f32);
         bufferLayoutDescriptors[0].Attributes.push_back({VertexFormat::Float32x3, 0, 0});
         bufferLayoutDescriptors[0].Attributes.push_back({VertexFormat::Float32x4, 1, sizeof(f32) * 3});

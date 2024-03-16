@@ -58,7 +58,7 @@ namespace bns
         {
             BufferLayoutDescriptor bufferLayoutDescriptor = bufferLayoutDescriptors[i];
             vertexBufferLayouts[i].arrayStride = bufferLayoutDescriptor.Stride;
-            vertexBufferLayouts[i].stepMode = ResolveStepMode(bufferLayoutDescriptor.Step);
+            vertexBufferLayouts[i].stepMode = ResolveStepMode(bufferLayoutDescriptor.StepMode);
             WGPUVertexAttribute* attributes = new WGPUVertexAttribute[bufferLayoutDescriptor.Attributes.size()];
             vertexBufferLayouts[i].attributeCount = bufferLayoutDescriptor.Attributes.size();
             vertexBufferLayouts[i].attributes = &attributes[0];

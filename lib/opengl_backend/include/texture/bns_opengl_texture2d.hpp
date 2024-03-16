@@ -39,19 +39,28 @@ namespace bns
         /// @param format The texture format.
         /// @param samplerMinFilter The sampler min filter.
         /// @param samplerMagFilter The sampler mag filter.
-        OpenGLTexture2D(ImageData *imageData, 
-             TextureUsage textureUsage,
-             TextureFormat format,
-             SamplerMinFilter samplerMinFilter,
-             SamplerMagFilter samplerMagFilter);
+        OpenGLTexture2D(ImageData *imageData,
+                        TextureUsage textureUsage,
+                        TextureFormat format,
+                        SamplerMinFilter samplerMinFilter,
+                        SamplerMagFilter samplerMagFilter);
 
         ~OpenGLTexture2D();
+
+        /// @brief Get the texture.
+        GLuint GetTexture() const { return Texture; }
 
         /// @brief Initialize the texture.
         void Initialize() override;
 
         /// @brief Release the texture.
         void Dispose() override;
+
+        /// @brief Create an empty texture.
+        /// @param width The width of the texture.
+        /// @param height The height of the texture.
+        /// @return The empty texture.
+        static OpenGLTexture2D *CreateEmpty(i32 width, i32 height);
     };
 }
 

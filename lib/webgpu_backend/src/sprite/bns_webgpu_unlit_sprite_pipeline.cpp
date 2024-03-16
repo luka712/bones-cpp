@@ -85,7 +85,7 @@ namespace bns
         renderPipelineDescriptor.nextInChain = nullptr;
 
         BufferLayoutDescriptor bufferLayoutDescriptor;
-        bufferLayoutDescriptor.Step = VertexStepMode::Vertex;
+        bufferLayoutDescriptor.StepMode = VertexStepMode::Vertex;
         bufferLayoutDescriptor.Stride = sizeof(f32) * FLOATS_PER_VERTEX;
         bufferLayoutDescriptor.Attributes.push_back({VertexFormat::Float32x3, 0, 0});
         bufferLayoutDescriptor.Attributes.push_back({VertexFormat::Float32x2, 1, sizeof(f32) * 3});

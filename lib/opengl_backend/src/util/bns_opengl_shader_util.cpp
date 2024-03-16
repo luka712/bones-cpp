@@ -44,6 +44,11 @@ namespace bns
     {
         return Create(filePath, GL_FRAGMENT_SHADER);
     }
+
+    void OpenGLShaderUtil::Dispose(GLuint shader)
+    {
+        glDeleteShader(shader);
+    }
 }
 
 #endif 

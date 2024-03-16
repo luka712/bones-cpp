@@ -16,7 +16,7 @@ namespace bns
     class OpenGLUniformBuffer : public UniformBuffer<T>
     {
     private:
-        GLuint m_uniformBuffer;
+        GLuint m_bufferId;
         std::string m_label;
 
     public:
@@ -34,22 +34,24 @@ namespace bns
             Dispose();
         }
 
-        GLuint GetBuffer() const { return m_uniformBuffer; }
+        /// @brief Get the buffer.
+        /// @return The buffer.
+        GLuint GetBuffer() const { return m_bufferId; }
 
         void Initialize() override
         {
-            m_uniformBuffer = OpenGLUtil::Buffer.CreateUniformBuffer(sizeof(T), m_label, GL_DYNAMIC_DRAW);
+            m_bufferId = OpenGLUtil::Buffer.CreateUniformBuffer(sizeof(T), m_label, GL_DYNAMIC_DRAW);
         }
 
         void Update(T &data) override
         {
-            OpenGLUtil::Buffer.WriteUniformBuffer(m_uniformBuffer, &data);
+            OpenGLUtil::Buffer.WriteUniformBuffer(m_bufferId, &data);
         }
 
         void Dispose() override
         {
-            OpenGLUtil::Buffer.Dispose(m_uniformBuffer);
-            m_uniformBuffer = 0;
+            OpenGLUtil::Buffer.Dispose(m_bufferId);
+            m_bufferId = 0;
         }
     };
 }

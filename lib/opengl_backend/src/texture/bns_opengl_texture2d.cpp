@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include "texture/bns_opengl_texture2d.hpp"
+#include <vector>
 
 namespace bns
 {
@@ -17,11 +18,11 @@ namespace bns
 
     GLenum OpenGLTexture2D::Convert(SamplerMinFilter samplerMinFilter)
     {
-        if(samplerMinFilter == SamplerMinFilter::LINEAR)
+        if (samplerMinFilter == SamplerMinFilter::LINEAR)
         {
             return GL_LINEAR;
         }
-        else if(samplerMinFilter == SamplerMinFilter::NEAREST)
+        else if (samplerMinFilter == SamplerMinFilter::NEAREST)
         {
             return GL_NEAREST;
         }
@@ -34,11 +35,11 @@ namespace bns
 
     GLenum OpenGLTexture2D::Convert(SamplerMagFilter samplerMagFilter)
     {
-          if(samplerMagFilter == SamplerMagFilter::LINEAR)
+        if (samplerMagFilter == SamplerMagFilter::LINEAR)
         {
             return GL_LINEAR;
         }
-        else if(samplerMagFilter == SamplerMagFilter::NEAREST)
+        else if (samplerMagFilter == SamplerMagFilter::NEAREST)
         {
             return GL_NEAREST;
         }
@@ -55,7 +56,7 @@ namespace bns
         glBindTexture(GL_TEXTURE_2D, Texture);
 
         GLenum format = Convert(m_format);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, m_imageData->Width, m_imageData->Height, 0, format, GL_UNSIGNED_BYTE, m_imageData->Data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_imageData->Width, m_imageData->Height, 0, format, GL_UNSIGNED_BYTE, m_imageData->Data);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -84,6 +85,25 @@ namespace bns
             LOG(msg);
             throw std::runtime_error(msg.c_str());
         }
+    }
+
+    OpenGLTexture2D *OpenGLTexture2D::CreateEmpty(i32 width, i32 height)
+    {
+        std::vector<u32> data(width * height, 0);
+        for (u32 i = 0; i < data.size(); i++)
+        {
+            data[i] = 0xFFFFFFFF;
+        }
+
+        ImageData imageData = ImageData(data.data(), width, height, 4);
+        OpenGLTexture2D *texture = new OpenGLTexture2D(&imageData,
+                                                       TextureUsage::None,
+                                                       TextureFormat::BGRA_8_Unorm,
+                                                       SamplerMinFilter::LINEAR, SamplerMagFilter::LINEAR);
+
+        texture->Initialize();
+
+        return texture;
     }
 }
 

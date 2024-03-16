@@ -102,7 +102,7 @@ namespace bns
         void Render(VertexBuffer* vertexBuffer, IndexBuffer* indexBuffer, u32 instanceCount = 1) override;
 
         /// @brief Dispose of pipeline.
-        void Dispose();
+        void Dispose() override;
     };
 }
 

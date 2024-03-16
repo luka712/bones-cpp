@@ -14,7 +14,7 @@ namespace bns
             // Create layout
             WGPUVertexBufferLayout bufferLayout = {};
             bufferLayout.arrayStride = desc.Stride;
-            bufferLayout.stepMode = WebGPUVertexBufferLayoutUtil::m_vertexStepModeMap[desc.Step];
+            bufferLayout.stepMode = WebGPUVertexBufferLayoutUtil::m_vertexStepModeMap[desc.StepMode];
 
             // set the attribute count
             bufferLayout.attributeCount = desc.Attributes.size();

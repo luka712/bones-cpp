@@ -8,6 +8,10 @@
 #include "pipelines/bns_webgpu_unlit_render_pipeline.hpp"
 #endif
 
+#if USE_OPENGL
+#include "pipelines/bns_opengl_unlit_render_pipeline.hpp"
+#endif 
+
 namespace bns
 {
     PipelineFactory::PipelineFactory(Renderer *renderer)
@@ -40,6 +44,14 @@ namespace bns
         }
 #endif
 
+#if USE_OPENGL
+        if(m_renderer->GetRendererType() == RendererType::OpenGL)
+        {
+            pipeline = new OpenGLUnlitRenderPipeline(
+                static_cast<OpenGLUniformBuffer<Mat4x4f> *>(cameraBuffer),
+                static_cast<OpenGLInstanceBuffer<Mat4x4f> *>(modelBuffer));
+        }
+#endif
         pipeline->Initialize();
 
         return pipeline;

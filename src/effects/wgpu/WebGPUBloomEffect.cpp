@@ -105,7 +105,7 @@ WGPURenderPipeline WebGPUBloomEffectImpl::CreateRenderPipeline(std::vector<WGPUB
 
     // 1 layout with 2 attributes
     BufferLayoutDescriptor bufferLayoutDescriptor;
-    bufferLayoutDescriptor.Step = VertexStepMode::Vertex;
+    bufferLayoutDescriptor.StepMode = VertexStepMode::Vertex;
     bufferLayoutDescriptor.Stride = sizeof(f32) * 5; // x, y, z, u, v
     bufferLayoutDescriptor.Attributes.push_back({VertexFormat::Float32x3, 0, 0});
     bufferLayoutDescriptor.Attributes.push_back({VertexFormat::Float32x2, 1, sizeof(f32) * 3});

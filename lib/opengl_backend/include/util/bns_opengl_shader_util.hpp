@@ -28,6 +28,9 @@ namespace bns
         /// @return The shader id.
         static GLuint CreateFragmentShader(std::string filePath);
 
+        /// @brief Dispose of the shader.
+        /// @param shader The shader id.
+        static void Dispose(GLuint shader);
     };
 
 }

@@ -39,7 +39,7 @@ namespace bns
         size_t Stride;
 
         /// @brief The step mode of the buffer layout.
-        VertexStepMode Step;
+        VertexStepMode StepMode;
 
         /// @brief The byte size of the buffer. The total buffer size.
         size_t ByteSize;

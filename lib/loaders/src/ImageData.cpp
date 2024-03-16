@@ -21,6 +21,6 @@ bns::ImageData::~ImageData()
 {
     if (Data != nullptr)
     {
-        stbi_image_free(Data);
+        //stbi_image_free(Data);
     }
 }

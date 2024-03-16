@@ -34,7 +34,7 @@ namespace bns
             VkVertexInputBindingDescription bufferLayout = {};
             bufferLayout.binding = i;
             bufferLayout.stride = desc.Stride;
-            bufferLayout.inputRate = VulkanVertexInputBindingDescriptionUtil::m_vertexStepModeMap[desc.Step];
+            bufferLayout.inputRate = VulkanVertexInputBindingDescriptionUtil::m_vertexStepModeMap[desc.StepMode];
 
             outVertexInputBindingDescriptions.push_back(bufferLayout);
 

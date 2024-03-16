@@ -16,7 +16,7 @@ namespace bns
 
     BufferLayoutDescriptor::BufferLayoutDescriptor()
     {
-        Step = VertexStepMode::Vertex;
+        StepMode = VertexStepMode::Vertex;
         Stride = 0;
         ByteSize = 0;
         Data = nullptr;

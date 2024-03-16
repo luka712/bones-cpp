@@ -65,6 +65,9 @@ namespace bns
     /// For WebGPU usage see https://developer.mozilla.org/en-US/docs/Web/API/GPUTexture/usage
     enum TextureUsage
     {
+        /// @brief When usage is not relevant. Such as when working with OpenGL textures.
+        None = 0x0,
+
         /// @brief The texture can be used as the source of a copy operation. For example copy texture to buffer.
         CopySrc = 0x1,
 

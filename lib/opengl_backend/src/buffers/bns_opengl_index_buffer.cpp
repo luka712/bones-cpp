@@ -13,6 +13,7 @@ namespace bns
     void OpenGLIndexBuffer::Initialize(std::vector<u16> &data)
     {
         m_buffer = OpenGLUtil::Buffer.CreateIndexBuffer(data, m_label);
+        m_indicesCount = data.size();
     }
 
     void OpenGLIndexBuffer::Dispose()

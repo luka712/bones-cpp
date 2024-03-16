@@ -58,7 +58,7 @@ void Draw();
 int main()
 {
     bns::FrameworkDescription desc;
-    desc.RendererType = bns::RendererType::Metal;
+    desc.RendererType = bns::RendererType::OpenGL;
     engine = new bns::Framework(desc);
 
     bns::WindowParameters parameters;

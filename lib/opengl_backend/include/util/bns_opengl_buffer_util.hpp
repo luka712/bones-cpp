@@ -87,7 +87,7 @@ namespace bns
 		static void WriteUniformBuffer(GLuint buffer, T *data)
 		{
 			glBindBuffer(GL_UNIFORM_BUFFER, buffer);
-			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(T), &data);
+			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(T), data);
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		}
 

@@ -46,6 +46,9 @@ namespace bns
         /// @param indexBuffer The index buffer.
         /// @param instanceCount The instance count.
         virtual void Render(VertexBuffer *vertexBuffer, IndexBuffer *indexBuffer, u32 instanceCount = 1) = 0;
+
+        /// @brief Dispose of pipeline.
+        virtual void Dispose() = 0;
     };
 } // namespace bns
 
