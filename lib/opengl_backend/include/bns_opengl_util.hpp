@@ -10,6 +10,7 @@
 #include "util/bns_opengl_buffer_util.hpp"
 #include "util/bns_opengl_converter.hpp"
 #include "util/bns_opengl_vertex_array_object_util.hpp"
+#include "util/bns_opengl_texture_util.hpp"
 
 namespace bns
 {
@@ -33,6 +34,9 @@ namespace bns
 
         /// @brief The vertex array object util.
         static OpenGLVertexArrayObjectUtil VertexArrayObject;
+
+        /// @brief The texture util.
+        static OpenGLTextureUtil Texture;
     };
 
 }
